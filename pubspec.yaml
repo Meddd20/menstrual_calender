@@ -1,0 +1,34 @@
+name: periodnpregnancycalender
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment:
+  sdk: ">=3.3.0-107.0.dev <4.0.0"
+
+dependencies:
+  calendar_date_picker2: null
+  cupertino_icons: null
+  filter_list: ^1.0.2
+  flutter:
+    sdk: flutter
+  flutter_neat_and_clean_calendar: ^0.3.14+32
+  flutter_screenutil: null
+  get: null
+  iconsax: null
+  numberpicker: ^2.1.2
+  pinput: ^3.0.1
+  scrollable_clean_calendar: ^1.4.1
+  table_calendar: null
+
+dev_dependencies:
+  flutter_lints: ^3.0.0
+  flutter_test:
+    sdk: flutter
+
+dependency_overrides:
+  intl: ^0.17.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

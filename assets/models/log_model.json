@@ -1,0 +1,60 @@
+{
+  "date": "2023-09-01",
+  "pregnancy_signs": {
+    "Mood swings": false,
+    "Nipple changes": false,
+    "Fatigue": false,
+    "Cravings": false,
+    "Tender breasts": false,
+    "Food aversions": false,
+    "Nausea": false,
+    "Bloating": false,
+    "Vomiting": false,
+    "Cramps": false,
+    "Frequent urination": false,
+    "Dizziness": false
+  },
+  "sex_activity": "Unprotected sex",
+  "symptoms": {
+    "Im okay": false,
+    "Headache": false,
+    "Swelling": false,
+    "Dizziness": false,
+    "Cramps": false,
+    "Acne": false,
+    "Insomnia": false,
+    "Tender breasts": false,
+    "Backache": false,
+    "Vaginal pain": false,
+    "Fatigue": false,
+    "Frequent urination": false,
+    "Nipple changes": false
+  },
+  "vaginal_discharge": "Spotting",
+  "moods": {
+    "Happy": false,
+    "Sensitive": false,
+    "Anxious": false,
+    "Mood swings": false,
+    "Emotional": false,
+    "Irritated": false,
+    "Calm": false,
+    "Sad": false,
+    "Energetic": false
+  },
+  "others": {
+    "Travel": false,
+    "Stress": false,
+    "Meditation": false,
+    "Disease or injury": false,
+    "Alcohol": false,
+    "Kegel exercise": false
+  },
+  "temperature": "",
+  "weight": "",
+  "reminder": {
+    "datetime": "",
+    "notes": ""
+  },
+  "notes": ""
+}
