@@ -5,8 +5,9 @@ import '../controllers/insight_controller.dart';
 class InsightBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<InsightController>(
-      () => InsightController(),
-    );
+    Get.lazyPut<InsightController>(() {
+      print('InsightBinding applied');
+      return InsightController();
+    });
   }
 }

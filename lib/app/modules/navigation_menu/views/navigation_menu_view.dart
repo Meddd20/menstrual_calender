@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-
+import 'package:flutter/material.dart';
 import '../controllers/navigation_menu_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NavigationMenuView extends GetView<NavigationMenuController> {
   const NavigationMenuView({Key? key}) : super(key: key);
@@ -23,10 +21,6 @@ class NavigationMenuView extends GetView<NavigationMenuController> {
               icon: Icon(Iconsax.home),
               label: "Home",
             ),
-            // NavigationDestination(
-            //   icon: Icon(Iconsax.calendar_1),
-            //   label: "Calender",
-            // ),
             NavigationDestination(
               icon: Icon(Iconsax.chart_1),
               label: "Analysis",

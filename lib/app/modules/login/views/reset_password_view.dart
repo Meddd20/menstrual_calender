@@ -1,10 +1,11 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/modules/login/controllers/reset_password_controller.dart';
 
-import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/modules/login/controllers/login_controller.dart';
-
-class ResetPasswordView extends GetView<LoginController> {
+class ResetPasswordView extends GetView<ResetPasswordController> {
   const ResetPasswordView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -19,12 +20,7 @@ class ResetPasswordView extends GetView<LoginController> {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           body: Padding(
-            padding: EdgeInsets.fromLTRB(
-              ScreenUtil().setWidth(20),
-              ScreenUtil().setHeight(0),
-              ScreenUtil().setWidth(20),
-              ScreenUtil().setHeight(35),
-            ),
+            padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 35.h),
             child: Form(
               key: controller.verifCodeFormKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -39,13 +35,7 @@ class ResetPasswordView extends GetView<LoginController> {
                         width: Get.width,
                         child: Text(
                           "Verification Code",
-                          style: TextStyle(
-                            fontSize: 24.sp,
-                            height: 1.25,
-                            fontFamily: 'Poppins',
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: CustomTextStyle.heading1TextStyle(),
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -54,30 +44,20 @@ class ResetPasswordView extends GetView<LoginController> {
                         width: Get.width,
                         child: Text(
                           "Your new password should be different from passwords previously used",
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            height: 1.5,
-                            fontFamily: 'Poppins',
-                            color: Colors.black,
-                            letterSpacing: 0.45,
-                          ),
+                          style: CustomTextStyle.captionTextStyle(),
                         ),
                       ),
                       SizedBox(height: 26.h),
                       Obx(
-                        () => TextFormField(
+                        () => CustomTextFormField(
                           controller: controller.newPasswordC,
-                          autocorrect: false,
+                          labelText: "New Password",
                           obscureText: controller.isHidden.value,
-                          decoration: InputDecoration(
-                            labelText: "New Password",
-                            border: OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              onPressed: () => controller.isHidden.toggle(),
-                              icon: controller.isHiddenReset.isTrue
-                                  ? Icon(Icons.remove_red_eye)
-                                  : Icon(Icons.remove_red_eye_outlined),
-                            ),
+                          suffixIcon: IconButton(
+                            onPressed: () => controller.isHidden.toggle(),
+                            icon: controller.isHidden.isTrue
+                                ? Icon(Icons.remove_red_eye)
+                                : Icon(Icons.remove_red_eye_outlined),
                           ),
                           validator: (value) {
                             return controller.validateNewPassword(value!);
@@ -85,40 +65,20 @@ class ResetPasswordView extends GetView<LoginController> {
                         ),
                       ),
                       SizedBox(height: 25.h),
-                      TextFormField(
+                      CustomTextFormField(
                         controller: controller.newPasswordConfirmationC,
-                        autocorrect: false,
+                        labelText: "Confirmation New Password",
                         obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: "Confirmation New Password",
-                          border: OutlineInputBorder(),
-                        ),
                         validator: (value) {
                           return controller.NewPasswordValidation(value!);
                         },
                       ),
                       SizedBox(height: 25.h),
-                      ElevatedButton(
+                      CustomColoredButton(
+                        text: "Confirm your new password",
                         onPressed: () {
                           controller.checkNewPassword();
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFFD6666),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          minimumSize: Size(Get.width, 45),
-                        ),
-                        child: Text(
-                          "Confirm",
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.38,
-                            color: Colors.white,
-                          ),
-                        ),
                       ),
                     ],
                   ),

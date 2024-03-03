@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/modules/login/views/forget_password_view.dart';
-import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-
+import 'package:flutter/material.dart';
 import '../controllers/login_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
+import 'package:periodnpregnancycalender/app/modules/login/views/forget_password_view.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({Key? key}) : super(key: key);
@@ -25,16 +26,11 @@ class LoginView extends GetView<LoginController> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: const BackButton(
-              color: Color(0xFFFD6666),
+              color: AppColors.primary,
             ),
           ),
           body: Padding(
-            padding: EdgeInsets.fromLTRB(
-              ScreenUtil().setWidth(20),
-              ScreenUtil().setHeight(0),
-              ScreenUtil().setWidth(20),
-              ScreenUtil().setHeight(35),
-            ),
+            padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 35.h),
             child: Form(
               key: controller.loginFormKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -50,13 +46,7 @@ class LoginView extends GetView<LoginController> {
                         width: Get.width,
                         child: Text(
                           "Welcome Back..",
-                          style: TextStyle(
-                            fontSize: 24.sp,
-                            height: 1.25,
-                            fontFamily: 'Poppins',
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: CustomTextStyle.heading1TextStyle(),
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -65,22 +55,13 @@ class LoginView extends GetView<LoginController> {
                         width: Get.width,
                         child: Text(
                           "Glad to see you again!",
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            height: 1.25,
-                            fontFamily: 'Poppins',
-                            color: Colors.black,
-                          ),
+                          style: CustomTextStyle.captionTextStyle(),
                         ),
                       ),
                       SizedBox(height: 30.h),
-                      TextFormField(
+                      CustomTextFormField(
                         controller: controller.emailC,
-                        autocorrect: false,
-                        decoration: InputDecoration(
-                          labelText: "Email Address",
-                          border: OutlineInputBorder(),
-                        ),
+                        labelText: "Email Address",
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           return controller.validateEmail(value!);
@@ -88,19 +69,15 @@ class LoginView extends GetView<LoginController> {
                       ),
                       SizedBox(height: 20.h),
                       Obx(
-                        () => TextFormField(
+                        () => CustomTextFormField(
                           controller: controller.passwordC,
-                          autocorrect: false,
+                          labelText: "Password",
                           obscureText: controller.isHidden.value,
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            border: OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              onPressed: () => controller.isHidden.toggle(),
-                              icon: controller.isHidden.isTrue
-                                  ? Icon(Icons.remove_red_eye)
-                                  : Icon(Icons.remove_red_eye_outlined),
-                            ),
+                          suffixIcon: IconButton(
+                            onPressed: () => controller.isHidden.toggle(),
+                            icon: controller.isHidden.isTrue
+                                ? Icon(Icons.remove_red_eye)
+                                : Icon(Icons.remove_red_eye_outlined),
                           ),
                           validator: (value) {
                             return controller.validatePassword(value!);
@@ -113,42 +90,20 @@ class LoginView extends GetView<LoginController> {
                           alignment: Alignment.bottomRight,
                           child: TextButton(
                             onPressed: () {
-                              Get.to(() => ForgetPasswordView());
+                              Get.to(ForgetPasswordView());
                             },
                             child: Text(
                               "Forgot Password?",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF6A707C),
-                              ),
+                              style: CustomTextStyle.bodyTextStyle(),
                             ),
                           ),
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
+                      CustomColoredButton(
+                        text: "Login",
+                        onPressed: () async {
                           controller.checkLogin();
-                          // controller.registerWithEmail();
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFFD6666),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          minimumSize: Size(Get.width, 45),
-                        ),
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.38,
-                            color: Colors.white,
-                          ),
-                        ),
                       ),
                       SizedBox(height: 5.h),
                       Row(
@@ -156,12 +111,7 @@ class LoginView extends GetView<LoginController> {
                         children: [
                           Text(
                             "Have an account?",
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.38,
-                            ),
+                            style: CustomTextStyle.captionTextStyle(),
                           ),
                           TextButton(
                             onPressed: () {
@@ -171,12 +121,8 @@ class LoginView extends GetView<LoginController> {
                             },
                             child: Text(
                               "Register Now",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.38,
-                                color: Color(0xFF35C2C1),
+                              style: CustomTextStyle.buttonTextStyle(
+                                color: AppColors.contrast,
                               ),
                             ),
                           ),

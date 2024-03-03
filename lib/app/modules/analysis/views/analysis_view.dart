@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:periodnpregnancycalender/app/widgets/custom_icon_card.dart';
-
+import 'package:flutter/material.dart';
 import '../controllers/analysis_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/widgets/custom_icon_card.dart';
 
 class AnalysisView extends GetView<AnalysisController> {
   const AnalysisView({Key? key}) : super(key: key);
@@ -28,10 +27,11 @@ class AnalysisView extends GetView<AnalysisController> {
                     onTap: () {},
                     child: Container(
                       width: Get.width,
-                      decoration: BoxDecoration(
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(width: 0.5, color: Colors.grey),
                       ),
                       child: Padding(
                         padding: EdgeInsets.all(20),
@@ -78,13 +78,11 @@ class AnalysisView extends GetView<AnalysisController> {
                                 Container(
                                   height: 100,
                                   width: Get.width / 2 - 50,
-                                  decoration: BoxDecoration(
-                                    color: Color(0x4CFF6868),
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      width: 3,
-                                      color: Color(0xFFF4F4F4),
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
+                                    color: Color(0x4CFF6868),
                                   ),
                                   padding: EdgeInsets.all(8),
                                   child: Row(
@@ -130,7 +128,7 @@ class AnalysisView extends GetView<AnalysisController> {
                                           child: Icon(
                                             Iconsax.activity,
                                             size: 15,
-                                            color: Color(0xFFFF6868),
+                                            color: AppColors.primary,
                                           ),
                                         ),
                                       ),
@@ -141,11 +139,11 @@ class AnalysisView extends GetView<AnalysisController> {
                                 Container(
                                   height: 100,
                                   width: Get.width / 2 - 50,
-                                  decoration: BoxDecoration(
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
                                     color: Color(0x6625BF91),
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        width: 3, color: Color(0xFFF4F4F4)),
                                   ),
                                   padding: EdgeInsets.all(8),
                                   child: Row(

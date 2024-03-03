@@ -1,17 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:periodnpregnancycalender/app/model/article.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:periodnpregnancycalender/app/models/article_model.dart';
+import 'package:periodnpregnancycalender/app/modules/insight/controllers/insight_controller.dart';
 
-class DetailArticleView extends GetView {
-  final Article article;
+class DetailArticleView extends GetView<InsightController> {
+  final Articles article;
   const DetailArticleView({Key? key, required this.article}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    String formattedDate = DateFormat('EEEE, d MMMM yyyy HH:mm \'WITA\'')
-        .format(article.createdAt);
+    DateTime? createdAt =
+        article.createdAt != null ? DateTime.parse(article.createdAt!) : null;
+
+    String formattedDate = createdAt != null
+        ? DateFormat('EEEE, d MMMM yyyy HH:mm \'WITA\'').format(createdAt)
+        : "";
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -27,7 +32,7 @@ class DetailArticleView extends GetView {
                 children: [
                   Center(
                     child: Text(
-                      article.titleInd,
+                      article.titleInd ?? "",
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
@@ -37,7 +42,7 @@ class DetailArticleView extends GetView {
                     ),
                   ),
                   Text(
-                    article.writter,
+                    article.writter ?? "",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14.sp,
@@ -64,8 +69,7 @@ class DetailArticleView extends GetView {
                     height: 180,
                     decoration: ShapeDecoration(
                       image: DecorationImage(
-                        image:
-                            NetworkImage("https://via.placeholder.com/290x180"),
+                        image: NetworkImage("${article.banner}"),
                         fit: BoxFit.fill,
                       ),
                       shape: RoundedRectangleBorder(
@@ -75,7 +79,7 @@ class DetailArticleView extends GetView {
                   ),
                   SizedBox(height: 10.h),
                   Text(
-                    article.contentInd,
+                    article.contentInd ?? "",
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                       color: Colors.black,
@@ -104,7 +108,7 @@ class DetailArticleView extends GetView {
                   Container(
                     width: Get.width,
                     child: Text(
-                      article.source,
+                      article.source ?? "",
                       textAlign: TextAlign.justify,
                       style: TextStyle(
                         color: Colors.black,

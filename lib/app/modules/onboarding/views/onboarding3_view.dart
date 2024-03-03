@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding4_view.dart';
-
+import 'package:flutter/material.dart';
 import '../controllers/onboarding_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding4_view.dart';
 
 class Onboarding3View extends GetView<OnboardingController> {
   const Onboarding3View({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class Onboarding3View extends GetView<OnboardingController> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: BackButton(
-            color: Color(0xFFFD6666),
+            color: AppColors.primary,
           ),
         ),
         body: Padding(
@@ -27,95 +27,53 @@ class Onboarding3View extends GetView<OnboardingController> {
             child: Column(
               children: [
                 SizedBox(height: 70.h),
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFFFFC7C7),
-                  ),
-                  child: Icon(
-                    Icons.crisis_alert, // Replace with your desired icon
-                    size: 35,
-                    color: Color(0xFFFF6868), // Customize the icon color here
-                  ),
+                CustomCircularIconContainer(
+                  iconData: Icons.crisis_alert,
+                  iconSize: 35,
+                  iconColor: AppColors.primary,
+                  containerColor: AppColors.highlight,
                 ),
                 SizedBox(height: 25.h),
                 Text(
                   "How many days does your cycle last on average?",
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    height: 1.25,
-                    fontFamily: 'Poppins',
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: CustomTextStyle.heading3TextStyle(),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 7.h),
                 Text(
                   "Predict your next period from your last period",
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    height: 2.0,
-                    fontFamily: 'Poppins',
-                    color: Colors.black,
-                  ),
+                  style: CustomTextStyle.bodyTextStyle(),
                   textAlign: TextAlign.left,
                 ),
                 SizedBox(height: 32.h),
-                Container(
-                  height: 250.h,
-                  child: CupertinoPicker(
-                    itemExtent: 45,
-                    magnification: 1.22,
-                    looping: true,
-                    useMagnifier: true,
-                    scrollController:
-                        FixedExtentScrollController(initialItem: 8),
-                    children: List.generate(
-                      21,
-                      (index) {
-                        final day = index + 20;
-                        return Center(
-                          child: Text(
-                            "$day days",
-                            style: TextStyle(
-                              fontSize: 22.sp,
-                              fontFamily: 'Poppins',
-                            ),
+                CustomCupertinoPicker(
+                  scrollController: FixedExtentScrollController(initialItem: 8),
+                  children: List.generate(
+                    21,
+                    (index) {
+                      final day = index + 20;
+                      return Center(
+                        child: Text(
+                          "$day days",
+                          style: TextStyle(
+                            fontSize: 22.sp,
+                            fontFamily: 'Poppins',
                           ),
-                        );
-                      },
-                    ),
-                    selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
-                      background: Color(0xFFFFE6E6).withOpacity(0.3),
-                    ),
-                    onSelectedItemChanged: (index) {
-                      controller.menstruationCycle.value = index + 20;
-                      print(controller.menstruationCycle.value);
+                        ),
+                      );
                     },
                   ),
+                  onSelectedItemChanged: (index) {
+                    controller.menstruationCycle.value = index + 20;
+                    print(controller.menstruationCycle.value);
+                  },
                 ),
                 SizedBox(height: 150.h),
-                ElevatedButton(
+                CustomColoredButton(
+                  text: "Next",
                   onPressed: () {
                     Get.to(() => Onboarding4View());
                   },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFD6666),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      minimumSize: Size(Get.width, 45.h)),
-                  child: Text(
-                    "Next",
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.38,
-                      color: Colors.white,
-                    ),
-                  ),
                 ),
               ],
             ),

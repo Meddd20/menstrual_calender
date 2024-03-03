@@ -1,0 +1,88 @@
+{
+    "status": "success",
+    "message": "Data retrieved successfully",
+    "data": {
+        "date": "2024-02-16",
+        "moods": {
+            "Sad": true,
+            "Calm": false,
+            "Angry": true,
+            "Happy": false,
+            "Tired": false,
+            "Cranky": false,
+            "Frisky": false,
+            "Sleepy": true,
+            "Anxious": false,
+            "Excited": false,
+            "Confused": true,
+            "Apathetic": true,
+            "Depressed": true,
+            "Emotional": false,
+            "Energetic": true,
+            "Irritated": true,
+            "Sensitive": false,
+            "Unfocused": true,
+            "Frustrated": true,
+            "Low energy": false,
+            "Mood swings": true,
+            "Feeling guilty": true,
+            "Obsessive thoughts": false,
+            "Very self-critical": false
+        },
+        "notes": "Feeling great today!",
+        "others": {
+            "Stress": true,
+            "Travel": false,
+            "Alcohol": true,
+            "Disease or Injury": false
+        },
+        "weight": "55.8",
+        "reminder": [
+            {
+                "time": "2024-02-15 08:00:00",
+                "description": "Take medication"
+            }
+        ],
+        "symptoms": {
+            "Gas": false,
+            "PMS": true,
+            "Acne": true,
+            "Chills": false,
+            "Cramps": false,
+            "Nausea": true,
+            "Fatigue": false,
+            "Backache": false,
+            "Bloating": true,
+            "Cravings": true,
+            "Diarrhea": false,
+            "Headache": true,
+            "Insomnia": true,
+            "Spotting": false,
+            "Swelling": true,
+            "Dizziness": true,
+            "Feel good": true,
+            "Body aches": true,
+            "Hot flashes": false,
+            "Constipation": true,
+            "Low back pain": false,
+            "Nipple changes": false,
+            "Tender breasts": false,
+            "Abdominal cramps": false
+        },
+        "temperature": "36.5",
+        "sex_activity": "Unprotected sex",
+        "bleeding_flow": "Medium",
+        "physical_activity": {
+            "Gym": false,
+            "Yoga": true,
+            "Cycling": true,
+            "Running": false,
+            "Walking": false,
+            "Swimming": false,
+            "Team sports": true,
+            "Didn't exercise": false,
+            "Aerobics & Dancing": true
+        },
+        "vaginal_discharge": "Creamy"
+    }
+}

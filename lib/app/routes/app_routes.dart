@@ -12,6 +12,8 @@ abstract class Routes {
   static const INSIGHT = _Paths.INSIGHT;
   static const ANALYSIS = _Paths.ANALYSIS;
   static const DETAIL_ARTICLE = _Paths.INSIGHT + _Paths.DETAIL_ARTICLE;
+  static const REGISTER_VERIFICATION = _Paths.REGISTER_VERIFICATION;
+  static const REMINDER = _Paths.HOME + _Paths.REMINDER;
 }
 
 abstract class _Paths {
@@ -25,4 +27,6 @@ abstract class _Paths {
   static const INSIGHT = '/insight';
   static const ANALYSIS = '/analysis';
   static const DETAIL_ARTICLE = '/detail-article';
+  static const REGISTER_VERIFICATION = '/register-verification';
+  static const REMINDER = '/reminder';
 }

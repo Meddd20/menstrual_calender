@@ -1,31 +1,79 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/modules/login/views/verification_code_view.dart';
+import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
+import 'package:periodnpregnancycalender/app/services/api_service.dart';
+import 'package:periodnpregnancycalender/app/repositories/auth_repository.dart';
 
 class LoginController extends GetxController {
+  final ApiService apiService = ApiService();
+  late final AuthRepository authRepository = AuthRepository(apiService);
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> forgetPasswordFormKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> verifCodeFormKey = GlobalKey<FormState>();
-  TextEditingController emailC = TextEditingController();
-  TextEditingController passwordC = TextEditingController();
-  TextEditingController forgetEmailC = TextEditingController();
-  TextEditingController newPasswordC = TextEditingController();
-  TextEditingController newPasswordConfirmationC = TextEditingController();
+  final box = GetStorage();
+  late TextEditingController emailC;
+  late TextEditingController passwordC;
 
   var isHidden = true.obs;
-  var isHiddenReset = true.obs;
-  RxInt countdown = 60.obs;
-  Timer? timer;
-  var verificationCode = "".obs;
+  var isAuth = false.obs;
 
-  void onVerificationCodeCompleted(String pin) {
-    if (verificationCode.value.isEmpty || verificationCode.value.length < 6) {
-      Get.snackbar("Error", "Verification code is null");
-    } else {
-      print("Verification code: $pin");
+  @override
+  void onInit() async {
+    super.onInit();
+    emailC = TextEditingController();
+    passwordC = TextEditingController();
+    checkStoredAuth();
+  }
+
+  @override
+  void onClose() {
+    emailC.dispose();
+    passwordC.dispose();
+    super.onClose();
+  }
+
+  @override
+  void dispose() {
+    emailC.dispose();
+    passwordC.dispose();
+    super.dispose();
+  }
+
+  Future<void> login() async {
+    try {
+      var authCredential =
+          await authRepository.login(emailC.text.trim(), passwordC.text.trim());
+
+      final token = authCredential["data"]["credential"]["token"];
+      storeAuth();
+      storeAuthData(token);
+      print(box.read('isAuth'));
+      Get.offAllNamed(Routes.NAVIGATION_MENU);
+    } catch (e) {
+      showDialog(
+        context: Get.context!,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Error"),
+            children: [Text(e.toString())],
+          );
+        },
+      );
+    }
+  }
+
+  void storeAuthData(String token) {
+    box.write("loginAuth", token);
+  }
+
+  void storeAuth() {
+    box.write("isAuth", true);
+  }
+
+  void checkStoredAuth() {
+    final storedAuth = box.read("loginAuth");
+    if (storedAuth != null) {
+      isAuth.value = true;
     }
   }
 
@@ -43,71 +91,12 @@ class LoginController extends GetxController {
     return null;
   }
 
-  void checkLogin() {
+  void checkLogin() async {
     final isValid = loginFormKey.currentState!.validate();
     if (!isValid) {
       return;
     }
     loginFormKey.currentState!.save();
-    Get.offAllNamed(Routes.NAVIGATION_MENU);
-  }
-
-  String? validateForgetEmail(String email) {
-    if (!GetUtils.isEmail(email)) {
-      return "Please enter a valid email!";
-    }
-    return null;
-  }
-
-  void checkEmailForgetPassword() {
-    final isValid = forgetPasswordFormKey.currentState!.validate();
-    if (!isValid) {
-      return;
-    }
-    forgetPasswordFormKey.currentState!.save();
-    Get.offAll(() => VerificationCodeView());
-  }
-
-  void startResendTimer() {
-    countdown.value = 60;
-    timer = Timer.periodic(
-      Duration(seconds: 1),
-      (Timer t) {
-        if (countdown.value == 0) {
-          timer?.cancel();
-        } else {
-          countdown.value--;
-        }
-      },
-    );
-  }
-
-  String? validateNewPassword(String password) {
-    if (password.length < 6) {
-      return "Password must be at least 6 characters";
-    }
-    return null;
-  }
-
-  String? NewPasswordValidation(String passwordConfirmation) {
-    if (passwordConfirmation != newPasswordC.text) {
-      return "New password confirmation does not match";
-    }
-    return null;
-  }
-
-  void checkNewPassword() {
-    final isValid = verifCodeFormKey.currentState!.validate();
-    if (!isValid) {
-      return;
-    }
-    verifCodeFormKey.currentState!.save();
-    Get.offAll(Routes.NAVIGATION_MENU);
-  }
-
-  @override
-  void onClose() {
-    timer?.cancel();
-    super.onClose();
+    await login();
   }
 }

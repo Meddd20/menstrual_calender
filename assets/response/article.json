@@ -1,0 +1,42 @@
+{
+    "status": "success",
+    "message": "Article retrieved successfully",
+    "articles": [
+        {
+            "id": "42950d29-e354-46f1-8ce2-952d36a7be38",
+            "writter": "aaa",
+            "title_ind": "aaa",
+            "title_eng": "aaa",
+            "slug_title_ind": "aaa",
+            "slug_title_eng": "aaa",
+            "banner": "aaa",
+            "content_ind": "aaa",
+            "content_eng": "aaa",
+            "video_link": "aaa",
+            "source": "aaa",
+            "tags": "Menstruation",
+            "publish_at": null,
+            "created_at": "2023-11-03T11:23:13.000000Z",
+            "updated_at": "2023-11-03T11:23:13.000000Z",
+            "deleted_at": null
+        },
+        {
+            "id": "6a9de98a-21b3-42c2-acd6-47a21632b3eb",
+            "writter": "bbcc",
+            "title_ind": "ewgew",
+            "title_eng": "aaewgegwewa",
+            "slug_title_ind": "aagewga",
+            "slug_title_eng": "aaewgega",
+            "banner": "agwegewgaa",
+            "content_ind": "aaga",
+            "content_eng": "aeewgwgaa",
+            "video_link": "aagewga",
+            "source": "aewgewgewaa",
+            "tags": "Menstruation",
+            "publish_at": null,
+            "created_at": "2023-10-25T23:55:09.000000Z",
+            "updated_at": "2023-10-27T14:12:58.000000Z",
+            "deleted_at": null
+        }
+    ]
+}

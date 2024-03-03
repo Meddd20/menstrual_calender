@@ -1,8 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
+import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/services/api_service.dart';
+import 'package:periodnpregnancycalender/app/repositories/auth_repository.dart';
+import 'package:periodnpregnancycalender/app/modules/register/views/register_verification_view.dart';
+import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
 
 class RegisterController extends GetxController {
+  final ApiService apiService = ApiService();
+  late final AuthRepository authRepository = AuthRepository(apiService);
   final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
   TextEditingController usernameC = TextEditingController();
   TextEditingController emailC = TextEditingController();
@@ -39,12 +44,40 @@ class RegisterController extends GetxController {
     return null;
   }
 
-  void checkRegister() {
+  Future<void> register() async {
+    try {
+      OnboardingController onboardingController = Get.find();
+      Map<String, dynamic> data = await authRepository.register(
+          usernameC.text.trim(),
+          onboardingController.birthday.value,
+          emailC.text.trim(),
+          passwordC.text.trim());
+
+      Map<String, dynamic> requestVerificationCode = await authRepository
+          .requestVerificationCode(emailC.text.trim(), "Verifikasi");
+
+      final requestVerificationCodeResponse = requestVerificationCode["data"];
+      Get.to(() => RegisterVerificationView(),
+          arguments: requestVerificationCodeResponse);
+    } catch (e) {
+      showDialog(
+        context: Get.context!,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Error"),
+            children: [Text(e.toString())],
+          );
+        },
+      );
+    }
+  }
+
+  void checkRegister() async {
     final isValid = registerFormKey.currentState!.validate();
     if (!isValid) {
       return;
     }
     registerFormKey.currentState!.save();
-    Get.toNamed(Routes.NAVIGATION_MENU);
+    await register();
   }
 }
