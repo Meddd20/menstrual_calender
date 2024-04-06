@@ -16,8 +16,8 @@ class Onboarding2View extends GetView<OnboardingController> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          backgroundColor: Color(0xFFf9f8fb),
+          surfaceTintColor: Color(0xFFf9f8fb),
           leading: const BackButton(
             color: AppColors.primary,
           ),
@@ -34,6 +34,7 @@ class Onboarding2View extends GetView<OnboardingController> {
                   iconSize: 35,
                   iconColor: AppColors.primary,
                   containerColor: AppColors.highlight,
+                  containerSize: 30.dg,
                 ),
                 SizedBox(height: 25.h),
                 Text(
@@ -50,6 +51,7 @@ class Onboarding2View extends GetView<OnboardingController> {
                 SizedBox(height: 32.h),
                 ElevatedButton(
                   onPressed: () {
+                    controller.purposes.value = 0;
                     Get.to(() => Onboarding3View());
                   },
                   style: ElevatedButton.styleFrom(
@@ -93,6 +95,7 @@ class Onboarding2View extends GetView<OnboardingController> {
                 SizedBox(height: 18.h),
                 ElevatedButton(
                   onPressed: () {
+                    controller.purposes.value = 1;
                     Get.to(() => Onboarding6View());
                   },
                   style: ElevatedButton.styleFrom(

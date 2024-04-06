@@ -44,10 +44,9 @@ class LoginController extends GetxController {
       var authCredential =
           await authRepository.login(emailC.text.trim(), passwordC.text.trim());
 
-      final token = authCredential["data"]["credential"]["token"];
       storeAuth();
-      storeAuthData(token);
-      print(box.read('isAuth'));
+      storeCredentialToken(authCredential["data"]["credential"]["token"]);
+      storeAccountId(authCredential["data"]["user"]["id"]);
       Get.offAllNamed(Routes.NAVIGATION_MENU);
     } catch (e) {
       showDialog(
@@ -62,8 +61,12 @@ class LoginController extends GetxController {
     }
   }
 
-  void storeAuthData(String token) {
+  void storeCredentialToken(String token) {
     box.write("loginAuth", token);
+  }
+
+  void storeAccountId(String id) {
+    box.write("loginId", id);
   }
 
   void storeAuth() {

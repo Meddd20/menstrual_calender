@@ -158,6 +158,18 @@ class ApiService {
     }
   }
 
+  Future<http.Response> getArticle(String id) async {
+    try {
+      var url = Uri.parse(
+          '${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.getArticle}/$id');
+
+      return await http.get(url, headers: loginHeaders);
+    } catch (e) {
+      print("Error: $e");
+      throw "An error occurred during the request.";
+    }
+  }
+
   Future<http.Response> getPeriodSummary() async {
     try {
       var url = Uri.parse(
@@ -247,6 +259,18 @@ class ApiService {
     try {
       var url = Uri.parse(
           "${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.logByDate}?date=$logDate");
+
+      return await http.get(url, headers: loginHeaders);
+    } catch (e) {
+      print("Error: $e");
+      throw "An error occurred during the request.";
+    }
+  }
+
+  Future<http.Response> getLogByTags(String tag) async {
+    try {
+      var url = Uri.parse(
+          "${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.logByTags}?tags=$tag");
 
       return await http.get(url, headers: loginHeaders);
     } catch (e) {
@@ -361,6 +385,78 @@ class ApiService {
           ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.getAllReminder);
 
       return await http.get(url, headers: loginHeaders);
+    } catch (e) {
+      print("Error: $e");
+      throw "An error occurred during the request.";
+    }
+  }
+
+  Future<http.Response> pregnancyBegin(
+      String firstDayLastMenstruation, String? email_regis) async {
+    try {
+      var url = Uri.parse(
+          ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.storePregnancy);
+
+      Map<String, dynamic> body = {
+        "hari_pertama_haid_terakhir": firstDayLastMenstruation,
+        "email_regis": email_regis
+      };
+
+      return await http.post(url, body: body, headers: loginHeaders);
+    } catch (e) {
+      print("Error: $e");
+      throw "An error occurred during the request.";
+    }
+  }
+
+  Future<http.Response> storeComment(
+      String? parentId, String articleId, String content) async {
+    try {
+      var url = Uri.parse(
+          ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.storeComment);
+
+      Map<String, dynamic> body = {
+        "article_id": articleId,
+        "content": content,
+      };
+
+      if (parentId != null) {
+        body["parent_id"] = parentId;
+      }
+
+      print((parentId != null));
+      print(parentId);
+
+      return await http.post(url, body: body, headers: loginHeaders);
+    } catch (e) {
+      print("Error: $e");
+      throw "An error occurred during the request.";
+    }
+  }
+
+  Future<http.Response> likeComment(
+      String userId, String commentId) async {
+    try {
+      var url = Uri.parse(
+          ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.likeComment);
+
+      Map<String, dynamic> body = {
+        "user_id": userId,
+        "comment_id": commentId
+      };
+
+      return await http.post(url, body: body, headers: loginHeaders);
+    } catch (e) {
+      print("Error: $e");
+      throw "An error occurred during the request.";
+    }
+  }
+
+  Future<http.Response> deleteComment(String id) async {
+    try {
+      var url = Uri.parse(
+          '${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.deleteComment}/$id');
+      return await http.delete(url, headers: loginHeaders);
     } catch (e) {
       print("Error: $e");
       throw "An error occurred during the request.";

@@ -66,6 +66,7 @@ class LoginView extends GetView<LoginController> {
                         validator: (value) {
                           return controller.validateEmail(value!);
                         },
+                        hintText: "example@example.com",
                       ),
                       SizedBox(height: 20.h),
                       Obx(
@@ -82,6 +83,7 @@ class LoginView extends GetView<LoginController> {
                           validator: (value) {
                             return controller.validatePassword(value!);
                           },
+                          hintText: "•••••••••",
                         ),
                       ),
                       Container(

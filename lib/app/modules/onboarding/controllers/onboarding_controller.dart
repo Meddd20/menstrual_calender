@@ -1,16 +1,33 @@
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding2_view.dart';
+import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class OnboardingController extends GetxController {
   late List<Map<String, dynamic>> periods;
-
-  var birthday = DateTime.now().obs;
-  var selectedDate = DateTime.now().obs;
+  var purposes = 0.obs;
+  Rx<DateTime?> birthday = Rx<DateTime?>(null);
   var menstruationCycle = 28.obs;
   var periodLast = 7.obs;
   var lastPeriodDate = DateTime.now().obs;
   var pregnantWeek = 0.obs;
   var datePickerController = DateRangePickerController().obs;
+
+  @override
+  void onInit() {
+    purposes = 0.obs;
+    super.onInit();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+  }
 
   void onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     periods = [];
@@ -19,6 +36,7 @@ class OnboardingController extends GetxController {
       if (selectedRange is PickerDateRange) {
         var start = selectedRange.startDate;
         var end = selectedRange.endDate;
+        String formattedEndDate = "";
 
         if (start != null) {
           if (periods.isNotEmpty) {
@@ -40,12 +58,18 @@ class OnboardingController extends GetxController {
             }
           }
 
+          if (end == null) {
+            DateTime endDatePrediction =
+                start.add(Duration(days: periodLast.value));
+            formattedEndDate =
+                "${endDatePrediction.year}-${endDatePrediction.month.toString().padLeft(2, '0')}-${endDatePrediction.day.toString().padLeft(2, '0')}";
+          } else {
+            formattedEndDate =
+                "${end.year}-${end.month.toString().padLeft(2, '0')}-${end.day.toString().padLeft(2, '0')}";
+          }
+
           var formattedStartDate =
               "${start.year}-${start.month.toString().padLeft(2, '0')}-${start.day.toString().padLeft(2, '0')}";
-
-          var formattedEndDate = end != null
-              ? "${end.year}-${end.month.toString().padLeft(2, '0')}-${end.day.toString().padLeft(2, '0')}"
-              : '';
 
           // Add the period to the list
           periods.add({
@@ -64,18 +88,33 @@ class OnboardingController extends GetxController {
     print('Number of selected date ranges: ${periods.length}');
   }
 
-  @override
-  void onInit() {
-    super.onInit();
+  void validateBirthday() {
+    DateTime today = DateTime.now();
+    DateTime? birthDate = birthday.value;
+
+    if (birthDate != null) {
+      int age = today.year - birthDate.year;
+
+      if (birthDate.month > today.month ||
+          (birthDate.month == today.month && birthDate.day > today.day)) {
+        age--;
+      }
+
+      if (age < 18) {
+        print("Error: Age must be at least 18 years old.");
+      } else {
+        Get.to(() => Onboarding2View());
+      }
+    } else {
+      print("Error: Birthday is null.");
+    }
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
+  void validateLastPeriod() {
+    if (periods.isEmpty) {
+      print("Error: Please select at least one period range.");
+    } else {
+      Get.toNamed(Routes.REGISTER);
+    }
   }
 }

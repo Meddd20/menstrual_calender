@@ -5,8 +5,8 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding7_view.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 
 class Onboarding6View extends GetView<OnboardingController> {
   const Onboarding6View({Key? key}) : super(key: key);
@@ -16,16 +16,15 @@ class Onboarding6View extends GetView<OnboardingController> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          backgroundColor: Color(0xFFf9f8fb),
+          surfaceTintColor: Color(0xFFf9f8fb),
           leading: const BackButton(
             color: AppColors.primary,
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 35.h),
-          child: Align(
-            child: Column(
+        body: Stack(
+          children: [
+            Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(height: 70.h),
@@ -34,6 +33,7 @@ class Onboarding6View extends GetView<OnboardingController> {
                   iconSize: 35,
                   iconColor: AppColors.primary,
                   containerColor: AppColors.highlight,
+                  containerSize: 30.dg,
                 ),
                 SizedBox(height: 25.h),
                 Text(
@@ -49,7 +49,7 @@ class Onboarding6View extends GetView<OnboardingController> {
                 ),
                 SizedBox(height: 32.h),
                 CustomCalendarDatePicker(
-                  value: [controller.selectedDate.value as DateTime?],
+                  value: [controller.lastPeriodDate.value as DateTime?],
                   onValueChanged: (dates) {
                     controller.lastPeriodDate.value = dates.isNotEmpty
                         ? dates[0] ?? DateTime.now()
@@ -61,15 +61,23 @@ class Onboarding6View extends GetView<OnboardingController> {
                   calendarType: CalendarDatePicker2Type.single,
                 ),
                 SizedBox(height: 55.h),
-                CustomColoredButton(
-                  text: "Next",
-                  onPressed: () {
-                    Get.to(() => Onboarding7View());
-                  },
-                ),
               ],
             ),
-          ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 35),
+                child: CustomColoredButton(
+                  text: "Calculate",
+                  onPressed: () {
+                    Get.toNamed(Routes.REGISTER);
+                  },
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );

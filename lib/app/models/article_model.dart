@@ -15,20 +15,11 @@ class Article {
       });
     }
   }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['status'] = status;
-    data['message'] = message;
-    if (articles != null) {
-      data['articles'] = articles?.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
 }
 
 class Articles {
   String? id;
+  String? userId;
   String? writter;
   String? titleInd;
   String? titleEng;
@@ -47,6 +38,7 @@ class Articles {
 
   Articles(
       {this.id,
+      this.userId,
       this.writter,
       this.titleInd,
       this.titleEng,
@@ -65,6 +57,7 @@ class Articles {
 
   Articles.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    userId = json['user_id'];
     writter = json['writter'];
     titleInd = json['title_ind'];
     titleEng = json['title_eng'];
@@ -80,26 +73,5 @@ class Articles {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     deletedAt = json['deleted_at'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['writter'] = writter;
-    data['title_ind'] = titleInd;
-    data['title_eng'] = titleEng;
-    data['slug_title_ind'] = slugTitleInd;
-    data['slug_title_eng'] = slugTitleEng;
-    data['banner'] = banner;
-    data['content_ind'] = contentInd;
-    data['content_eng'] = contentEng;
-    data['video_link'] = videoLink;
-    data['source'] = source;
-    data['tags'] = tags;
-    data['publish_at'] = publishAt;
-    data['created_at'] = createdAt;
-    data['updated_at'] = updatedAt;
-    data['deleted_at'] = deletedAt;
-    return data;
   }
 }

@@ -11,11 +11,12 @@ class InsightController extends GetxController {
   var selectedTag = "".obs;
   var isLoading = RxBool(true);
   RxList<Articles> articles = <Articles>[].obs;
+  late Future<void> articlesFuture;
 
   @override
   void onInit() {
+    articlesFuture = fetchArticles(null);
     super.onInit();
-    fetchArticles(null);
   }
 
   @override
@@ -23,7 +24,6 @@ class InsightController extends GetxController {
     super.onClose();
   }
 
-  // Filter Chip Symptoms
   List<String> filterTags = [
     "Premenstrual Syndrome (PMS)",
     "Pregnancy",
@@ -39,7 +39,6 @@ class InsightController extends GetxController {
   String getSelectedTag() => selectedTag.value;
 
   void setSelectedTag(String value) {
-    print("Setting selectedTag to: $value");
     selectedTag.value = value;
     fetchArticles(selectedTag.value);
     update();
@@ -56,9 +55,12 @@ class InsightController extends GetxController {
         result = await articleRepository.getAllArticle(selectedTag.value);
       }
 
-      // Check if result is not null and contains a list of articles
-      if (result != null && result.articles != null) {
-        articles.assignAll(result.articles!);
+      if (result != null) {
+        if (result.articles != null) {
+          articles.assignAll(result.articles!);
+        } else {
+          print("Error: articles field is null in the response");
+        }
       } else {
         print("Error: Unable to fetch articles");
       }

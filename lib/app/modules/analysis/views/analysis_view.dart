@@ -1,15 +1,31 @@
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/bleeding_flow_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/moods_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/notes_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/others_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/physical_activity_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/sex_activity_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/symptoms_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/temperature_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/vaginal_discharge_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/weight_view.dart';
+import 'package:periodnpregnancycalender/app/modules/home/controllers/home_controller.dart';
+import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
 import '../controllers/analysis_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/widgets/custom_icon_card.dart';
 
 class AnalysisView extends GetView<AnalysisController> {
   const AnalysisView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    HomeController homeController = Get.put(HomeController());
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -23,178 +39,191 @@ class AnalysisView extends GetView<AnalysisController> {
               child: Column(
                 children: [
                   SizedBox(height: 10.h),
-                  InkWell(
-                    onTap: () {},
+                  GestureDetector(
+                    onTap: () => (Get.to(() => PeriodCycleView())),
                     child: Container(
                       width: Get.width,
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                      height: 195.h,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.primary,
+                          width: 1.0,
                         ),
-                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.all(20),
+                        padding:
+                            const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'My Cycles',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.sp,
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  "My Cycle",
+                                  style: CustomTextStyle.heading4TextStyle(),
                                 ),
-                                Icon(Iconsax.arrow_right_34)
+                                GestureDetector(
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "See more",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.6),
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Icon(Icons.keyboard_arrow_right)
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    Get.to(() => PeriodCycleView());
+                                  },
+                                ),
                               ],
                             ),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.74),
-                                  fontSize: 14.sp,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.38,
-                                ),
-                                children: [
-                                  TextSpan(text: '1'),
-                                  TextSpan(text: ' cycle history logged'),
-                                ],
+                            Text(
+                              "${homeController.data?.actualPeriod.length} cycle history logged",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                height: 2.0,
+                                fontFamily: 'Poppins',
+                                color: Colors.black.withOpacity(0.5),
                               ),
                             ),
-                            SizedBox(height: 10.h),
+                            SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  height: 100,
-                                  width: Get.width / 2 - 50,
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    color: Color(0x4CFF6868),
-                                  ),
-                                  padding: EdgeInsets.all(8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Center(
+                                Column(
+                                  children: [
+                                    Container(
+                                      height: 100.h,
+                                      width: 155,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Color(0xFFFFD7DF),
+                                        border: Border.all(
+                                          color: AppColors.primary,
+                                          width: 0.5,
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
                                         child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
                                             Text(
-                                              'Average Period',
+                                              "Average Cycle Length",
                                               style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w400,
+                                                color: AppColors.primary,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w700,
                                               ),
                                             ),
-                                            Text(
-                                              "7 Days",
-                                              style: TextStyle(
-                                                fontSize: 15.sp,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
+                                            SizedBox(height: 10),
+                                            RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text:
+                                                        "${homeController.data?.avgPeriodCycle}",
+                                                    style: TextStyle(
+                                                      fontSize: 23.sp,
+                                                      fontFamily: 'Poppins',
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: " days",
+                                                    style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      fontFamily: 'Poppins',
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             )
                                           ],
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Container(
-                                          width: 30,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.white,
-                                          ),
-                                          child: Icon(
-                                            Iconsax.activity,
-                                            size: 15,
-                                            color: AppColors.primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(width: 5.w),
-                                Container(
-                                  height: 100,
-                                  width: Get.width / 2 - 50,
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    color: Color(0x6625BF91),
-                                  ),
-                                  padding: EdgeInsets.all(8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Center(
+                                Column(
+                                  children: [
+                                    Container(
+                                      height: 100.h,
+                                      width: 155,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        // color: Color(0xFFFFE69E),
+                                        border: Border.all(
+                                          color: Color(0xFFFD9414),
+                                          width: 0.5,
+                                        ),
+                                        color: Color(0xFFFFE69E),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
                                         child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
                                             Text(
-                                              'Average Cycle',
+                                              "Average Period Length",
                                               style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w400,
+                                                color: Color(0xFFFD9414),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w700,
                                               ),
                                             ),
-                                            Text(
-                                              "28 Days",
-                                              style: TextStyle(
-                                                fontSize: 15.sp,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
+                                            SizedBox(height: 10),
+                                            RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text:
+                                                        "${homeController.data?.avgPeriodDuration}",
+                                                    style: TextStyle(
+                                                      fontSize: 23.sp,
+                                                      fontFamily: 'Poppins',
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: " days",
+                                                    style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      fontFamily: 'Poppins',
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             )
                                           ],
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Container(
-                                          width: 30,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.white,
-                                          ),
-                                          child: Icon(
-                                            Iconsax.activity,
-                                            size: 15,
-                                            color: Color(0xFF44C89F),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -226,36 +255,61 @@ class AnalysisView extends GetView<AnalysisController> {
                             ),
                             children: [
                               CustomIconCard(
-                                  icon: Icons.crisis_alert,
-                                  text: "Pregnancy Signs"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert,
-                                  text: "Sex Activity"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert, text: "Symptoms"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert,
-                                  text: "Vaginal Discharge"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert, text: "Moods"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert, text: "Others"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert,
-                                  text: "Temperature"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert, text: "Weight"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert, text: "Reminder"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert, text: "Notes"),
-                              CustomIconCard(
-                                  icon: Icons.crisis_alert,
-                                  text: "Period & Cycle"),
+                                icon: Icons.bloodtype_outlined,
+                                text: "Bleeding Flow",
+                                onTap: () => Get.to(() => BleedingFlowView()),
+                              ),
                               CustomIconCard(
                                 icon: Icons.crisis_alert,
-                                text: "Period & Cycle",
-                                onTap: () {},
+                                text: "Sex Activity",
+                                onTap: () => Get.to(() => SexActivityView()),
+                              ),
+                              CustomIconCard(
+                                icon: Icons.crisis_alert,
+                                text: "Symptoms",
+                                onTap: () => Get.to(() => SymptomsView()),
+                              ),
+                              CustomIconCard(
+                                icon: Icons.crisis_alert,
+                                text: "Vaginal Discharge",
+                                onTap: () =>
+                                    Get.to(() => VaginalDischargeView()),
+                              ),
+                              CustomIconCard(
+                                icon: Icons.crisis_alert,
+                                text: "Moods",
+                                onTap: () => Get.to(() => MoodsView()),
+                              ),
+                              CustomIconCard(
+                                icon: Icons.crisis_alert,
+                                text: "Others",
+                                onTap: () => Get.to(() => OthersView()),
+                              ),
+                              CustomIconCard(
+                                icon: Icons.crisis_alert,
+                                text: "Physical Activity",
+                                onTap: () =>
+                                    Get.to(() => PhysicalActivityView()),
+                              ),
+                              CustomIconCard(
+                                icon: Icons.crisis_alert,
+                                text: "Temperature",
+                                onTap: () => Get.to(() => TemperatureView()),
+                              ),
+                              CustomIconCard(
+                                icon: Icons.crisis_alert,
+                                text: "Weight",
+                                onTap: () => Get.to(() => WeightView()),
+                              ),
+                              CustomIconCard(
+                                icon: Icons.crisis_alert,
+                                text: "Reminder",
+                                onTap: () => Get.to(() => ReminderView()),
+                              ),
+                              CustomIconCard(
+                                icon: Icons.crisis_alert,
+                                text: "Notes",
+                                onTap: () => Get.to(() => NotesView()),
                               ),
                             ],
                           ),
@@ -263,6 +317,7 @@ class AnalysisView extends GetView<AnalysisController> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 15.h),
                 ],
               ),
             ),

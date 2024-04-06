@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
+import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 
@@ -21,6 +22,23 @@ class LogRepository {
         var decodedJson = json.decode(response.body);
         var logsDate = DailyLogDate.fromJson(decodedJson);
         return logsDate;
+      } else {
+        throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
+      }
+    } catch (e) {
+      print("Error: $e");
+      throw "An error occurred during the request.";
+    }
+  }
+
+  Future<DailyLogTags?> getLogsByTags(String tag) async {
+    try {
+      http.Response response = await apiService.getLogByTags(tag);
+
+      if (response.statusCode == 200) {
+        var decodedJson = json.decode(response.body);
+        var log = DailyLogTags.fromJson(decodedJson);
+        return log;
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
@@ -88,11 +106,11 @@ class LogRepository {
     }
   }
 
-  Future<Map<String, dynamic>> editReminder(String id, String title,
-      String? description, String dateTime) async {
+  Future<Map<String, dynamic>> editReminder(
+      String id, String title, String? description, String dateTime) async {
     try {
-      http.Response response = await apiService.editReminder(
-          id, title, description, dateTime);
+      http.Response response =
+          await apiService.editReminder(id, title, description, dateTime);
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);

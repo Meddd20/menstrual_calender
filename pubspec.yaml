@@ -20,17 +20,20 @@ dependencies:
   flutter_neat_and_clean_calendar: ^0.3.14+32
   flutter_screenutil: null
   flutter_speed_dial: ^7.0.0
+  font_awesome_flutter: ^10.7.0
   get: null
   get_storage: ^2.1.1
   google_fonts: ^6.1.0
   http: ^1.1.2
   iconsax: null
+  like_button: ^2.0.5
   numberpicker: ^2.1.2
   path_provider: ^2.1.1
   pinput: ^3.0.1
   scrollable_clean_calendar: ^1.4.1
+  syncfusion_flutter_charts: ^24.2.8
   syncfusion_flutter_datepicker: ^24.1.44
-  table_calendar: null
+  table_calendar: ^3.1.1
 
 dev_dependencies:
   flutter_lints: ^3.0.0

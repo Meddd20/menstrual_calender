@@ -10,6 +10,7 @@ class ForgetPasswordView extends GetView<ForgetPasswordController> {
   const ForgetPasswordView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    Get.put(ForgetPasswordController());
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);

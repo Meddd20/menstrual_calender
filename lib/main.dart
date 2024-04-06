@@ -1,5 +1,6 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       builder: (_, child) {
         return GetMaterialApp(
           theme: ThemeData(
-            scaffoldBackgroundColor: Color(0xFFf9f8fb),
+            scaffoldBackgroundColor: AppColors.white,
           ),
           title: "Period and Pregnancy Calendar",
           debugShowCheckedModeBanner: false,

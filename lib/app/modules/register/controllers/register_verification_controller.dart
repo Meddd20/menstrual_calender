@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/repositories/pregnancy_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/repositories/auth_repository.dart';
@@ -11,12 +12,15 @@ class RegisterVerificationController extends GetxController {
   final ApiService apiService = ApiService();
   late final AuthRepository authRepository = AuthRepository(apiService);
   late final PeriodRepository periodRepository = PeriodRepository(apiService);
+  late final PregnancyRepository pregnancyRepository =
+      PregnancyRepository(apiService);
   late Map<String, dynamic> requestVerificationResponse;
   final pinController = TextEditingController();
   var userEmail = "".obs;
   var verificationCode = "".obs;
   RxInt countdown = 60.obs;
   Timer? timer;
+  Map<String, dynamic>? saveMenstruationData = {};
 
   @override
   void onInit() {
@@ -37,7 +41,6 @@ class RegisterVerificationController extends GetxController {
   }
 
   Future<void> codeVerification() async {
-    print(pinController.value);
     if (pinController.text.isEmpty || pinController.text.length < 6) {
       showDialog(
         context: Get.context!,
@@ -89,18 +92,21 @@ class RegisterVerificationController extends GetxController {
   Future<void> storePeriodData() async {
     try {
       OnboardingController onboardingController = Get.find();
-      print(onboardingController.periods);
-      Map<String, dynamic> saveMenstruationData =
-          await periodRepository.storePeriod(
-        (onboardingController.periods),
-        onboardingController.menstruationCycle.value,
-        userEmail.value,
-      );
 
-      final status = saveMenstruationData["status"];
-      final message = saveMenstruationData["message"];
+      if (onboardingController.purposes == 0) {
+        saveMenstruationData = await periodRepository.storePeriod(
+          (onboardingController.periods),
+          onboardingController.menstruationCycle.value,
+          userEmail.value,
+        );
+      } else {
+        saveMenstruationData = await pregnancyRepository.pregnancyBegin(
+          onboardingController.lastPeriodDate.toString(),
+          userEmail.value,
+        );
+      }
 
-      if (status == "success") {
+      if (saveMenstruationData!.isNotEmpty) {
         Get.offNamed(Routes.LOGIN);
       } else {
         showDialog(
@@ -108,11 +114,31 @@ class RegisterVerificationController extends GetxController {
           builder: (context) {
             return SimpleDialog(
               title: Text("Error"),
-              children: [Text(message ?? "Unknown error occurred")],
+              children: [
+                Text(saveMenstruationData?["message"] ??
+                    "Unknown error occurred")
+              ],
             );
           },
         );
       }
+
+      // final status = saveMenstruationData["status"];
+      // final message = saveMenstruationData["message"];
+
+      // if (status == "success") {
+      //   Get.offNamed(Routes.LOGIN);
+      // } else {
+      //   showDialog(
+      //     context: Get.context!,
+      //     builder: (context) {
+      //       return SimpleDialog(
+      //         title: Text("Error"),
+      //         children: [Text(message ?? "Unknown error occurred")],
+      //       );
+      //     },
+      //   );
+      // }
     } catch (e) {
       showDialog(
         context: Get.context!,

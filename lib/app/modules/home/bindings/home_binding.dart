@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/controllers/period_cycle_controller.dart';
 
 import 'package:periodnpregnancycalender/app/modules/home/controllers/daily_log_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/reminder_controller.dart';
@@ -16,6 +17,9 @@ class HomeBinding extends Bindings {
     );
     Get.lazyPut<HomeController>(
       () => HomeController(),
+    );
+    Get.lazyPut<PeriodCycleController>(
+      () => PeriodCycleController(),
     );
   }
 }

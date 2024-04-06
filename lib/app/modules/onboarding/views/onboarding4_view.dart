@@ -15,16 +15,15 @@ class Onboarding4View extends GetView<OnboardingController> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          backgroundColor: Color(0xFFf9f8fb),
+          surfaceTintColor: Color(0xFFf9f8fb),
           leading: BackButton(
             color: AppColors.primary,
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 35.h),
-          child: Align(
-            child: Column(
+        body: Stack(
+          children: [
+            Column(
               children: [
                 SizedBox(height: 70.h),
                 CustomCircularIconContainer(
@@ -32,18 +31,25 @@ class Onboarding4View extends GetView<OnboardingController> {
                   iconSize: 35,
                   iconColor: AppColors.primary,
                   containerColor: AppColors.highlight,
+                  containerSize: 30.dg,
                 ),
                 SizedBox(height: 25.h),
-                Text(
-                  "How long does your period usually last?",
-                  style: CustomTextStyle.heading3TextStyle(),
-                  textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    "How long does your period usually last?",
+                    style: CustomTextStyle.heading3TextStyle(),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 SizedBox(height: 7.h),
-                Text(
-                  "Predict your next period from your last period",
-                  style: CustomTextStyle.bodyTextStyle(),
-                  textAlign: TextAlign.left,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    "Predict your next period from your last period",
+                    style: CustomTextStyle.bodyTextStyle(),
+                    textAlign: TextAlign.left,
+                  ),
                 ),
                 SizedBox(height: 32.h),
                 CustomCupertinoPicker(
@@ -56,8 +62,9 @@ class Onboarding4View extends GetView<OnboardingController> {
                         child: Text(
                           "$day days",
                           style: TextStyle(
-                            fontSize: 22.sp,
-                            fontFamily: 'Poppins',
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.black,
                           ),
                         ),
                       );
@@ -68,16 +75,23 @@ class Onboarding4View extends GetView<OnboardingController> {
                     print(controller.periodLast.value);
                   },
                 ),
-                SizedBox(height: 150.h),
-                CustomColoredButton(
+              ],
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 35),
+                child: CustomColoredButton(
                   text: "Next",
                   onPressed: () {
                     Get.to(() => Onboarding5View());
                   },
                 ),
-              ],
-            ),
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );

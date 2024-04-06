@@ -16,62 +16,79 @@ class Onboarding1View extends GetView<OnboardingController> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          backgroundColor: Color(0xFFf9f8fb),
+          surfaceTintColor: Color(0xFFf9f8fb),
           leading: const BackButton(
             color: AppColors.primary,
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 35.h),
-          child: Align(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(height: 70.h),
-                CustomCircularIconContainer(
-                  iconData: Icons.crisis_alert,
-                  iconSize: 35,
-                  iconColor: AppColors.primary,
-                  containerColor: AppColors.highlight,
-                ),
-                SizedBox(height: 25.h),
-                Text(
-                  "Enter your date you were born",
-                  style: CustomTextStyle.heading3TextStyle(),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(height: 7.h),
-                Text(
-                  "All the features will be available anyway",
-                  style: CustomTextStyle.bodyTextStyle(),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(height: 32.h),
-                Container(
-                  child: CustomCalendarDatePicker(
-                    value: [controller.birthday.value],
-                    onValueChanged: (dates) {
-                      controller.birthday.value = dates.isNotEmpty
-                          ? dates[0] ?? DateTime.now()
-                          : DateTime.now();
-                      controller.update();
-                      print(controller.birthday.value);
-                    },
-                    lastDate: DateTime.now(),
-                    calendarType: CalendarDatePicker2Type.single,
+        body: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: 70.h),
+                  CustomCircularIconContainer(
+                    iconData: Icons.crisis_alert,
+                    iconSize: 35,
+                    iconColor: AppColors.primary,
+                    containerColor: AppColors.highlight,
+                    containerSize: 30.dg,
                   ),
-                ),
-                SizedBox(height: 85.h),
-                CustomColoredButton(
+                  SizedBox(height: 25.h),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "Enter your date you were born",
+                      style: CustomTextStyle.heading3TextStyle(),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  SizedBox(height: 7.h),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "All the features will be available anyway",
+                      style: CustomTextStyle.bodyTextStyle(),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  SizedBox(height: 32.h),
+                  Container(
+                    child: CustomCalendarDatePicker(
+                      value: [controller.birthday.value],
+                      onValueChanged: (dates) {
+                        controller.birthday.value = dates.isNotEmpty
+                            ? dates[0] ?? DateTime.now()
+                            : DateTime.now();
+                        controller.update();
+                        print(controller.birthday.value);
+                      },
+                      lastDate: DateTime.now(),
+                      calendarType: CalendarDatePicker2Type.single,
+                    ),
+                  ),
+                  SizedBox(height: 85.h),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 35),
+                child: CustomColoredButton(
                   text: "Next",
                   onPressed: () {
-                    Get.to(() => Onboarding2View());
+                    controller.validateBirthday();
                   },
                 ),
-              ],
-            ),
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );

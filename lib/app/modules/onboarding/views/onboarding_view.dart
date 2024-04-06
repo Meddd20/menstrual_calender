@@ -14,6 +14,10 @@ class OnboardingView extends GetView<OnboardingController> {
     return SafeArea(
       child: Scaffold(
         extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Color(0xFFf9f8fb),
+          surfaceTintColor: Color(0xFFf9f8fb),
+        ),
         body: Padding(
           padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 35.h),
           child: Align(

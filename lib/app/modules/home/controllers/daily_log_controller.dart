@@ -11,6 +11,7 @@ class DailyLogController extends GetxController {
 
   TextEditingController dailyNotes = TextEditingController();
   RxBool isChanged = RxBool(false);
+  RxBool isMenstruation = RxBool(false);
 
   var weights = RxString("");
   var temperature = RxString("");

@@ -47,11 +47,15 @@ class RegisterController extends GetxController {
   Future<void> register() async {
     try {
       OnboardingController onboardingController = Get.find();
-      Map<String, dynamic> data = await authRepository.register(
-          usernameC.text.trim(),
-          onboardingController.birthday.value,
-          emailC.text.trim(),
-          passwordC.text.trim());
+      DateTime? birthdayValue = onboardingController.birthday.value;
+
+      if (birthdayValue != null) {
+        Map<String, dynamic> data = await authRepository.register(
+            usernameC.text.trim(),
+            birthdayValue,
+            emailC.text.trim(),
+            passwordC.text.trim());
+      }
 
       Map<String, dynamic> requestVerificationCode = await authRepository
           .requestVerificationCode(emailC.text.trim(), "Verifikasi");

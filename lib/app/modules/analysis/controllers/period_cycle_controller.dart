@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/period_repository.dart';
@@ -90,16 +89,18 @@ class PeriodCycleController extends GetxController {
     }
   }
 
-  Future<void> editPeriod(String periodId, int? periodCycle) async {
+  Future<void> editPeriod(
+      String periodId, int? periodCycle, int avgPeriodDuration) async {
     try {
-      String startDateString = startDate.value != null
-          ? DateFormat('y-MM-dd').format(startDate.value!)
-          : "";
-      String endDateString = endDate.value != null
-          ? DateFormat('y-MM-dd').format(endDate.value!)
-          : "";
+      if (startDate.value != null) {
+        if (formattedStartDate == formattedEndDate || endDate.value == null) {
+          setEndDate(startDate.value!.add(Duration(days: avgPeriodDuration)));
+          // print(true);
+          // print(avgPeriodDuration);
+        }
+      }
       var periodData = await periodRepository.updatePeriod(
-          periodId, startDateString, endDateString, periodCycle);
+          periodId, formattedStartDate, formattedEndDate, periodCycle);
       await fetchPeriod();
       Get.back();
       cancelEdit();

@@ -1,4 +1,3 @@
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -16,11 +15,12 @@ class ReminderController extends GetxController {
   Rx<TimeOfDay?> timeSelected = Rx<TimeOfDay?>(null);
   RxString reminderTitle = RxString("");
   RxString reminderDescription = RxString("");
+  late Future<void> reminderFuture;
 
   @override
   void onInit() {
+    reminderFuture = fetchAllReminder();
     super.onInit();
-    fetchAllReminder();
   }
 
   @override
