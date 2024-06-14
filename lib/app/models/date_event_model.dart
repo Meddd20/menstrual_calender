@@ -10,23 +10,13 @@ class DateEvent {
     message = json['message'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
-  }
 }
 
 class Data {
   String? specifiedDate;
   String? event;
   String? isActual;
-  String? eventId;
+  int? eventId;
   int? cycleDay;
   String? pregnancyChances;
   String? nextMenstruationStart;
@@ -43,6 +33,8 @@ class Data {
   String? nextLutealStart;
   String? nextLutealEnd;
   int? daysUntilNextLuteal;
+  ChineseGenderPrediction? chineseGenderPrediction;
+  ShettlesGenderPrediction? shettlesGenderPrediction;
 
   Data(
       {this.specifiedDate,
@@ -64,7 +56,9 @@ class Data {
       this.daysUntilNextFertile,
       this.nextLutealStart,
       this.nextLutealEnd,
-      this.daysUntilNextLuteal});
+      this.daysUntilNextLuteal,
+      this.chineseGenderPrediction,
+      this.shettlesGenderPrediction});
 
   Data.fromJson(Map<String, dynamic> json) {
     specifiedDate = json['specifiedDate'];
@@ -87,30 +81,61 @@ class Data {
     nextLutealStart = json['nextLutealStart'];
     nextLutealEnd = json['nextLutealEnd'];
     daysUntilNextLuteal = json['daysUntilNextLuteal'];
+    chineseGenderPrediction = json['chineseGenderPrediction'] != null
+        ? new ChineseGenderPrediction.fromJson(json['chineseGenderPrediction'])
+        : null;
+    shettlesGenderPrediction = json['shettlesGenderPrediction'] != null
+        ? new ShettlesGenderPrediction.fromJson(
+            json['shettlesGenderPrediction'])
+        : null;
   }
+}
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['specifiedDate'] = this.specifiedDate;
-    data['event'] = this.event;
-    data['is_actual'] = this.isActual;
-    data['event_id'] = this.eventId;
-    data['cycle_day'] = this.cycleDay;
-    data['pregnancy_chances'] = this.pregnancyChances;
-    data['nextMenstruationStart'] = this.nextMenstruationStart;
-    data['nextMenstruationEnd'] = this.nextMenstruationEnd;
-    data['daysUntilNextMenstruation'] = this.daysUntilNextMenstruation;
-    data['nextOvulation'] = this.nextOvulation;
-    data['daysUntilNextOvulation'] = this.daysUntilNextOvulation;
-    data['nextFollicularStart'] = this.nextFollicularStart;
-    data['nextFollicularEnd'] = this.nextFollicularEnd;
-    data['daysUntilNextFollicular'] = this.daysUntilNextFollicular;
-    data['nextFertileStart'] = this.nextFertileStart;
-    data['nextFertileEnd'] = this.nextFertileEnd;
-    data['daysUntilNextFertile'] = this.daysUntilNextFertile;
-    data['nextLutealStart'] = this.nextLutealStart;
-    data['nextLutealEnd'] = this.nextLutealEnd;
-    data['daysUntilNextLuteal'] = this.daysUntilNextLuteal;
-    return data;
+class ChineseGenderPrediction {
+  int? age;
+  int? lunarAge;
+  String? dateOfBirth;
+  String? lunarDateOfBirth;
+  String? specifiedDate;
+  String? lunarSpecifiedDate;
+  String? genderPrediction;
+
+  ChineseGenderPrediction(
+      {this.age,
+      this.lunarAge,
+      this.dateOfBirth,
+      this.lunarDateOfBirth,
+      this.specifiedDate,
+      this.lunarSpecifiedDate,
+      this.genderPrediction});
+
+  ChineseGenderPrediction.fromJson(Map<String, dynamic> json) {
+    age = json['age'];
+    lunarAge = json['lunarAge'];
+    dateOfBirth = json['dateOfBirth'];
+    lunarDateOfBirth = json['lunarDateOfBirth'];
+    specifiedDate = json['specifiedDate'];
+    lunarSpecifiedDate = json['lunarSpecifiedDate'];
+    genderPrediction = json['genderPrediction'];
+  }
+}
+
+class ShettlesGenderPrediction {
+  String? boyStartDate;
+  String? boyEndDate;
+  String? girlStartDate;
+  String? girlEndDate;
+
+  ShettlesGenderPrediction(
+      {this.boyStartDate,
+      this.boyEndDate,
+      this.girlStartDate,
+      this.girlEndDate});
+
+  ShettlesGenderPrediction.fromJson(Map<String, dynamic> json) {
+    boyStartDate = json['boyStartDate'];
+    boyEndDate = json['boyEndDate'];
+    girlStartDate = json['girlStartDate'];
+    girlEndDate = json['girlEndDate'];
   }
 }

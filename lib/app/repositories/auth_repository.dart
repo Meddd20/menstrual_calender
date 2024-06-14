@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 
 class AuthRepository {
@@ -11,21 +13,24 @@ class AuthRepository {
     try {
       http.Response response = await apiService.login(email, password);
 
+      print(response.body.toString());
+
       if (response.statusCode == 200) {
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
   Future<Map<String, dynamic>> register(
       String name, DateTime birthday, String email, String password) async {
     try {
-      print(name + " " + birthday.toString() + " " + email + " " + password);
       http.Response response =
           await apiService.register(name, birthday, email, password);
 
@@ -35,8 +40,8 @@ class AuthRepository {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
@@ -47,13 +52,15 @@ class AuthRepository {
           await apiService.requestVerificationCode(email, type);
 
       if (response.statusCode == 200) {
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
@@ -64,13 +71,15 @@ class AuthRepository {
           await apiService.validateCodeVerif(email, codeVerif, type, role);
 
       if (response.statusCode == 200) {
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
@@ -81,22 +90,26 @@ class AuthRepository {
           email, newPassword, confirmNewPassword);
 
       if (response.statusCode == 200) {
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
   Future<void> logout() async {
     try {
-      await apiService.logout();
+      http.Response response = await apiService.logout();
+      Get.showSnackbar(
+          Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 }

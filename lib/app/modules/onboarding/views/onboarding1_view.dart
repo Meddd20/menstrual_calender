@@ -6,7 +6,6 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding2_view.dart';
 
 class Onboarding1View extends GetView<OnboardingController> {
   const Onboarding1View({Key? key}) : super(key: key);

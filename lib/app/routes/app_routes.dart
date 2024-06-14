@@ -14,6 +14,7 @@ abstract class Routes {
   static const DETAIL_ARTICLE = _Paths.INSIGHT + _Paths.DETAIL_ARTICLE;
   static const REGISTER_VERIFICATION = _Paths.REGISTER_VERIFICATION;
   static const REMINDER = _Paths.HOME + _Paths.REMINDER;
+  static const PREGNANCY_TOOLS = _Paths.PREGNANCY_TOOLS;
 }
 
 abstract class _Paths {
@@ -29,4 +30,5 @@ abstract class _Paths {
   static const DETAIL_ARTICLE = '/detail-article';
   static const REGISTER_VERIFICATION = '/register-verification';
   static const REMINDER = '/reminder';
+  static const PREGNANCY_TOOLS = '/pregnancy-tools';
 }

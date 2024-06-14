@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/modules/home/controllers/home_controller.dart';
+import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 
 import '../controllers/navigation_menu_controller.dart';
 
@@ -9,8 +9,8 @@ class NavigationMenuBinding extends Bindings {
     Get.lazyPut<NavigationMenuController>(
       () => NavigationMenuController(),
     );
-    Get.lazyPut<HomeController>(
-      () => HomeController(),
+    Get.lazyPut<HomeMenstruationController>(
+      () => HomeMenstruationController(),
     );
   }
 }

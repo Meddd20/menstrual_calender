@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 
@@ -20,8 +22,8 @@ class ProfileRepository {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 }

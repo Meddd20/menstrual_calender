@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/log_repository.dart';
@@ -16,6 +17,7 @@ class MoodsController extends GetxController {
   Rx<dynamic> percentage1Year = Rx<dynamic>(null);
   RxString selectedDataType = 'percentage30Days'.obs;
   RxMap<String, dynamic> specificMoodsData = RxMap<String, dynamic>();
+  Rx<DateTime> selectedDate = DateTime.now().obs;
   late TabController tabController;
 
   @override
@@ -36,6 +38,7 @@ class MoodsController extends GetxController {
     percentage6Months = Rx<dynamic>(null);
     percentage1Year = Rx<dynamic>(null);
     selectedDataType = 'percentage30Days'.obs;
+    _updateSelectedDate();
     specifiedDataByDate();
     super.onInit();
   }
@@ -55,23 +58,40 @@ class MoodsController extends GetxController {
   set setSelectedDataType(String value) => selectedDataType.value = value;
 
   List<MapEntry<String, dynamic>> getSelectedDataSource() {
-    List<MapEntry<String, dynamic>> selectedData;
+    List<MapEntry<String, dynamic>> selectedData = [];
 
     switch (selectedDataType.value) {
       case 'percentage30Days':
-        selectedData = percentage30Days.value?.entries.toList() ?? [];
+        if (percentage30Days.value is Map<String, dynamic>) {
+          selectedData =
+              (percentage30Days.value as Map<String, dynamic>).entries.toList();
+        }
         break;
       case 'percentage3Months':
-        selectedData = percentage3Months.value?.entries.toList() ?? [];
+        if (percentage3Months.value is Map<String, dynamic>) {
+          selectedData = (percentage3Months.value as Map<String, dynamic>)
+              .entries
+              .toList();
+        }
         break;
       case 'percentage6Months':
-        selectedData = percentage6Months.value?.entries.toList() ?? [];
+        if (percentage6Months.value is Map<String, dynamic>) {
+          selectedData = (percentage6Months.value as Map<String, dynamic>)
+              .entries
+              .toList();
+        }
         break;
       case 'percentage1Year':
-        selectedData = percentage1Year.value?.entries.toList() ?? [];
+        if (percentage1Year.value is Map<String, dynamic>) {
+          selectedData =
+              (percentage1Year.value as Map<String, dynamic>).entries.toList();
+        }
         break;
       default:
-        selectedData = percentage30Days.value?.entries.toList() ?? [];
+        if (percentage30Days.value is Map<String, dynamic>) {
+          selectedData =
+              (percentage30Days.value as Map<String, dynamic>).entries.toList();
+        }
         break;
     }
 
@@ -79,10 +99,10 @@ class MoodsController extends GetxController {
     selectedData.sort((a, b) => b.value.compareTo(a.value));
 
     // Take up to 5 elements
-    final top5 = selectedData.take(4).toList();
+    final top5 = selectedData.take(5).toList();
 
     // Create an "Others" entry with the sum of remaining values if there are more than 5 elements
-    final othersData = selectedData.length > 4
+    final othersData = selectedData.length > 5
         ? [
             MapEntry(
                 'Others',
@@ -97,6 +117,7 @@ class MoodsController extends GetxController {
 
   void updateTabBar(int index) {
     selectedDataType.value = _getDataTypeByIndex(index);
+    _updateSelectedDate();
     specifiedDataByDate();
   }
 
@@ -112,6 +133,27 @@ class MoodsController extends GetxController {
         return 'percentage1Year';
       default:
         return 'percentage30Days';
+    }
+  }
+
+  void _updateSelectedDate() {
+    DateTime now = DateTime.now();
+    switch (selectedDataType.value) {
+      case 'percentage30Days':
+        selectedDate.value = now.subtract(Duration(days: 30));
+        break;
+      case 'percentage3Months':
+        selectedDate.value = now.subtract(Duration(days: 90));
+        break;
+      case 'percentage6Months':
+        selectedDate.value = now.subtract(Duration(days: 180));
+        break;
+      case 'percentage1Year':
+        selectedDate.value = now.subtract(Duration(days: 365));
+        break;
+      default:
+        selectedDate.value = now.subtract(Duration(days: 30));
+        break;
     }
   }
 
@@ -154,11 +196,10 @@ class MoodsController extends GetxController {
         data = result.data!;
 
         moods.value = data.logs;
-        percentage30Days.value = data.percentage30Days;
-
-        percentage3Months.value = data.percentage3Months;
-        percentage6Months.value = data.percentage6Months;
-        percentage1Year.value = data.percentage1Year;
+        percentage30Days.value = data.percentage30Days ?? {};
+        percentage3Months.value = data.percentage3Months ?? {};
+        percentage6Months.value = data.percentage6Months ?? {};
+        percentage1Year.value = data.percentage1Year ?? {};
       } else {
         print("Error: Unable to fetch moods");
       }
@@ -168,5 +209,9 @@ class MoodsController extends GetxController {
     } catch (error) {
       print("Error: $error");
     }
+  }
+
+  String formatDate(DateTime date) {
+    return DateFormat('MMM dd, yyyy').format(date);
   }
 }

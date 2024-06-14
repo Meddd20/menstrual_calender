@@ -90,6 +90,15 @@ class SymptomsView extends GetView<SymptomsController> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                Text(
+                  "from ${controller.formatDate(controller.selectedDate.value)} up to today",
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(0.4),
+                    fontSize: 15,
+                    height: 2.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 CustomDougnutChart(
                   dataSource: controller.getSelectedDataSource(),
                   pointColorMapper: (dynamic point, int index) {

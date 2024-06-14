@@ -59,6 +59,7 @@ class ReminderController extends GetxController {
     return null;
   }
 
+  DateTime? getDate() => dateSelected.value;
   void setDate(DateTime? date) {
     dateSelected.value = date;
   }
@@ -122,9 +123,8 @@ class ReminderController extends GetxController {
         selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       }
 
-      var reminderStored = await logRepository.storeReminder(getReminderTitle(),
+      await logRepository.storeReminder(getReminderTitle(),
           getReminderDescription(), '$selectedDate $formattedSelectedTime');
-      Get.back();
       cancelEdit();
       fetchAllReminder();
     } catch (e) {
@@ -166,15 +166,13 @@ class ReminderController extends GetxController {
               : null;
 
       if (editedDateTime != null) {
-        var dailyReminder = await logRepository.editReminder(
+        await logRepository.editReminder(
           id,
           editedTitle,
           editedDescription,
           editedDateTime,
         );
-
         fetchAllReminder();
-        Get.back();
         cancelEdit();
       }
     } catch (e) {
@@ -183,13 +181,9 @@ class ReminderController extends GetxController {
   }
 
   Future<void> deleteReminder(String id) async {
-    try {
-      var reminderDeleted = await logRepository.deleteReminder(id);
-      fetchAllReminder();
-      update();
-    } catch (e) {
-      print("Error fetching articles: $e");
-    }
+    await logRepository.deleteReminder(id);
+    fetchAllReminder();
+    update();
   }
 
   void cancelEdit() {

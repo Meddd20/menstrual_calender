@@ -13,6 +13,8 @@ import '../modules/navigation_menu/bindings/navigation_menu_binding.dart';
 import '../modules/navigation_menu/views/navigation_menu_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/pregnancy_tools/bindings/pregnancy_tools_binding.dart';
+import '../modules/pregnancy_tools/views/pregnancy_tools_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/register/bindings/register_binding.dart';
@@ -70,6 +72,11 @@ class AppPages {
       name: _Paths.ANALYSIS,
       page: () => const AnalysisView(),
       binding: AnalysisBinding(),
+    ),
+    GetPage(
+      name: _Paths.PREGNANCY_TOOLS,
+      page: () => const PregnancyToolsView(),
+      binding: PregnancyToolsBinding(),
     ),
   ];
 }

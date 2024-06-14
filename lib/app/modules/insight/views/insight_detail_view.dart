@@ -108,7 +108,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                       ),
                                       Text(
                                         controller.formatDate(
-                                            controller.data?.createdAt ?? ""),
+                                            "${controller.data?.createdAt}"),
                                         style: TextStyle(
                                           color: Colors.grey,
                                           fontSize: 13.sp,
@@ -169,206 +169,457 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                         ),
                                       ),
                                       SizedBox(height: 5.h),
-                                      SingleChildScrollView(
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          itemCount: controller.comment.length,
-                                          itemBuilder: (context, index) {
-                                            final comment =
-                                                controller.comment[index];
-                                            final commentReply =
-                                                comment.children;
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                InkWell(
-                                                  onLongPress: () {
-                                                    var accountId =
-                                                        box.read('loginId');
-                                                    if (accountId ==
-                                                        comment.userId) {
-                                                      showModalBottomSheet(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return Wrap(
-                                                            children: [
-                                                              Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Container(
-                                                                    height: 4.h,
-                                                                    width: 32.w,
-                                                                    margin: EdgeInsets.only(
-                                                                        top: 16
-                                                                            .h),
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .blueGrey,
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .all(
-                                                                        Radius.circular(
-                                                                            3.0),
+                                      Obx(() {
+                                        return SingleChildScrollView(
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            itemCount:
+                                                controller.comment.length,
+                                            itemBuilder: (context, index) {
+                                              final comment =
+                                                  controller.comment[index];
+                                              final commentReply =
+                                                  comment.children;
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  InkWell(
+                                                    onLongPress: () {
+                                                      var accountId =
+                                                          box.read('loginId');
+                                                      if (accountId ==
+                                                          comment.userId) {
+                                                        showModalBottomSheet(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return Wrap(
+                                                              children: [
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Container(
+                                                                      height:
+                                                                          4.h,
+                                                                      width:
+                                                                          32.w,
+                                                                      margin: EdgeInsets.only(
+                                                                          top: 16
+                                                                              .h),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .blueGrey,
+                                                                        borderRadius:
+                                                                            BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              3.0),
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                      height:
-                                                                          10.h),
-                                                                  Padding(
-                                                                    padding: EdgeInsets
-                                                                        .fromLTRB(
-                                                                            10,
-                                                                            0,
-                                                                            10,
-                                                                            0),
-                                                                    child:
-                                                                        InkWell(
-                                                                      onTap:
-                                                                          () {
-                                                                        controller.deleteComment(comment.id ??
-                                                                            "");
-                                                                        Get.back();
-                                                                        controller
-                                                                            .focusNode
-                                                                            .unfocus();
-                                                                      },
-                                                                      child:
-                                                                          Container(
-                                                                        padding: EdgeInsets.only(
-                                                                            left:
-                                                                                16,
-                                                                            right:
-                                                                                16),
+                                                                    SizedBox(
                                                                         height:
-                                                                            50,
-                                                                        width: Get
-                                                                            .width,
+                                                                            10.h),
+                                                                    Padding(
+                                                                      padding: EdgeInsets
+                                                                          .fromLTRB(
+                                                                              10,
+                                                                              0,
+                                                                              10,
+                                                                              0),
+                                                                      child:
+                                                                          InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          controller.deleteComment(comment.id ??
+                                                                              0);
+                                                                          Get.back();
+                                                                          controller
+                                                                              .focusNode
+                                                                              .unfocus();
+                                                                        },
                                                                         child:
-                                                                            Align(
-                                                                          alignment:
-                                                                              Alignment.centerLeft,
+                                                                            Container(
+                                                                          padding: EdgeInsets.only(
+                                                                              left: 16,
+                                                                              right: 16),
+                                                                          height:
+                                                                              50,
+                                                                          width:
+                                                                              Get.width,
                                                                           child:
-                                                                              Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            children: [
-                                                                              Text(
-                                                                                "Delete comment",
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                  fontSize: 15,
-                                                                                  fontWeight: FontWeight.w500,
+                                                                              Align(
+                                                                            alignment:
+                                                                                Alignment.centerLeft,
+                                                                            child:
+                                                                                Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                              children: [
+                                                                                Text(
+                                                                                  "Delete comment",
+                                                                                  style: TextStyle(
+                                                                                    color: Colors.black,
+                                                                                    fontSize: 15,
+                                                                                    fontWeight: FontWeight.w500,
+                                                                                  ),
                                                                                 ),
-                                                                              ),
-                                                                              Icon(Icons.delete)
-                                                                            ],
+                                                                                Icon(Icons.delete)
+                                                                              ],
+                                                                            ),
                                                                           ),
                                                                         ),
                                                                       ),
                                                                     ),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            10.h),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        ).then((value) {
+                                                          controller.focusNode
+                                                              .unfocus();
+                                                        });
+                                                      }
+                                                    },
+                                                    onTap: () {
+                                                      controller
+                                                          .isReplyingComment
+                                                          .value = true;
+                                                      controller
+                                                          .setParentCommentId(
+                                                              comment.id ?? 0);
+                                                      controller
+                                                          .setCommentUsername(
+                                                              comment.username ??
+                                                                  "");
+                                                      controller.focusNode
+                                                          .requestFocus();
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              SizedBox(
+                                                                  height: 5),
+                                                              Text(
+                                                                "${comment.username ?? ""}",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                comment.content ??
+                                                                    "",
+                                                                maxLines: 3,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      14.sp,
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  height: 1.7,
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                  height: 5),
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                    "${controller.formatDateTime(comment.createdAt ?? "")}   ",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: AppColors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.5),
+                                                                      fontSize:
+                                                                          13.sp,
+                                                                      fontFamily:
+                                                                          'Poppins',
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                    ),
                                                                   ),
-                                                                  SizedBox(
-                                                                      height:
-                                                                          10.h),
+                                                                  InkWell(
+                                                                    onTap: () {
+                                                                      controller
+                                                                          .isReplyingComment
+                                                                          .value = true;
+                                                                      controller.setParentCommentId(
+                                                                          comment.id ??
+                                                                              0);
+                                                                      controller.setCommentUsername(
+                                                                          comment.username ??
+                                                                              "");
+                                                                      controller
+                                                                          .focusNode
+                                                                          .requestFocus();
+                                                                    },
+                                                                    child: Text(
+                                                                      "Reply",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: AppColors
+                                                                            .black
+                                                                            .withOpacity(0.6),
+                                                                        fontSize:
+                                                                            13.sp,
+                                                                        fontFamily:
+                                                                            'Poppins',
+                                                                        fontWeight:
+                                                                            FontWeight.w600,
+                                                                      ),
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               ),
+                                                              SizedBox(
+                                                                  height: 10)
                                                             ],
-                                                          );
-                                                        },
-                                                      ).then((value) {
-                                                        controller.focusNode
-                                                            .unfocus();
-                                                      });
-                                                    }
-                                                  },
-                                                  onTap: () {
-                                                    controller.isReplyingComment
-                                                        .value = true;
-                                                    controller
-                                                        .setParentCommentId(
-                                                            comment.id ?? "");
-                                                    controller
-                                                        .setCommentUsername(
-                                                            comment.username ??
-                                                                "");
-                                                    controller.focusNode
-                                                        .requestFocus();
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(height: 5),
-                                                            Text(
-                                                              "${comment.username ?? ""}",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: 30,
+                                                          child: LikeButton(
+                                                            onTap:
+                                                                ((isLiked) async {
+                                                              bool?
+                                                                  isCommentLiked =
+                                                                  comment
+                                                                      .is_liked_by_active_user;
+                                                              controller
+                                                                  .setUsernameId(
+                                                                      comment.userId ??
+                                                                          0);
+                                                              controller
+                                                                  .setArticleId(
+                                                                      comment.articleId ??
+                                                                          0);
+                                                              controller
+                                                                  .setCommentId(
+                                                                      comment.id ??
+                                                                          0);
+                                                              controller
+                                                                  .likeComment(
+                                                                      isLiked,
+                                                                      comment.id ??
+                                                                          0);
+                                                              return isCommentLiked !=
+                                                                      null
+                                                                  ? !isCommentLiked
+                                                                  : false;
+                                                            }),
+                                                            countPostion:
+                                                                CountPostion
+                                                                    .bottom,
+                                                            likeCount:
+                                                                comment.likes,
+                                                            size: 25,
+                                                            circleColor: CircleColor(
+                                                                start: Color(
+                                                                    0xff00ddff),
+                                                                end: Color(
+                                                                    0xff0099cc)),
+                                                            bubblesColor:
+                                                                BubblesColor(
+                                                              dotPrimaryColor:
+                                                                  Color(
+                                                                      0xff33b5e5),
+                                                              dotSecondaryColor:
+                                                                  Color(
+                                                                      0xff0099cc),
                                                             ),
-                                                            Text(
-                                                              comment.content ??
-                                                                  "",
-                                                              maxLines: 3,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 14.sp,
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                height: 1.7,
-                                                              ),
-                                                            ),
-                                                            SizedBox(height: 5),
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  "${controller.formatDateTime(comment.createdAt ?? "")}   ",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: AppColors
-                                                                        .black
-                                                                        .withOpacity(
-                                                                            0.5),
-                                                                    fontSize:
-                                                                        13.sp,
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
+                                                            isLiked: comment
+                                                                .is_liked_by_active_user,
+                                                            likeCountAnimationDuration:
+                                                                Duration(
+                                                                    milliseconds:
+                                                                        3000),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Obx(
+                                                    () => Visibility(
+                                                      visible:
+                                                          comment.children !=
+                                                                  null &&
+                                                              comment.children!
+                                                                  .isNotEmpty,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () {
+                                                              controller
+                                                                  .toggleRepliesVisibility(
+                                                                      index);
+                                                            },
+                                                            child: RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  WidgetSpan(
+                                                                    child:
+                                                                        SizedBox(
+                                                                      width: 20,
+                                                                      child:
+                                                                          Divider(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        thickness:
+                                                                            1,
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                InkWell(
+                                                                  TextSpan(
+                                                                    text: controller
+                                                                            .isRepliesVisible(index)
+                                                                        ? '  Hide replies'
+                                                                        : '  View ${comment.children?.length} replies',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          if (controller
+                                                              .isRepliesVisible(
+                                                                  index))
+                                                            // Text("data"),
+                                                            ListView.builder(
+                                                              shrinkWrap: true,
+                                                              physics:
+                                                                  NeverScrollableScrollPhysics(),
+                                                              itemCount:
+                                                                  commentReply
+                                                                      ?.length,
+                                                              itemBuilder:
+                                                                  ((context,
+                                                                      index) {
+                                                                var reply =
+                                                                    commentReply?[
+                                                                        index];
+                                                                return InkWell(
+                                                                  onLongPress:
+                                                                      () {
+                                                                    var accountId =
+                                                                        box.read(
+                                                                            'loginId');
+                                                                    if (accountId ==
+                                                                        reply
+                                                                            ?.userId) {
+                                                                      showModalBottomSheet(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return Wrap(
+                                                                            children: [
+                                                                              Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  Container(
+                                                                                    height: 4.h,
+                                                                                    width: 32.w,
+                                                                                    margin: EdgeInsets.only(top: 16.h),
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: Colors.blueGrey,
+                                                                                      borderRadius: BorderRadius.all(
+                                                                                        Radius.circular(3.0),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(height: 10.h),
+                                                                                  Padding(
+                                                                                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                                                                    child: InkWell(
+                                                                                      onTap: () {
+                                                                                        controller.deleteComment(reply?.id ?? 0);
+                                                                                        Get.back();
+                                                                                        controller.focusNode.unfocus();
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        padding: EdgeInsets.only(left: 16, right: 16),
+                                                                                        height: 50,
+                                                                                        width: Get.width,
+                                                                                        child: Align(
+                                                                                          alignment: Alignment.centerLeft,
+                                                                                          child: Row(
+                                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                            children: [
+                                                                                              Text(
+                                                                                                "Delete comment",
+                                                                                                style: TextStyle(
+                                                                                                  color: Colors.black,
+                                                                                                  fontSize: 15,
+                                                                                                  fontWeight: FontWeight.w500,
+                                                                                                ),
+                                                                                              ),
+                                                                                              Icon(Icons.delete)
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(height: 10.h),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          );
+                                                                        },
+                                                                      ).then(
+                                                                          (value) {
+                                                                        controller
+                                                                            .focusNode
+                                                                            .unfocus();
+                                                                      });
+                                                                    }
+                                                                  },
                                                                   onTap: () {
                                                                     controller
                                                                         .isReplyingComment
                                                                         .value = true;
                                                                     controller.setParentCommentId(
                                                                         comment.id ??
-                                                                            "");
+                                                                            0);
                                                                     controller.setCommentUsername(
                                                                         comment.username ??
                                                                             "");
@@ -376,393 +627,144 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                                         .focusNode
                                                                         .requestFocus();
                                                                   },
-                                                                  child: Text(
-                                                                    "Reply",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: AppColors
-                                                                          .black
-                                                                          .withOpacity(
-                                                                              0.6),
-                                                                      fontSize:
-                                                                          13.sp,
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            SizedBox(height: 10)
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 30,
-                                                        child: LikeButton(
-                                                          onTap:
-                                                              ((isLiked) async {
-                                                            bool?
-                                                                isCommentLiked =
-                                                                comment
-                                                                    .is_liked_by_active_user;
-                                                            controller
-                                                                .setUsernameId(
-                                                                    comment.userId ??
-                                                                        "");
-                                                            controller.setArticleId(
-                                                                comment.articleId ??
-                                                                    "");
-                                                            controller
-                                                                .setCommentId(
-                                                                    comment.id ??
-                                                                        "");
-                                                            controller
-                                                                .likeComment(
-                                                                    isLiked,
-                                                                    comment.id ??
-                                                                        "");
-                                                            return isCommentLiked !=
-                                                                    null
-                                                                ? !isCommentLiked
-                                                                : false;
-                                                          }),
-                                                          countPostion:
-                                                              CountPostion
-                                                                  .bottom,
-                                                          likeCount:
-                                                              comment.likes,
-                                                          size: 25,
-                                                          circleColor: CircleColor(
-                                                              start: Color(
-                                                                  0xff00ddff),
-                                                              end: Color(
-                                                                  0xff0099cc)),
-                                                          bubblesColor:
-                                                              BubblesColor(
-                                                            dotPrimaryColor:
-                                                                Color(
-                                                                    0xff33b5e5),
-                                                            dotSecondaryColor:
-                                                                Color(
-                                                                    0xff0099cc),
-                                                          ),
-                                                          isLiked: comment
-                                                              .is_liked_by_active_user,
-                                                          likeCountAnimationDuration:
-                                                              Duration(
-                                                                  milliseconds:
-                                                                      3000),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Visibility(
-                                                  visible: comment.children !=
-                                                          null &&
-                                                      comment
-                                                          .children!.isNotEmpty,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      InkWell(
-                                                        onTap: () {
-                                                          controller
-                                                              .toggleRepliesVisibility(
-                                                                  index);
-                                                        },
-                                                        child: RichText(
-                                                          text: TextSpan(
-                                                            children: [
-                                                              WidgetSpan(
-                                                                child: SizedBox(
-                                                                  width: 20,
-                                                                  child:
-                                                                      Divider(
-                                                                    color: Colors
-                                                                        .black,
-                                                                    thickness:
-                                                                        1,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              TextSpan(
-                                                                text: controller
-                                                                        .isRepliesVisible(
-                                                                            index)
-                                                                    ? '  Hide replies'
-                                                                    : '  View ${comment.children?.length} replies',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontSize: 14,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      if (controller
-                                                          .isRepliesVisible(
-                                                              index))
-                                                        ListView.builder(
-                                                          shrinkWrap: true,
-                                                          physics:
-                                                              NeverScrollableScrollPhysics(),
-                                                          itemCount:
-                                                              commentReply
-                                                                  ?.length,
-                                                          itemBuilder:
-                                                              ((context,
-                                                                  index) {
-                                                            var reply =
-                                                                commentReply?[
-                                                                    index];
-                                                            return InkWell(
-                                                              onLongPress: () {
-                                                                var accountId =
-                                                                    box.read(
-                                                                        'loginId');
-                                                                if (accountId ==
-                                                                    reply
-                                                                        ?.userId) {
-                                                                  showModalBottomSheet(
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (BuildContext
-                                                                            context) {
-                                                                      return Wrap(
-                                                                        children: [
-                                                                          Column(
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.center,
-                                                                            children: [
-                                                                              Container(
-                                                                                height: 4.h,
-                                                                                width: 32.w,
-                                                                                margin: EdgeInsets.only(top: 16.h),
-                                                                                decoration: BoxDecoration(
-                                                                                  color: Colors.blueGrey,
-                                                                                  borderRadius: BorderRadius.all(
-                                                                                    Radius.circular(3.0),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                          width:
+                                                                              30),
+                                                                      Expanded(
+                                                                        child:
+                                                                            Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            SizedBox(height: 10),
+                                                                            Row(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                Text(
+                                                                                  "${reply?.username ?? ""}",
+                                                                                  style: TextStyle(
+                                                                                    color: Colors.black,
+                                                                                    fontSize: 16,
+                                                                                    fontWeight: FontWeight.bold,
                                                                                   ),
                                                                                 ),
+                                                                                Icon(Icons.arrow_right_rounded),
+                                                                                if (reply?.parentCommentUserUsername != null)
+                                                                                  Text(
+                                                                                    "${reply?.parentCommentUserUsername ?? ""}",
+                                                                                    style: TextStyle(
+                                                                                      color: Colors.black,
+                                                                                      fontSize: 16,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                    ),
+                                                                                  ),
+                                                                              ],
+                                                                            ),
+                                                                            Text(
+                                                                              reply?.content ?? "",
+                                                                              maxLines: 3,
+                                                                              textAlign: TextAlign.left,
+                                                                              style: TextStyle(
+                                                                                color: Colors.black,
+                                                                                fontSize: 14.sp,
+                                                                                fontFamily: 'Poppins',
+                                                                                fontWeight: FontWeight.w400,
+                                                                                height: 1.7,
                                                                               ),
-                                                                              SizedBox(height: 10.h),
-                                                                              Padding(
-                                                                                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                                                                child: InkWell(
+                                                                            ),
+                                                                            SizedBox(height: 5),
+                                                                            Row(
+                                                                              children: [
+                                                                                Text(
+                                                                                  "${controller.formatDateTime(reply?.createdAt ?? "")}   ",
+                                                                                  style: TextStyle(
+                                                                                    color: AppColors.black.withOpacity(0.5),
+                                                                                    fontSize: 13.sp,
+                                                                                    fontFamily: 'Poppins',
+                                                                                    fontWeight: FontWeight.w400,
+                                                                                  ),
+                                                                                ),
+                                                                                InkWell(
                                                                                   onTap: () {
-                                                                                    controller.deleteComment(reply?.id ?? "");
-                                                                                    Get.back();
-                                                                                    controller.focusNode.unfocus();
+                                                                                    controller.isReplyingComment.value = true;
+                                                                                    controller.setParentCommentId(comment.id ?? 0);
+                                                                                    controller.setCommentUsername(comment.username ?? "");
+                                                                                    controller.focusNode.requestFocus();
                                                                                   },
-                                                                                  child: Container(
-                                                                                    padding: EdgeInsets.only(left: 16, right: 16),
-                                                                                    height: 50,
-                                                                                    width: Get.width,
-                                                                                    child: Align(
-                                                                                      alignment: Alignment.centerLeft,
-                                                                                      child: Row(
-                                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                        children: [
-                                                                                          Text(
-                                                                                            "Delete comment",
-                                                                                            style: TextStyle(
-                                                                                              color: Colors.black,
-                                                                                              fontSize: 15,
-                                                                                              fontWeight: FontWeight.w500,
-                                                                                            ),
-                                                                                          ),
-                                                                                          Icon(Icons.delete)
-                                                                                        ],
-                                                                                      ),
+                                                                                  child: Text(
+                                                                                    "Reply",
+                                                                                    style: TextStyle(
+                                                                                      color: AppColors.black.withOpacity(0.6),
+                                                                                      fontSize: 13.sp,
+                                                                                      fontFamily: 'Poppins',
+                                                                                      fontWeight: FontWeight.w600,
                                                                                     ),
                                                                                   ),
                                                                                 ),
-                                                                              ),
-                                                                              SizedBox(height: 10.h),
-                                                                            ],
-                                                                          ),
-                                                                        ],
-                                                                      );
-                                                                    },
-                                                                  ).then(
-                                                                      (value) {
-                                                                    controller
-                                                                        .focusNode
-                                                                        .unfocus();
-                                                                  });
-                                                                }
-                                                              },
-                                                              onTap: () {
-                                                                controller
-                                                                    .isReplyingComment
-                                                                    .value = true;
-                                                                controller
-                                                                    .setParentCommentId(
-                                                                        comment.id ??
-                                                                            "");
-                                                                controller
-                                                                    .setCommentUsername(
-                                                                        comment.username ??
-                                                                            "");
-                                                                controller
-                                                                    .focusNode
-                                                                    .requestFocus();
-                                                              },
-                                                              child: Row(
-                                                                children: [
-                                                                  SizedBox(
-                                                                      width:
-                                                                          30),
-                                                                  Expanded(
-                                                                    child:
-                                                                        Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        SizedBox(
-                                                                            height:
-                                                                                10),
-                                                                        Text(
-                                                                          "${reply?.username ?? ""}",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          reply?.content ??
-                                                                              "",
-                                                                          maxLines:
-                                                                              3,
-                                                                          textAlign:
-                                                                              TextAlign.left,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontSize:
-                                                                                14.sp,
-                                                                            fontFamily:
-                                                                                'Poppins',
-                                                                            fontWeight:
-                                                                                FontWeight.w400,
-                                                                            height:
-                                                                                1.7,
-                                                                          ),
-                                                                        ),
-                                                                        SizedBox(
-                                                                            height:
-                                                                                5),
-                                                                        Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              "${controller.formatDateTime(reply?.createdAt ?? "")}   ",
-                                                                              style: TextStyle(
-                                                                                color: AppColors.black.withOpacity(0.5),
-                                                                                fontSize: 13.sp,
-                                                                                fontFamily: 'Poppins',
-                                                                                fontWeight: FontWeight.w400,
-                                                                              ),
-                                                                            ),
-                                                                            InkWell(
-                                                                              onTap: () {
-                                                                                controller.isReplyingComment.value = true;
-                                                                                controller.setParentCommentId(reply?.id ?? "");
-                                                                                controller.setCommentUsername(reply?.username ?? "");
-                                                                                controller.focusNode.requestFocus();
-                                                                              },
-                                                                              child: Text(
-                                                                                "Reply",
-                                                                                style: TextStyle(
-                                                                                  color: AppColors.black.withOpacity(0.6),
-                                                                                  fontSize: 13.sp,
-                                                                                  fontFamily: 'Poppins',
-                                                                                  fontWeight: FontWeight.w600,
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                            SizedBox(height: 5)
+                                                                                SizedBox(height: 5)
+                                                                              ],
+                                                                            )
                                                                           ],
-                                                                        )
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  Container(
-                                                                    width: 30,
-                                                                    child:
-                                                                        LikeButton(
-                                                                      onTap:
-                                                                          ((isLiked) async {
-                                                                        bool?
-                                                                            isCommentLiked =
-                                                                            reply?.is_liked_by_active_user;
-                                                                        controller.setUsernameId(reply?.userId ??
-                                                                            "");
-                                                                        controller.setCommentId(reply?.id ??
-                                                                            "");
-                                                                        controller.likeComment(
-                                                                            isLiked,
-                                                                            reply?.id ??
-                                                                                "");
-                                                                        return isCommentLiked !=
-                                                                                null
-                                                                            ? !isCommentLiked
-                                                                            : false;
-                                                                      }),
-                                                                      countPostion:
-                                                                          CountPostion
-                                                                              .bottom,
-                                                                      likeCount:
-                                                                          reply
-                                                                              ?.likes,
-                                                                      size: 25,
-                                                                      circleColor: CircleColor(
-                                                                          start: Color(
-                                                                              0xff00ddff),
-                                                                          end: Color(
-                                                                              0xff0099cc)),
-                                                                      bubblesColor:
-                                                                          BubblesColor(
-                                                                        dotPrimaryColor:
-                                                                            Color(0xff33b5e5),
-                                                                        dotSecondaryColor:
-                                                                            Color(0xff0099cc),
+                                                                        ),
                                                                       ),
-                                                                      isLiked: reply
-                                                                          ?.is_liked_by_active_user,
-                                                                    ),
+                                                                      Container(
+                                                                        width:
+                                                                            30,
+                                                                        child:
+                                                                            LikeButton(
+                                                                          onTap:
+                                                                              ((isLiked) async {
+                                                                            bool?
+                                                                                isCommentLiked =
+                                                                                reply?.is_liked_by_active_user;
+                                                                            controller.setUsernameId(reply?.userId ??
+                                                                                0);
+                                                                            controller.setCommentId(reply?.id ??
+                                                                                0);
+                                                                            controller.likeComment(isLiked,
+                                                                                reply?.id ?? 0);
+                                                                            return isCommentLiked != null
+                                                                                ? !isCommentLiked
+                                                                                : false;
+                                                                          }),
+                                                                          countPostion:
+                                                                              CountPostion.bottom,
+                                                                          likeCount:
+                                                                              reply?.likes,
+                                                                          size:
+                                                                              25,
+                                                                          circleColor: CircleColor(
+                                                                              start: Color(0xff00ddff),
+                                                                              end: Color(0xff0099cc)),
+                                                                          bubblesColor:
+                                                                              BubblesColor(
+                                                                            dotPrimaryColor:
+                                                                                Color(0xff33b5e5),
+                                                                            dotSecondaryColor:
+                                                                                Color(0xff0099cc),
+                                                                          ),
+                                                                          isLiked:
+                                                                              reply?.is_liked_by_active_user,
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          }),
-                                                        )
-                                                    ],
+                                                                );
+                                                              }),
+                                                            )
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                                SizedBox(height: 8),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ),
+                                                  SizedBox(height: 8),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      }),
                                       SizedBox(height: 90.h),
                                     ],
                                   ),
@@ -833,7 +835,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                 ? IconButton(
                                     onPressed: () {
                                       controller.setArticleId(
-                                          controller.data?.id ?? "");
+                                          controller.data?.id ?? 0);
                                       controller.storeComment();
                                       controller.textEditingController.clear();
                                       controller.isReplyingComment.value =

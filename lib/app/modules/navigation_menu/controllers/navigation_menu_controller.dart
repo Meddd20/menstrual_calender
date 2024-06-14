@@ -6,6 +6,22 @@ import 'package:periodnpregnancycalender/app/modules/analysis/views/analysis_vie
 
 class NavigationMenuController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
+  late var initialIndex = 0;
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+  }
 
   final screens = [HomeView(), AnalysisView(), InsightView(), ProfileView()];
 }

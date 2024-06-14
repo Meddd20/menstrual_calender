@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/article_model.dart'
     as ArticleModel;
 import 'package:periodnpregnancycalender/app/models/detail_article_model.dart'
@@ -27,12 +29,12 @@ class ArticleRepository {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
-  Future<DetailArticleModel.ArticleData?> getArticle(String id) async {
+  Future<DetailArticleModel.ArticleData?> getArticle(int id) async {
     try {
       http.Response response = await apiService.getArticle(id);
 
@@ -44,35 +46,34 @@ class ArticleRepository {
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
-    } catch (e, stacktrace) {
-      print("Error: $e");
-      print(stacktrace);
-      throw "An error occurred during the request.";
+    } catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
   Future<Map<String, dynamic>> storeComment(
-      String? parentId, String articleId, String content) async {
+      int? parentId, int articleId, String content) async {
     try {
       http.Response response =
           await apiService.storeComment(parentId, articleId, content);
 
       if (response.statusCode == 200) {
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
-  Future<Map<String, dynamic>> likeComment(
-      String userId, String commentId) async {
+  Future<Map<String, dynamic>> likeComment(int userId, int commentId) async {
     try {
-      http.Response response =
-          await apiService.likeComment(userId, commentId);
+      http.Response response = await apiService.likeComment(userId, commentId);
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -80,23 +81,25 @@ class ArticleRepository {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
-  Future<Map<String, dynamic>> deleteComment(String id) async {
+  Future<Map<String, dynamic>> deleteComment(int id) async {
     try {
       http.Response response = await apiService.deleteComment(id);
 
       if (response.statusCode == 200) {
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 }

@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
@@ -26,8 +28,8 @@ class LogRepository {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
@@ -43,8 +45,8 @@ class LogRepository {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
@@ -79,13 +81,15 @@ class LogRepository {
       );
 
       if (response.statusCode == 200) {
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
@@ -96,13 +100,16 @@ class LogRepository {
           await apiService.storeReminder(title, description, dateTime);
 
       if (response.statusCode == 200) {
+        Get.back();
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
@@ -113,13 +120,16 @@ class LogRepository {
           await apiService.editReminder(id, title, description, dateTime);
 
       if (response.statusCode == 200) {
+        Get.back();
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
@@ -128,31 +138,15 @@ class LogRepository {
       http.Response response = await apiService.deleteReminder(id);
 
       if (response.statusCode == 200) {
+        Get.showSnackbar(
+            Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
         return jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
-    }
-  }
-
-  Future<Reminders?> getReminder(String id) async {
-    try {
-      http.Response response = await apiService.getReminder(id);
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> reminderJson = jsonDecode(response.body);
-        final Reminders reminder = Reminders.fromJson(reminderJson);
-
-        return reminder;
-      } else {
-        throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      }
-    } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 
@@ -171,8 +165,8 @@ class LogRepository {
         throw jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       }
     } catch (e) {
-      print("Error: $e");
-      throw "An error occurred during the request.";
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "$e"));
+      rethrow;
     }
   }
 }

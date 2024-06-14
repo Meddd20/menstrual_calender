@@ -10,20 +10,10 @@ class Profile {
     message = json['message'];
     user = json['user'] != null ? User?.fromJson(json['user']) : null;
   }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['status'] = status;
-    data['message'] = message;
-    if (user != null) {
-      data['user'] = user?.toJson();
-    }
-    return data;
-  }
 }
 
 class User {
-  String? id;
+  int? id;
   String? status;
   String? role;
   String? nama;
@@ -57,20 +47,5 @@ class User {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     deletedAt = json['deleted_at'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['status'] = status;
-    data['role'] = role;
-    data['nama'] = nama;
-    data['tanggal_lahir'] = tanggalLahir;
-    data['is_pregnant'] = isPregnant;
-    data['email'] = email;
-    data['created_at'] = createdAt;
-    data['updated_at'] = updatedAt;
-    data['deleted_at'] = deletedAt;
-    return data;
   }
 }

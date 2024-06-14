@@ -1,7 +1,6 @@
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/bleeding_flow_view.dart';
@@ -15,17 +14,31 @@ import 'package:periodnpregnancycalender/app/modules/analysis/views/symptoms_vie
 import 'package:periodnpregnancycalender/app/modules/analysis/views/temperature_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/vaginal_discharge_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/weight_view.dart';
-import 'package:periodnpregnancycalender/app/modules/home/controllers/home_controller.dart';
+import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
+import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/pregnancy_tools_view.dart';
 import '../controllers/analysis_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 
-class AnalysisView extends GetView<AnalysisController> {
-  const AnalysisView({Key? key}) : super(key: key);
+class AnalysisView extends GetView {
+  const AnalysisView({super.key});
   @override
   Widget build(BuildContext context) {
-    HomeController homeController = Get.put(HomeController());
+    final box = GetStorage();
+    return box.read("isPregnant") == "0"
+        ? AnalysisPeriodView()
+        : PregnancyToolsView();
+  }
+}
+
+class AnalysisPeriodView extends GetView<AnalysisController> {
+  const AnalysisPeriodView({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    Get.put(AnalysisController());
+    HomeMenstruationController homeController =
+        Get.put(HomeMenstruationController());
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -40,7 +53,9 @@ class AnalysisView extends GetView<AnalysisController> {
                 children: [
                   SizedBox(height: 10.h),
                   GestureDetector(
-                    onTap: () => (Get.to(() => PeriodCycleView())),
+                    onTap: () {
+                      Get.to(() => PeriodCycleView());
+                    },
                     child: Container(
                       width: Get.width,
                       height: 195.h,
@@ -64,23 +79,18 @@ class AnalysisView extends GetView<AnalysisController> {
                                   "My Cycle",
                                   style: CustomTextStyle.heading4TextStyle(),
                                 ),
-                                GestureDetector(
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "See more",
-                                        style: TextStyle(
-                                          color: Colors.black.withOpacity(0.6),
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "See more",
+                                      style: TextStyle(
+                                        color: Colors.black.withOpacity(0.6),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      Icon(Icons.keyboard_arrow_right)
-                                    ],
-                                  ),
-                                  onTap: () {
-                                    Get.to(() => PeriodCycleView());
-                                  },
+                                    ),
+                                    Icon(Icons.keyboard_arrow_right)
+                                  ],
                                 ),
                               ],
                             ),

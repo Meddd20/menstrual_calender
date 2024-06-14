@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
@@ -88,6 +87,15 @@ class SexActivityView extends GetView<SexActivityController> {
                     color: Colors.black,
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  "from ${controller.formatDate(controller.selectedDate.value)} up to today",
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(0.4),
+                    fontSize: 15,
+                    height: 2.0,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 CustomDougnutChart(

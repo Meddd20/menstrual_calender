@@ -90,7 +90,7 @@ class InsightView extends GetView<InsightController> {
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            String? articleId = article.id;
+                                            int? articleId = article.id;
                                             Get.to(() => InsightDetailView(),
                                                 arguments: articleId);
                                           },

@@ -38,8 +38,8 @@ class ArticleDetails {
 }
 
 class Article {
-  final String? id;
-  final String? userId;
+  final int? id;
+  final int? userId;
   final String? writter;
   final String? titleInd;
   final String? titleEng;
@@ -97,12 +97,13 @@ class Article {
 }
 
 class Comment {
-  final String? id;
-  final String? articleId;
-  final String? userId;
+  final int? id;
+  final int? articleId;
+  final int? userId;
   final String? username;
-  final String? parentId;
-  final String? parentCommentUserId;
+  final int? parentId;
+  final int? parentCommentUserId;
+  final String? parentCommentUserUsername;
   final String? content;
   final int? likes;
   final String? isPinned;
@@ -119,6 +120,7 @@ class Comment {
     this.username,
     this.parentId,
     this.parentCommentUserId,
+    this.parentCommentUserUsername,
     this.content,
     this.likes,
     this.isPinned,
@@ -137,6 +139,7 @@ class Comment {
       username: json['username'],
       parentId: json['parent_id'],
       parentCommentUserId: json['parent_comment_user_id'],
+      parentCommentUserUsername: json['parent_comment_user_username'],
       content: json['content'],
       likes: json['likes'],
       isPinned: json['is_pinned'],

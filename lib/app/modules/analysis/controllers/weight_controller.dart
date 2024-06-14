@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/log_repository.dart';
@@ -12,6 +13,7 @@ class WeightController extends GetxController {
   RxMap<String, dynamic> weight = RxMap<String, dynamic>();
   RxString selectedDataType = 'percentage30Days'.obs;
   RxMap<String, dynamic> specificWeightData = RxMap<String, dynamic>();
+  Rx<DateTime> selectedDate = DateTime.now().obs;
   late TabController tabController;
 
   @override
@@ -27,6 +29,7 @@ class WeightController extends GetxController {
       percentage1Year: null,
     );
     selectedDataType = 'percentage30Days'.obs;
+    _updateSelectedDate();
     fetchTemperatures();
     specifiedDataByDate();
     weight = RxMap<String, dynamic>();
@@ -49,6 +52,7 @@ class WeightController extends GetxController {
 
   void updateTabBar(int index) {
     selectedDataType.value = _getDataTypeByIndex(index);
+    _updateSelectedDate();
     specifiedDataByDate();
   }
 
@@ -64,6 +68,27 @@ class WeightController extends GetxController {
         return 'percentage1Year';
       default:
         return 'percentage30Days';
+    }
+  }
+
+  void _updateSelectedDate() {
+    DateTime now = DateTime.now();
+    switch (selectedDataType.value) {
+      case 'percentage30Days':
+        selectedDate.value = now.subtract(Duration(days: 30));
+        break;
+      case 'percentage3Months':
+        selectedDate.value = now.subtract(Duration(days: 90));
+        break;
+      case 'percentage6Months':
+        selectedDate.value = now.subtract(Duration(days: 180));
+        break;
+      case 'percentage1Year':
+        selectedDate.value = now.subtract(Duration(days: 365));
+        break;
+      default:
+        selectedDate.value = now.subtract(Duration(days: 30));
+        break;
     }
   }
 
@@ -112,5 +137,9 @@ class WeightController extends GetxController {
     specifiedDataByDate();
 
     update();
+  }
+
+  String formatDate(DateTime date) {
+    return DateFormat('MMM dd, yyyy').format(date);
   }
 }

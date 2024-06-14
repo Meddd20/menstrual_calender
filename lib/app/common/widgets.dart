@@ -497,6 +497,8 @@ class CustomDougnutChart extends StatelessWidget {
           legendItemBuilder:
               (String name, dynamic series, dynamic point, int index) {
             return Container(
+              width: 110,
+              // height: 30,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -511,7 +513,17 @@ class CustomDougnutChart extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 10),
-                  Text("$name :"),
+                  Expanded(
+                    child: Text(
+                      "$name ",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        overflow: TextOverflow.visible,
+                      ),
+                    ),
+                  ),
                   SizedBox(width: 10),
                   Text(
                     (point.y.toInt()).toString(),
@@ -685,6 +697,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
   final List<DateTime?> calenderValue;
   final dynamic Function(List<DateTime?>) calenderOnValueChanged;
   final bool isEdit;
+  final String buttonCaption;
 
   AddPeriodBottomSheetWidget({
     required this.closeModalBottomSheet,
@@ -694,6 +707,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
     required this.addPeriodOnPressedButton,
     required this.calenderValue,
     required this.calenderOnValueChanged,
+    required this.buttonCaption,
     this.isEdit = false,
   });
 
@@ -838,7 +852,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10)),
                 minimumSize: Size(Get.width, 45.h)),
             child: Text(
-              "Add Period",
+              buttonCaption,
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 16.sp,
@@ -937,91 +951,6 @@ class CustomIconCard extends StatelessWidget {
   }
 }
 
-class CustomCardNextCycle extends StatelessWidget {
-  final Color cardColor;
-  final String cardHeader;
-  final String cardBody;
-  final String cardFooter;
-  final String imagePath;
-
-  CustomCardNextCycle({
-    required this.cardColor,
-    required this.cardHeader,
-    required this.cardBody,
-    required this.cardFooter,
-    required this.imagePath,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(right: 15.0),
-      child: Container(
-        width: Get.width - 100,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: cardColor,
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 15.0, bottom: 15.0, right: 15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                width: 80.w,
-                height: 80.h,
-                child: Image.asset(imagePath),
-              ),
-              Center(
-                child: Column(
-                  children: [
-                    SizedBox(height: 15.h),
-                    Text(
-                      cardHeader,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18.sp,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      cardBody,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFFFF6868),
-                        fontSize: 16.sp,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.38,
-                      ),
-                    ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      cardFooter,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black.withOpacity(0.74),
-                        fontSize: 14.sp,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.38,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class CustomCardPredictionCycle extends StatelessWidget {
   final Color containerColor;
   final Color primaryColor;
@@ -1112,4 +1041,77 @@ double parseDouble(dynamic value) {
 class MyTickerProvider implements TickerProvider {
   @override
   Ticker createTicker(TickerCallback onTick) => Ticker(onTick);
+}
+
+class Ui {
+  static GetSnackBar SuccessSnackBar(
+      {String title = 'Success', String message = ''}) {
+    Get.log("[$title] $message");
+    return GetSnackBar(
+      titleText: Text(
+        title.tr,
+        style: TextStyle(
+          fontSize: 15.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      messageText: Text(
+        message,
+        style: TextStyle(
+          fontSize: 13.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      snackPosition: SnackPosition.TOP,
+      margin: EdgeInsets.all(20),
+      backgroundColor: AppColors.white,
+      icon: CircleAvatar(
+        radius: 20,
+        backgroundColor: const Color.fromARGB(255, 179, 231, 181),
+        child: Icon(Icons.check_circle, size: 24, color: Colors.green),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      borderRadius: 8,
+      dismissDirection: DismissDirection.horizontal,
+      duration: Duration(milliseconds: 1500),
+    );
+  }
+
+  static GetSnackBar ErrorSnackBar(
+      {String title = 'Error', String message = ''}) {
+    Get.log("[$title] $message", isError: true);
+    return GetSnackBar(
+      titleText: Text(
+        title.tr,
+        style: TextStyle(
+          fontSize: 15.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      messageText: Text(
+        message,
+        style: TextStyle(
+          fontSize: 13.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      snackPosition: SnackPosition.TOP,
+      margin: EdgeInsets.all(20),
+      backgroundColor: AppColors.white,
+      icon: CircleAvatar(
+        radius: 20,
+        backgroundColor: Color.fromARGB(255, 240, 216, 216),
+        child: Icon(Icons.error, size: 24, color: Colors.red),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      borderRadius: 8,
+      isDismissible: true,
+      dismissDirection: DismissDirection.horizontal,
+      duration: Duration(milliseconds: 1500),
+    );
+  }
 }

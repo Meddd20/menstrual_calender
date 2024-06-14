@@ -27,6 +27,13 @@ class DailyLogController extends GetxController {
   late var wholeNumberWeight;
   late var decimalNumberWeight;
 
+  final Rx<DateTime> _focusedDate = Rx<DateTime>(DateTime.now());
+  DateTime get getFocusedDate => _focusedDate.value;
+  void setFocusedDate(DateTime selectedDate) {
+    _focusedDate.value = selectedDate;
+    update();
+  }
+
   @override
   void onInit() async {
     await fetchLog(DateTime.now().toString());
@@ -238,61 +245,57 @@ class DailyLogController extends GetxController {
   }
 
   Future<void> fetchLog(String logDate) async {
-    try {
-      var dailyLog = await logRepository.getLogsByDate(logDate);
+    var dailyLog = await logRepository.getLogsByDate(logDate);
 
-      if (dailyLog?.data != null) {
-        selectedSexActivity.value = dailyLog!.data!.sexActivity ?? "";
-        selectedBleedingFlow.value = dailyLog.data!.bleedingFlow ?? "";
-        selectedVaginalDischarge.value = dailyLog.data!.vaginalDischarge ?? "";
-        temperature.value = dailyLog.data!.temperature ?? "";
-        weights.value = dailyLog.data!.weight ?? "";
-        notes.value = dailyLog.data!.notes ?? "";
+    if (dailyLog?.data != null) {
+      selectedSexActivity.value = dailyLog!.data!.sexActivity ?? "";
+      selectedBleedingFlow.value = dailyLog.data!.bleedingFlow ?? "";
+      selectedVaginalDischarge.value = dailyLog.data!.vaginalDischarge ?? "";
+      temperature.value = dailyLog.data!.temperature ?? "";
+      weights.value = dailyLog.data!.weight ?? "";
+      notes.value = dailyLog.data!.notes ?? "";
 
-        selectedSymptoms.assignAll(
-          dailyLog.data!.symptoms
-                  ?.toJson()
-                  .entries
-                  .where((entry) => entry.value)
-                  .map((entry) => entry.key)
-                  .toList() ??
-              [],
-        );
+      selectedSymptoms.assignAll(
+        dailyLog.data!.symptoms
+                ?.toJson()
+                .entries
+                .where((entry) => entry.value)
+                .map((entry) => entry.key)
+                .toList() ??
+            [],
+      );
 
-        selectedMoods.assignAll(
-          dailyLog.data!.moods
-                  ?.toJson()
-                  .entries
-                  .where((entry) => entry.value == true)
-                  .map((entry) => entry.key)
-                  .toList() ??
-              [],
-        );
+      selectedMoods.assignAll(
+        dailyLog.data!.moods
+                ?.toJson()
+                .entries
+                .where((entry) => entry.value == true)
+                .map((entry) => entry.key)
+                .toList() ??
+            [],
+      );
 
-        selectedOthers.assignAll(
-          dailyLog.data!.others
-                  ?.toJson()
-                  .entries
-                  .where((entry) => entry.value == true)
-                  .map((entry) => entry.key)
-                  .toList() ??
-              [],
-        );
+      selectedOthers.assignAll(
+        dailyLog.data!.others
+                ?.toJson()
+                .entries
+                .where((entry) => entry.value == true)
+                .map((entry) => entry.key)
+                .toList() ??
+            [],
+      );
 
-        selectedPhysicalActivity.assignAll(
-          dailyLog.data!.physicalActivity
-                  ?.toJson()
-                  .entries
-                  .where((entry) => entry.value == true)
-                  .map((entry) => entry.key)
-                  .toList() ??
-              [],
-        );
+      selectedPhysicalActivity.assignAll(
+        dailyLog.data!.physicalActivity
+                ?.toJson()
+                .entries
+                .where((entry) => entry.value == true)
+                .map((entry) => entry.key)
+                .toList() ??
+            [],
+      );
 
-        update();
-      }
-    } catch (e) {
-      print("Error fetching articles: $e");
+      update();
     }
   }
 
@@ -339,7 +342,7 @@ class DailyLogController extends GetxController {
 
   Future<void> saveLog() async {
     try {
-      var dailyLog = await logRepository.storeLog(
+      await logRepository.storeLog(
         selectedDate.toString(),
         getSelectedSexActivity(),
         getSelectedBleedingFlow(),
@@ -373,7 +376,7 @@ class DailyLogController extends GetxController {
       setSelectedPhysicalActivity([]);
       isChanged.value = false;
 
-      var dailyLog = await logRepository.storeLog(
+      await logRepository.storeLog(
         selectedDate.toString(),
         getSelectedSexActivity(),
         getSelectedBleedingFlow(),

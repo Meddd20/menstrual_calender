@@ -34,24 +34,14 @@ class ResetPasswordController extends GetxController {
   }
 
   Future<void> resetPassword() async {
-    try {
-      Map<String, dynamic> data = await authRepository.resetPassword(
-          userEmail.value,
-          newPasswordC.text.trim(),
-          newPasswordConfirmationC.text.trim());
+    Map<String, dynamic> data = await authRepository.resetPassword(
+        userEmail.value,
+        newPasswordC.text.trim(),
+        newPasswordConfirmationC.text.trim());
 
-      final verifResponse = data["message"];
-      print(verifResponse);
-      Get.offAllNamed(Routes.LOGIN);
-      print(Get.routing.toString());
-    } catch (e) {
-      Get.dialog(
-        SimpleDialog(
-          title: Text("Error"),
-          children: [Text(e.toString())],
-        ),
-      );
-    }
+    final verifResponse = data["message"];
+    print(verifResponse);
+    Get.offAllNamed(Routes.LOGIN);
   }
 
   String? validateNewPassword(String password) {
@@ -75,6 +65,5 @@ class ResetPasswordController extends GetxController {
     }
     verifCodeFormKey.currentState!.save();
     resetPassword();
-    // Get.offAllNamed(Routes.LOGIN);
   }
 }

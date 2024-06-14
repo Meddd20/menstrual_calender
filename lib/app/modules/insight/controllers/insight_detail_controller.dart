@@ -12,48 +12,33 @@ class InsightDetailController extends GetxController {
   final ApiService apiService = ApiService();
   late final ArticleRepository articleRepository =
       ArticleRepository(apiService);
-  late String? id;
+  late int? id;
   final TextEditingController textEditingController = TextEditingController();
-  late Stream<Article?> articleStream;
-  var parentCommentId = "".obs;
-  var articleId = "".obs;
+  late Stream<void> articleStream;
+  var parentCommentId = 0.obs;
+  var articleId = 0.obs;
   var commentContent = "".obs;
   var commentUsername = "".obs;
-  var usernameId = "".obs;
-  var commentId = "".obs;
+  var usernameId = 0.obs;
+  var commentId = 0.obs;
   var isLoading = RxBool(true);
   var isReplyingComment = RxBool(false);
   late Article? data;
   RxList<Comment> comment = <Comment>[].obs;
-  Map<int, bool> showRepliesMap = {};
+  RxMap<int, bool> showRepliesMap = RxMap<int, bool>();
   FocusNode focusNode = FocusNode();
 
-  final StreamController<String> _addCommentController =
-      StreamController<String>();
-  final StreamController<String> _likeCommentController =
-      StreamController<String>();
-  final StreamController<String> _deleteCommentController =
-      StreamController<String>();
+  final StreamController<String> _actionController = StreamController<String>();
 
-  Stream<String> get addCommentStream => _addCommentController.stream;
-  Stream<String> get likeCommentStream => _likeCommentController.stream;
-  Stream<String> get deleteCommentStream => _deleteCommentController.stream;
+  Stream<String> get actionStream => _actionController.stream;
 
-  void setAddComment(String comment) {
-    _addCommentController.sink.add(comment);
-  }
-
-  void setLikeComment(String commentId) {
-    _likeCommentController.sink.add(commentId);
-  }
-
-  void setDeleteComment(String commentId) {
-    _deleteCommentController.sink.add(commentId);
+  void addAction(String action) {
+    _actionController.sink.add(action);
   }
 
   @override
   void onInit() {
-    id = Get.arguments as String?;
+    id = Get.arguments as int?;
     data = Article(
       id: null,
       writter: null,
@@ -71,8 +56,16 @@ class InsightDetailController extends GetxController {
       createdAt: null,
       updatedAt: null,
     );
-    articleStream = fetchArticleStream().asBroadcastStream();
+    articleStream = fetchDetailArticle().asBroadcastStream();
     setCommentContent("");
+
+    actionStream.listen((action) {
+      if (action == "comment_added" ||
+          action == "comment_deleted" ||
+          action == "comment_liked") {
+        updateComments();
+      }
+    });
     super.onInit();
   }
 
@@ -83,20 +76,18 @@ class InsightDetailController extends GetxController {
 
   @override
   void onClose() {
-    _addCommentController.close();
-    _likeCommentController.close();
-    _deleteCommentController.close();
+    articleStream.drain();
     super.onClose();
   }
 
-  String getParentCommentId() => parentCommentId.value;
-  void setParentCommentId(String id) {
+  int getParentCommentId() => parentCommentId.value;
+  void setParentCommentId(int id) {
     parentCommentId.value = id;
     update();
   }
 
-  String getArticleId() => articleId.value;
-  void setArticleId(String id) {
+  int getArticleId() => articleId.value;
+  void setArticleId(int id) {
     articleId.value = id;
     update();
   }
@@ -113,14 +104,14 @@ class InsightDetailController extends GetxController {
     update();
   }
 
-  String getUsernameId() => usernameId.value;
-  void setUsernameId(String id) {
+  int getUsernameId() => usernameId.value;
+  void setUsernameId(int id) {
     usernameId.value = id;
     update();
   }
 
-  String getCommentId() => commentId.value;
-  void setCommentId(String id) {
+  int getCommentId() => commentId.value;
+  void setCommentId(int id) {
     commentId.value = id;
     update();
   }
@@ -128,7 +119,7 @@ class InsightDetailController extends GetxController {
   void cancelCommentReply() {
     setCommentUsername("");
     isReplyingComment.value = false;
-    setParentCommentId("");
+    setParentCommentId(0);
   }
 
   void toggleRepliesVisibility(int index) {
@@ -140,15 +131,18 @@ class InsightDetailController extends GetxController {
     return showRepliesMap[index] ?? false;
   }
 
-  Stream<Article?> fetchArticleStream() async* {
-    yield* Stream.periodic(Duration(seconds: 1), (_) {
-      return articleRepository.getArticle(id ?? "");
-    }).asyncMap((result) async {
-      var articleData = await result;
-      data = articleData?.data.article;
-      comment.assignAll(articleData?.data.comments ?? []);
-      return articleData?.data.article;
-    });
+  void updateComments() async {
+    var articleData = await articleRepository.getArticle(id ?? 0);
+    data = articleData?.data.article;
+    comment.assignAll(articleData?.data.comments ?? []);
+    update();
+  }
+
+  Stream<void> fetchDetailArticle() async* {
+    var articleData = await articleRepository.getArticle(id ?? 0);
+    data = articleData?.data.article;
+    comment.assignAll(articleData?.data.comments ?? []);
+    update();
   }
 
   Future<void> storeComment() async {
@@ -156,30 +150,27 @@ class InsightDetailController extends GetxController {
       await articleRepository.storeComment(
           getParentCommentId(), getArticleId(), getCommentContent());
       setCommentContent("");
-      _addCommentController.sink.add("comment_added");
+      addAction("comment_added");
       update();
     } catch (e) {
       print("Error store comment: $e");
     }
   }
 
-  Future<bool> likeComment(bool isLiked, String commentId) async {
+  Future<void> likeComment(bool isLiked, int commentId) async {
     try {
-      var data = await articleRepository.likeComment(
-          getUsernameId(), getCommentId());
-      _likeCommentController.sink.add("comment_liked");
+      await articleRepository.likeComment(getUsernameId(), getCommentId());
+      addAction("comment_liked");
       update();
-      return data["data"];
     } catch (e) {
       print("Error like comment: $e");
-      return false;
     }
   }
 
-  Future<void> deleteComment(String id) async {
+  Future<void> deleteComment(int id) async {
     try {
       await articleRepository.deleteComment(id);
-      _deleteCommentController.sink.add("comment_deleted");
+      addAction("comment_deleted");
       update();
     } catch (e) {
       print("Error fetching articles: $e");

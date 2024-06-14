@@ -110,7 +110,7 @@ class ReminderView extends GetView<ReminderController> {
                               ),
                               SizedBox(height: 10.h),
                               CustomCalendarDatePicker(
-                                value: [DateTime.now()],
+                                value: [controller.getDate()],
                                 onValueChanged: (dates) {
                                   controller.setDate(dates.first);
                                 },
@@ -209,7 +209,7 @@ class ReminderView extends GetView<ReminderController> {
                                   minimumSize: Size(Get.width, 45.h),
                                 ),
                                 child: Text(
-                                  "Update Period",
+                                  "Add Reminder",
                                   style: TextStyle(
                                     fontFamily: 'Poppins',
                                     fontSize: 16.sp,
@@ -545,7 +545,7 @@ class ReminderView extends GetView<ReminderController> {
                                                     Size(Get.width, 45.h),
                                               ),
                                               child: Text(
-                                                "Update Period",
+                                                "Update Reminder",
                                                 style: TextStyle(
                                                   fontFamily: 'Poppins',
                                                   fontSize: 16.sp,

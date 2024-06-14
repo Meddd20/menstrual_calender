@@ -7,10 +7,12 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/period_cycle_controller.dart';
+import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class PeriodCycleView extends GetView<PeriodCycleController> {
-  const PeriodCycleView({Key? key}) : super(key: key);
+  final int initialIndex;
+  const PeriodCycleView({Key? key, this.initialIndex = 0}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     Get.put(PeriodCycleController());
@@ -18,6 +20,16 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
       appBar: AppBar(
         title: const Text('Period Cycle'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            print({'initialIndex': initialIndex});
+            Get.offAllNamed(
+              Routes.NAVIGATION_MENU,
+              arguments: {'initialIndex': initialIndex},
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
@@ -42,6 +54,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             Get.back();
                           },
                           title: "Add Period Cycle",
+                          buttonCaption: "Add Period",
                           startDate: Obx(
                             () => Text(
                               "${DateFormat('yyyy-MM-dd').format(controller.startDate.value ?? DateTime.now())}",
@@ -63,9 +76,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             ),
                           ),
                           addPeriodOnPressedButton: () {
-                            controller.addPeriod(controller.periodCycleData
-                                    .first.data?.avgPeriodDuration ??
-                                8);
+                            controller.addPeriod(
+                                controller.periodCycleData.first.data
+                                        ?.avgPeriodDuration ??
+                                    8,
+                                controller.periodCycleData.first.data
+                                        ?.avgPeriodCycle ??
+                                    28);
                           },
                           calenderValue: [
                             controller.startDate.value,
@@ -225,6 +242,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                           Get.back();
                                         },
                                         title: "Edit Period Cycle",
+                                        buttonCaption: "Edit Period",
                                         startDate: Obx(
                                           () => Text(
                                             "${DateFormat('yyyy-MM-dd').format(controller.startDate.value!)}",

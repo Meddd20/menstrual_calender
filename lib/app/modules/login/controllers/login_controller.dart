@@ -47,30 +47,25 @@ class LoginController extends GetxController {
       storeAuth();
       storeCredentialToken(authCredential["data"]["credential"]["token"]);
       storeAccountId(authCredential["data"]["user"]["id"]);
+      storeIsPregnant(authCredential["data"]["user"]["is_pregnant"]);
       Get.offAllNamed(Routes.NAVIGATION_MENU);
-    } catch (e) {
-      showDialog(
-        context: Get.context!,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("Error"),
-            children: [Text(e.toString())],
-          );
-        },
-      );
-    }
+    } catch (e) {}
   }
 
   void storeCredentialToken(String token) {
     box.write("loginAuth", token);
   }
 
-  void storeAccountId(String id) {
+  void storeAccountId(int id) {
     box.write("loginId", id);
   }
 
   void storeAuth() {
     box.write("isAuth", true);
+  }
+
+  void storeIsPregnant(String isPregnant) {
+    box.write("isPregnant", isPregnant);
   }
 
   void checkStoredAuth() {

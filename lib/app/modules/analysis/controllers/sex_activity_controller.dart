@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/log_repository.dart';
@@ -16,6 +17,7 @@ class SexActivityController extends GetxController {
   Rx<dynamic> percentage1Year = Rx<dynamic>(null);
   RxString selectedDataType = 'percentage30Days'.obs;
   RxMap<String, dynamic> specificSexActivityData = RxMap<String, dynamic>();
+  Rx<DateTime> selectedDate = DateTime.now().obs;
   late TabController tabController;
 
   @override
@@ -36,6 +38,7 @@ class SexActivityController extends GetxController {
     percentage6Months = Rx<dynamic>(null);
     percentage1Year = Rx<dynamic>(null);
     selectedDataType = 'percentage30Days'.obs;
+    _updateSelectedDate();
     specifiedDataByDate();
     super.onInit();
   }
@@ -55,24 +58,40 @@ class SexActivityController extends GetxController {
   set setSelectedDataType(String value) => selectedDataType.value = value;
 
   List<MapEntry<String, dynamic>> getSelectedDataSource() {
-    List<MapEntry<String, dynamic>> selectedData;
+    List<MapEntry<String, dynamic>> selectedData = [];
 
     switch (selectedDataType.value) {
       case 'percentage30Days':
-        selectedData = percentage30Days.value?.entries.toList() ?? [];
-        print(selectedData);
+        if (percentage30Days.value is Map<String, dynamic>) {
+          selectedData =
+              (percentage30Days.value as Map<String, dynamic>).entries.toList();
+        }
         break;
       case 'percentage3Months':
-        selectedData = percentage3Months.value?.entries.toList() ?? [];
+        if (percentage3Months.value is Map<String, dynamic>) {
+          selectedData = (percentage3Months.value as Map<String, dynamic>)
+              .entries
+              .toList();
+        }
         break;
       case 'percentage6Months':
-        selectedData = percentage6Months.value?.entries.toList() ?? [];
+        if (percentage6Months.value is Map<String, dynamic>) {
+          selectedData = (percentage6Months.value as Map<String, dynamic>)
+              .entries
+              .toList();
+        }
         break;
       case 'percentage1Year':
-        selectedData = percentage1Year.value?.entries.toList() ?? [];
+        if (percentage1Year.value is Map<String, dynamic>) {
+          selectedData =
+              (percentage1Year.value as Map<String, dynamic>).entries.toList();
+        }
         break;
       default:
-        selectedData = percentage30Days.value?.entries.toList() ?? [];
+        if (percentage30Days.value is Map<String, dynamic>) {
+          selectedData =
+              (percentage30Days.value as Map<String, dynamic>).entries.toList();
+        }
         break;
     }
 
@@ -84,6 +103,7 @@ class SexActivityController extends GetxController {
 
   void updateTabBar(int index) {
     selectedDataType.value = _getDataTypeByIndex(index);
+    _updateSelectedDate();
     specifiedDataByDate();
   }
 
@@ -99,6 +119,27 @@ class SexActivityController extends GetxController {
         return 'percentage1Year';
       default:
         return 'percentage30Days';
+    }
+  }
+
+  void _updateSelectedDate() {
+    DateTime now = DateTime.now();
+    switch (selectedDataType.value) {
+      case 'percentage30Days':
+        selectedDate.value = now.subtract(Duration(days: 30));
+        break;
+      case 'percentage3Months':
+        selectedDate.value = now.subtract(Duration(days: 90));
+        break;
+      case 'percentage6Months':
+        selectedDate.value = now.subtract(Duration(days: 180));
+        break;
+      case 'percentage1Year':
+        selectedDate.value = now.subtract(Duration(days: 365));
+        break;
+      default:
+        selectedDate.value = now.subtract(Duration(days: 30));
+        break;
     }
   }
 
@@ -142,10 +183,10 @@ class SexActivityController extends GetxController {
         data = result.data!;
 
         sexActivity.value = data.logs;
-        percentage30Days.value = data.percentage30Days;
-        percentage3Months.value = data.percentage3Months;
-        percentage6Months.value = data.percentage6Months;
-        percentage1Year.value = data.percentage1Year;
+        percentage30Days.value = data.percentage30Days ?? {};
+        percentage3Months.value = data.percentage3Months ?? {};
+        percentage6Months.value = data.percentage6Months ?? {};
+        percentage1Year.value = data.percentage1Year ?? {};
       } else {
         print("Error: Unable to fetch others");
       }
@@ -155,5 +196,9 @@ class SexActivityController extends GetxController {
     } catch (error) {
       print("Error: $error");
     }
+  }
+
+  String formatDate(DateTime date) {
+    return DateFormat('MMM dd, yyyy').format(date);
   }
 }

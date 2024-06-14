@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/log_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
@@ -16,6 +17,7 @@ class BleedingFlowController extends GetxController {
   Rx<dynamic> percentage1Year = Rx<dynamic>(null);
   RxString selectedDataType = 'percentage30Days'.obs;
   RxMap<String, dynamic> specificBleedingFlowData = RxMap<String, dynamic>();
+  Rx<DateTime> selectedDate = DateTime.now().obs;
   late TabController tabController;
 
   @override
@@ -36,6 +38,7 @@ class BleedingFlowController extends GetxController {
     percentage6Months = Rx<dynamic>(null);
     percentage1Year = Rx<dynamic>(null);
     selectedDataType = 'percentage30Days'.obs;
+    _updateSelectedDate();
     specifiedDataByDate();
     super.onInit();
   }
@@ -83,6 +86,7 @@ class BleedingFlowController extends GetxController {
 
   void updateTabBar(int index) {
     selectedDataType.value = _getDataTypeByIndex(index);
+    _updateSelectedDate();
     specifiedDataByDate();
   }
 
@@ -98,6 +102,27 @@ class BleedingFlowController extends GetxController {
         return 'percentage1Year';
       default:
         return 'percentage30Days';
+    }
+  }
+
+  void _updateSelectedDate() {
+    DateTime now = DateTime.now();
+    switch (selectedDataType.value) {
+      case 'percentage30Days':
+        selectedDate.value = now.subtract(Duration(days: 30));
+        break;
+      case 'percentage3Months':
+        selectedDate.value = now.subtract(Duration(days: 90));
+        break;
+      case 'percentage6Months':
+        selectedDate.value = now.subtract(Duration(days: 180));
+        break;
+      case 'percentage1Year':
+        selectedDate.value = now.subtract(Duration(days: 365));
+        break;
+      default:
+        selectedDate.value = now.subtract(Duration(days: 30));
+        break;
     }
   }
 
@@ -141,10 +166,10 @@ class BleedingFlowController extends GetxController {
         data = result.data!;
 
         bleedingFlow.value = data.logs;
-        percentage30Days.value = data.percentage30Days;
-        percentage3Months.value = data.percentage3Months;
-        percentage6Months.value = data.percentage6Months;
-        percentage1Year.value = data.percentage1Year;
+        percentage30Days.value = data.percentage30Days ?? {};
+        percentage3Months.value = data.percentage3Months ?? {};
+        percentage6Months.value = data.percentage6Months ?? {};
+        percentage1Year.value = data.percentage1Year ?? {};
       } else {
         print("Error: Unable to fetch moods");
       }
@@ -154,6 +179,10 @@ class BleedingFlowController extends GetxController {
     } catch (error) {
       print("Error: $error");
     }
+  }
+
+  String formatDate(DateTime date) {
+    return DateFormat('MMM dd, yyyy').format(date);
   }
 }
 

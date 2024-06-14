@@ -22,14 +22,6 @@ class PeriodCycleController extends GetxController {
     print(endDate);
   }
 
-  String setActual(String? isActual) {
-    if (isActual == "1") {
-      return "Data Actual";
-    } else {
-      return "Data Prediksi";
-    }
-  }
-
   @override
   void onInit() {
     periodCycleData = <PeriodCycle>[].obs;
@@ -56,17 +48,13 @@ class PeriodCycleController extends GetxController {
       : DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   Future<void> fetchPeriod() async {
-    try {
-      PeriodCycle? periodCycle = await periodRepository.getPeriodSummary();
-      if (periodCycle != null && periodCycle.data != null) {
-        periodCycleData.assignAll([periodCycle]);
-      }
-    } catch (e) {
-      print("Error fetching articles: $e");
+    PeriodCycle? periodCycle = await periodRepository.getPeriodSummary();
+    if (periodCycle != null && periodCycle.data != null) {
+      periodCycleData.assignAll([periodCycle]);
     }
   }
 
-  void addPeriod(int avgPeriodDuration) async {
+  void addPeriod(int avgPeriodDuration, int avgPeriodCycle) async {
     if (startDate.value != null) {
       if (formattedStartDate == formattedEndDate || endDate.value == null) {
         setEndDate(startDate.value!.add(Duration(days: avgPeriodDuration)));
@@ -79,34 +67,27 @@ class PeriodCycleController extends GetxController {
         }
       ];
 
-      Map<String, dynamic> saveMenstruationData =
-          await periodRepository.storePeriod(periods, null, null);
-      await fetchPeriod();
-      Get.back();
+      await periodRepository.storePeriod(periods, avgPeriodCycle, null);
+
       cancelEdit();
+      await fetchPeriod();
     } else {
       print('Please select both start and end dates');
     }
   }
 
   Future<void> editPeriod(
-      String periodId, int? periodCycle, int avgPeriodDuration) async {
-    try {
-      if (startDate.value != null) {
-        if (formattedStartDate == formattedEndDate || endDate.value == null) {
-          setEndDate(startDate.value!.add(Duration(days: avgPeriodDuration)));
-          // print(true);
-          // print(avgPeriodDuration);
-        }
+      int periodId, int? periodCycle, int avgPeriodDuration) async {
+    if (startDate.value != null) {
+      if (formattedStartDate == formattedEndDate || endDate.value == null) {
+        setEndDate(startDate.value!.add(Duration(days: avgPeriodDuration)));
       }
-      var periodData = await periodRepository.updatePeriod(
-          periodId, formattedStartDate, formattedEndDate, periodCycle);
-      await fetchPeriod();
-      Get.back();
-      cancelEdit();
-    } catch (e) {
-      print("Error editing period: $e");
     }
+    await periodRepository.updatePeriod(
+        periodId, formattedStartDate, formattedEndDate, periodCycle);
+
+    cancelEdit();
+    await fetchPeriod();
   }
 
   void cancelEdit() {

@@ -1,20 +1,24 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/period_repository.dart';
-import 'package:periodnpregnancycalender/app/modules/home/controllers/home_controller.dart';
+import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/daily_log_controller.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class DailyLogView extends GetView<DailyLogController> {
-  final HomeController homeController;
+  final HomeMenstruationController homeController;
 
   DailyLogView({Key? key})
-      : homeController = Get.find<HomeController>(),
+      : homeController = Get.find<HomeMenstruationController>(),
         super(key: key);
 
   @override
@@ -53,6 +57,14 @@ class DailyLogView extends GetView<DailyLogController> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          controller.setFocusedDate(DateTime.now());
+          controller.setSelectedDate(DateTime.now());
+        },
+        child: Icon(Icons.today_outlined),
+        tooltip: "Back to current date",
+      ),
       body: FutureBuilder<PeriodCycle?>(
         future: PeriodRepository(apiService).getPeriodSummary(),
         builder: (context, snapshot) {
@@ -72,108 +84,340 @@ class DailyLogView extends GetView<DailyLogController> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          CustomCalendar(
-                            isExpandable: false,
-                            onDateSelected: (DateTime selectedDate) {
-                              final today = DateTime.now();
-                              if (selectedDate.isAfter(today)) {
-                                return;
-                              }
-                              homeController
-                                  .checkDateMenstruation(selectedDate);
-                              controller.fetchLog(selectedDate.toString());
-                              controller.setSelectedDate(selectedDate);
-                            },
-                            dayBuilder: (BuildContext context, DateTime day) {
-                              bool isAfterToday = day.isAfter(DateTime.now());
-                              bool isSelectedDay =
-                                  controller.selectedDate.day == day.day &&
-                                      controller.selectedDate.month ==
-                                          day.month &&
-                                      controller.selectedDate.year == day.year;
-
-                              bool menstruation = false;
-                              bool ovulation = false;
-                              bool fertilePeriod = false;
-
-                              for (int i = 0;
-                                  i < homeController.haidAwalList.length;
-                                  i++) {
-                                DateTime haidAwal =
-                                    homeController.haidAwalList[i];
-                                DateTime haidAkhir =
-                                    homeController.haidAkhirList[i];
-
-                                if (day.isAtSameMomentAs(haidAwal) ||
-                                    day.isAfter(haidAwal) &&
-                                        day.isBefore(haidAkhir) ||
-                                    day.isAtSameMomentAs(haidAkhir)) {
-                                  menstruation = true;
-                                  break;
-                                }
-                              }
-
-                              for (int j = 0;
-                                  j < homeController.ovulasiList.length;
-                                  j++) {
-                                DateTime ovulasi =
-                                    homeController.ovulasiList[j];
-
-                                if (day.isAtSameMomentAs(ovulasi)) {
-                                  ovulation = true;
-                                  break;
-                                }
-                              }
-
-                              for (int i = 0;
-                                  i < homeController.masaSuburAwalList.length;
-                                  i++) {
-                                DateTime masaSuburAwal =
-                                    homeController.masaSuburAwalList[i];
-                                DateTime masaSuburAkhir =
-                                    homeController.masaSuburAkhirList[i];
-
-                                if (day.isAtSameMomentAs(masaSuburAwal) ||
-                                    day.isAfter(masaSuburAwal) &&
-                                        day.isBefore(masaSuburAkhir) ||
-                                    day.isAtSameMomentAs(masaSuburAkhir)) {
-                                  fertilePeriod = true;
-                                  break;
-                                }
-                              }
-
-                              return Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isSelectedDay
-                                      ? Colors.pink
-                                      : menstruation
-                                          ? Colors.blue
-                                          : ovulation
-                                              ? Colors.green
-                                              : fertilePeriod
-                                                  ? Colors.indigo
-                                                  : Colors.transparent,
+                          Obx(
+                            () => Container(
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 246, 245, 245),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: TableCalendar(
+                                focusedDay: controller.getFocusedDate,
+                                firstDay: DateTime.utc(2010, 10, 16),
+                                lastDay: DateTime.now(),
+                                calendarFormat: CalendarFormat.week,
+                                startingDayOfWeek: StartingDayOfWeek.monday,
+                                onDaySelected: (selectedDay, focusedDay) {
+                                  controller.setSelectedDate(selectedDay);
+                                  controller.setFocusedDate(focusedDay);
+                                  controller
+                                      .fetchLog(selectedDay.toIso8601String());
+                                },
+                                onPageChanged: (focusedDay) {
+                                  controller.setFocusedDate(focusedDay);
+                                },
+                                selectedDayPredicate: (day) => isSameDay(
+                                  controller.selectedDate,
+                                  day,
                                 ),
-                                child: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: Text(
-                                      '${day.day}',
-                                      style: TextStyle(
-                                        color: isSelectedDay
-                                            ? Colors.white
-                                            : isAfterToday
-                                                ? Colors.grey
-                                                : Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                      ),
-                                    ),
+                                rowHeight: 50,
+                                daysOfWeekHeight: 25.0,
+                                calendarStyle: CalendarStyle(
+                                  cellMargin: EdgeInsets.all(6),
+                                  outsideDaysVisible: false,
+                                  isTodayHighlighted: true,
+                                  rangeStartDecoration: BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  rangeEndDecoration: BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  withinRangeDecoration: BoxDecoration(
+                                    color: Colors.red.withOpacity(0.5),
+                                    shape: BoxShape.circle,
                                   ),
                                 ),
-                              );
-                            },
+                                headerStyle: HeaderStyle(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
+                                    ),
+                                    color: AppColors.contrast,
+                                  ),
+                                  formatButtonVisible: false,
+                                  leftChevronVisible: true,
+                                  rightChevronVisible: true,
+                                  titleCentered: true,
+                                  formatButtonShowsNext: false,
+                                  formatButtonTextStyle: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                  formatButtonDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 2,
+                                    ),
+                                    color: Colors.red,
+                                  ),
+                                  titleTextStyle: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  headerMargin: EdgeInsets.only(bottom: 10),
+                                ),
+                                availableGestures: AvailableGestures.all,
+                                calendarBuilders: CalendarBuilders(
+                                  defaultBuilder: (context, day, focusedDay) {
+                                    for (int i = 0;
+                                        i < homeController.haidAwalList.length;
+                                        i++) {
+                                      if (day.isAtSameMomentAs(
+                                              homeController.haidAwalList[i]) ||
+                                          day.isAfter(homeController
+                                                  .haidAwalList[i]) &&
+                                              day.isBefore(homeController
+                                                  .haidAkhirList[i]) ||
+                                          day.isAtSameMomentAs(
+                                              homeController.haidAkhirList[i]))
+                                        return Container(
+                                          margin: EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${day.day}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                    }
+
+                                    for (int j = 0;
+                                        j < homeController.ovulasiList.length;
+                                        j++) {
+                                      if (day.isAtSameMomentAs(
+                                          homeController.ovulasiList[j])) {
+                                        return Container(
+                                          margin: EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${day.day}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    for (int i = 0;
+                                        i <
+                                            homeController
+                                                .masaSuburAwalList.length;
+                                        i++) {
+                                      if (day.isAtSameMomentAs(homeController
+                                              .masaSuburAwalList[i]) ||
+                                          day.isAfter(homeController
+                                                  .masaSuburAwalList[i]) &&
+                                              day.isBefore(homeController
+                                                  .masaSuburAkhirList[i]) ||
+                                          day.isAtSameMomentAs(homeController
+                                              .masaSuburAkhirList[i])) {
+                                        return Container(
+                                          margin: EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${day.day}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    for (int i = 0;
+                                        i <
+                                            homeController
+                                                .predictHaidAwalList.length;
+                                        i++) {
+                                      if ((day.isAtSameMomentAs(homeController
+                                              .predictHaidAwalList[i]) ||
+                                          day.isAfter(homeController
+                                                  .predictHaidAwalList[i]) &&
+                                              day.isBefore(homeController
+                                                  .predictHaidAkhirList[i]) ||
+                                          day.isAtSameMomentAs(homeController
+                                              .predictHaidAkhirList[i]))) {
+                                        return Container(
+                                          margin: EdgeInsets.all(8),
+                                          child: DottedBorder(
+                                            borderType: BorderType.Circle,
+                                            dashPattern: [8, 2, 1, 4],
+                                            color: Colors.pink,
+                                            strokeWidth: 2.0,
+                                            child: Center(
+                                              child: Text(
+                                                '${day.day}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    for (int j = 0;
+                                        j <
+                                            homeController
+                                                .predictOvulasiList.length;
+                                        j++) {
+                                      if (day.isAtSameMomentAs(homeController
+                                          .predictOvulasiList[j])) {
+                                        return Container(
+                                          margin: EdgeInsets.all(8),
+                                          child: DottedBorder(
+                                            borderType: BorderType.Circle,
+                                            dashPattern: [8, 2, 1, 4],
+                                            color: Colors.blue,
+                                            strokeWidth: 2.0,
+                                            child: Center(
+                                              child: Text(
+                                                '${day.day}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    for (int i = 0;
+                                        i <
+                                            homeController
+                                                .predictMasaSuburAwalList
+                                                .length;
+                                        i++) {
+                                      if ((day.isAtSameMomentAs(homeController
+                                              .predictMasaSuburAwalList[i]) ||
+                                          day.isAfter(homeController
+                                                      .predictMasaSuburAwalList[
+                                                  i]) &&
+                                              day.isBefore(homeController
+                                                      .predictMasaSuburAkhirList[
+                                                  i]) ||
+                                          day.isAtSameMomentAs(homeController
+                                              .predictMasaSuburAkhirList[i]))) {
+                                        return Container(
+                                          margin: EdgeInsets.all(8),
+                                          child: DottedBorder(
+                                            borderType: BorderType.Circle,
+                                            dashPattern: [8, 2, 1, 4],
+                                            color: Colors.green,
+                                            strokeWidth: 2.0,
+                                            child: Center(
+                                              child: Text(
+                                                '${day.day}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    return Container(
+                                      child: Center(
+                                        child: Text(
+                                          '${day.day}',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  dowBuilder: (context, day) {
+                                    return Center(
+                                      child: Text(
+                                        DateFormat.E().format(day),
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  selectedBuilder: (context, day, focusedDay) {
+                                    return Container(
+                                      margin: EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.deepPurpleAccent,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          '${day.day}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  todayBuilder: (context, day, focusedDay) {
+                                    return Container(
+                                      margin: EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.deepPurpleAccent[100],
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          '${day.day}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
                           ),
                           SizedBox(height: 16.h),
                           Wrap(

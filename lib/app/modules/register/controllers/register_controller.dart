@@ -50,11 +50,8 @@ class RegisterController extends GetxController {
       DateTime? birthdayValue = onboardingController.birthday.value;
 
       if (birthdayValue != null) {
-        Map<String, dynamic> data = await authRepository.register(
-            usernameC.text.trim(),
-            birthdayValue,
-            emailC.text.trim(),
-            passwordC.text.trim());
+        await authRepository.register(usernameC.text.trim(), birthdayValue,
+            emailC.text.trim(), passwordC.text.trim());
       }
 
       Map<String, dynamic> requestVerificationCode = await authRepository

@@ -16,34 +16,27 @@ class PeriodCycle {
       data: json["data"] == null ? null : Data.fromJson(json["data"]),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-        "status": status,
-        "message": message,
-        "data": data?.toJson(),
-      };
 }
 
 class Data {
-  Data({
-    required this.initialYear,
-    required this.latestYear,
-    required this.currentYear,
-    required this.age,
-    required this.lunarAge,
-    required this.shortestPeriod,
-    required this.longestPeriod,
-    required this.shortestCycle,
-    required this.longestCycle,
-    required this.avgPeriodDuration,
-    required this.avgPeriodCycle,
-    required this.periodChart,
-    required this.latestPeriodHistory,
-    required this.periodHistory,
-    required this.actualPeriod,
-    required this.predictionPeriod,
-    required this.gender,
-  });
+  Data(
+      {required this.initialYear,
+      required this.latestYear,
+      required this.currentYear,
+      required this.age,
+      required this.lunarAge,
+      required this.shortestPeriod,
+      required this.longestPeriod,
+      required this.shortestCycle,
+      required this.longestCycle,
+      required this.avgPeriodDuration,
+      required this.avgPeriodCycle,
+      required this.periodChart,
+      required this.latestPeriodHistory,
+      required this.periodHistory,
+      required this.actualPeriod,
+      required this.predictionPeriod,
+      required this.shettlesGenderPrediction});
 
   final String? initialYear;
   final String? latestYear;
@@ -61,7 +54,7 @@ class Data {
   final List<LatestPeriodHistory> periodHistory;
   final List<LatestPeriodHistory> actualPeriod;
   final List<LatestPeriodHistory> predictionPeriod;
-  final List<Gender> gender;
+  final List<ShettlesGenderPrediction> shettlesGenderPrediction;
 
   factory Data.fromJson(Map<String, dynamic> json) {
     return Data(
@@ -95,31 +88,13 @@ class Data {
           ? []
           : List<LatestPeriodHistory>.from(json["prediction_period"]!
               .map((x) => LatestPeriodHistory.fromJson(x))),
-      gender: json["gender"] == null
+      shettlesGenderPrediction: json["shettlesGenderPrediction"] == null
           ? []
-          : List<Gender>.from(json["gender"]!.map((x) => Gender.fromJson(x))),
+          : List<ShettlesGenderPrediction>.from(
+              json["shettlesGenderPrediction"]!
+                  .map((x) => ShettlesGenderPrediction.fromJson(x))),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-        "initial_year": initialYear,
-        "latest_year": latestYear,
-        "current_year": currentYear,
-        "age": age,
-        "lunar_age": lunarAge,
-        "shortest_period": shortestPeriod,
-        "longest_period": longestPeriod,
-        "shortest_cycle": shortestCycle,
-        "longest_cycle": longestCycle,
-        "avg_period_duration": avgPeriodDuration,
-        "avg_period_cycle": avgPeriodCycle,
-        "period_chart": periodChart.map((x) => x.toJson()).toList(),
-        "latest_period_history": latestPeriodHistory?.toJson(),
-        "period_history": periodHistory.map((x) => x.toJson()).toList(),
-        "actual_period": actualPeriod.map((x) => x.toJson()).toList(),
-        "prediction_period": predictionPeriod.map((x) => x.toJson()).toList(),
-        "gender": gender.map((x) => x.toJson()).toList(),
-      };
 }
 
 class LatestPeriodHistory {
@@ -145,8 +120,8 @@ class LatestPeriodHistory {
     required this.updatedAt,
   });
 
-  final String? id;
-  final String? userId;
+  final int? id;
+  final int? userId;
   final DateTime? haidAwal;
   final DateTime? haidAkhir;
   final DateTime? ovulasi;
@@ -192,82 +167,6 @@ class LatestPeriodHistory {
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "user_id": userId,
-        "haid_awal": haidAwal != null
-            ? "${haidAwal!.year.toString().padLeft(4, '0')}-${haidAwal!.month.toString().padLeft(2, '0')}-${haidAwal!.day.toString().padLeft(2, '0')}"
-            : null,
-        "haid_akhir": haidAkhir != null
-            ? "${haidAkhir!.year.toString().padLeft(4, '0')}-${haidAkhir!.month.toString().padLeft(2, '0')}-${haidAkhir!.day.toString().padLeft(2, '0')}"
-            : null,
-        "ovulasi": ovulasi != null
-            ? "${ovulasi!.year.toString().padLeft(4, '0')}-${ovulasi!.month.toString().padLeft(2, '0')}-${ovulasi!.day.toString().padLeft(2, '0')}"
-            : null,
-        "masa_subur_awal": masaSuburAwal != null
-            ? "${masaSuburAwal!.year.toString().padLeft(4, '0')}-${masaSuburAwal!.month.toString().padLeft(2, '0')}-${masaSuburAwal!.day.toString().padLeft(2, '0')}"
-            : null,
-        "masa_subur_akhir": masaSuburAkhir != null
-            ? "${masaSuburAkhir!.year.toString().padLeft(4, '0')}-${masaSuburAkhir!.month.toString().padLeft(2, '0')}-${masaSuburAkhir!.day.toString().padLeft(2, '0')}"
-            : null,
-        "hari_terakhir_siklus": hariTerakhirSiklus != null
-            ? "${hariTerakhirSiklus!.year.toString().padLeft(4, '0')}-${hariTerakhirSiklus!.month.toString().padLeft(2, '0')}-${hariTerakhirSiklus!.day.toString().padLeft(2, '0')}"
-            : null,
-        "lama_siklus": lamaSiklus,
-        "durasi_haid": durasiHaid,
-        "haid_berikutnya_awal": haidBerikutnyaAwal != null
-            ? "${haidBerikutnyaAwal!.year.toString().padLeft(4, '0')}-${haidBerikutnyaAwal!.month.toString().padLeft(2, '0')}-${haidBerikutnyaAwal!.day.toString().padLeft(2, '0')}"
-            : null,
-        "haid_berikutnya_akhir": haidBerikutnyaAkhir != null
-            ? "${haidBerikutnyaAkhir!.year.toString().padLeft(4, '0')}-${haidBerikutnyaAkhir!.month.toString().padLeft(2, '0')}-${haidBerikutnyaAkhir!.day.toString().padLeft(2, '0')}"
-            : null,
-        "ovulasi_berikutnya": ovulasiBerikutnya != null
-            ? "${ovulasiBerikutnya!.year.toString().padLeft(4, '0')}-${ovulasiBerikutnya!.month.toString().padLeft(2, '0')}-${ovulasiBerikutnya!.day.toString().padLeft(2, '0')}"
-            : null,
-        "masa_subur_berikutnya_awal": masaSuburBerikutnyaAwal != null
-            ? "${masaSuburBerikutnyaAwal!.year.toString().padLeft(4, '0')}-${masaSuburBerikutnyaAwal!.month.toString().padLeft(2, '0')}-${masaSuburBerikutnyaAwal!.day.toString().padLeft(2, '0')}"
-            : null,
-        "masa_subur_berikutnya_akhir": masaSuburBerikutnyaAkhir != null
-            ? "${masaSuburBerikutnyaAkhir!.year.toString().padLeft(4, '0')}-${masaSuburBerikutnyaAkhir!.month.toString().padLeft(2, '0')}-${masaSuburBerikutnyaAkhir!.day.toString().padLeft(2, '0')}"
-            : null,
-        "hari_terakhir_siklus_berikutnya": hariTerakhirSiklusBerikutnya != null
-            ? "${hariTerakhirSiklusBerikutnya!.year.toString().padLeft(4, '0')}-${hariTerakhirSiklusBerikutnya!.month.toString().padLeft(2, '0')}-${hariTerakhirSiklusBerikutnya!.day.toString().padLeft(2, '0')}"
-            : null,
-        "is_actual": isActual,
-        "created_at": createdAt?.toIso8601String(),
-        "updated_at": updatedAt?.toIso8601String(),
-      };
-}
-
-class Gender {
-  Gender({
-    required this.bulan,
-    required this.namaBulan,
-    required this.lunarAge,
-    required this.prediksiJenisKelamin,
-  });
-
-  final int? bulan;
-  final String? namaBulan;
-  final int? lunarAge;
-  final String? prediksiJenisKelamin;
-
-  factory Gender.fromJson(Map<String, dynamic> json) {
-    return Gender(
-      bulan: json["bulan"],
-      namaBulan: json["nama_bulan"],
-      lunarAge: json["lunar_age"],
-      prediksiJenisKelamin: json["prediksi_jenis_kelamin"],
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        "bulan": bulan,
-        "nama_bulan": namaBulan,
-        "lunar_age": lunarAge,
-        "prediksi_jenis_kelamin": prediksiJenisKelamin,
-      };
 }
 
 class PeriodChart {
@@ -279,7 +178,7 @@ class PeriodChart {
     required this.periodDuration,
   });
 
-  final String? id;
+  final int? id;
   final DateTime? startDate;
   final DateTime? endDate;
   final int? periodCycle;
@@ -294,16 +193,27 @@ class PeriodChart {
       periodDuration: json["period_duration"],
     );
   }
+}
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "start_date": startDate != null
-            ? "${startDate!.year.toString().padLeft(4, '0')}-${startDate!.month.toString().padLeft(2, '0')}-${startDate!.day.toString().padLeft(2, '0')}"
-            : null,
-        "end_date": endDate != null
-            ? "${endDate!.year.toString().padLeft(4, '0')}-${endDate!.month.toString().padLeft(2, '0')}-${endDate!.day.toString().padLeft(2, '0')}"
-            : null,
-        "period_cycle": periodCycle,
-        "period_duration": periodDuration,
-      };
+class ShettlesGenderPrediction {
+  ShettlesGenderPrediction({
+    required this.boyStartDate,
+    required this.boyEndDate,
+    required this.girlStartDate,
+    required this.girlEndDate,
+  });
+
+  final DateTime? boyStartDate;
+  final DateTime? boyEndDate;
+  final DateTime? girlStartDate;
+  final DateTime? girlEndDate;
+
+  factory ShettlesGenderPrediction.fromJson(Map<String, dynamic> json) {
+    return ShettlesGenderPrediction(
+      boyStartDate: DateTime.tryParse(json["boyStartDate"] ?? ""),
+      boyEndDate: DateTime.tryParse(json["boyEndDate"] ?? ""),
+      girlStartDate: DateTime.tryParse(json["girlStartDate"] ?? ""),
+      girlEndDate: DateTime.tryParse(json["girlEndDate"] ?? ""),
+    );
+  }
 }

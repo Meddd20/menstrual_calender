@@ -17,6 +17,9 @@ import '../controllers/analysis_controller.dart';
 class AnalysisBinding extends Bindings {
   @override
   void dependencies() {
+    Get.lazyPut<PeriodCycleController>(
+      () => PeriodCycleController(),
+    );
     Get.lazyPut<OthersController>(
       () => OthersController(),
     );

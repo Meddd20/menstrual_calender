@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/repositories/auth_repository.dart';
 import 'package:periodnpregnancycalender/app/modules/login/views/reset_password_view.dart';
@@ -34,20 +35,11 @@ class CodeVerificationController extends GetxController {
   }
 
   Future<void> forgetPassword() async {
-    print(pinController.value);
     if (pinController.text.isEmpty || pinController.text.length < 6) {
-      showDialog(
-        context: Get.context!,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("Error"),
-            children: [Text("Fill the verification code")],
-          );
-        },
-      );
-    }
-
-    try {
+      Get.showSnackbar(Ui.ErrorSnackBar(
+          message:
+              "Verification code are empty, please fill the verification code"));
+    } else {
       Map<String, dynamic> data = await authRepository.validateCodeVerif(
         userEmail.value,
         pinController.text,
@@ -60,34 +52,12 @@ class CodeVerificationController extends GetxController {
       Get.offAll(() => ResetPasswordView(),
           arguments: {'email': userEmail.value});
       print({'email': userEmail.value});
-    } catch (e) {
-      showDialog(
-        context: Get.context!,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("Error"),
-            children: [Text(e.toString())],
-          );
-        },
-      );
     }
   }
 
   Future<void> resendVerificationCode() async {
-    try {
-      Map<String, dynamic> requestVerificationCode = await authRepository
-          .requestVerificationCode(userEmail.value, "Lupa Password");
-    } catch (e) {
-      showDialog(
-        context: Get.context!,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("Error"),
-            children: [Text(e.toString())],
-          );
-        },
-      );
-    }
+    await authRepository.requestVerificationCode(
+        userEmail.value, "Lupa Password");
   }
 
   void startResendTimer() {

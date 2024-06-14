@@ -18,8 +18,8 @@ class Article {
 }
 
 class Articles {
-  String? id;
-  String? userId;
+  int? id;
+  int? userId;
   String? writter;
   String? titleInd;
   String? titleEng;

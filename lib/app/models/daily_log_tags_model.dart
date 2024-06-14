@@ -20,7 +20,7 @@ class DailyLogTags {
 
 class Data {
   String tags;
-  Map<String, dynamic> logs;
+  dynamic logs;
   dynamic percentage30Days;
   dynamic percentage3Months;
   dynamic percentage6Months;

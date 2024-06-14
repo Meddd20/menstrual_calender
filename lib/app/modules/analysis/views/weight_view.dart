@@ -50,6 +50,15 @@ class WeightView extends GetView<WeightController> {
                   ),
                 ),
               ),
+              Text(
+                "from ${controller.formatDate(controller.selectedDate.value)} up to today",
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.4),
+                  fontSize: 15,
+                  height: 2.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               Container(
                 height: Get.height * 0.375,
                 width: Get.width,

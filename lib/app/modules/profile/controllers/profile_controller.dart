@@ -10,7 +10,8 @@ import 'package:periodnpregnancycalender/app/repositories/profile_repository.dar
 class ProfileController extends GetxController {
   final box = GetStorage();
   final ApiService apiService = ApiService();
-  late final ProfileRepository profileRepository = ProfileRepository(apiService);
+  late final ProfileRepository profileRepository =
+      ProfileRepository(apiService);
   late final AuthRepository authRepository = AuthRepository(apiService);
   Rx<Profile?> profile = Rx<Profile?>(null);
   TextEditingController namaC = TextEditingController();
@@ -55,6 +56,7 @@ class ProfileController extends GetxController {
 
       await Future.delayed(Duration(milliseconds: 800));
       deleteAuth();
+      deleteisPregnant();
       await authRepository.logout();
       Get.offAllNamed(Routes.ONBOARDING);
     } catch (error) {
@@ -65,5 +67,9 @@ class ProfileController extends GetxController {
 
   void deleteAuth() {
     box.write("isAuth", false);
+  }
+
+  void deleteisPregnant() {
+    box.remove("isPregnant");
   }
 }

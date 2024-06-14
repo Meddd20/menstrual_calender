@@ -15,16 +15,6 @@ class Reminder {
       });
     }
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
 }
 
 class Reminders {
@@ -40,14 +30,5 @@ class Reminders {
     title = json['title'];
     datetime = json['datetime'];
     description = json['description'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['datetime'] = this.datetime;
-    data['description'] = this.description;
-    return data;
   }
 }
