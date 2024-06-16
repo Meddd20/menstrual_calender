@@ -1,10 +1,13 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/modules/login/views/login_view.dart';
+import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_gain_tracker_view.dart';
+import 'package:periodnpregnancycalender/app/modules/profile/controllers/profile_controller.dart';
+import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import '../controllers/onboarding_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
-import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding1_view.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
@@ -47,7 +50,9 @@ class OnboardingView extends GetView<OnboardingController> {
                 CustomTransparentButton(
                   text: "I Have an Account",
                   onPressed: () {
-                    Get.toNamed(Routes.LOGIN);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Get.toNamed(Routes.LOGIN);
+                    });
                   },
                 ),
                 SizedBox(height: 5.h),

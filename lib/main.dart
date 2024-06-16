@@ -15,9 +15,9 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final box = GetStorage();
-    final isAuth = box.read('isAuth');
-    final initialRoute = isAuth ? Routes.NAVIGATION_MENU : Routes.ONBOARDING;
+    // final box = GetStorage();
+    // final isAuth = box.read('isAuth');
+    // final initialRoute = isAuth ? Routes.NAVIGATION_MENU : Routes.ONBOARDING;
     return ScreenUtilInit(
       builder: (_, child) {
         return GetMaterialApp(
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
           ),
           title: "Period and Pregnancy Calendar",
           debugShowCheckedModeBanner: false,
-          initialRoute: initialRoute,
+          initialRoute: Routes.ONBOARDING,
           getPages: AppPages.routes,
         );
       },

@@ -866,14 +866,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  stripe_android:
-    dependency: "direct overridden"
-    description:
-      name: stripe_android
-      sha256: c3a4398a777e4378bbc528e7244a73bcd3e6c6d807fce5bb8bcabc21d31abe8c
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.5.0+1"
   syncfusion_flutter_charts:
     dependency: "direct main"
     description:

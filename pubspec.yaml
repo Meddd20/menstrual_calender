@@ -47,7 +47,6 @@ dev_dependencies:
 
 dependency_overrides:
   intl: ^0.17.0
-  stripe_android: "9.5.0+1"
 
 flutter:
   uses-material-design: true

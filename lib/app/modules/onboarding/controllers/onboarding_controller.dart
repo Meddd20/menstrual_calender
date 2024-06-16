@@ -16,7 +16,7 @@ class OnboardingController extends GetxController {
 
   @override
   void onInit() {
-    purposes = 0.obs;
+    // purposes = 0.obs;
     super.onInit();
   }
 
