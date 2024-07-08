@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import 'package:periodnpregnancycalender/app/models/detail_article_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/article_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/article_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 
 class InsightDetailController extends GetxController {

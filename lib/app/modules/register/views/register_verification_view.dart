@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_pinput.dart';
 import 'package:periodnpregnancycalender/app/modules/register/controllers/register_verification_controller.dart';
 
 class RegisterVerificationView extends GetView<RegisterVerificationController> {
@@ -42,7 +43,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                       () => Container(
                         width: Get.width,
                         child: Text(
-                          "Please type verification code send to ${controller.userEmail}",
+                          "Please enter verification code send to ${controller.userEmail}",
                           style: CustomTextStyle.captionTextStyle(),
                         ),
                       ),
@@ -85,9 +86,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                         Obx(
                           () {
                             return Text(
-                              controller.countdown.value > 0
-                                  ? "(${controller.countdown})"
-                                  : "",
+                              controller.countdown.value > 0 ? "(${controller.countdown})" : "",
                               style: CustomTextStyle.buttonTextStyle(),
                             );
                           },

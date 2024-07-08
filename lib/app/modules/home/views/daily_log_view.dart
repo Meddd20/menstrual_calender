@@ -9,9 +9,10 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/period_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/daily_log_controller.dart';
+import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DailyLogView extends GetView<DailyLogController> {
@@ -24,6 +25,7 @@ class DailyLogView extends GetView<DailyLogController> {
   @override
   Widget build(BuildContext context) {
     final ApiService apiService = ApiService();
+    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
     Get.put(DailyLogController());
     return Scaffold(
       backgroundColor: Color(0xFFf9f8fb),
@@ -45,6 +47,7 @@ class DailyLogView extends GetView<DailyLogController> {
           TextButton(
             onPressed: () {
               controller.resetLog();
+              controller.saveLog();
             },
             child: Text(
               'Reset',
@@ -65,8 +68,9 @@ class DailyLogView extends GetView<DailyLogController> {
         child: Icon(Icons.today_outlined),
         tooltip: "Back to current date",
       ),
-      body: FutureBuilder<PeriodCycle?>(
-        future: PeriodRepository(apiService).getPeriodSummary(),
+      body: FutureBuilder<PeriodCycleIndex?>(
+        // future: PeriodRepository(apiService, databaseHelper).getPeriodSummary(),
+        future: homeController.periodStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -87,7 +91,7 @@ class DailyLogView extends GetView<DailyLogController> {
                           Obx(
                             () => Container(
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 246, 245, 245),
+                                color: AppColors.white,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: TableCalendar(
@@ -99,8 +103,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                 onDaySelected: (selectedDay, focusedDay) {
                                   controller.setSelectedDate(selectedDay);
                                   controller.setFocusedDate(focusedDay);
-                                  controller
-                                      .fetchLog(selectedDay.toIso8601String());
+                                  controller.fetchLog(selectedDay);
                                 },
                                 onPageChanged: (focusedDay) {
                                   controller.setFocusedDate(focusedDay);
@@ -129,13 +132,13 @@ class DailyLogView extends GetView<DailyLogController> {
                                   ),
                                 ),
                                 headerStyle: HeaderStyle(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                      topRight: Radius.circular(10),
-                                    ),
-                                    color: AppColors.contrast,
-                                  ),
+                                  // decoration: BoxDecoration(
+                                  //   borderRadius: BorderRadius.only(
+                                  //     topLeft: Radius.circular(10),
+                                  //     topRight: Radius.circular(10),
+                                  //   ),
+                                  //   color: AppColors.contrast,
+                                  // ),
                                   formatButtonVisible: false,
                                   leftChevronVisible: true,
                                   rightChevronVisible: true,
@@ -164,17 +167,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                 availableGestures: AvailableGestures.all,
                                 calendarBuilders: CalendarBuilders(
                                   defaultBuilder: (context, day, focusedDay) {
-                                    for (int i = 0;
-                                        i < homeController.haidAwalList.length;
-                                        i++) {
-                                      if (day.isAtSameMomentAs(
-                                              homeController.haidAwalList[i]) ||
-                                          day.isAfter(homeController
-                                                  .haidAwalList[i]) &&
-                                              day.isBefore(homeController
-                                                  .haidAkhirList[i]) ||
-                                          day.isAtSameMomentAs(
-                                              homeController.haidAkhirList[i]))
+                                    for (int i = 0; i < homeController.haidAwalList.length; i++) {
+                                      if (day.isAtSameMomentAs(homeController.haidAwalList[i]) || day.isAfter(homeController.haidAwalList[i]) && day.isBefore(homeController.haidAkhirList[i]) || day.isAtSameMomentAs(homeController.haidAkhirList[i]))
                                         return Container(
                                           margin: EdgeInsets.all(6),
                                           decoration: BoxDecoration(
@@ -194,11 +188,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                         );
                                     }
 
-                                    for (int j = 0;
-                                        j < homeController.ovulasiList.length;
-                                        j++) {
-                                      if (day.isAtSameMomentAs(
-                                          homeController.ovulasiList[j])) {
+                                    for (int j = 0; j < homeController.ovulasiList.length; j++) {
+                                      if (day.isAtSameMomentAs(homeController.ovulasiList[j])) {
                                         return Container(
                                           margin: EdgeInsets.all(6),
                                           decoration: BoxDecoration(
@@ -219,19 +210,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                       }
                                     }
 
-                                    for (int i = 0;
-                                        i <
-                                            homeController
-                                                .masaSuburAwalList.length;
-                                        i++) {
-                                      if (day.isAtSameMomentAs(homeController
-                                              .masaSuburAwalList[i]) ||
-                                          day.isAfter(homeController
-                                                  .masaSuburAwalList[i]) &&
-                                              day.isBefore(homeController
-                                                  .masaSuburAkhirList[i]) ||
-                                          day.isAtSameMomentAs(homeController
-                                              .masaSuburAkhirList[i])) {
+                                    for (int i = 0; i < homeController.masaSuburAwalList.length; i++) {
+                                      if (day.isAtSameMomentAs(homeController.masaSuburAwalList[i]) || day.isAfter(homeController.masaSuburAwalList[i]) && day.isBefore(homeController.masaSuburAkhirList[i]) || day.isAtSameMomentAs(homeController.masaSuburAkhirList[i])) {
                                         return Container(
                                           margin: EdgeInsets.all(6),
                                           decoration: BoxDecoration(
@@ -252,19 +232,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                       }
                                     }
 
-                                    for (int i = 0;
-                                        i <
-                                            homeController
-                                                .predictHaidAwalList.length;
-                                        i++) {
-                                      if ((day.isAtSameMomentAs(homeController
-                                              .predictHaidAwalList[i]) ||
-                                          day.isAfter(homeController
-                                                  .predictHaidAwalList[i]) &&
-                                              day.isBefore(homeController
-                                                  .predictHaidAkhirList[i]) ||
-                                          day.isAtSameMomentAs(homeController
-                                              .predictHaidAkhirList[i]))) {
+                                    for (int i = 0; i < homeController.predictHaidAwalList.length; i++) {
+                                      if ((day.isAtSameMomentAs(homeController.predictHaidAwalList[i]) || day.isAfter(homeController.predictHaidAwalList[i]) && day.isBefore(homeController.predictHaidAkhirList[i]) || day.isAtSameMomentAs(homeController.predictHaidAkhirList[i]))) {
                                         return Container(
                                           margin: EdgeInsets.all(8),
                                           child: DottedBorder(
@@ -287,13 +256,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                       }
                                     }
 
-                                    for (int j = 0;
-                                        j <
-                                            homeController
-                                                .predictOvulasiList.length;
-                                        j++) {
-                                      if (day.isAtSameMomentAs(homeController
-                                          .predictOvulasiList[j])) {
+                                    for (int j = 0; j < homeController.predictOvulasiList.length; j++) {
+                                      if (day.isAtSameMomentAs(homeController.predictOvulasiList[j])) {
                                         return Container(
                                           margin: EdgeInsets.all(8),
                                           child: DottedBorder(
@@ -316,22 +280,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                       }
                                     }
 
-                                    for (int i = 0;
-                                        i <
-                                            homeController
-                                                .predictMasaSuburAwalList
-                                                .length;
-                                        i++) {
-                                      if ((day.isAtSameMomentAs(homeController
-                                              .predictMasaSuburAwalList[i]) ||
-                                          day.isAfter(homeController
-                                                      .predictMasaSuburAwalList[
-                                                  i]) &&
-                                              day.isBefore(homeController
-                                                      .predictMasaSuburAkhirList[
-                                                  i]) ||
-                                          day.isAtSameMomentAs(homeController
-                                              .predictMasaSuburAkhirList[i]))) {
+                                    for (int i = 0; i < homeController.predictMasaSuburAwalList.length; i++) {
+                                      if ((day.isAtSameMomentAs(homeController.predictMasaSuburAwalList[i]) || day.isAfter(homeController.predictMasaSuburAwalList[i]) && day.isBefore(homeController.predictMasaSuburAkhirList[i]) || day.isAtSameMomentAs(homeController.predictMasaSuburAkhirList[i]))) {
                                         return Container(
                                           margin: EdgeInsets.all(8),
                                           child: DottedBorder(
@@ -457,23 +407,14 @@ class DailyLogView extends GetView<DailyLogController> {
                                             spacing: 8.0,
                                             children: controller.sexActivity
                                                 .map(
-                                                  (activity) =>
-                                                      CustomChoiceChip(
+                                                  (activity) => CustomChoiceChip(
                                                     label: activity,
-                                                    isSelected: controller
-                                                            .getSelectedSexActivity() ==
-                                                        activity,
+                                                    isSelected: controller.getSelectedSexActivity() == activity,
                                                     onSelected: () {
-                                                      if (controller
-                                                              .getSelectedSexActivity() ==
-                                                          activity) {
-                                                        controller
-                                                            .setSelectedSexActivity(
-                                                                "");
+                                                      if (controller.getSelectedSexActivity() == activity) {
+                                                        controller.setSelectedSexActivity("");
                                                       } else {
-                                                        controller
-                                                            .setSelectedSexActivity(
-                                                                activity);
+                                                        controller.setSelectedSexActivity(activity);
                                                       }
                                                     },
                                                   ),
@@ -488,8 +429,7 @@ class DailyLogView extends GetView<DailyLogController> {
                               ),
                               Obx(
                                 () => Visibility(
-                                  visible: homeController.checkDateMenstruation(
-                                      controller.selectedDate),
+                                  visible: homeController.checkDateMenstruation(controller.selectedDate),
                                   child: Container(
                                     alignment: Alignment.topCenter,
                                     width: Get.width,
@@ -522,31 +462,21 @@ class DailyLogView extends GetView<DailyLogController> {
                                               child: Wrap(
                                                 alignment: WrapAlignment.start,
                                                 spacing: 8.0,
-                                                children:
-                                                    controller.bleedingFlow
-                                                        .map(
-                                                          (bleedingFlow) =>
-                                                              CustomChoiceChip(
-                                                            label: bleedingFlow,
-                                                            isSelected: controller
-                                                                    .getSelectedBleedingFlow() ==
-                                                                bleedingFlow,
-                                                            onSelected: () {
-                                                              if (controller
-                                                                      .getSelectedBleedingFlow() ==
-                                                                  bleedingFlow) {
-                                                                controller
-                                                                    .setSelectedBleedingFlow(
-                                                                        "");
-                                                              } else {
-                                                                controller
-                                                                    .setSelectedBleedingFlow(
-                                                                        bleedingFlow);
-                                                              }
-                                                            },
-                                                          ),
-                                                        )
-                                                        .toList(),
+                                                children: controller.bleedingFlow
+                                                    .map(
+                                                      (bleedingFlow) => CustomChoiceChip(
+                                                        label: bleedingFlow,
+                                                        isSelected: controller.getSelectedBleedingFlow() == bleedingFlow,
+                                                        onSelected: () {
+                                                          if (controller.getSelectedBleedingFlow() == bleedingFlow) {
+                                                            controller.setSelectedBleedingFlow("");
+                                                          } else {
+                                                            controller.setSelectedBleedingFlow(bleedingFlow);
+                                                          }
+                                                        },
+                                                      ),
+                                                    )
+                                                    .toList(),
                                               ),
                                             ),
                                           ),
@@ -589,31 +519,19 @@ class DailyLogView extends GetView<DailyLogController> {
                                             spacing: 8.0,
                                             children: controller.symptoms
                                                 .map(
-                                                  (symptoms) =>
-                                                      CustomFilterChip(
+                                                  (symptoms) => CustomFilterChip(
                                                     label: symptoms,
-                                                    isSelected: controller
-                                                        .getSelectedSymptoms()
-                                                        .contains(symptoms),
-                                                    onSelected:
-                                                        (bool isSelected) {
-                                                      List<String>
-                                                          selectedSymptoms =
-                                                          List.from(controller
-                                                              .getSelectedSymptoms());
+                                                    isSelected: controller.getSelectedSymptoms().contains(symptoms),
+                                                    onSelected: (bool isSelected) {
+                                                      List<String> selectedSymptoms = List.from(controller.getSelectedSymptoms());
 
-                                                      if (selectedSymptoms
-                                                          .contains(symptoms)) {
-                                                        selectedSymptoms
-                                                            .remove(symptoms);
+                                                      if (selectedSymptoms.contains(symptoms)) {
+                                                        selectedSymptoms.remove(symptoms);
                                                       } else {
-                                                        selectedSymptoms
-                                                            .add(symptoms);
+                                                        selectedSymptoms.add(symptoms);
                                                       }
 
-                                                      controller
-                                                          .setSelectedSymptoms(
-                                                              selectedSymptoms);
+                                                      controller.setSelectedSymptoms(selectedSymptoms);
                                                       controller.update();
                                                     },
                                                   ),
@@ -658,31 +576,21 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Wrap(
                                             alignment: WrapAlignment.start,
                                             spacing: 8.0,
-                                            children:
-                                                controller.vaginalDischarge
-                                                    .map(
-                                                      (vaginalDischarge) =>
-                                                          CustomChoiceChip(
-                                                        label: vaginalDischarge,
-                                                        isSelected: controller
-                                                                .getSelectedVaginalDischarge() ==
-                                                            vaginalDischarge,
-                                                        onSelected: () {
-                                                          if (controller
-                                                                  .getSelectedVaginalDischarge() ==
-                                                              vaginalDischarge) {
-                                                            controller
-                                                                .setSelectedVaginalDischarge(
-                                                                    "");
-                                                          } else {
-                                                            controller
-                                                                .setSelectedVaginalDischarge(
-                                                                    vaginalDischarge);
-                                                          }
-                                                        },
-                                                      ),
-                                                    )
-                                                    .toList(),
+                                            children: controller.vaginalDischarge
+                                                .map(
+                                                  (vaginalDischarge) => CustomChoiceChip(
+                                                    label: vaginalDischarge,
+                                                    isSelected: controller.getSelectedVaginalDischarge() == vaginalDischarge,
+                                                    onSelected: () {
+                                                      if (controller.getSelectedVaginalDischarge() == vaginalDischarge) {
+                                                        controller.setSelectedVaginalDischarge("");
+                                                      } else {
+                                                        controller.setSelectedVaginalDischarge(vaginalDischarge);
+                                                      }
+                                                    },
+                                                  ),
+                                                )
+                                                .toList(),
                                           ),
                                         ),
                                       ),
@@ -725,28 +633,17 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 .map(
                                                   (moods) => CustomFilterChip(
                                                     label: moods,
-                                                    isSelected: controller
-                                                        .getSelectedMoods()
-                                                        .contains(moods),
-                                                    onSelected:
-                                                        (bool isSelected) {
-                                                      List<String>
-                                                          selectedMoods =
-                                                          List.from(controller
-                                                              .getSelectedMoods());
+                                                    isSelected: controller.getSelectedMoods().contains(moods),
+                                                    onSelected: (bool isSelected) {
+                                                      List<String> selectedMoods = List.from(controller.getSelectedMoods());
 
-                                                      if (selectedMoods
-                                                          .contains(moods)) {
-                                                        selectedMoods
-                                                            .remove(moods);
+                                                      if (selectedMoods.contains(moods)) {
+                                                        selectedMoods.remove(moods);
                                                       } else {
-                                                        selectedMoods
-                                                            .add(moods);
+                                                        selectedMoods.add(moods);
                                                       }
 
-                                                      controller
-                                                          .setSelectedMoods(
-                                                              selectedMoods);
+                                                      controller.setSelectedMoods(selectedMoods);
                                                       controller.update();
                                                     },
                                                   ),
@@ -794,28 +691,17 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 .map(
                                                   (others) => CustomFilterChip(
                                                     label: others,
-                                                    isSelected: controller
-                                                        .getSelectedOthers()
-                                                        .contains(others),
-                                                    onSelected:
-                                                        (bool isSelected) {
-                                                      List<String>
-                                                          selectedOthers =
-                                                          List.from(controller
-                                                              .getSelectedOthers());
+                                                    isSelected: controller.getSelectedOthers().contains(others),
+                                                    onSelected: (bool isSelected) {
+                                                      List<String> selectedOthers = List.from(controller.getSelectedOthers());
 
-                                                      if (selectedOthers
-                                                          .contains(others)) {
-                                                        selectedOthers
-                                                            .remove(others);
+                                                      if (selectedOthers.contains(others)) {
+                                                        selectedOthers.remove(others);
                                                       } else {
-                                                        selectedOthers
-                                                            .add(others);
+                                                        selectedOthers.add(others);
                                                       }
 
-                                                      controller
-                                                          .setSelectedOthers(
-                                                              selectedOthers);
+                                                      controller.setSelectedOthers(selectedOthers);
                                                       controller.update();
                                                     },
                                                   ),
@@ -859,43 +745,26 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Wrap(
                                             alignment: WrapAlignment.start,
                                             spacing: 8.0,
-                                            children:
-                                                controller.physicalActivity
-                                                    .map(
-                                                      (physicalActivity) =>
-                                                          CustomFilterChip(
-                                                        label: physicalActivity,
-                                                        isSelected: controller
-                                                            .getSelectedPhysicalActivity()
-                                                            .contains(
-                                                                physicalActivity),
-                                                        onSelected:
-                                                            (bool isSelected) {
-                                                          List<String>
-                                                              selectedPhysicalActivity =
-                                                              List.from(controller
-                                                                  .getSelectedPhysicalActivity());
+                                            children: controller.physicalActivity
+                                                .map(
+                                                  (physicalActivity) => CustomFilterChip(
+                                                    label: physicalActivity,
+                                                    isSelected: controller.getSelectedPhysicalActivity().contains(physicalActivity),
+                                                    onSelected: (bool isSelected) {
+                                                      List<String> selectedPhysicalActivity = List.from(controller.getSelectedPhysicalActivity());
 
-                                                          if (selectedPhysicalActivity
-                                                              .contains(
-                                                                  physicalActivity)) {
-                                                            selectedPhysicalActivity
-                                                                .remove(
-                                                                    physicalActivity);
-                                                          } else {
-                                                            selectedPhysicalActivity
-                                                                .add(
-                                                                    physicalActivity);
-                                                          }
+                                                      if (selectedPhysicalActivity.contains(physicalActivity)) {
+                                                        selectedPhysicalActivity.remove(physicalActivity);
+                                                      } else {
+                                                        selectedPhysicalActivity.add(physicalActivity);
+                                                      }
 
-                                                          controller
-                                                              .setSelectedPhysicalActivity(
-                                                                  selectedPhysicalActivity);
-                                                          controller.update();
-                                                        },
-                                                      ),
-                                                    )
-                                                    .toList(),
+                                                      controller.setSelectedPhysicalActivity(selectedPhysicalActivity);
+                                                      controller.update();
+                                                    },
+                                                  ),
+                                                )
+                                                .toList(),
                                           ),
                                         ),
                                       ),
@@ -934,40 +803,26 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 ),
                                                 SizedBox(height: 10.h),
                                                 Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     Obx(
                                                       () => NumberPicker(
                                                         minValue: 32,
                                                         maxValue: 43,
-                                                        value: controller
-                                                            .wholeNumberTemperature
-                                                            .value,
-                                                        onChanged: controller
-                                                            .onWholeNumberTemperatureChanged,
-                                                        textStyle: TextStyle(
-                                                            color: Colors.grey,
-                                                            fontSize: 20.sp),
-                                                        selectedTextStyle:
-                                                            TextStyle(
-                                                          color:
-                                                              Color(0xFFFF6868),
+                                                        value: controller.wholeNumberTemperature.value,
+                                                        onChanged: controller.onWholeNumberTemperatureChanged,
+                                                        textStyle: TextStyle(color: Colors.grey, fontSize: 20.sp),
+                                                        selectedTextStyle: TextStyle(
+                                                          color: Color(0xFFFF6868),
                                                           fontSize: 23.sp,
                                                           fontFamily: 'Poppins',
-                                                          fontWeight:
-                                                              FontWeight.w600,
+                                                          fontWeight: FontWeight.w600,
                                                         ),
                                                         infiniteLoop: true,
-                                                        decoration:
-                                                            BoxDecoration(
+                                                        decoration: BoxDecoration(
                                                           border: Border(
-                                                            top: BorderSide(
-                                                                color: Colors
-                                                                    .black),
-                                                            bottom: BorderSide(
-                                                                color: Colors
-                                                                    .black),
+                                                            top: BorderSide(color: Colors.black),
+                                                            bottom: BorderSide(color: Colors.black),
                                                           ),
                                                         ),
                                                       ),
@@ -976,40 +831,27 @@ class DailyLogView extends GetView<DailyLogController> {
                                                       ".",
                                                       style: TextStyle(
                                                         fontSize: 24.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                     Obx(
                                                       () => NumberPicker(
                                                         minValue: 0,
                                                         maxValue: 9,
-                                                        value: controller
-                                                            .decimalNumberTemperature
-                                                            .value,
-                                                        onChanged: controller
-                                                            .onDecimalNumberTemperatureChanged,
-                                                        textStyle: TextStyle(
-                                                            color: Colors.grey),
-                                                        selectedTextStyle:
-                                                            TextStyle(
-                                                          color:
-                                                              Color(0xFFFF6868),
+                                                        value: controller.decimalNumberTemperature.value,
+                                                        onChanged: controller.onDecimalNumberTemperatureChanged,
+                                                        textStyle: TextStyle(color: Colors.grey),
+                                                        selectedTextStyle: TextStyle(
+                                                          color: Color(0xFFFF6868),
                                                           fontSize: 20.sp,
                                                           fontFamily: 'Poppins',
-                                                          fontWeight:
-                                                              FontWeight.w600,
+                                                          fontWeight: FontWeight.w600,
                                                         ),
                                                         infiniteLoop: true,
-                                                        decoration:
-                                                            BoxDecoration(
+                                                        decoration: BoxDecoration(
                                                           border: Border(
-                                                            top: BorderSide(
-                                                                color: Colors
-                                                                    .black),
-                                                            bottom: BorderSide(
-                                                                color: Colors
-                                                                    .black),
+                                                            top: BorderSide(color: Colors.black),
+                                                            bottom: BorderSide(color: Colors.black),
                                                           ),
                                                         ),
                                                       ),
@@ -1019,10 +861,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                                       style: TextStyle(
                                                         fontSize: 16.sp,
                                                         fontFamily: 'Poppins',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color:
-                                                            Color(0xFFFF6868),
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFFFF6868),
                                                       ),
                                                     ),
                                                   ],
@@ -1032,24 +872,13 @@ class DailyLogView extends GetView<DailyLogController> {
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  style: ElevatedButton.styleFrom(
-                                                      backgroundColor:
-                                                          Color(0xFFFD6666),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          30)),
-                                                      minimumSize: Size(
-                                                          Get.width, 45.h)),
+                                                  style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFD6666), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), minimumSize: Size(Get.width, 45.h)),
                                                   child: Text(
                                                     "Save",
                                                     style: TextStyle(
                                                       fontFamily: 'Poppins',
                                                       fontSize: 16.sp,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                      fontWeight: FontWeight.w600,
                                                       letterSpacing: 0.38,
                                                       color: Colors.white,
                                                     ),
@@ -1069,81 +898,54 @@ class DailyLogView extends GetView<DailyLogController> {
                                       width: Get.width,
                                       decoration: ShapeDecoration(
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         color: Colors.white,
                                       ),
                                       child: Padding(
                                         padding: EdgeInsets.all(20),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Icon(Iconsax.wind),
                                             SizedBox(width: 20.w),
                                             Expanded(
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Obx(() {
-                                                    final temperatureValue =
-                                                        controller
-                                                            .temperature.value;
-                                                    return temperatureValue
-                                                            .isNotEmpty
+                                                    final temperatureValue = controller.temperature.value;
+                                                    return temperatureValue.isNotEmpty
                                                         ? Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
                                                               Text(
                                                                 "Temperature",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      16.sp,
+                                                                style: TextStyle(
+                                                                  fontSize: 16.sp,
                                                                   height: 2.0,
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .black,
+                                                                  fontFamily: 'Poppins',
+                                                                  fontWeight: FontWeight.bold,
+                                                                  color: Colors.black,
                                                                 ),
                                                               ),
                                                               Text.rich(
                                                                 TextSpan(
-                                                                  text:
-                                                                      "$temperatureValue",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        24.sp,
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: Color(
-                                                                        0xFFFD6666),
+                                                                  text: "$temperatureValue",
+                                                                  style: TextStyle(
+                                                                    fontSize: 24.sp,
+                                                                    fontFamily: 'Poppins',
+                                                                    fontWeight: FontWeight.w600,
+                                                                    color: Color(0xFFFD6666),
                                                                   ),
                                                                   children: <TextSpan>[
                                                                     TextSpan(
-                                                                      text:
-                                                                          ' °C',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            16.sp,
-                                                                        fontFamily:
-                                                                            'Poppins',
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color: Color(
-                                                                            0xFFFD6666),
+                                                                      text: ' °C',
+                                                                      style: TextStyle(
+                                                                        fontSize: 16.sp,
+                                                                        fontFamily: 'Poppins',
+                                                                        fontWeight: FontWeight.w500,
+                                                                        color: Color(0xFFFD6666),
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1156,13 +958,9 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             style: TextStyle(
                                                               fontSize: 18.sp,
                                                               height: 2.0,
-                                                              fontFamily:
-                                                                  'Poppins',
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color:
-                                                                  Colors.black,
+                                                              fontFamily: 'Poppins',
+                                                              fontWeight: FontWeight.w600,
+                                                              color: Colors.black,
                                                             ),
                                                           );
                                                   }),
@@ -1208,39 +1006,26 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 ),
                                                 SizedBox(height: 10.h),
                                                 Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     Obx(
                                                       () => NumberPicker(
                                                         minValue: 30,
                                                         maxValue: 150,
-                                                        value: controller
-                                                            .wholeNumberWeight
-                                                            .value,
-                                                        onChanged: controller
-                                                            .onWholeNumberWeightChanged,
-                                                        textStyle: TextStyle(
-                                                            color: Colors.grey),
-                                                        selectedTextStyle:
-                                                            TextStyle(
-                                                          color:
-                                                              Color(0xFFFF6868),
+                                                        value: controller.wholeNumberWeight.value,
+                                                        onChanged: controller.onWholeNumberWeightChanged,
+                                                        textStyle: TextStyle(color: Colors.grey),
+                                                        selectedTextStyle: TextStyle(
+                                                          color: Color(0xFFFF6868),
                                                           fontSize: 23.sp,
                                                           fontFamily: 'Poppins',
-                                                          fontWeight:
-                                                              FontWeight.w600,
+                                                          fontWeight: FontWeight.w600,
                                                         ),
                                                         infiniteLoop: true,
-                                                        decoration:
-                                                            BoxDecoration(
+                                                        decoration: BoxDecoration(
                                                           border: Border(
-                                                            top: BorderSide(
-                                                                color: Colors
-                                                                    .black),
-                                                            bottom: BorderSide(
-                                                                color: Colors
-                                                                    .black),
+                                                            top: BorderSide(color: Colors.black),
+                                                            bottom: BorderSide(color: Colors.black),
                                                           ),
                                                         ),
                                                       ),
@@ -1249,40 +1034,27 @@ class DailyLogView extends GetView<DailyLogController> {
                                                       ".",
                                                       style: TextStyle(
                                                         fontSize: 24.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                     Obx(
                                                       () => NumberPicker(
                                                         minValue: 0,
                                                         maxValue: 9,
-                                                        value: controller
-                                                            .decimalNumberWeight
-                                                            .value,
-                                                        onChanged: controller
-                                                            .onDecimalNumberWeightChanged,
-                                                        textStyle: TextStyle(
-                                                            color: Colors.grey),
-                                                        selectedTextStyle:
-                                                            TextStyle(
-                                                          color:
-                                                              Color(0xFFFF6868),
+                                                        value: controller.decimalNumberWeight.value,
+                                                        onChanged: controller.onDecimalNumberWeightChanged,
+                                                        textStyle: TextStyle(color: Colors.grey),
+                                                        selectedTextStyle: TextStyle(
+                                                          color: Color(0xFFFF6868),
                                                           fontSize: 23.sp,
                                                           fontFamily: 'Poppins',
-                                                          fontWeight:
-                                                              FontWeight.w600,
+                                                          fontWeight: FontWeight.w600,
                                                         ),
                                                         infiniteLoop: true,
-                                                        decoration:
-                                                            BoxDecoration(
+                                                        decoration: BoxDecoration(
                                                           border: Border(
-                                                            top: BorderSide(
-                                                                color: Colors
-                                                                    .black),
-                                                            bottom: BorderSide(
-                                                                color: Colors
-                                                                    .black),
+                                                            top: BorderSide(color: Colors.black),
+                                                            bottom: BorderSide(color: Colors.black),
                                                           ),
                                                         ),
                                                       ),
@@ -1292,10 +1064,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                                       style: TextStyle(
                                                         fontSize: 16.sp,
                                                         fontFamily: 'Poppins',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color:
-                                                            Color(0xFFFF6868),
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFFFF6868),
                                                       ),
                                                     ),
                                                   ],
@@ -1305,24 +1075,13 @@ class DailyLogView extends GetView<DailyLogController> {
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  style: ElevatedButton.styleFrom(
-                                                      backgroundColor:
-                                                          Color(0xFFFD6666),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          30)),
-                                                      minimumSize: Size(
-                                                          Get.width, 45.h)),
+                                                  style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFD6666), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), minimumSize: Size(Get.width, 45.h)),
                                                   child: Text(
                                                     "Save",
                                                     style: TextStyle(
                                                       fontFamily: 'Poppins',
                                                       fontSize: 16.sp,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                      fontWeight: FontWeight.w600,
                                                       letterSpacing: 0.38,
                                                       color: Colors.white,
                                                     ),
@@ -1342,81 +1101,54 @@ class DailyLogView extends GetView<DailyLogController> {
                                       width: Get.width,
                                       decoration: ShapeDecoration(
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         color: Colors.white,
                                       ),
                                       child: Padding(
                                         padding: EdgeInsets.all(20),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Icon(Iconsax.weight),
                                             SizedBox(width: 20.w),
                                             Expanded(
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Obx(() {
-                                                    final weightValue =
-                                                        controller
-                                                            .weights.value;
-                                                    return weightValue
-                                                            .isNotEmpty
+                                                    final weightValue = controller.weights.value;
+                                                    return weightValue.isNotEmpty
                                                         ? Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
                                                               Text(
                                                                 "Weight",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      16.sp,
+                                                                style: TextStyle(
+                                                                  fontSize: 16.sp,
                                                                   height: 2.0,
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .black,
+                                                                  fontFamily: 'Poppins',
+                                                                  fontWeight: FontWeight.bold,
+                                                                  color: Colors.black,
                                                                 ),
                                                               ),
                                                               Text.rich(
                                                                 TextSpan(
-                                                                  text:
-                                                                      "$weightValue",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        24.sp,
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: Color(
-                                                                        0xFFFD6666),
+                                                                  text: "$weightValue",
+                                                                  style: TextStyle(
+                                                                    fontSize: 24.sp,
+                                                                    fontFamily: 'Poppins',
+                                                                    fontWeight: FontWeight.w600,
+                                                                    color: Color(0xFFFD6666),
                                                                   ),
                                                                   children: <TextSpan>[
                                                                     TextSpan(
-                                                                      text:
-                                                                          ' Kg',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            16.sp,
-                                                                        fontFamily:
-                                                                            'Poppins',
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color: Color(
-                                                                            0xFFFD6666),
+                                                                      text: ' Kg',
+                                                                      style: TextStyle(
+                                                                        fontSize: 16.sp,
+                                                                        fontFamily: 'Poppins',
+                                                                        fontWeight: FontWeight.w500,
+                                                                        color: Color(0xFFFD6666),
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1429,13 +1161,9 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             style: TextStyle(
                                                               fontSize: 18.sp,
                                                               height: 2.0,
-                                                              fontFamily:
-                                                                  'Poppins',
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color:
-                                                                  Colors.black,
+                                                              fontFamily: 'Poppins',
+                                                              fontWeight: FontWeight.w600,
+                                                              color: Colors.black,
                                                             ),
                                                           );
                                                   }),
@@ -1457,10 +1185,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return Padding(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
+                                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                                         child: SizedBox(
                                           height: 430,
                                           child: Padding(
@@ -1481,8 +1206,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                       fontSize: 16.sp,
                                                       letterSpacing: 0.8,
                                                       fontFamily: 'Poppins',
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                      fontWeight: FontWeight.w600,
                                                       color: Colors.black,
                                                     ),
                                                   ),
@@ -1490,18 +1214,12 @@ class DailyLogView extends GetView<DailyLogController> {
                                                   TextFormField(
                                                     minLines: 7,
                                                     maxLines: 7,
-                                                    style:
-                                                        TextStyle(fontSize: 14),
-                                                    onChanged:
-                                                        controller.updateNotes,
-                                                    initialValue:
-                                                        controller.getNotes(),
+                                                    style: TextStyle(fontSize: 14),
+                                                    onChanged: controller.updateNotes,
+                                                    initialValue: controller.getNotes(),
                                                     decoration: InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
+                                                      border: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.circular(10.0),
                                                       ),
                                                     ),
                                                   ),
@@ -1510,26 +1228,19 @@ class DailyLogView extends GetView<DailyLogController> {
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     },
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      backgroundColor:
-                                                          Color(0xFFFD6666),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(30),
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Color(0xFFFD6666),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(30),
                                                       ),
-                                                      minimumSize:
-                                                          Size(Get.width, 45.h),
+                                                      minimumSize: Size(Get.width, 45.h),
                                                     ),
                                                     child: Text(
                                                       "Save",
                                                       style: TextStyle(
                                                         fontFamily: 'Poppins',
                                                         fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.w600,
+                                                        fontWeight: FontWeight.w600,
                                                         letterSpacing: 0.38,
                                                         color: Colors.white,
                                                       ),
@@ -1550,23 +1261,20 @@ class DailyLogView extends GetView<DailyLogController> {
                                       width: Get.width,
                                       decoration: ShapeDecoration(
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         color: Colors.white,
                                       ),
                                       child: Padding(
                                         padding: EdgeInsets.all(20),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Icon(Iconsax.edit_24),
                                             SizedBox(width: 20.w),
                                             Expanded(
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     "Daily Notes",
@@ -1574,30 +1282,22 @@ class DailyLogView extends GetView<DailyLogController> {
                                                       fontSize: 16.sp,
                                                       height: 2.0,
                                                       fontFamily: 'Poppins',
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                      fontWeight: FontWeight.bold,
                                                       color: Colors.black,
                                                     ),
                                                   ),
                                                   Obx(
-                                                    () => controller.notes.value
-                                                            .isNotEmpty
+                                                    () => controller.notes.value.isNotEmpty
                                                         ? Text(
                                                             "${controller.notes.value}",
                                                             style: TextStyle(
                                                               fontSize: 12.sp,
-                                                              fontFamily:
-                                                                  'Poppins',
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color: Color(
-                                                                  0xFFFD6666),
+                                                              fontFamily: 'Poppins',
+                                                              fontWeight: FontWeight.w600,
+                                                              color: Color(0xFFFD6666),
                                                             ),
                                                             maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
+                                                            overflow: TextOverflow.ellipsis,
                                                           )
                                                         : SizedBox.shrink(),
                                                   ),
@@ -1614,8 +1314,7 @@ class DailyLogView extends GetView<DailyLogController> {
                               ),
                               Obx(
                                 () => Container(
-                                  height:
-                                      controller.isChanged.value ? 75.h : 8.h,
+                                  height: controller.isChanged.value ? 75.h : 8.h,
                                 ),
                               ),
                             ],

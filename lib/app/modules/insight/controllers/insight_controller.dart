@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/models/article_model.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/repositories/article_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/article_repository.dart';
 
 class InsightController extends GetxController {
   final ApiService apiService = ApiService();

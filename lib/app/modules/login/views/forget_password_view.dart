@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_textformfield.dart';
 import 'package:periodnpregnancycalender/app/modules/login/controllers/forget_password_controller.dart';
 
 class ForgetPasswordView extends GetView<ForgetPasswordController> {
@@ -29,7 +30,7 @@ class ForgetPasswordView extends GetView<ForgetPasswordController> {
             ),
           ),
           body: Padding(
-            padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 35.h),
+            padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 35.h),
             child: Form(
               key: controller.forgetPasswordFormKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -40,7 +41,7 @@ class ForgetPasswordView extends GetView<ForgetPasswordController> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(height: 130.h),
+                      SizedBox(height: 90.h),
                       Container(
                         width: Get.width,
                         child: Text(
@@ -57,15 +58,16 @@ class ForgetPasswordView extends GetView<ForgetPasswordController> {
                           style: CustomTextStyle.captionTextStyle(),
                         ),
                       ),
-                      SizedBox(height: 30.h),
+                      SizedBox(height: 25.h),
                       CustomTextFormField(
                         controller: controller.forgetEmailC,
                         labelText: "Email Address",
                         validator: (value) {
                           return controller.validateForgetEmail(value!);
                         },
+                        hintText: "example@example.com",
                       ),
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 25.h),
                       CustomColoredButton(
                         text: "Send code",
                         onPressed: () {

@@ -2,19 +2,20 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
-import 'package:periodnpregnancycalender/app/repositories/pregnancy_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/repositories/auth_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/period_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class RegisterVerificationController extends GetxController {
   final ApiService apiService = ApiService();
+  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
   late final AuthRepository authRepository = AuthRepository(apiService);
   late final PeriodRepository periodRepository = PeriodRepository(apiService);
-  late final PregnancyRepository pregnancyRepository =
-      PregnancyRepository(apiService);
+  late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
   late Map<String, dynamic> requestVerificationResponse;
   final pinController = TextEditingController();
   var userEmail = "".obs;
@@ -43,9 +44,7 @@ class RegisterVerificationController extends GetxController {
 
   Future<void> codeVerification() async {
     if (pinController.text.isEmpty || pinController.text.length < 6) {
-      Get.showSnackbar(Ui.ErrorSnackBar(
-          message:
-              "Verification code are empty, please fill the verification code"));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "Verification code are empty, please fill the verification code"));
     } else {
       Map<String, dynamic> data = await authRepository.validateCodeVerif(
         userEmail.value,
@@ -56,6 +55,7 @@ class RegisterVerificationController extends GetxController {
 
       if (data["status"] == "success") {
         storePeriodData();
+        Get.offNamed(Routes.LOGIN);
       }
     }
   }
@@ -64,20 +64,16 @@ class RegisterVerificationController extends GetxController {
     OnboardingController onboardingController = Get.find();
 
     if (onboardingController.purposes == 0) {
-      saveMenstruationData = await periodRepository.storePeriod(
+      await periodRepository.storePeriod(
         (onboardingController.periods),
         onboardingController.menstruationCycle.value,
         userEmail.value,
       );
     } else {
-      saveMenstruationData = await pregnancyRepository.pregnancyBegin(
+      await pregnancyRepository.pregnancyBegin(
         onboardingController.lastPeriodDate.toString(),
         userEmail.value,
       );
-    }
-
-    if (saveMenstruationData!.isNotEmpty) {
-      Get.offNamed(Routes.LOGIN);
     }
   }
 

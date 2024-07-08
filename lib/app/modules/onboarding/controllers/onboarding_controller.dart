@@ -11,7 +11,6 @@ class OnboardingController extends GetxController {
   var menstruationCycle = 28.obs;
   var periodLast = 7.obs;
   var lastPeriodDate = DateTime.now().obs;
-  var pregnantWeek = 0.obs;
   var datePickerController = DateRangePickerController().obs;
 
   @override
@@ -41,17 +40,13 @@ class OnboardingController extends GetxController {
 
         if (start != null) {
           if (end == null) {
-            DateTime endDatePrediction =
-                start.add(Duration(days: periodLast.value));
-            formattedEndDate =
-                "${endDatePrediction.year}-${endDatePrediction.month.toString().padLeft(2, '0')}-${endDatePrediction.day.toString().padLeft(2, '0')}";
+            DateTime endDatePrediction = start.add(Duration(days: periodLast.value));
+            formattedEndDate = "${endDatePrediction.year}-${endDatePrediction.month.toString().padLeft(2, '0')}-${endDatePrediction.day.toString().padLeft(2, '0')}";
           } else {
-            formattedEndDate =
-                "${end.year}-${end.month.toString().padLeft(2, '0')}-${end.day.toString().padLeft(2, '0')}";
+            formattedEndDate = "${end.year}-${end.month.toString().padLeft(2, '0')}-${end.day.toString().padLeft(2, '0')}";
           }
 
-          var formattedStartDate =
-              "${start.year}-${start.month.toString().padLeft(2, '0')}-${start.day.toString().padLeft(2, '0')}";
+          var formattedStartDate = "${start.year}-${start.month.toString().padLeft(2, '0')}-${start.day.toString().padLeft(2, '0')}";
 
           periods.add({
             'first_period': "$formattedStartDate",
@@ -68,23 +63,23 @@ class OnboardingController extends GetxController {
   }
 
   void validateBirthday() {
-    DateTime today = DateTime.now();
     DateTime? birthDate = birthday.value;
 
     if (birthDate != null) {
       Get.to(() => Onboarding2View());
     } else {
-      Get.showSnackbar(
-          Ui.ErrorSnackBar(message: "Please select your date of birth."));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "Please select your date of birth."));
       print("Error: Birthday is null.");
     }
   }
 
   void validateLastPeriod() {
     if (periods.isEmpty) {
-      Get.showSnackbar(Ui.ErrorSnackBar(
-          message: "Please select at least one period range."));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "Please select at least one period range."));
       print("Error: Please select at least one period range.");
+    } else if (periods.length > 3) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "Please select only 3 period range."));
+      print("Error: Please select only 3 period range.");
     } else {
       Get.toNamed(Routes.REGISTER);
     }

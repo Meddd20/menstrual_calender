@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/models/date_event_model.dart';
+import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 
 class ShettlesPredDetailView extends GetView {
@@ -52,7 +52,7 @@ class ShettlesPredDetailView extends GetView {
                       ),
                       TextSpan(
                         text:
-                            'from ${homeController.formatDate(argument.boyStartDate)} until ${homeController.formatDate(argument.boyEndDate)} to likely conceive a male',
+                            'from ${homeController.formatDate(argument.boyStartDate.toString())} until ${homeController.formatDate(argument.boyEndDate.toString())} to likely conceive a male',
                         style: TextStyle(
                           fontSize: 15.sp,
                           color: Colors.black,
@@ -71,7 +71,7 @@ class ShettlesPredDetailView extends GetView {
                       ),
                       TextSpan(
                         text:
-                            'from ${homeController.formatDate(argument.girlStartDate)} until ${homeController.formatDate(argument.girlEndDate)} to likely conceive a female.',
+                            'from ${homeController.formatDate(argument.girlStartDate.toString())} until ${homeController.formatDate(argument.girlEndDate.toString())} to likely conceive a female.',
                         style: TextStyle(
                           fontSize: 15.sp,
                           color: Colors.black,

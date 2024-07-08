@@ -7,19 +7,19 @@ class PeriodCycle {
 
   final String? status;
   final String? message;
-  final Data? data;
+  final PeriodCycleIndex? data;
 
   factory PeriodCycle.fromJson(Map<String, dynamic> json) {
     return PeriodCycle(
       status: json["status"],
       message: json["message"],
-      data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      data: json["data"] == null ? null : PeriodCycleIndex.fromJson(json["data"]),
     );
   }
 }
 
-class Data {
-  Data(
+class PeriodCycleIndex {
+  PeriodCycleIndex(
       {required this.initialYear,
       required this.latestYear,
       required this.currentYear,
@@ -50,14 +50,14 @@ class Data {
   final int? avgPeriodDuration;
   final int? avgPeriodCycle;
   final List<PeriodChart> periodChart;
-  final LatestPeriodHistory? latestPeriodHistory;
-  final List<LatestPeriodHistory> periodHistory;
-  final List<LatestPeriodHistory> actualPeriod;
-  final List<LatestPeriodHistory> predictionPeriod;
+  final PeriodHistory? latestPeriodHistory;
+  final List<PeriodHistory> periodHistory;
+  final List<PeriodHistory> actualPeriod;
+  final List<PeriodHistory> predictionPeriod;
   final List<ShettlesGenderPrediction> shettlesGenderPrediction;
 
-  factory Data.fromJson(Map<String, dynamic> json) {
-    return Data(
+  factory PeriodCycleIndex.fromJson(Map<String, dynamic> json) {
+    return PeriodCycleIndex(
       initialYear: json["initial_year"],
       latestYear: json["latest_year"],
       currentYear: json["current_year"],
@@ -69,59 +69,20 @@ class Data {
       longestCycle: json["longest_cycle"],
       avgPeriodDuration: json["avg_period_duration"],
       avgPeriodCycle: json["avg_period_cycle"],
-      periodChart: json["period_chart"] == null
-          ? []
-          : List<PeriodChart>.from(
-              json["period_chart"]!.map((x) => PeriodChart.fromJson(x))),
-      latestPeriodHistory: json["latest_period_history"] == null
-          ? null
-          : LatestPeriodHistory.fromJson(json["latest_period_history"]),
-      periodHistory: json["period_history"] == null
-          ? []
-          : List<LatestPeriodHistory>.from(json["period_history"]!
-              .map((x) => LatestPeriodHistory.fromJson(x))),
-      actualPeriod: json["actual_period"] == null
-          ? []
-          : List<LatestPeriodHistory>.from(json["actual_period"]!
-              .map((x) => LatestPeriodHistory.fromJson(x))),
-      predictionPeriod: json["prediction_period"] == null
-          ? []
-          : List<LatestPeriodHistory>.from(json["prediction_period"]!
-              .map((x) => LatestPeriodHistory.fromJson(x))),
-      shettlesGenderPrediction: json["shettlesGenderPrediction"] == null
-          ? []
-          : List<ShettlesGenderPrediction>.from(
-              json["shettlesGenderPrediction"]!
-                  .map((x) => ShettlesGenderPrediction.fromJson(x))),
+      periodChart: json["period_chart"] == null ? [] : List<PeriodChart>.from(json["period_chart"]!.map((x) => PeriodChart.fromJson(x))),
+      latestPeriodHistory: json["latest_period_history"] == null ? null : PeriodHistory.fromJson(json["latest_period_history"]),
+      periodHistory: json["period_history"] == null ? [] : List<PeriodHistory>.from(json["period_history"]!.map((x) => PeriodHistory.fromJson(x))),
+      actualPeriod: json["actual_period"] == null ? [] : List<PeriodHistory>.from(json["actual_period"]!.map((x) => PeriodHistory.fromJson(x))),
+      predictionPeriod: json["prediction_period"] == null ? [] : List<PeriodHistory>.from(json["prediction_period"]!.map((x) => PeriodHistory.fromJson(x))),
+      shettlesGenderPrediction: json["shettlesGenderPrediction"] == null ? [] : List<ShettlesGenderPrediction>.from(json["shettlesGenderPrediction"]!.map((x) => ShettlesGenderPrediction.fromJson(x))),
     );
   }
 }
 
-class LatestPeriodHistory {
-  LatestPeriodHistory({
-    required this.id,
-    required this.userId,
-    required this.haidAwal,
-    required this.haidAkhir,
-    required this.ovulasi,
-    required this.masaSuburAwal,
-    required this.masaSuburAkhir,
-    required this.hariTerakhirSiklus,
-    required this.lamaSiklus,
-    required this.durasiHaid,
-    required this.haidBerikutnyaAwal,
-    required this.haidBerikutnyaAkhir,
-    required this.ovulasiBerikutnya,
-    required this.masaSuburBerikutnyaAwal,
-    required this.masaSuburBerikutnyaAkhir,
-    required this.hariTerakhirSiklusBerikutnya,
-    required this.isActual,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
+class PeriodHistory {
   final int? id;
   final int? userId;
+  final int? remoteId;
   final DateTime? haidAwal;
   final DateTime? haidAkhir;
   final DateTime? ovulasi;
@@ -137,13 +98,37 @@ class LatestPeriodHistory {
   final DateTime? masaSuburBerikutnyaAkhir;
   final DateTime? hariTerakhirSiklusBerikutnya;
   final String? isActual;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+  final String? createdAt;
+  final String? updatedAt;
 
-  factory LatestPeriodHistory.fromJson(Map<String, dynamic> json) {
-    return LatestPeriodHistory(
+  PeriodHistory({
+    this.id,
+    this.userId,
+    this.remoteId,
+    this.haidAwal,
+    this.haidAkhir,
+    this.ovulasi,
+    this.masaSuburAwal,
+    this.masaSuburAkhir,
+    this.hariTerakhirSiklus,
+    this.lamaSiklus,
+    this.durasiHaid,
+    this.haidBerikutnyaAwal,
+    this.haidBerikutnyaAkhir,
+    this.ovulasiBerikutnya,
+    this.masaSuburBerikutnyaAwal,
+    this.masaSuburBerikutnyaAkhir,
+    this.hariTerakhirSiklusBerikutnya,
+    this.isActual,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory PeriodHistory.fromJson(Map<String, dynamic> json) {
+    return PeriodHistory(
       id: json["id"],
       userId: json["user_id"],
+      remoteId: json["remote_id"],
       haidAwal: DateTime.tryParse(json["haid_awal"] ?? ""),
       haidAkhir: DateTime.tryParse(json["haid_akhir"] ?? ""),
       ovulasi: DateTime.tryParse(json["ovulasi"] ?? ""),
@@ -153,18 +138,85 @@ class LatestPeriodHistory {
       lamaSiklus: json["lama_siklus"],
       durasiHaid: json["durasi_haid"],
       haidBerikutnyaAwal: DateTime.tryParse(json["haid_berikutnya_awal"] ?? ""),
-      haidBerikutnyaAkhir:
-          DateTime.tryParse(json["haid_berikutnya_akhir"] ?? ""),
+      haidBerikutnyaAkhir: DateTime.tryParse(json["haid_berikutnya_akhir"] ?? ""),
       ovulasiBerikutnya: DateTime.tryParse(json["ovulasi_berikutnya"] ?? ""),
-      masaSuburBerikutnyaAwal:
-          DateTime.tryParse(json["masa_subur_berikutnya_awal"] ?? ""),
-      masaSuburBerikutnyaAkhir:
-          DateTime.tryParse(json["masa_subur_berikutnya_akhir"] ?? ""),
-      hariTerakhirSiklusBerikutnya:
-          DateTime.tryParse(json["hari_terakhir_siklus_berikutnya"] ?? ""),
+      masaSuburBerikutnyaAwal: DateTime.tryParse(json["masa_subur_berikutnya_awal"] ?? ""),
+      masaSuburBerikutnyaAkhir: DateTime.tryParse(json["masa_subur_berikutnya_akhir"] ?? ""),
+      hariTerakhirSiklusBerikutnya: DateTime.tryParse(json["hari_terakhir_siklus_berikutnya"] ?? ""),
       isActual: json["is_actual"],
-      createdAt: DateTime.tryParse(json["created_at"] ?? ""),
-      updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
+      createdAt: json["created_at"] ?? "",
+      updatedAt: json["updated_at"] ?? "",
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "user_id": userId,
+      "remote_id": remoteId,
+      "haid_awal": haidAwal?.toIso8601String(),
+      "haid_akhir": haidAkhir?.toIso8601String(),
+      "ovulasi": ovulasi?.toIso8601String(),
+      "masa_subur_awal": masaSuburAwal?.toIso8601String(),
+      "masa_subur_akhir": masaSuburAkhir?.toIso8601String(),
+      "hari_terakhir_siklus": hariTerakhirSiklus?.toIso8601String(),
+      "lama_siklus": lamaSiklus,
+      "durasi_haid": durasiHaid,
+      "haid_berikutnya_awal": haidBerikutnyaAwal?.toIso8601String(),
+      "haid_berikutnya_akhir": haidBerikutnyaAkhir?.toIso8601String(),
+      "ovulasi_berikutnya": ovulasiBerikutnya?.toIso8601String(),
+      "masa_subur_berikutnya_awal": masaSuburBerikutnyaAwal?.toIso8601String(),
+      "masa_subur_berikutnya_akhir": masaSuburBerikutnyaAkhir?.toIso8601String(),
+      "hari_terakhir_siklus_berikutnya": hariTerakhirSiklusBerikutnya?.toIso8601String(),
+      "is_actual": isActual,
+      "created_at": createdAt,
+      "updated_at": updatedAt,
+    };
+  }
+
+  PeriodHistory copyWith({
+    int? id,
+    int? userId,
+    int? remoteId,
+    DateTime? haidAwal,
+    DateTime? haidAkhir,
+    DateTime? ovulasi,
+    DateTime? masaSuburAwal,
+    DateTime? masaSuburAkhir,
+    DateTime? hariTerakhirSiklus,
+    int? lamaSiklus,
+    int? durasiHaid,
+    DateTime? haidBerikutnyaAwal,
+    DateTime? haidBerikutnyaAkhir,
+    DateTime? ovulasiBerikutnya,
+    DateTime? masaSuburBerikutnyaAwal,
+    DateTime? masaSuburBerikutnyaAkhir,
+    DateTime? hariTerakhirSiklusBerikutnya,
+    String? isActual,
+    String? createdAt,
+    String? updatedAt,
+  }) {
+    return PeriodHistory(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      remoteId: remoteId ?? this.remoteId,
+      haidAwal: haidAwal ?? this.haidAwal,
+      haidAkhir: haidAkhir ?? this.haidAkhir,
+      ovulasi: ovulasi ?? this.ovulasi,
+      masaSuburAwal: masaSuburAwal ?? this.masaSuburAwal,
+      masaSuburAkhir: masaSuburAkhir ?? this.masaSuburAkhir,
+      hariTerakhirSiklus: hariTerakhirSiklus ?? this.hariTerakhirSiklus,
+      lamaSiklus: lamaSiklus ?? this.lamaSiklus,
+      durasiHaid: durasiHaid ?? this.durasiHaid,
+      haidBerikutnyaAwal: haidBerikutnyaAwal ?? this.haidBerikutnyaAwal,
+      haidBerikutnyaAkhir: haidBerikutnyaAkhir ?? this.haidBerikutnyaAkhir,
+      ovulasiBerikutnya: ovulasiBerikutnya ?? this.ovulasiBerikutnya,
+      masaSuburBerikutnyaAwal: masaSuburBerikutnyaAwal ?? this.masaSuburBerikutnyaAwal,
+      masaSuburBerikutnyaAkhir: masaSuburBerikutnyaAkhir ?? this.masaSuburBerikutnyaAkhir,
+      hariTerakhirSiklusBerikutnya: hariTerakhirSiklusBerikutnya ?? this.hariTerakhirSiklusBerikutnya,
+      isActual: isActual ?? this.isActual,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

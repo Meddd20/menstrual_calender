@@ -12,14 +12,17 @@ class LoginBinding extends Bindings {
     Get.lazyPut<CodeVerificationController>(
       () => CodeVerificationController(),
     );
+
     Get.lazyPut<ForgetPasswordController>(
       () => ForgetPasswordController(),
     );
+
     Get.lazyPut<ResetPasswordController>(
       () => ResetPasswordController(),
     );
-    Get.put<LoginController>(
-      LoginController(),
+
+    Get.lazyPut<LoginController>(
+      () => LoginController(),
     );
   }
 }

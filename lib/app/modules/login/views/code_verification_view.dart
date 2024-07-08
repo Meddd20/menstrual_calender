@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_pinput.dart';
 import 'package:periodnpregnancycalender/app/modules/login/controllers/code_verification_controller.dart';
 
 class CodeVerificationView extends GetView<CodeVerificationController> {
@@ -21,14 +22,14 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           body: Padding(
-            padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 35.h),
+            padding: EdgeInsets.fromLTRB(15.w, 40.h, 15.w, 35.h),
             child: Align(
               alignment: Alignment.topCenter,
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(height: 130.h),
+                    SizedBox(height: 90.h),
                     Container(
                       width: Get.width,
                       child: Text(
@@ -41,32 +42,47 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                     Obx(
                       () => Container(
                         width: Get.width,
-                        child: Text(
-                          "Please type verification code send to ${controller.userEmail}",
-                          style: CustomTextStyle.captionTextStyle(),
+                        child: Text.rich(
+                          TextSpan(
+                            text: "Please enter the verification code sent to ",
+                            style: CustomTextStyle.captionTextStyle(),
+                            children: [
+                              TextSpan(
+                                text: "${controller.userEmail}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: CustomTextStyle.captionTextStyle().color,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 26.h),
+                    SizedBox(height: 25.h),
                     CustomPinInput(
                       controller: controller.pinController,
                       length: 6,
                       showCursor: true,
                     ),
                     SizedBox(height: 25.h),
-                    CustomColoredButton(
+                    CustomButton(
                       text: "Send Code",
                       onPressed: () {
                         controller.forgetPassword();
                       },
                     ),
-                    SizedBox(height: 8.h),
+                    SizedBox(height: 20.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "Didn’t receive any code?  ",
-                          style: CustomTextStyle.captionTextStyle(),
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                         GestureDetector(
                           onTap: () async {
@@ -85,9 +101,7 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                         Obx(
                           () {
                             return Text(
-                              controller.countdown.value > 0
-                                  ? "(${controller.countdown})"
-                                  : "",
+                              controller.countdown.value > 0 ? "(${controller.countdown})" : "",
                               style: CustomTextStyle.buttonTextStyle(),
                             );
                           },

@@ -31,10 +31,10 @@ class Articles {
   String? videoLink;
   String? source;
   String? tags;
-  dynamic publishAt;
+  String? publishAt;
   String? createdAt;
   String? updatedAt;
-  dynamic deletedAt;
+  String? deletedAt;
 
   Articles(
       {this.id,

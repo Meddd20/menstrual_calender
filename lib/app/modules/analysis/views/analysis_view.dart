@@ -3,16 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
-import 'package:periodnpregnancycalender/app/modules/analysis/views/bleeding_flow_view.dart';
-import 'package:periodnpregnancycalender/app/modules/analysis/views/moods_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/logs_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/notes_view.dart';
-import 'package:periodnpregnancycalender/app/modules/analysis/views/others_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
-import 'package:periodnpregnancycalender/app/modules/analysis/views/physical_activity_view.dart';
-import 'package:periodnpregnancycalender/app/modules/analysis/views/sex_activity_view.dart';
-import 'package:periodnpregnancycalender/app/modules/analysis/views/symptoms_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/temperature_view.dart';
-import 'package:periodnpregnancycalender/app/modules/analysis/views/vaginal_discharge_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/weight_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
@@ -26,9 +20,7 @@ class AnalysisView extends GetView {
   @override
   Widget build(BuildContext context) {
     final box = GetStorage();
-    return box.read("isPregnant") == "0"
-        ? AnalysisPeriodView()
-        : PregnancyToolsView();
+    return box.read("isPregnant") == "0" ? AnalysisPeriodView() : PregnancyToolsView();
   }
 }
 
@@ -37,8 +29,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
   @override
   Widget build(BuildContext context) {
     Get.put(AnalysisController());
-    HomeMenstruationController homeController =
-        Get.put(HomeMenstruationController());
+    HomeMenstruationController homeController = Get.put(HomeMenstruationController());
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -67,8 +58,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+                        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -124,10 +114,8 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Text(
                                               "Average Cycle Length",
@@ -142,14 +130,12 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                               text: TextSpan(
                                                 children: [
                                                   TextSpan(
-                                                    text:
-                                                        "${homeController.data?.avgPeriodCycle}",
+                                                    text: "${homeController.data?.avgPeriodCycle}",
                                                     style: TextStyle(
                                                       fontSize: 23.sp,
                                                       fontFamily: 'Poppins',
                                                       color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w800,
+                                                      fontWeight: FontWeight.w800,
                                                     ),
                                                   ),
                                                   TextSpan(
@@ -158,8 +144,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                                       fontSize: 14.sp,
                                                       fontFamily: 'Poppins',
                                                       color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                                      fontWeight: FontWeight.w500,
                                                     ),
                                                   ),
                                                 ],
@@ -188,10 +173,8 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Text(
                                               "Average Period Length",
@@ -206,14 +189,12 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                               text: TextSpan(
                                                 children: [
                                                   TextSpan(
-                                                    text:
-                                                        "${homeController.data?.avgPeriodDuration}",
+                                                    text: "${homeController.data?.avgPeriodDuration}",
                                                     style: TextStyle(
                                                       fontSize: 23.sp,
                                                       fontFamily: 'Poppins',
                                                       color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w700,
+                                                      fontWeight: FontWeight.w700,
                                                     ),
                                                   ),
                                                   TextSpan(
@@ -222,8 +203,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                                       fontSize: 14.sp,
                                                       fontFamily: 'Poppins',
                                                       color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                                      fontWeight: FontWeight.w500,
                                                     ),
                                                   ),
                                                 ],
@@ -257,8 +237,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                           padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
                           child: GridView(
                             physics: NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
                               mainAxisSpacing: 20,
                               crossAxisSpacing: 6,
@@ -267,39 +246,37 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                               CustomIconCard(
                                 icon: Icons.bloodtype_outlined,
                                 text: "Bleeding Flow",
-                                onTap: () => Get.to(() => BleedingFlowView()),
+                                onTap: () => Get.to(() => LogsView(), arguments: "bleeding_flow"),
                               ),
                               CustomIconCard(
                                 icon: Icons.crisis_alert,
                                 text: "Sex Activity",
-                                onTap: () => Get.to(() => SexActivityView()),
+                                onTap: () => Get.to(() => LogsView(), arguments: "sex_activity"),
                               ),
                               CustomIconCard(
                                 icon: Icons.crisis_alert,
                                 text: "Symptoms",
-                                onTap: () => Get.to(() => SymptomsView()),
+                                onTap: () => Get.to(() => LogsView(), arguments: "symptoms"),
                               ),
                               CustomIconCard(
                                 icon: Icons.crisis_alert,
                                 text: "Vaginal Discharge",
-                                onTap: () =>
-                                    Get.to(() => VaginalDischargeView()),
+                                onTap: () => Get.to(() => LogsView(), arguments: "vaginal_discharge"),
                               ),
                               CustomIconCard(
                                 icon: Icons.crisis_alert,
                                 text: "Moods",
-                                onTap: () => Get.to(() => MoodsView()),
+                                onTap: () => Get.to(() => LogsView(), arguments: "moods"),
                               ),
                               CustomIconCard(
                                 icon: Icons.crisis_alert,
                                 text: "Others",
-                                onTap: () => Get.to(() => OthersView()),
+                                onTap: () => Get.to(() => LogsView(), arguments: "others"),
                               ),
                               CustomIconCard(
                                 icon: Icons.crisis_alert,
                                 text: "Physical Activity",
-                                onTap: () =>
-                                    Get.to(() => PhysicalActivityView()),
+                                onTap: () => Get.to(() => LogsView(), arguments: "physical_activity"),
                               ),
                               CustomIconCard(
                                 icon: Icons.crisis_alert,

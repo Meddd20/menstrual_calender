@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_textformfield.dart';
 import '../controllers/login_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/modules/login/views/forget_password_view.dart';
 
@@ -24,13 +25,14 @@ class LoginView extends GetView<LoginController> {
           extendBodyBehindAppBar: true,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
+            surfaceTintColor: AppColors.white,
             elevation: 0,
-            leading: const BackButton(
+            leading: BackButton(
               color: AppColors.primary,
             ),
           ),
           body: Padding(
-            padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 35.h),
+            padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 35.h),
             child: Form(
               key: controller.loginFormKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -41,11 +43,11 @@ class LoginView extends GetView<LoginController> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(height: 130.h),
+                      SizedBox(height: 50.h),
                       Container(
                         width: Get.width,
                         child: Text(
-                          "Welcome Back..",
+                          "Welcome Back!",
                           style: CustomTextStyle.heading1TextStyle(),
                           textAlign: TextAlign.left,
                         ),
@@ -68,7 +70,7 @@ class LoginView extends GetView<LoginController> {
                         },
                         hintText: "example@example.com",
                       ),
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 15.h),
                       Obx(
                         () => CustomTextFormField(
                           controller: controller.passwordC,
@@ -76,9 +78,7 @@ class LoginView extends GetView<LoginController> {
                           obscureText: controller.isHidden.value,
                           suffixIcon: IconButton(
                             onPressed: () => controller.isHidden.toggle(),
-                            icon: controller.isHidden.isTrue
-                                ? Icon(Icons.remove_red_eye)
-                                : Icon(Icons.remove_red_eye_outlined),
+                            icon: controller.isHidden.isTrue ? Icon(Icons.remove_red_eye) : Icon(Icons.remove_red_eye_outlined),
                           ),
                           validator: (value) {
                             return controller.validatePassword(value!);
@@ -101,7 +101,7 @@ class LoginView extends GetView<LoginController> {
                           ),
                         ),
                       ),
-                      CustomColoredButton(
+                      CustomButton(
                         text: "Login",
                         onPressed: () async {
                           controller.checkLogin();
@@ -113,13 +113,15 @@ class LoginView extends GetView<LoginController> {
                         children: [
                           Text(
                             "Have an account?",
-                            style: CustomTextStyle.captionTextStyle(),
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.until((route) =>
-                                  route.settings.name == Routes.ONBOARDING);
-                              Get.toNamed(Routes.REGISTER);
+                              Get.offAllNamed(Routes.ONBOARDING);
                             },
                             child: Text(
                               "Register Now",

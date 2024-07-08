@@ -1,18 +1,20 @@
+import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
+
 class DateEvent {
   String? status;
   String? message;
-  Data? data;
+  Event? data;
 
   DateEvent({this.status, this.message, this.data});
 
   DateEvent.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new Event.fromJson(json['data']) : null;
   }
 }
 
-class Data {
+class Event {
   String? specifiedDate;
   String? event;
   String? isActual;
@@ -36,7 +38,7 @@ class Data {
   ChineseGenderPrediction? chineseGenderPrediction;
   ShettlesGenderPrediction? shettlesGenderPrediction;
 
-  Data(
+  Event(
       {this.specifiedDate,
       this.event,
       this.isActual,
@@ -60,7 +62,7 @@ class Data {
       this.chineseGenderPrediction,
       this.shettlesGenderPrediction});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  Event.fromJson(Map<String, dynamic> json) {
     specifiedDate = json['specifiedDate'];
     event = json['event'];
     isActual = json['is_actual'];
@@ -84,9 +86,9 @@ class Data {
     chineseGenderPrediction = json['chineseGenderPrediction'] != null
         ? new ChineseGenderPrediction.fromJson(json['chineseGenderPrediction'])
         : null;
-    shettlesGenderPrediction = json['shettlesGenderPrediction'] != null
-        ? new ShettlesGenderPrediction.fromJson(
-            json['shettlesGenderPrediction'])
+    shettlesGenderPrediction:
+    json['shettlesGenderPrediction'] != null
+        ? ShettlesGenderPrediction.fromJson(json['shettlesGenderPrediction'])
         : null;
   }
 }
@@ -120,22 +122,22 @@ class ChineseGenderPrediction {
   }
 }
 
-class ShettlesGenderPrediction {
-  String? boyStartDate;
-  String? boyEndDate;
-  String? girlStartDate;
-  String? girlEndDate;
+// class ShettlesGenderPrediction {
+//   String? boyStartDate;
+//   String? boyEndDate;
+//   String? girlStartDate;
+//   String? girlEndDate;
 
-  ShettlesGenderPrediction(
-      {this.boyStartDate,
-      this.boyEndDate,
-      this.girlStartDate,
-      this.girlEndDate});
+//   ShettlesGenderPrediction(
+//       {this.boyStartDate,
+//       this.boyEndDate,
+//       this.girlStartDate,
+//       this.girlEndDate});
 
-  ShettlesGenderPrediction.fromJson(Map<String, dynamic> json) {
-    boyStartDate = json['boyStartDate'];
-    boyEndDate = json['boyEndDate'];
-    girlStartDate = json['girlStartDate'];
-    girlEndDate = json['girlEndDate'];
-  }
-}
+//   ShettlesGenderPrediction.fromJson(Map<String, dynamic> json) {
+//     boyStartDate = json['boyStartDate'];
+//     boyEndDate = json['boyEndDate'];
+//     girlStartDate = json['girlStartDate'];
+//     girlEndDate = json['girlEndDate'];
+//   }
+// }

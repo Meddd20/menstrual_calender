@@ -1,5 +1,4 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +8,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:pinput/pinput.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -66,247 +66,6 @@ class CustomTransparentButton extends StatelessWidget {
       child: Text(
         text,
         style: CustomTextStyle.buttonTextStyle(),
-      ),
-    );
-  }
-}
-
-class CustomCircularIconContainer extends StatelessWidget {
-  final IconData iconData;
-  final double iconSize;
-  final Color iconColor;
-  final Color containerColor;
-  final double containerSize;
-
-  CustomCircularIconContainer({
-    required this.iconData,
-    required this.iconSize,
-    required this.iconColor,
-    required this.containerColor,
-    required this.containerSize,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: containerSize,
-      backgroundColor: containerColor,
-      child: Icon(
-        iconData,
-        size: iconSize,
-        color: iconColor,
-      ),
-    );
-  }
-}
-
-class CustomCalendarDatePicker extends StatelessWidget {
-  final List<DateTime?> value;
-  final Function(List<DateTime?>) onValueChanged;
-  final DateTime? firstDate;
-  final DateTime? lastDate;
-  final CalendarDatePicker2Type calendarType;
-
-  CustomCalendarDatePicker({
-    Key? key,
-    required this.value,
-    required this.onValueChanged,
-    this.firstDate,
-    this.lastDate,
-    required this.calendarType,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return CalendarDatePicker2(
-      config: CalendarDatePicker2Config(
-        calendarType: calendarType,
-        firstDate: firstDate,
-        lastDate: lastDate,
-        weekdayLabels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        firstDayOfWeek: 1,
-        controlsHeight: 50,
-        controlsTextStyle: const TextStyle(
-          color: Colors.black,
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
-        ),
-        centerAlignModePicker: true,
-        customModePickerIcon: const SizedBox(),
-        selectedDayHighlightColor: Color(0xFFFF6868),
-        weekdayLabelTextStyle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w400,
-          fontSize: 14,
-        ),
-        dayTextStyle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-        ),
-        selectedDayTextStyle: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-        ),
-      ),
-      value: value,
-      onValueChanged: onValueChanged,
-    );
-  }
-}
-
-class CustomCupertinoPicker extends StatelessWidget {
-  final FixedExtentScrollController scrollController;
-  final List<Widget> children;
-  final Function(int) onSelectedItemChanged;
-
-  CustomCupertinoPicker({
-    required this.scrollController,
-    required this.children,
-    required this.onSelectedItemChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 250.h,
-      child: CupertinoPicker(
-        itemExtent: 45,
-        magnification: 1.22,
-        looping: true,
-        useMagnifier: true,
-        scrollController: scrollController,
-        children: children,
-        selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
-          background: AppColors.highlight.withOpacity(0.3),
-        ),
-        onSelectedItemChanged: onSelectedItemChanged,
-      ),
-    );
-  }
-}
-
-class CustomCupertinoDateTimePicker extends StatelessWidget {
-  final Function(DateTime) onDateTimeChanged;
-  final DateTime initialDateTime;
-
-  CustomCupertinoDateTimePicker(
-      {required this.onDateTimeChanged, required this.initialDateTime});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 200.h,
-      child: CupertinoDatePicker(
-        onDateTimeChanged: onDateTimeChanged,
-        initialDateTime: initialDateTime,
-        minimumDate: DateTime.now(),
-        use24hFormat: true,
-      ),
-    );
-  }
-}
-
-class CustomTextFormField extends StatelessWidget {
-  final TextEditingController controller;
-  final String labelText;
-  final TextInputType keyboardType;
-  final String? Function(String?)? validator;
-  final bool obscureText;
-  final Widget? suffixIcon;
-  final void Function(String)? onChanged;
-  final String? hintText;
-
-  const CustomTextFormField({
-    required this.controller,
-    required this.labelText,
-    this.keyboardType = TextInputType.text,
-    this.validator,
-    this.obscureText = false,
-    this.suffixIcon,
-    this.onChanged,
-    this.hintText,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      autocorrect: false,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          gapPadding: 4.0,
-        ),
-        suffixIcon: suffixIcon,
-        hintText: hintText,
-      ),
-      keyboardType: keyboardType,
-      validator: validator,
-      onChanged: onChanged,
-    );
-  }
-}
-
-class CustomPinInput extends StatelessWidget {
-  final TextEditingController controller;
-  final int length;
-  final bool showCursor;
-
-  const CustomPinInput({
-    required this.controller,
-    required this.length,
-    this.showCursor = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Pinput(
-      defaultPinTheme: PinTheme(
-        width: 56,
-        height: 56,
-        textStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromRGBO(30, 60, 87, 1),
-          fontWeight: FontWeight.w600,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      controller: controller,
-      length: length,
-      showCursor: showCursor,
-      focusedPinTheme: PinTheme(
-        width: 56,
-        height: 56,
-        textStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromRGBO(30, 60, 87, 1),
-          fontWeight: FontWeight.w600,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(color: Color.fromRGBO(114, 178, 238, 1)),
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-      submittedPinTheme: PinTheme(
-        width: 56,
-        height: 56,
-        textStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromRGBO(30, 60, 87, 1),
-          fontWeight: FontWeight.w600,
-        ),
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(234, 239, 243, 1),
-          borderRadius: BorderRadius.circular(8),
-        ),
       ),
     );
   }
@@ -452,10 +211,7 @@ class CustomDougnutChart extends StatelessWidget {
   final Color Function(MapEntry<String, dynamic>, int) pointColorMapper;
   final List<Color> colorPalette;
 
-  CustomDougnutChart(
-      {required this.dataSource,
-      required this.pointColorMapper,
-      required this.colorPalette});
+  CustomDougnutChart({required this.dataSource, required this.pointColorMapper, required this.colorPalette});
 
   @override
   Widget build(BuildContext context) {
@@ -468,10 +224,8 @@ class CustomDougnutChart extends StatelessWidget {
           DoughnutSeries<MapEntry<String, dynamic>, String>(
             dataSource: dataSource,
             xValueMapper: (MapEntry<String, dynamic> entry, _) => entry.key,
-            yValueMapper: (MapEntry<String, dynamic> entry, _) =>
-                parseDouble(entry.value),
-            dataLabelMapper: (MapEntry<String, dynamic> entry, _) =>
-                '${entry.value}',
+            yValueMapper: (MapEntry<String, dynamic> entry, _) => parseDouble(entry.value),
+            dataLabelMapper: (MapEntry<String, dynamic> entry, _) => '${entry.value}',
             enableTooltip: true,
             selectionBehavior: SelectionBehavior(enable: true),
             explode: true,
@@ -494,8 +248,7 @@ class CustomDougnutChart extends StatelessWidget {
           position: LegendPosition.right,
           isResponsive: true,
           toggleSeriesVisibility: false,
-          legendItemBuilder:
-              (String name, dynamic series, dynamic point, int index) {
+          legendItemBuilder: (String name, dynamic series, dynamic point, int index) {
             return Container(
               width: 110,
               // height: 30,
@@ -608,10 +361,7 @@ class CustomDateLook extends StatelessWidget {
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      entry.value
-                          .toString()
-                          .replaceAll('[', '')
-                          .replaceAll(']', ''),
+                      entry.value.toString().replaceAll('[', '').replaceAll(']', ''),
                       overflow: TextOverflow.visible,
                       style: CustomTextStyle.captionTextStyle(),
                     ),
@@ -846,11 +596,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
           SizedBox(height: 20.h),
           ElevatedButton(
             onPressed: addPeriodOnPressedButton,
-            style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                minimumSize: Size(Get.width, 45.h)),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), minimumSize: Size(Get.width, 45.h)),
             child: Text(
               buttonCaption,
               style: TextStyle(
@@ -871,8 +617,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 shadowColor: Colors.transparent,
                 minimumSize: Size(Get.width, Get.height * 0.06),
               ),
@@ -985,7 +730,7 @@ class CustomCardPredictionCycle extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomCircularIconContainer(
+                  CustomCircularIcon(
                     iconData: icons,
                     iconSize: 25,
                     iconColor: primaryColor,
@@ -1044,8 +789,7 @@ class MyTickerProvider implements TickerProvider {
 }
 
 class Ui {
-  static GetSnackBar SuccessSnackBar(
-      {String title = 'Success', String message = ''}) {
+  static GetSnackBar SuccessSnackBar({String title = 'Success', String message = ''}) {
     Get.log("[$title] $message");
     return GetSnackBar(
       titleText: Text(
@@ -1079,8 +823,7 @@ class Ui {
     );
   }
 
-  static GetSnackBar ErrorSnackBar(
-      {String title = 'Error', String message = ''}) {
+  static GetSnackBar ErrorSnackBar({String title = 'Error', String message = ''}) {
     Get.log("[$title] $message", isError: true);
     return GetSnackBar(
       titleText: Text(

@@ -76,34 +76,19 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             ),
                           ),
                           addPeriodOnPressedButton: () {
-                            controller.addPeriod(
-                                controller.periodCycleData.first.data
-                                        ?.avgPeriodDuration ??
-                                    8,
-                                controller.periodCycleData.first.data
-                                        ?.avgPeriodCycle ??
-                                    28);
+                            controller.addPeriod(controller.periodCycleData.first.avgPeriodDuration ?? 8, controller.periodCycleData.first.avgPeriodCycle ?? 28);
                           },
-                          calenderValue: [
-                            controller.startDate.value,
-                            controller.endDate.value
-                          ],
+                          calenderValue: [controller.startDate.value, controller.endDate.value],
                           calenderOnValueChanged: (dates) {
                             if (dates.first != null) {
                               controller.setStartDate(dates.first);
 
-                              final avgPeriodDuration = controller
-                                      .periodCycleData
-                                      .first
-                                      .data
-                                      ?.avgPeriodDuration ??
-                                  8;
+                              final avgPeriodDuration = controller.periodCycleData.first.avgPeriodDuration ?? 8;
 
                               if (dates.last != null) {
                                 controller.setEndDate(dates.last);
                               } else {
-                                final lastDate = dates.first!
-                                    .add(Duration(days: avgPeriodDuration));
+                                final lastDate = dates.first!.add(Duration(days: avgPeriodDuration));
 
                                 controller.setEndDate(lastDate);
                               }
@@ -122,9 +107,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
         },
       ),
       body: Obx(() {
-        var periodHistoryList = controller.periodCycleData.isEmpty
-            ? null
-            : controller.periodCycleData.first.data;
+        var periodHistoryList = controller.periodCycleData.isEmpty ? null : controller.periodCycleData.first;
         if (controller.periodCycleData.isEmpty) {
           return Center(child: CircularProgressIndicator());
         } else {
@@ -156,30 +139,22 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                           //                 .toDouble() -
                           //             1
                           //         : 0,
-                          labelIntersectAction:
-                              AxisLabelIntersectAction.multipleRows,
+                          labelIntersectAction: AxisLabelIntersectAction.multipleRows,
                           edgeLabelPlacement: EdgeLabelPlacement.shift,
                           // plotOffset: 2,
                         ),
                         series: <CartesianSeries>[
                           StackedColumnSeries<PeriodChart, String>(
                             dataSource: periodHistoryList?.periodChart ?? [],
-                            xValueMapper: (PeriodChart data, _) =>
-                                '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}'))}',
-                            yValueMapper: (PeriodChart data, _) =>
-                                data.periodDuration?.toDouble() ??
-                                0.0, // Adjust as needed
+                            xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}'))}',
+                            yValueMapper: (PeriodChart data, _) => data.periodDuration?.toDouble() ?? 0.0, // Adjust as needed
                             name: 'Period Duration',
                           ),
                           StackedColumnSeries<PeriodChart, String>(
                             dataSource: periodHistoryList?.periodChart ?? [],
-                            xValueMapper: (PeriodChart data, _) =>
-                                '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}'))}',
+                            xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}'))}',
 
-                            yValueMapper: (PeriodChart data, _) =>
-                                (data.periodCycle?.toDouble() ?? 0.0) -
-                                (data.periodDuration?.toDouble() ??
-                                    0.0), // Adjust as needed
+                            yValueMapper: (PeriodChart data, _) => (data.periodCycle?.toDouble() ?? 0.0) - (data.periodDuration?.toDouble() ?? 0.0), // Adjust as needed
                             name: 'Period Cycle',
                           ),
                         ],
@@ -207,25 +182,18 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                     child: ListView.builder(
                       itemCount: periodHistoryList?.actualPeriod.length ?? 0,
                       itemBuilder: (context, index) {
-                        var actualPeriodHistory =
-                            periodHistoryList?.actualPeriod[index];
+                        var actualPeriodHistory = periodHistoryList?.actualPeriod[index];
                         var periodHistory = periodHistoryList;
 
                         DateTime? haidAwalDate = actualPeriodHistory?.haidAwal;
                         int? lamaSiklus = actualPeriodHistory?.lamaSiklus;
                         int? avgPeriodCycle = periodHistory?.avgPeriodCycle;
                         DateTime now = DateTime.now();
-                        DateTime? predictEndDate = haidAwalDate
-                            ?.add(Duration(days: avgPeriodCycle ?? 0));
+                        DateTime? predictEndDate = haidAwalDate?.add(Duration(days: avgPeriodCycle ?? 0));
                         double max = (lamaSiklus != null)
                             ? lamaSiklus.toDouble()
-                            : (predictEndDate != null &&
-                                    predictEndDate.isBefore(now))
-                                ? haidAwalDate!
-                                    .difference(now)
-                                    .inDays
-                                    .toDouble()
-                                    .abs()
+                            : (predictEndDate != null && predictEndDate.isBefore(now))
+                                ? haidAwalDate!.difference(now).inDays.toDouble().abs()
                                 : avgPeriodCycle!.toDouble();
 
                         return GestureDetector(
@@ -265,18 +233,12 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                         ),
                                         addPeriodOnPressedButton: () {
                                           if (actualPeriodHistory?.id != null) {
-                                            controller.editPeriod(
-                                                actualPeriodHistory!.id!,
-                                                periodHistory?.avgPeriodCycle,
-                                                periodHistoryList!
-                                                    .avgPeriodDuration!);
+                                            controller.editPeriod(actualPeriodHistory!.id!, actualPeriodHistory.remoteId!, periodHistory?.avgPeriodCycle ?? 28, periodHistoryList!.avgPeriodDuration!);
                                           }
                                         },
                                         calenderValue: [
-                                          DateTime.parse(
-                                              '${actualPeriodHistory?.haidAwal}'),
-                                          DateTime.parse(
-                                              '${actualPeriodHistory?.haidAkhir}'),
+                                          DateTime.parse('${actualPeriodHistory?.haidAwal}'),
+                                          DateTime.parse('${actualPeriodHistory?.haidAkhir}'),
                                         ],
                                         calenderOnValueChanged: (dates) {
                                           controller.setStartDate(dates.first);
@@ -290,10 +252,8 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                 }).then((value) {
                               controller.cancelEdit();
                             });
-                            controller.setStartDate(DateTime.parse(
-                                '${actualPeriodHistory?.haidAwal}'));
-                            controller.setEndDate(DateTime.parse(
-                                '${actualPeriodHistory?.haidAkhir}'));
+                            controller.setStartDate(DateTime.parse('${actualPeriodHistory?.haidAwal}'));
+                            controller.setEndDate(DateTime.parse('${actualPeriodHistory?.haidAkhir}'));
                             controller.update();
                           },
                           child: ListTile(
@@ -320,9 +280,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                   height: 22,
                                   child: DChartSingleBar(
                                     foregroundColor: Color(0xFFFD6666),
-                                    value: actualPeriodHistory?.durasiHaid
-                                            ?.toDouble() ??
-                                        0.0,
+                                    value: actualPeriodHistory?.durasiHaid?.toDouble() ?? 0.0,
                                     max: max,
                                     backgroundLabel: Text(
                                       "${actualPeriodHistory?.lamaSiklus ?? max.toInt()} days",
@@ -333,8 +291,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                       ),
                                     ),
                                     backgroundLabelAlign: Alignment.centerRight,
-                                    backgroundLabelPadding:
-                                        EdgeInsets.only(right: 10.0),
+                                    backgroundLabelPadding: EdgeInsets.only(right: 10.0),
                                     foregroundLabel: Text(
                                       "${actualPeriodHistory?.durasiHaid ?? 0} days",
                                       style: TextStyle(
@@ -344,10 +301,8 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                       ),
                                     ),
                                     foregroundLabelAlign: Alignment.centerLeft,
-                                    foregroundLabelPadding:
-                                        EdgeInsets.only(left: 10.0),
-                                    radius:
-                                        BorderRadius.all(Radius.circular(5)),
+                                    foregroundLabelPadding: EdgeInsets.only(left: 10.0),
+                                    radius: BorderRadius.all(Radius.circular(5)),
                                   ),
                                 ),
                               ],
@@ -359,11 +314,9 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                   ),
                   Center(
                     child: ListView.builder(
-                      itemCount:
-                          periodHistoryList?.predictionPeriod.length ?? 0,
+                      itemCount: periodHistoryList?.predictionPeriod.length ?? 0,
                       itemBuilder: (context, index) {
-                        var periodHistory =
-                            periodHistoryList?.predictionPeriod[index];
+                        var periodHistory = periodHistoryList?.predictionPeriod[index];
                         return ListTile(
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -386,11 +339,8 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                 height: 22,
                                 child: DChartSingleBar(
                                   foregroundColor: Color(0xFFFD6666),
-                                  value:
-                                      periodHistory?.durasiHaid?.toDouble() ??
-                                          0.0,
-                                  max: periodHistory?.lamaSiklus?.toDouble() ??
-                                      0.0,
+                                  value: periodHistory?.durasiHaid?.toDouble() ?? 0.0,
+                                  max: periodHistory?.lamaSiklus?.toDouble() ?? 0.0,
                                   backgroundLabel: Text(
                                     "${periodHistory?.lamaSiklus ?? 0} days",
                                     style: TextStyle(
@@ -400,8 +350,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                     ),
                                   ),
                                   backgroundLabelAlign: Alignment.centerRight,
-                                  backgroundLabelPadding:
-                                      EdgeInsets.only(right: 10.0),
+                                  backgroundLabelPadding: EdgeInsets.only(right: 10.0),
                                   foregroundLabel: Text(
                                     "${periodHistory?.durasiHaid ?? 0} days",
                                     style: TextStyle(
@@ -411,8 +360,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                     ),
                                   ),
                                   foregroundLabelAlign: Alignment.centerLeft,
-                                  foregroundLabelPadding:
-                                      EdgeInsets.only(left: 10.0),
+                                  foregroundLabelPadding: EdgeInsets.only(left: 10.0),
                                   radius: BorderRadius.all(Radius.circular(5)),
                                 ),
                               ),

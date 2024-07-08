@@ -2,27 +2,35 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:periodnpregnancycalender/app/models/profile_model.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/repositories/auth_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
+import 'package:periodnpregnancycalender/app/services/profile_service.dart';
+import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class LoginController extends GetxController {
+  late final ProfileService _profileService;
   final ApiService apiService = ApiService();
   late final AuthRepository authRepository = AuthRepository(apiService);
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   final box = GetStorage();
+  final storageService = StorageService();
   late TextEditingController emailC;
   late TextEditingController passwordC;
 
   var isHidden = true.obs;
-  var isAuth = false.obs;
 
   @override
   void onInit() async {
-    super.onInit();
+    final databaseHelper = DatabaseHelper.instance;
+    final localProfileRepository = LocalProfileRepository(databaseHelper);
+    _profileService = ProfileService(localProfileRepository);
     emailC = TextEditingController();
     passwordC = TextEditingController();
-    checkStoredAuth();
+    super.onInit();
   }
 
   @override
@@ -40,38 +48,26 @@ class LoginController extends GetxController {
   }
 
   Future<void> login() async {
-    try {
-      var authCredential =
-          await authRepository.login(emailC.text.trim(), passwordC.text.trim());
+    UserData? userData = await authRepository.login(emailC.text.trim(), passwordC.text.trim());
 
-      storeAuth();
-      storeCredentialToken(authCredential["data"]["credential"]["token"]);
-      storeAccountId(authCredential["data"]["user"]["id"]);
-      storeIsPregnant(authCredential["data"]["user"]["is_pregnant"]);
-      Get.offAllNamed(Routes.NAVIGATION_MENU);
-    } catch (e) {}
-  }
+    if (userData != null) {
+      Credential? userCredential = userData.credential;
+      User? user = userData.user;
 
-  void storeCredentialToken(String token) {
-    box.write("loginAuth", token);
-  }
+      if (user != null && userCredential != null) {
+        _profileService.createLoginProfile(user.nama ?? "", user.tanggalLahir ?? "${DateTime.now()}", int.parse(user.isPregnant ?? "0"));
+        User? userProfileLocal = await _profileService.getProfile();
 
-  void storeAccountId(int id) {
-    box.write("loginId", id);
-  }
-
-  void storeAuth() {
-    box.write("isAuth", true);
-  }
-
-  void storeIsPregnant(String isPregnant) {
-    box.write("isPregnant", isPregnant);
-  }
-
-  void checkStoredAuth() {
-    final storedAuth = box.read("loginAuth");
-    if (storedAuth != null) {
-      isAuth.value = true;
+        if (userProfileLocal != null) {
+          storageService.storeIsAuth(true);
+          storageService.storeCredentialToken(userCredential.token!);
+          storageService.storeAccountId(userCredential.userId!);
+          storageService.storeIsPregnant(user.isPregnant!);
+          storageService.storeAccountLocalId(userProfileLocal.id!);
+          storageService.storePrimaryDataMechanism();
+          Get.offAllNamed(Routes.NAVIGATION_MENU);
+        }
+      }
     }
   }
 

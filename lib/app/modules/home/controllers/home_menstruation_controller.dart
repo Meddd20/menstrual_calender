@@ -1,20 +1,30 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart'
-    as PeriodCycleModel;
-import 'package:periodnpregnancycalender/app/models/date_event_model.dart'
-    as DateEventModel;
+import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart' as PeriodCycleModel;
+import 'package:periodnpregnancycalender/app/models/date_event_model.dart' as DateEventModel;
+import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/repositories/period_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
+import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
+import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
+import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomeMenstruationController extends GetxController {
   final ApiService apiService = ApiService();
+  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
   late final PeriodRepository periodRepository = PeriodRepository(apiService);
   final Rx<DateTime?> _selectedDate = Rx<DateTime?>(DateTime.now());
   final Rx<DateTime> _focusedDate = Rx<DateTime>(DateTime.now());
-  late PeriodCycleModel.Data? data;
+  late PeriodCycleModel.PeriodCycleIndex? data;
   RxList<DateTime> haidAwalList = <DateTime>[].obs;
   late RxList<DateTime> haidAkhirList;
   late RxList<DateTime> ovulasiList;
@@ -31,8 +41,11 @@ class HomeMenstruationController extends GetxController {
   late RxList<DateTime> nextPredictMasaSuburAwalList;
   late RxList<DateTime> nextPredictMasaSuburAkhirList;
 
-  Rx<DateEventModel.Data> eventDatas =
-      Rx<DateEventModel.Data>(DateEventModel.Data());
+  late final SyncDataRepository _syncDataRepository;
+  late final PeriodHistoryService _periodHistoryService;
+  final storageService = StorageService();
+
+  Rx<DateEventModel.Event> eventDatas = Rx<DateEventModel.Event>(DateEventModel.Event());
 
   late List<Map<String, dynamic>> periods = [];
   Rx<DateTime?> startDate = Rx<DateTime?>(DateTime.now());
@@ -55,12 +68,11 @@ class HomeMenstruationController extends GetxController {
     print(endDate);
   }
 
-  late Future<PeriodCycleModel.Data?> periodStream;
+  late Future<PeriodCycleModel.PeriodCycleIndex?> periodStream;
 
   @override
   Future<void> onInit() async {
-    update();
-    data = PeriodCycleModel.Data(
+    data = PeriodCycleModel.PeriodCycleIndex(
       initialYear: null,
       latestYear: null,
       currentYear: null,
@@ -79,7 +91,6 @@ class HomeMenstruationController extends GetxController {
       predictionPeriod: [],
       shettlesGenderPrediction: [],
     );
-
     periodStream = fetchCycleData();
     haidAwalList = <DateTime>[].obs;
     haidAkhirList = <DateTime>[].obs;
@@ -97,6 +108,20 @@ class HomeMenstruationController extends GetxController {
     nextPredictMasaSuburAwalList = <DateTime>[].obs;
     nextPredictMasaSuburAkhirList = <DateTime>[].obs;
     dateSelectedEvent(DateTime.now());
+
+    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
+    final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
+    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
+    final MasterNewmoonRepository masterNewmoonRepository = MasterNewmoonRepository(databaseHelper);
+    final MasterGenderRepository masterGenderRepository = MasterGenderRepository(databaseHelper);
+    _syncDataRepository = SyncDataRepository(databaseHelper);
+    _periodHistoryService = PeriodHistoryService(
+      periodHistoryRepository,
+      localProfileRepository,
+      masterNewmoonRepository,
+      masterGenderRepository,
+    );
+
     super.onInit();
   }
 
@@ -120,24 +145,17 @@ class HomeMenstruationController extends GetxController {
     update();
   }
 
-  Future<PeriodCycleModel.Data?> fetchCycleData() async {
+  Future<PeriodCycleModel.PeriodCycleIndex?> fetchCycleData() async {
     try {
-      var periodCycle = await periodRepository.getPeriodSummary();
-
-      data = periodCycle?.data;
+      data = await _periodHistoryService.getPeriodIndex();
 
       if (data != null) {
         data?.actualPeriod.forEach((history) {
-          DateTime haidAwal =
-              DateTime.tryParse('${history.haidAwal}') ?? DateTime.now();
-          DateTime haidAkhir =
-              DateTime.tryParse('${history.haidAkhir}') ?? DateTime.now();
-          DateTime ovulasi =
-              DateTime.tryParse('${history.ovulasi}') ?? DateTime.now();
-          DateTime masaSuburAwal =
-              DateTime.tryParse('${history.masaSuburAwal}') ?? DateTime.now();
-          DateTime masaSuburAkhir =
-              DateTime.tryParse('${history.masaSuburAkhir}') ?? DateTime.now();
+          DateTime haidAwal = DateTime.tryParse('${history.haidAwal}') ?? DateTime.now();
+          DateTime haidAkhir = DateTime.tryParse('${history.haidAkhir}') ?? DateTime.now();
+          DateTime ovulasi = DateTime.tryParse('${history.ovulasi}') ?? DateTime.now();
+          DateTime masaSuburAwal = DateTime.tryParse('${history.masaSuburAwal}') ?? DateTime.now();
+          DateTime masaSuburAkhir = DateTime.tryParse('${history.masaSuburAkhir}') ?? DateTime.now();
 
           haidAwalList.add(haidAwal);
           haidAkhirList.add(haidAkhir);
@@ -147,16 +165,11 @@ class HomeMenstruationController extends GetxController {
         });
 
         data?.predictionPeriod.forEach((predict) {
-          DateTime predictHaidAwal =
-              DateTime.tryParse('${predict.haidAwal}') ?? DateTime.now();
-          DateTime predictHaidAkhir =
-              DateTime.tryParse('${predict.haidAkhir}') ?? DateTime.now();
-          DateTime predictOvulasi =
-              DateTime.tryParse('${predict.ovulasi}') ?? DateTime.now();
-          DateTime predictMasaSuburAwal =
-              DateTime.tryParse('${predict.masaSuburAwal}') ?? DateTime.now();
-          DateTime predictMasaSuburAkhir =
-              DateTime.tryParse('${predict.masaSuburAkhir}') ?? DateTime.now();
+          DateTime predictHaidAwal = DateTime.tryParse('${predict.haidAwal}') ?? DateTime.now();
+          DateTime predictHaidAkhir = DateTime.tryParse('${predict.haidAkhir}') ?? DateTime.now();
+          DateTime predictOvulasi = DateTime.tryParse('${predict.ovulasi}') ?? DateTime.now();
+          DateTime predictMasaSuburAwal = DateTime.tryParse('${predict.masaSuburAwal}') ?? DateTime.now();
+          DateTime predictMasaSuburAkhir = DateTime.tryParse('${predict.masaSuburAkhir}') ?? DateTime.now();
 
           predictHaidAwalList.add(predictHaidAwal);
           predictHaidAkhirList.add(predictHaidAkhir);
@@ -174,19 +187,14 @@ class HomeMenstruationController extends GetxController {
   }
 
   void dateSelectedEvent(DateTime? inputDate) async {
-    try {
-      if (inputDate != null) {
-        String formattedDate = DateFormat('yyyy-MM-dd').format(inputDate);
-        var dateEvent = await periodRepository.getDateEvent(formattedDate);
-        if (dateEvent != null && dateEvent.status == "success") {
-          eventDatas.value = dateEvent.data ?? DateEventModel.Data();
-          update();
-        } else {
-          print("Failed to get date event data");
-        }
+    if (inputDate != null) {
+      var dateEvent = await _periodHistoryService.getDateEvent(inputDate);
+      if (dateEvent.toString().isNotEmpty) {
+        eventDatas.value = dateEvent;
+        update();
+      } else {
+        print("Failed to get date event data");
       }
-    } catch (e) {
-      print('Error fetching : $e');
     }
   }
 
@@ -195,10 +203,7 @@ class HomeMenstruationController extends GetxController {
       DateTime haidAwal = haidAwalList[i];
       DateTime haidAkhir = haidAkhirList[i];
 
-      if ((selectedDate.isAtSameMomentAs(haidAwal) ||
-              selectedDate.isAfter(haidAwal)) &&
-          (selectedDate.isAtSameMomentAs(haidAkhir) ||
-              selectedDate.isBefore(haidAkhir))) {
+      if ((selectedDate.isAtSameMomentAs(haidAwal) || selectedDate.isAfter(haidAwal)) && (selectedDate.isAtSameMomentAs(haidAkhir) || selectedDate.isBefore(haidAkhir))) {
         return true;
       }
     }
@@ -240,15 +245,13 @@ class HomeMenstruationController extends GetxController {
     }
   }
 
-  String get formattedStartDate => startDate.value != null
-      ? DateFormat('yyyy-MM-dd').format(startDate.value!)
-      : DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String get formattedStartDate => startDate.value != null ? DateFormat('yyyy-MM-dd').format(startDate.value!) : DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-  String get formattedEndDate => endDate.value != null
-      ? DateFormat('yyyy-MM-dd').format(endDate.value!)
-      : DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String get formattedEndDate => endDate.value != null ? DateFormat('yyyy-MM-dd').format(endDate.value!) : DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   void addPeriod(int avgPeriodDuration, int avgPeriodCycle) async {
+    bool isConnected = await CheckConnectivity().isConnectedToInternet();
+
     if (startDate.value != null) {
       if (formattedStartDate == formattedEndDate || endDate.value == null) {
         setEndDate(startDate.value!.add(Duration(days: avgPeriodDuration)));
@@ -260,11 +263,42 @@ class HomeMenstruationController extends GetxController {
           'last_period': formattedEndDate,
         }
       ];
-      await periodRepository.storePeriod(periods, avgPeriodCycle, null);
-      cancelEdit();
+
+      if (storageService.getIsAuth() && !isConnected) {
+        await syncAddedPeriod(periods, avgPeriodCycle);
+        return;
+      }
+
+      try {
+        var addPeriod = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
+        var idPeriodAdded = addPeriod?[0].id;
+        await _periodHistoryService.addPeriod(idPeriodAdded ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
+        cancelEdit();
+      } catch (e) {
+        print("Error adding period: $e");
+        await _periodHistoryService.addPeriod(null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
+      }
     } else {
       print('Please select both start and end dates');
     }
+  }
+
+  Future<void> syncAddedPeriod(List<Map<String, dynamic>> periods, int periodCycle) async {
+    Map<String, dynamic> data = {
+      "periods": periods,
+      "periodCycle": periodCycle,
+    };
+
+    String jsonData = jsonEncode(data);
+
+    SyncLog syncLog = SyncLog(
+      tableName: 'tb_riwayat_mens',
+      operation: 'addPeriod',
+      data: jsonData,
+      createdAt: DateTime.now().toString(),
+    );
+
+    await _syncDataRepository.addSyncLogData(syncLog);
   }
 
   void cancelEdit() {

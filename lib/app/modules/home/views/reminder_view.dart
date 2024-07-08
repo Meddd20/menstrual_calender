@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/reminder_controller.dart';
 
 class ReminderView extends GetView<ReminderController> {
@@ -55,18 +55,15 @@ class ReminderView extends GetView<ReminderController> {
                               ),
                               SizedBox(height: 10.h),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "Add New Reminder",
@@ -95,8 +92,7 @@ class ReminderView extends GetView<ReminderController> {
                                           child: Text(
                                             "Adjust the start and end dates for precise and up-to-date reminder information.",
                                             style: TextStyle(
-                                              color:
-                                                  Colors.black.withOpacity(0.5),
+                                              color: Colors.black.withOpacity(0.5),
                                               fontWeight: FontWeight.w400,
                                               fontSize: 14,
                                             ),
@@ -118,47 +114,34 @@ class ReminderView extends GetView<ReminderController> {
                                 calendarType: CalendarDatePicker2Type.single,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    right: 5.0, left: 5.0),
+                                padding: const EdgeInsets.only(right: 5.0, left: 5.0),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       "Time",
-                                      style:
-                                          CustomTextStyle.heading4TextStyle(),
+                                      style: CustomTextStyle.heading4TextStyle(),
                                     ),
                                     GestureDetector(
                                       onTap: () async {
-                                        TimeOfDay? selectedTime =
-                                            await showTimePicker(
-                                                context: context,
-                                                initialTime:
-                                                    TimeOfDay.fromDateTime(
-                                                        DateTime.now()));
+                                        TimeOfDay? selectedTime = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(DateTime.now()));
                                         if (selectedTime != null) {
                                           controller.setTime(selectedTime);
                                         }
                                       },
                                       child: IntrinsicWidth(
                                         child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10.0),
+                                          padding: EdgeInsets.symmetric(horizontal: 10.0),
                                           height: 40.h,
                                           decoration: BoxDecoration(
                                             color: AppColors.highlight,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15.0)),
+                                            borderRadius: BorderRadius.all(Radius.circular(15.0)),
                                           ),
                                           child: Center(
                                             child: Obx(
                                               () => Text(
-                                                controller
-                                                        .formattedSelectedTime ??
-                                                    "Select Time",
-                                                style: CustomTextStyle
-                                                    .captionTextStyle(),
+                                                controller.formattedSelectedTime ?? "Select Time",
+                                                style: CustomTextStyle.captionTextStyle(),
                                               ),
                                             ),
                                           ),
@@ -170,13 +153,11 @@ class ReminderView extends GetView<ReminderController> {
                               ),
                               SizedBox(height: 15.h),
                               TextFormField(
-                                onChanged: (text) =>
-                                    controller.updateReminderTitle(text),
+                                onChanged: (text) => controller.updateReminderTitle(text),
                                 decoration: InputDecoration(
                                   hintText: 'Enter reminder title',
                                   border: OutlineInputBorder(
-                                    borderSide:
-                                        const BorderSide(color: Colors.black),
+                                    borderSide: const BorderSide(color: Colors.black),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   contentPadding: const EdgeInsets.all(18),
@@ -184,13 +165,11 @@ class ReminderView extends GetView<ReminderController> {
                               ),
                               SizedBox(height: 10.h),
                               TextFormField(
-                                onChanged: (text) =>
-                                    controller.updateReminderDescription(text),
+                                onChanged: (text) => controller.updateReminderDescription(text),
                                 decoration: InputDecoration(
                                   hintText: 'Enter reminder description',
                                   border: OutlineInputBorder(
-                                    borderSide:
-                                        const BorderSide(color: Colors.black),
+                                    borderSide: const BorderSide(color: Colors.black),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   contentPadding: const EdgeInsets.all(18),
@@ -204,8 +183,7 @@ class ReminderView extends GetView<ReminderController> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Color(0xFFFD6666),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   minimumSize: Size(Get.width, 45.h),
                                 ),
                                 child: Text(
@@ -256,22 +234,17 @@ class ReminderView extends GetView<ReminderController> {
                           children: [
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    10.0, 8.0, 10.0, 8.0),
+                                padding: const EdgeInsets.fromLTRB(10.0, 8.0, 10.0, 8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(controller
-                                        .formatDateTime(reminder.datetime)),
+                                    Text(controller.formatDateTime(reminder.datetime)),
                                     SizedBox(height: 2.h),
                                     Text(
                                       DateFormat('HH:mm a').format(
-                                        reminder.datetime != null
-                                            ? DateTime.parse(reminder.datetime!)
-                                            : DateTime.now(),
+                                        reminder.datetime != null ? DateTime.parse(reminder.datetime!) : DateTime.now(),
                                       ),
-                                      style:
-                                          CustomTextStyle.heading1TextStyle(),
+                                      style: CustomTextStyle.heading1TextStyle(),
                                     ),
                                     SizedBox(height: 2.h),
                                     Text(
@@ -289,8 +262,7 @@ class ReminderView extends GetView<ReminderController> {
                                         Expanded(
                                           child: Text(
                                             reminder.description ?? "",
-                                            style:
-                                                CustomTextStyle.bodyTextStyle(),
+                                            style: CustomTextStyle.bodyTextStyle(),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -305,7 +277,7 @@ class ReminderView extends GetView<ReminderController> {
                               alignment: Alignment.center,
                               child: IconButton(
                                 onPressed: () {
-                                  controller.deleteReminder(reminder.id ?? "");
+                                  controller.deleteReminder(reminder.id ?? "", reminder.remoteId ?? "");
                                 },
                                 icon: Icon(Icons.delete),
                               ),
@@ -321,8 +293,7 @@ class ReminderView extends GetView<ReminderController> {
                               return Wrap(
                                 children: [
                                   Padding(
-                                    padding:
-                                        EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0),
+                                    padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0),
                                     child: SizedBox(
                                       height: Get.height,
                                       width: Get.width,
@@ -332,8 +303,7 @@ class ReminderView extends GetView<ReminderController> {
                                             Container(
                                               height: 4.h,
                                               width: 32.w,
-                                              margin:
-                                                  EdgeInsets.only(top: 16.h),
+                                              margin: EdgeInsets.only(top: 16.h),
                                               decoration: BoxDecoration(
                                                 color: Colors.blueGrey,
                                                 borderRadius: BorderRadius.all(
@@ -343,31 +313,21 @@ class ReminderView extends GetView<ReminderController> {
                                             ),
                                             SizedBox(height: 10.h),
                                             Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
                                                     children: [
                                                       Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
                                                           Text(
                                                             "Edit Reminder",
                                                             style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
+                                                              color: Colors.black,
+                                                              fontWeight: FontWeight.w700,
                                                               fontSize: 20,
                                                             ),
                                                           ),
@@ -375,12 +335,10 @@ class ReminderView extends GetView<ReminderController> {
                                                             icon: Icon(
                                                               Icons.close,
                                                               size: 25,
-                                                              color: Color(
-                                                                  0xFFFD6666),
+                                                              color: Color(0xFFFD6666),
                                                             ),
                                                             onPressed: () {
-                                                              controller
-                                                                  .cancelEdit();
+                                                              controller.cancelEdit();
                                                               Get.back();
                                                             },
                                                           )
@@ -392,11 +350,8 @@ class ReminderView extends GetView<ReminderController> {
                                                         child: Text(
                                                           "Adjust the start and end dates for precise and up-to-date reminder information.",
                                                           style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.5),
-                                                            fontWeight:
-                                                                FontWeight.w400,
+                                                            color: Colors.black.withOpacity(0.5),
+                                                            fontWeight: FontWeight.w400,
                                                             fontSize: 14,
                                                           ),
                                                           softWrap: true,
@@ -409,75 +364,45 @@ class ReminderView extends GetView<ReminderController> {
                                             ),
                                             SizedBox(height: 10.h),
                                             CustomCalendarDatePicker(
-                                              value: [
-                                                DateTime.parse(reminder
-                                                        .datetime ??
-                                                    DateTime.now().toString())
-                                              ],
+                                              value: [DateTime.parse(reminder.datetime ?? DateTime.now().toString())],
                                               onValueChanged: (dates) {
                                                 controller.setDate(dates.first);
                                               },
                                               firstDate: DateTime.now(),
-                                              calendarType:
-                                                  CalendarDatePicker2Type
-                                                      .single,
+                                              calendarType: CalendarDatePicker2Type.single,
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 5.0, left: 5.0),
+                                              padding: const EdgeInsets.only(right: 5.0, left: 5.0),
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Text(
                                                     "Time",
-                                                    style: CustomTextStyle
-                                                        .heading4TextStyle(),
+                                                    style: CustomTextStyle.heading4TextStyle(),
                                                   ),
                                                   GestureDetector(
                                                     onTap: () async {
-                                                      TimeOfDay? selectedTime =
-                                                          await showTimePicker(
-                                                              context: context,
-                                                              initialTime: TimeOfDay
-                                                                  .fromDateTime(
-                                                                      DateTime.parse(
-                                                                          reminder.datetime ??
-                                                                              "")));
-                                                      if (selectedTime !=
-                                                          null) {
-                                                        controller.setTime(
-                                                            selectedTime);
+                                                      TimeOfDay? selectedTime = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(DateTime.parse(reminder.datetime ?? "")));
+                                                      if (selectedTime != null) {
+                                                        controller.setTime(selectedTime);
                                                       }
                                                     },
                                                     child: Container(
                                                       height: 40.h,
                                                       width: 80.w,
                                                       decoration: BoxDecoration(
-                                                        color:
-                                                            AppColors.highlight,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    15.0)),
+                                                        color: AppColors.highlight,
+                                                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
                                                       ),
                                                       child: Center(
                                                         child: Obx(
                                                           () => Text(
-                                                            controller.timeSelected
-                                                                        .value !=
-                                                                    null
+                                                            controller.timeSelected.value != null
                                                                 ? '${controller.timeSelected.value!.hour}:${controller.timeSelected.value!.minute.toString().padLeft(2, '0')}'
-                                                                : reminder.datetime !=
-                                                                        null
-                                                                    ? DateFormat('HH:mm').format(DateTime.parse(reminder
-                                                                            .datetime ??
-                                                                        TimeOfDay.now()
-                                                                            .toString()))
+                                                                : reminder.datetime != null
+                                                                    ? DateFormat('HH:mm').format(DateTime.parse(reminder.datetime ?? TimeOfDay.now().toString()))
                                                                     : "Select Time",
-                                                            style: CustomTextStyle
-                                                                .headerCalenderTextStyle(),
+                                                            style: CustomTextStyle.headerCalenderTextStyle(),
                                                           ),
                                                         ),
                                                       ),
@@ -489,60 +414,39 @@ class ReminderView extends GetView<ReminderController> {
                                             SizedBox(height: 15.h),
                                             TextFormField(
                                               initialValue: reminder.title,
-                                              onChanged: (text) => controller
-                                                  .updateReminderTitle(text),
+                                              onChanged: (text) => controller.updateReminderTitle(text),
                                               decoration: InputDecoration(
-                                                hintText:
-                                                    'Enter reminder title',
+                                                hintText: 'Enter reminder title',
                                                 border: OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                      color: Colors.black),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
+                                                  borderSide: const BorderSide(color: Colors.black),
+                                                  borderRadius: BorderRadius.circular(12),
                                                 ),
-                                                contentPadding:
-                                                    const EdgeInsets.all(18),
+                                                contentPadding: const EdgeInsets.all(18),
                                               ),
                                             ),
                                             SizedBox(height: 10.h),
                                             TextFormField(
-                                              initialValue:
-                                                  reminder.description,
-                                              onChanged: (text) => controller
-                                                  .updateReminderDescription(
-                                                      text),
+                                              initialValue: reminder.description,
+                                              onChanged: (text) => controller.updateReminderDescription(text),
                                               decoration: InputDecoration(
-                                                hintText:
-                                                    'Enter reminder description',
+                                                hintText: 'Enter reminder description',
                                                 border: OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                      color: Colors.black),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
+                                                  borderSide: const BorderSide(color: Colors.black),
+                                                  borderRadius: BorderRadius.circular(12),
                                                 ),
-                                                contentPadding:
-                                                    const EdgeInsets.all(18),
+                                                contentPadding: const EdgeInsets.all(18),
                                               ),
                                               maxLines: 2,
                                             ),
                                             SizedBox(height: 20.h),
                                             ElevatedButton(
                                               onPressed: () {
-                                                controller.editReminder(
-                                                    reminder.id ?? "",
-                                                    reminder.title ?? "",
-                                                    reminder.description ?? "",
-                                                    reminder.datetime ?? "");
+                                                controller.editReminder(reminder.id ?? "", reminder.remoteId ?? "", reminder.title ?? "", reminder.description ?? "", reminder.datetime ?? "");
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    Color(0xFFFD6666),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                minimumSize:
-                                                    Size(Get.width, 45.h),
+                                                backgroundColor: Color(0xFFFD6666),
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                minimumSize: Size(Get.width, 45.h),
                                               ),
                                               child: Text(
                                                 "Update Reminder",

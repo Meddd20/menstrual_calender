@@ -11,6 +11,8 @@ class _AuthEndPoints {
   final String resetPassword = 'auth/changepassword';
   final String logOut = 'auth/logout';
   final String profile = 'auth/get-profile';
+  final String editProfile = 'auth/update-profile';
+  final String getSycData = 'auth/sync-data';
 
   final String getAllArticle = 'articles/show-all-articles';
   final String getArticle = 'articles/show-articles';
@@ -32,11 +34,11 @@ class _AuthEndPoints {
   final String getPregnancyIndex = 'pregnancy/index';
   final String pregnancyBegin = 'pregnancy/begin';
   final String pregnancyEnded = 'pregnancy/end';
+  final String deletePregnancy = 'pregnancy/delete';
   final String editPregnancy = 'pregnancy/edit';
   final String getWeightGainIndex = 'pregnancy/pregnancy-weight-gain';
   final String initializeWeightGain = 'pregnancy/init-weight-gain';
   final String weeklyWeightGain = 'pregnancy/weekly-weight-gain';
-  final String editWeeklyWeightGain = 'pregnancy/edit-weekly-weight-gain';
   final String deleteWeeklyWeightGain = 'pregnancy/delete-weekly-weight-gain';
 
   final String storeComment = 'comments/create-comments';

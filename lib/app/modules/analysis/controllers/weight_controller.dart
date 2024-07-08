@@ -3,24 +3,33 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/log_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
+import 'package:periodnpregnancycalender/app/services/log_service.dart';
+import 'package:periodnpregnancycalender/app/services/weight_history_service.dart';
+import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class WeightController extends GetxController {
   final ApiService apiService = ApiService();
   late final LogRepository logRepository = LogRepository(apiService);
-  late Data data;
+  late DailyLogTagsData data;
   RxMap<String, dynamic> weight = RxMap<String, dynamic>();
   RxString selectedDataType = 'percentage30Days'.obs;
   RxMap<String, dynamic> specificWeightData = RxMap<String, dynamic>();
   Rx<DateTime> selectedDate = DateTime.now().obs;
   late TabController tabController;
+  late final LogService _logService;
 
   @override
   void onInit() {
     tabController = TabController(length: 4, vsync: MyTickerProvider());
 
-    data = Data(
+    final databaseHelper = DatabaseHelper.instance;
+    final localLogRepository = LocalLogRepository(databaseHelper);
+    _logService = LogService(localLogRepository);
+
+    data = DailyLogTagsData(
       tags: '',
       logs: {},
       percentage30Days: null,
@@ -30,7 +39,7 @@ class WeightController extends GetxController {
     );
     selectedDataType = 'percentage30Days'.obs;
     _updateSelectedDate();
-    fetchTemperatures();
+    fetchWeight();
     specifiedDataByDate();
     weight = RxMap<String, dynamic>();
     super.onInit();
@@ -96,22 +105,17 @@ class WeightController extends GetxController {
     DateTime now = DateTime.now();
     specificWeightData.clear();
 
-    List<MapEntry<String, dynamic>> filteredData =
-        weight.entries.where((entry) {
+    List<MapEntry<String, dynamic>> filteredData = weight.entries.where((entry) {
       DateTime entryDate = DateTime.parse(entry.key);
       switch (selectedDataType.value) {
         case 'percentage30Days':
-          return entryDate.isAfter(now.subtract(Duration(days: 31))) &&
-              entryDate.isBefore(now);
+          return entryDate.isAfter(now.subtract(Duration(days: 31))) && entryDate.isBefore(now);
         case 'percentage3Months':
-          return entryDate.isAfter(now.subtract(Duration(days: 91))) &&
-              entryDate.isBefore(now);
+          return entryDate.isAfter(now.subtract(Duration(days: 91))) && entryDate.isBefore(now);
         case 'percentage6Months':
-          return entryDate.isAfter(now.subtract(Duration(days: 181))) &&
-              entryDate.isBefore(now);
+          return entryDate.isAfter(now.subtract(Duration(days: 181))) && entryDate.isBefore(now);
         case 'percentage1Year':
-          return entryDate.isAfter(now.subtract(Duration(days: 366))) &&
-              entryDate.isBefore(now);
+          return entryDate.isAfter(now.subtract(Duration(days: 366))) && entryDate.isBefore(now);
         default:
           return false;
       }
@@ -124,18 +128,44 @@ class WeightController extends GetxController {
     return specificWeightData;
   }
 
-  Future<void> fetchTemperatures() async {
-    DailyLogTags? result = await logRepository.getLogsByTags("weight");
+  // Future<void> fetchTemperatures() async {
+  //   DailyLogTags? result = await logRepository.getLogsByTags("weight");
 
-    if (result != null && result.data != null) {
-      RxMap<String, dynamic> logsMap =
-          RxMap<String, dynamic>.from(result.data!.logs);
-      weight.assignAll(logsMap);
-    } else {
-      print("Error: Unable to fetch temperature");
+  //   if (result != null && result.data != null) {
+  //     RxMap<String, dynamic> logsMap = RxMap<String, dynamic>.from(result.data!.logs);
+  //     weight.assignAll(logsMap);
+  //   } else {
+  //     print("Error: Unable to fetch temperature");
+  //   }
+  //   specifiedDataByDate();
+
+  //   update();
+  // }
+
+  Future<void> fetchWeight() async {
+    try {
+      DailyLogTagsData? result = await _logService.getLogsByTags("weight");
+
+      if (result != null) {
+        Map<String, dynamic> logsMap = result.logs;
+
+        logsMap.forEach((date, value) {
+          if (value is String) {
+            weight[date] = value;
+          } else if (value is List<String>) {
+            weight[date] = value.join(", ");
+          }
+        });
+
+        print(weight);
+      } else {
+        print("Error: Unable to fetch temperature");
+      }
+    } catch (e) {
+      print("Error fetching temperatures: $e");
     }
-    specifiedDataByDate();
 
+    specifiedDataByDate();
     update();
   }
 

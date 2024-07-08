@@ -13,11 +13,11 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
   Widget build(BuildContext context) {
     final List<Map<String, String>> tools = [
       {
-        'name': 'Tool 1',
+        'name': 'Fetal Development',
         'icon': 'assets/image/bd48b2bc7befdf66265a70239c555886.png'
       },
       {
-        'name': 'Tool 2',
+        'name': 'Weight Gain Tracker',
         'icon': 'assets/image/bd48b2bc7befdf66265a70239c555886.png'
       },
       {
@@ -46,7 +46,7 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
                       Get.to(() => BabyWeightHeigthTrackerView());
                       break;
                     case 1:
-                      Get.to(() => WeightGainTrackerView());
+                      Get.to(() => WeightGainView());
                       break;
                     case 2:
                       break;

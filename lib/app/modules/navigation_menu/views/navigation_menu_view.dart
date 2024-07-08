@@ -5,12 +5,13 @@ import '../controllers/navigation_menu_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NavigationMenuView extends GetView<NavigationMenuController> {
-  const NavigationMenuView({Key? key}) : super(key: key);
+  NavigationMenuView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: Obx(
-        () => NavigationBar(
+    Get.put(NavigationMenuController());
+    return Obx(
+      () => Scaffold(
+        bottomNavigationBar: NavigationBar(
           height: 80.h,
           elevation: 0,
           selectedIndex: controller.selectedIndex.value,
@@ -35,8 +36,8 @@ class NavigationMenuView extends GetView<NavigationMenuController> {
             ),
           ],
         ),
+        body: controller.screens[controller.selectedIndex.value],
       ),
-      body: Obx(() => controller.screens[controller.selectedIndex.value]),
     );
   }
 }

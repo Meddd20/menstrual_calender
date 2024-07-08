@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding3_view.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding6_view.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
@@ -16,20 +16,20 @@ class Onboarding2View extends GetView<OnboardingController> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Color(0xFFf9f8fb),
-          surfaceTintColor: Color(0xFFf9f8fb),
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: AppColors.white,
           leading: const BackButton(
             color: AppColors.primary,
           ),
         ),
         body: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 35.h),
+          padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 15.h),
           child: Align(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: 70.h),
-                CustomCircularIconContainer(
+                SizedBox(height: 20.h),
+                CustomCircularIcon(
                   iconData: Icons.crisis_alert,
                   iconSize: 35,
                   iconColor: AppColors.primary,
@@ -40,13 +40,17 @@ class Onboarding2View extends GetView<OnboardingController> {
                 Text(
                   "What’s your current goal?",
                   style: CustomTextStyle.heading3TextStyle(),
-                  textAlign: TextAlign.left,
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 7.h),
+                SizedBox(height: 10.h),
                 Text(
-                  "All the features will be available anyway",
-                  style: CustomTextStyle.bodyTextStyle(),
-                  textAlign: TextAlign.left,
+                  "Pick the goal that best fits you. All features are available for you to explore!",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    height: 1.5,
+                    color: Colors.black.withOpacity(0.6),
+                  ),
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 32.h),
                 ElevatedButton(
@@ -64,7 +68,7 @@ class Onboarding2View extends GetView<OnboardingController> {
                     height: 120.h,
                     decoration: BoxDecoration(
                       color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       children: [
@@ -75,8 +79,7 @@ class Onboarding2View extends GetView<OnboardingController> {
                             padding: EdgeInsets.only(left: 22),
                             child: Text(
                               "Tracking my period",
-                              style: CustomTextStyle.heading3TextStyle(
-                                  color: Colors.white),
+                              style: CustomTextStyle.heading3TextStyle(color: Colors.white),
                               textAlign: TextAlign.left,
                             ),
                           ),
@@ -108,7 +111,7 @@ class Onboarding2View extends GetView<OnboardingController> {
                     height: 120.h,
                     decoration: BoxDecoration(
                       color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       children: [
@@ -119,8 +122,7 @@ class Onboarding2View extends GetView<OnboardingController> {
                             padding: EdgeInsets.only(left: 22),
                             child: Text(
                               "Follow my pregnancy",
-                              style: CustomTextStyle.heading3TextStyle(
-                                  color: Colors.white),
+                              style: CustomTextStyle.heading3TextStyle(color: Colors.white),
                               textAlign: TextAlign.left,
                             ),
                           ),

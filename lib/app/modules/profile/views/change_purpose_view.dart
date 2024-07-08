@@ -1,0 +1,708 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
+import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
+import 'package:periodnpregnancycalender/app/modules/profile/controllers/profile_controller.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
+
+class ChangePurposeView extends GetView<ProfileController> {
+  const ChangePurposeView({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final box = GetStorage();
+    return box.read("isPregnant") == "0"
+        ? changePurposeToPregnancy(context)
+        : changePurposeToPeriod(context);
+  }
+
+  Widget changePurposeToPregnancy(BuildContext context) {
+    HomeMenstruationController homeMenstruationController =
+        Get.find<HomeMenstruationController>();
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('ChangePurposeView'),
+          centerTitle: true,
+          leading: BackButton(
+            onPressed: () {
+              controller.resetValuePregnancy();
+              Get.back();
+            },
+          ),
+        ),
+        body: Padding(
+          padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
+          child: Obx(
+            () => Stack(
+              children: [
+                Positioned(
+                  child: Container(
+                    width: Get.width,
+                    height: Get.height,
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TableCalendar(
+                            focusedDay: controller.getFocusedDate,
+                            firstDay:
+                                DateTime.now().subtract(Duration(days: 280)),
+                            lastDay: DateTime.now(),
+                            startingDayOfWeek: StartingDayOfWeek.monday,
+                            onDaySelected: (selectedDay, focusedDay) {
+                              controller.setSelectedDate(selectedDay);
+                              controller.setFocusedDate(focusedDay);
+                            },
+                            onPageChanged: (focusedDay) {
+                              controller.setFocusedDate(focusedDay);
+                            },
+                            selectedDayPredicate: (day) => isSameDay(
+                              controller.selectedDate,
+                              day,
+                            ),
+                            rowHeight: 50,
+                            daysOfWeekHeight: 25.0,
+                            calendarStyle: CalendarStyle(
+                              cellMargin: EdgeInsets.all(6),
+                              outsideDaysVisible: false,
+                              isTodayHighlighted: true,
+                              rangeStartDecoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              rangeEndDecoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              withinRangeDecoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.5),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            headerStyle: HeaderStyle(
+                              formatButtonVisible: false,
+                              leftChevronVisible: true,
+                              rightChevronVisible: true,
+                              titleCentered: true,
+                              formatButtonShowsNext: false,
+                              formatButtonTextStyle: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                              formatButtonDecoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                color: Colors.red,
+                              ),
+                              titleTextStyle: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              headerMargin: EdgeInsets.only(bottom: 10),
+                            ),
+                            availableGestures: AvailableGestures.all,
+                            calendarBuilders: CalendarBuilders(
+                              dowBuilder: (context, day) {
+                                return Center(
+                                  child: Text(
+                                    DateFormat.E().format(day),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                );
+                              },
+                              defaultBuilder: (context, day, focusedDay) {
+                                return Container(
+                                  child: Center(
+                                    child: Text(
+                                      '${day.day}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              selectedBuilder: (context, day, focusedDay) {
+                                return Container(
+                                  margin: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepPurpleAccent,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '${day.day}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              todayBuilder: (context, day, focusedDay) {
+                                return Container(
+                                  margin: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepPurpleAccent[100],
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '${day.day}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Use last period cycle data?",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              Obx(
+                                () => Switch(
+                                  value: controller.useLastPeriodData.value,
+                                  onChanged: (bool twin) {
+                                    controller.useLastPeriodData.value = twin;
+                                    if (twin == true) {
+                                      controller.setFocusedDate(
+                                          homeMenstruationController
+                                              .haidAwalList.last);
+                                      controller.setSelectedDate(
+                                          homeMenstruationController
+                                              .haidAwalList.last);
+                                    } else {
+                                      controller.setFocusedDate(DateTime.now());
+                                      controller
+                                          .setSelectedDate(DateTime.now());
+                                    }
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        // SizedBox(height: 10.h),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Selected Date",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                "${DateFormat('yyyy-MM-dd').format(controller.selectedDate ?? DateTime.now())}",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 15,
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          controller.startPregnancy();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          minimumSize: Size(Get.width, 45.h),
+                        ),
+                        child: Text(
+                          "Start Pregnancy",
+                          style: CustomTextStyle.buttonTextStyle(
+                              color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget changePurposeToPeriod(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('ChangePurposeView'),
+          centerTitle: true,
+          leading: BackButton(
+            onPressed: () {
+              controller.resetValuePregnancy();
+              Get.back();
+            },
+          ),
+        ),
+        body: Padding(
+          padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
+          child: Obx(
+            () => Container(
+              width: Get.width,
+              height: Get.height,
+              child: Stack(
+                children: [
+                  Positioned(
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TableCalendar(
+                            focusedDay: controller.getFocusedDate,
+                            firstDay: DateTime.parse(controller
+                                    .currentlyPregnantData
+                                    .value
+                                    .hariPertamaHaidTerakhir ??
+                                DateTime.now().toString()),
+                            lastDay: DateTime.now(),
+                            startingDayOfWeek: StartingDayOfWeek.monday,
+                            onDaySelected: (selectedDay, focusedDay) {
+                              controller.setSelectedDate(selectedDay);
+                              controller.setFocusedDate(focusedDay);
+                            },
+                            onPageChanged: (focusedDay) {
+                              controller.setFocusedDate(focusedDay);
+                            },
+                            selectedDayPredicate: (day) => isSameDay(
+                              controller.selectedDate,
+                              day,
+                            ),
+                            rowHeight: 50,
+                            daysOfWeekHeight: 25.0,
+                            calendarStyle: CalendarStyle(
+                              cellMargin: EdgeInsets.all(6),
+                              outsideDaysVisible: false,
+                              isTodayHighlighted: true,
+                              rangeStartDecoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              rangeEndDecoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              withinRangeDecoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.5),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            headerStyle: HeaderStyle(
+                              formatButtonVisible: false,
+                              leftChevronVisible: true,
+                              rightChevronVisible: true,
+                              titleCentered: true,
+                              formatButtonShowsNext: false,
+                              formatButtonTextStyle: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                              formatButtonDecoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                color: Colors.red,
+                              ),
+                              titleTextStyle: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              headerMargin: EdgeInsets.only(bottom: 10),
+                            ),
+                            availableGestures: AvailableGestures.all,
+                            calendarBuilders:
+                                CalendarBuilders(dowBuilder: (context, day) {
+                              return Center(
+                                child: Text(
+                                  DateFormat.E().format(day),
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                            }, defaultBuilder: (context, day, focusedDay) {
+                              return Container(
+                                child: Center(
+                                  child: Text(
+                                    '${day.day}',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }, selectedBuilder: (context, day, focusedDay) {
+                              return Container(
+                                margin: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurpleAccent,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${day.day}',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }, todayBuilder: (context, day, focusedDay) {
+                              return Container(
+                                margin: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurpleAccent[100],
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${day.day}',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }, markerBuilder: (context, day, events) {
+                              for (var i = 0;
+                                  i < controller.tanggalAwalMinggu.length;
+                                  i++) {
+                                var weekDatePregnancy =
+                                    controller.tanggalAwalMinggu[i];
+                                if (day.isAtSameMomentAs(weekDatePregnancy)) {
+                                  return Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Container(
+                                      width: 20.0,
+                                      height: 20.0,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Text(
+                                        '${i + 1}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                              return null;
+                            }),
+                          ),
+                        ),
+                        SizedBox(height: 15.h),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Selected Date",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                "${DateFormat('yyyy-MM-dd').format(controller.selectedDate ?? DateTime.now())}",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 15.h),
+                        Text(
+                          "Blessed with a baby?",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 70,
+                                child: RadioListTile<String>(
+                                  title: Row(
+                                    children: [
+                                      Container(
+                                        width: Get.width * 0.15,
+                                        child: const Text(
+                                          "Yes, it's a Girl",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        child: SvgPicture.asset(
+                                          'assets/image/baby-girl.svg',
+                                          width: 200,
+                                          height: 150,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                      16.0, 0.0, 16.0, 20.0),
+                                  value: 'Girl',
+                                  groupValue: controller.gender.value,
+                                  onChanged: (String? value) {
+                                    controller.gender.value = value ?? "";
+                                  },
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                height: 70,
+                                child: RadioListTile<String>(
+                                  title: Row(
+                                    children: [
+                                      Container(
+                                        width: Get.width * 0.15,
+                                        child: const Text(
+                                          "Yes, it's a Boy",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        child: SvgPicture.asset(
+                                          'assets/image/baby-boy.svg',
+                                          width: 200,
+                                          height: 150,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                      16.0, 0.0, 16.0, 20.0),
+                                  value: 'Boy',
+                                  groupValue: controller.gender.value,
+                                  onChanged: (String? value) {
+                                    controller.gender.value = value ?? "";
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 15,
+                    child: Column(
+                      children: [
+                        CustomTransparentButton(
+                          text: "Delete Pregnancy",
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return SimpleDialog(
+                                  title: Text(
+                                    "Are you sure you want to delete your current pregnancy?",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 22,
+                                    ),
+                                  ),
+                                  contentPadding: EdgeInsets.all(16.0),
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () => Get.back(),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              shadowColor: Colors.transparent,
+                                              minimumSize:
+                                                  Size(Get.width, 45.h),
+                                            ),
+                                            child: Text(
+                                              "No",
+                                              style: CustomTextStyle
+                                                  .buttonTextStyle(),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 5),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              controller.deletePregnancy();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  AppColors.primary,
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              shadowColor: AppColors.primary,
+                                              minimumSize:
+                                                  Size(Get.width, 45.h),
+                                            ),
+                                            child: Text(
+                                              "Yes",
+                                              style: TextStyle(
+                                                fontSize: 16.sp,
+                                                letterSpacing: 0.38,
+                                                fontFamily: 'Poppins',
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                        SizedBox(height: 5.h),
+                        ElevatedButton(
+                          onPressed: () {
+                            (controller.gender.value == "")
+                                ? null
+                                : controller.endPregnancy();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: (controller.gender.value == "")
+                                ? Colors.grey
+                                : AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            minimumSize: Size(Get.width, 45.h),
+                          ),
+                          child: Text(
+                            "End Pregnancy",
+                            style: CustomTextStyle.buttonTextStyle(
+                                color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

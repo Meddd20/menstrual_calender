@@ -1,13 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:math' as math;
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_pregnancy_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/detail_pregnancy_view.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class HomePregnancyView extends GetView<HomePregnancyController> {
   const HomePregnancyView({Key? key}) : super(key: key);
@@ -21,7 +22,6 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
         headerSliverBuilder: ((context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              // shadowColor: Colors.white,
               backgroundColor: Colors.white,
               surfaceTintColor: Colors.white,
               floating: true,
@@ -90,7 +90,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                       width: 30.dg,
                                       height: 30.dg,
                                     ),
-                                    child: CustomCircularIconContainer(
+                                    child: CustomCircularIcon(
                                       iconData: Icons.arrow_back_ios_new,
                                       iconSize: 20,
                                       iconColor: Color(0xFF878686),
@@ -119,7 +119,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                       width: 30.dg,
                                       height: 30.dg,
                                     ),
-                                    child: CustomCircularIconContainer(
+                                    child: CustomCircularIcon(
                                       iconData:
                                           Icons.arrow_forward_ios_outlined,
                                       iconSize: 20,
@@ -179,15 +179,281 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                             roundedEdges: Radius.circular(10),
                                           ),
                                           SizedBox(height: 10),
-                                          Text(
-                                            "Due date",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color:
-                                                  Colors.black.withOpacity(0.6),
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Due date",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              SizedBox(width: 5),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                      context: context,
+                                                      isScrollControlled: true,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return Padding(
+                                                          padding: EdgeInsets
+                                                              .fromLTRB(
+                                                                  15.w,
+                                                                  25.h,
+                                                                  15.w,
+                                                                  20.h),
+                                                          child: Wrap(
+                                                            children: [
+                                                              Obx(
+                                                                () => Column(
+                                                                  children: [
+                                                                    Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .transparent,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                      ),
+                                                                      child:
+                                                                          TableCalendar(
+                                                                        focusedDay:
+                                                                            controller.getFocusedDate,
+                                                                        firstDay:
+                                                                            DateTime.now().subtract(Duration(days: 280)),
+                                                                        lastDay:
+                                                                            DateTime.now(),
+                                                                        startingDayOfWeek:
+                                                                            StartingDayOfWeek.monday,
+                                                                        onDaySelected:
+                                                                            (selectedDay,
+                                                                                focusedDay) {
+                                                                          controller
+                                                                              .setSelectedDate(selectedDay);
+                                                                          controller
+                                                                              .setFocusedDate(focusedDay);
+                                                                        },
+                                                                        onPageChanged:
+                                                                            (focusedDay) {
+                                                                          controller
+                                                                              .setFocusedDate(focusedDay);
+                                                                        },
+                                                                        selectedDayPredicate:
+                                                                            (day) =>
+                                                                                isSameDay(
+                                                                          controller
+                                                                              .selectedDate,
+                                                                          day,
+                                                                        ),
+                                                                        rowHeight:
+                                                                            50,
+                                                                        daysOfWeekHeight:
+                                                                            25.0,
+                                                                        calendarStyle:
+                                                                            CalendarStyle(
+                                                                          cellMargin:
+                                                                              EdgeInsets.all(6),
+                                                                          outsideDaysVisible:
+                                                                              false,
+                                                                          isTodayHighlighted:
+                                                                              true,
+                                                                          rangeStartDecoration:
+                                                                              BoxDecoration(
+                                                                            color:
+                                                                                Colors.red,
+                                                                            shape:
+                                                                                BoxShape.circle,
+                                                                          ),
+                                                                          rangeEndDecoration:
+                                                                              BoxDecoration(
+                                                                            color:
+                                                                                Colors.red,
+                                                                            shape:
+                                                                                BoxShape.circle,
+                                                                          ),
+                                                                          withinRangeDecoration:
+                                                                              BoxDecoration(
+                                                                            color:
+                                                                                Colors.red.withOpacity(0.5),
+                                                                            shape:
+                                                                                BoxShape.circle,
+                                                                          ),
+                                                                        ),
+                                                                        headerStyle:
+                                                                            HeaderStyle(
+                                                                          formatButtonVisible:
+                                                                              false,
+                                                                          leftChevronVisible:
+                                                                              true,
+                                                                          rightChevronVisible:
+                                                                              true,
+                                                                          titleCentered:
+                                                                              true,
+                                                                          formatButtonShowsNext:
+                                                                              false,
+                                                                          formatButtonTextStyle:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.black,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            fontSize:
+                                                                                14,
+                                                                          ),
+                                                                          formatButtonDecoration:
+                                                                              BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                            border:
+                                                                                Border.all(
+                                                                              color: Colors.black,
+                                                                              width: 2,
+                                                                            ),
+                                                                            color:
+                                                                                Colors.red,
+                                                                          ),
+                                                                          titleTextStyle:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.black,
+                                                                            fontSize:
+                                                                                17,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                          headerMargin:
+                                                                              EdgeInsets.only(bottom: 10),
+                                                                        ),
+                                                                        availableGestures:
+                                                                            AvailableGestures.all,
+                                                                        calendarBuilders: CalendarBuilders(dowBuilder:
+                                                                            (context,
+                                                                                day) {
+                                                                          return Center(
+                                                                            child:
+                                                                                Text(
+                                                                              DateFormat.E().format(day),
+                                                                              style: TextStyle(
+                                                                                color: Colors.black,
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                        }, defaultBuilder: (context,
+                                                                            day,
+                                                                            focusedDay) {
+                                                                          return Container(
+                                                                            child:
+                                                                                Center(
+                                                                              child: Text(
+                                                                                '${day.day}',
+                                                                                style: TextStyle(
+                                                                                  color: Colors.black,
+                                                                                  fontWeight: FontWeight.w600,
+                                                                                  fontSize: 16,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                        }, selectedBuilder: (context,
+                                                                            day,
+                                                                            focusedDay) {
+                                                                          return Container(
+                                                                            margin:
+                                                                                EdgeInsets.all(6),
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              color: Colors.deepPurpleAccent,
+                                                                              shape: BoxShape.circle,
+                                                                            ),
+                                                                            child:
+                                                                                Center(
+                                                                              child: Text(
+                                                                                '${day.day}',
+                                                                                style: TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontWeight: FontWeight.w600,
+                                                                                  fontSize: 16,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                        }, todayBuilder: (context,
+                                                                            day,
+                                                                            focusedDay) {
+                                                                          return Container(
+                                                                            margin:
+                                                                                EdgeInsets.all(6),
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              color: Colors.deepPurpleAccent[100],
+                                                                              shape: BoxShape.circle,
+                                                                            ),
+                                                                            child:
+                                                                                Center(
+                                                                              child: Text(
+                                                                                '${day.day}',
+                                                                                style: TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontWeight: FontWeight.w600,
+                                                                                  fontSize: 16,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                        }, markerBuilder: (context,
+                                                                            day,
+                                                                            events) {
+                                                                          if (day.isAtSameMomentAs(DateTime.parse(controller.currentlyPregnantData.value.hariPertamaHaidTerakhir ??
+                                                                              "${DateTime.now()}"))) {
+                                                                            return Container(
+                                                                              width: 10.0,
+                                                                              height: 10.0,
+                                                                              alignment: Alignment.center,
+                                                                              decoration: BoxDecoration(
+                                                                                color: Colors.deepPurpleAccent[100],
+                                                                                shape: BoxShape.circle,
+                                                                              ),
+                                                                            );
+                                                                          }
+                                                                          return null;
+                                                                        }),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          20,
+                                                                    ),
+                                                                    CustomColoredButton(
+                                                                      text:
+                                                                          "Send",
+                                                                      onPressed:
+                                                                          () {
+                                                                        controller
+                                                                            .editPregnancyStartDate();
+                                                                      },
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      });
+                                                },
+                                                child: Icon(
+                                                  Icons.edit,
+                                                  size: 16,
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                           Text(
                                             "${controller.currentlyPregnantData.value.tanggalPerkiraanLahir}",

@@ -1216,7 +1216,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                       ),
                                                       TextSpan(
                                                         text:
-                                                            'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate)} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate)} to likely conceive a male',
+                                                            'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate.toString())} to likely conceive a male',
                                                         style: TextStyle(
                                                           fontSize: 15.sp,
                                                           color: Colors.black,
@@ -1238,7 +1238,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                       ),
                                                       TextSpan(
                                                         text:
-                                                            'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate)} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate)} to likely conceive a female.',
+                                                            'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate.toString())} to likely conceive a female.',
                                                         style: TextStyle(
                                                           fontSize: 15.sp,
                                                           color: Colors.black,

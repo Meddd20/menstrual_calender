@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/repositories/auth_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
 import 'package:periodnpregnancycalender/app/modules/login/views/reset_password_view.dart';
 
 class CodeVerificationController extends GetxController {

@@ -1,7 +1,7 @@
 class DailyLogTags {
   String status;
   String message;
-  Data? data;
+  DailyLogTagsData? data;
 
   DailyLogTags({
     required this.status,
@@ -13,12 +13,12 @@ class DailyLogTags {
     return DailyLogTags(
       status: json['status'],
       message: json['message'],
-      data: Data.fromJson(json['data']),
+      data: DailyLogTagsData.fromJson(json['data']),
     );
   }
 }
 
-class Data {
+class DailyLogTagsData {
   String tags;
   dynamic logs;
   dynamic percentage30Days;
@@ -26,7 +26,7 @@ class Data {
   dynamic percentage6Months;
   dynamic percentage1Year;
 
-  Data({
+  DailyLogTagsData({
     required this.tags,
     required this.logs,
     required this.percentage30Days,
@@ -35,8 +35,8 @@ class Data {
     required this.percentage1Year,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) {
-    return Data(
+  factory DailyLogTagsData.fromJson(Map<String, dynamic> json) {
+    return DailyLogTagsData(
       tags: json['tags'],
       logs: json['logs'],
       percentage30Days: json['percentage_30days'],

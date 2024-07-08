@@ -9,6 +9,7 @@ dependencies:
   android_alarm_manager_plus: ^3.0.4
   calendar_date_picker2: null
   cherry_toast: ^1.10.1
+  connectivity_plus: ^6.0.3
   cupertino_icons: null
   custom_date_range_picker: ^1.0.10
   d_chart: ^2.6.5
@@ -30,15 +31,19 @@ dependencies:
   http: ^1.1.2
   iconsax: null
   like_button: ^2.0.5
+  logger: ^2.3.0
   numberpicker: ^2.1.2
+  path: ^1.9.0
   path_provider: ^2.1.1
   photo_view: ^0.15.0
   pinput: ^3.0.1
   scrollable_clean_calendar: ^1.4.1
+  sqflite: ^2.3.3+1
   step_progress_indicator: ^1.0.2
   syncfusion_flutter_charts: ^24.2.8
   syncfusion_flutter_datepicker: ^24.1.44
   table_calendar: ^3.1.1
+  uuid: ^4.4.0
 
 dev_dependencies:
   flutter_lints: ^3.0.0

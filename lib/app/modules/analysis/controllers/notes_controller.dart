@@ -2,23 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/log_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
+import 'package:periodnpregnancycalender/app/services/log_service.dart';
+import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class NotesController extends GetxController {
-  late Data data;
+  late DailyLogTagsData data;
   late TabController tabController;
   final ApiService apiService = ApiService();
   late final LogRepository logRepository = LogRepository(apiService);
   RxMap<String, dynamic> notes = RxMap<String, dynamic>();
   RxString selectedDataType = 'percentage30Days'.obs;
   RxMap<String, dynamic> specificNotesData = RxMap<String, dynamic>();
+  late final LogService _logService;
 
   @override
   void onInit() {
     tabController = TabController(length: 4, vsync: MyTickerProvider());
+    final databaseHelper = DatabaseHelper.instance;
+    final localLogRepository = LocalLogRepository(databaseHelper);
+    _logService = LogService(localLogRepository);
     fetchNotes();
-    data = Data(
+    data = DailyLogTagsData(
       tags: '',
       logs: {},
       percentage30Days: null,
@@ -74,17 +81,13 @@ class NotesController extends GetxController {
       DateTime entryDate = DateTime.parse(entry.key);
       switch (selectedDataType.value) {
         case 'percentage30Days':
-          return entryDate.isAfter(now.subtract(Duration(days: 31))) &&
-              entryDate.isBefore(now);
+          return entryDate.isAfter(now.subtract(Duration(days: 31))) && entryDate.isBefore(now);
         case 'percentage3Months':
-          return entryDate.isAfter(now.subtract(Duration(days: 91))) &&
-              entryDate.isBefore(now);
+          return entryDate.isAfter(now.subtract(Duration(days: 91))) && entryDate.isBefore(now);
         case 'percentage6Months':
-          return entryDate.isAfter(now.subtract(Duration(days: 181))) &&
-              entryDate.isBefore(now);
+          return entryDate.isAfter(now.subtract(Duration(days: 181))) && entryDate.isBefore(now);
         case 'percentage1Year':
-          return entryDate.isAfter(now.subtract(Duration(days: 366))) &&
-              entryDate.isBefore(now);
+          return entryDate.isAfter(now.subtract(Duration(days: 366))) && entryDate.isBefore(now);
         default:
           return false;
       }
@@ -97,14 +100,31 @@ class NotesController extends GetxController {
     return specificNotesData;
   }
 
+  // Future<void> fetchNotes() async {
+  //   try {
+  //     DailyLogTags? result = await logRepository.getLogsByTags("notes");
+
+  //     if (result != null && result.data != null) {
+  //       data = result.data!;
+
+  //       notes.value = data.logs;
+  //     } else {
+  //       print("Error: Unable to fetch others");
+  //     }
+  //     specifiedDataByDate();
+
+  //     update();
+  //   } catch (error) {
+  //     print("Error: $error");
+  //   }
+  // }
+
   Future<void> fetchNotes() async {
     try {
-      DailyLogTags? result = await logRepository.getLogsByTags("notes");
+      DailyLogTagsData? result = await _logService.getLogsByTags("notes");
 
-      if (result != null && result.data != null) {
-        data = result.data!;
-
-        notes.value = data.logs;
+      if (result != null) {
+        notes.value = result.logs;
       } else {
         print("Error: Unable to fetch others");
       }

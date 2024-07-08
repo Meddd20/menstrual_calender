@@ -51,7 +51,7 @@ class Article {
   final String? videoLink;
   final String? source;
   final String? tags;
-  final dynamic publishAt;
+  final String? publishAt;
   final String? createdAt;
   final String? updatedAt;
 

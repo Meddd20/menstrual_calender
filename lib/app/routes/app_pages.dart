@@ -55,7 +55,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.NAVIGATION_MENU,
-      page: () => const NavigationMenuView(),
+      page: () => NavigationMenuView(),
       binding: NavigationMenuBinding(),
     ),
     GetPage(
