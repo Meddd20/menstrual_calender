@@ -6,26 +6,22 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_choice_chip.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_filter_chip.dart';
+import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/daily_log_controller.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DailyLogView extends GetView<DailyLogController> {
   final HomeMenstruationController homeController;
-
   DailyLogView({Key? key})
       : homeController = Get.find<HomeMenstruationController>(),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ApiService apiService = ApiService();
-    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
     Get.put(DailyLogController());
     return Scaffold(
       backgroundColor: Color(0xFFf9f8fb),
@@ -62,22 +58,18 @@ class DailyLogView extends GetView<DailyLogController> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          controller.setFocusedDate(DateTime.now());
           controller.setSelectedDate(DateTime.now());
+          controller.setFocusedDate(DateTime.now());
+          controller.fetchLog(DateTime.now());
         },
         child: Icon(Icons.today_outlined),
         tooltip: "Back to current date",
       ),
-      body: FutureBuilder<PeriodCycleIndex?>(
-        // future: PeriodRepository(apiService, databaseHelper).getPeriodSummary(),
-        future: homeController.periodStream,
+      body: FutureBuilder<DataHarian?>(
+        future: controller.futureDataHarian,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
-            // } else if (snapshot.hasError) {
-            //   return Text("Error: ${snapshot.error}");
-            // } else if (!snapshot.hasData || snapshot.data == null) {
-            //   return Text("No data available");
           } else {
             return Stack(
               children: [
@@ -777,116 +769,114 @@ class DailyLogView extends GetView<DailyLogController> {
                                   showModalBottomSheet(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return SizedBox(
-                                        height: 400,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Center(
-                                            child: Column(
-                                              children: [
-                                                SizedBox(height: 35.h),
-                                                Icon(
-                                                  Iconsax.weight,
-                                                  size: 35,
-                                                  color: Color(0xFFFF6868),
-                                                ),
-                                                SizedBox(height: 10.h),
-                                                Text(
-                                                  "Basal Temperature",
-                                                  style: TextStyle(
-                                                    fontSize: 16.sp,
-                                                    letterSpacing: 0.8,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 10.h),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                      return PopScope(
+                                        onPopInvoked: (didPop) {
+                                          if (didPop) {
+                                            controller.resetTemperature();
+                                          }
+                                        },
+                                        child: Wrap(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
+                                              child: Center(
+                                                child: Column(
                                                   children: [
-                                                    Obx(
-                                                      () => NumberPicker(
-                                                        minValue: 32,
-                                                        maxValue: 43,
-                                                        value: controller.wholeNumberTemperature.value,
-                                                        onChanged: controller.onWholeNumberTemperatureChanged,
-                                                        textStyle: TextStyle(color: Colors.grey, fontSize: 20.sp),
-                                                        selectedTextStyle: TextStyle(
-                                                          color: Color(0xFFFF6868),
-                                                          fontSize: 23.sp,
-                                                          fontFamily: 'Poppins',
-                                                          fontWeight: FontWeight.w600,
-                                                        ),
-                                                        infiniteLoop: true,
-                                                        decoration: BoxDecoration(
-                                                          border: Border(
-                                                            top: BorderSide(color: Colors.black),
-                                                            bottom: BorderSide(color: Colors.black),
-                                                          ),
-                                                        ),
-                                                      ),
+                                                    Icon(
+                                                      Iconsax.weight,
+                                                      size: 35,
+                                                      color: Color(0xFFFF6868),
                                                     ),
+                                                    SizedBox(height: 10.h),
                                                     Text(
-                                                      ".",
-                                                      style: TextStyle(
-                                                        fontSize: 24.sp,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Obx(
-                                                      () => NumberPicker(
-                                                        minValue: 0,
-                                                        maxValue: 9,
-                                                        value: controller.decimalNumberTemperature.value,
-                                                        onChanged: controller.onDecimalNumberTemperatureChanged,
-                                                        textStyle: TextStyle(color: Colors.grey),
-                                                        selectedTextStyle: TextStyle(
-                                                          color: Color(0xFFFF6868),
-                                                          fontSize: 20.sp,
-                                                          fontFamily: 'Poppins',
-                                                          fontWeight: FontWeight.w600,
-                                                        ),
-                                                        infiniteLoop: true,
-                                                        decoration: BoxDecoration(
-                                                          border: Border(
-                                                            top: BorderSide(color: Colors.black),
-                                                            bottom: BorderSide(color: Colors.black),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      " °C",
+                                                      "Basal Temperature",
                                                       style: TextStyle(
                                                         fontSize: 16.sp,
+                                                        letterSpacing: 0.8,
                                                         fontFamily: 'Poppins',
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Color(0xFFFF6868),
+                                                        fontWeight: FontWeight.w600,
+                                                        color: Colors.black,
                                                       ),
+                                                    ),
+                                                    SizedBox(height: 10.h),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Obx(
+                                                          () => NumberPicker(
+                                                            minValue: 35,
+                                                            maxValue: 42,
+                                                            value: controller.selectedTemperatureWholeNumber ?? 36,
+                                                            onChanged: controller.setTemperatureWholeNumber,
+                                                            textStyle: TextStyle(color: Colors.grey),
+                                                            selectedTextStyle: TextStyle(
+                                                              color: Color(0xFFFF6868),
+                                                              fontSize: 23.sp,
+                                                              fontFamily: 'Poppins',
+                                                              fontWeight: FontWeight.w600,
+                                                            ),
+                                                            infiniteLoop: true,
+                                                            decoration: BoxDecoration(
+                                                              border: Border(
+                                                                top: BorderSide(color: Colors.black),
+                                                                bottom: BorderSide(color: Colors.black),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          ".",
+                                                          style: TextStyle(
+                                                            fontSize: 24.sp,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        Obx(
+                                                          () => NumberPicker(
+                                                            minValue: 0,
+                                                            maxValue: 9,
+                                                            value: controller.selectedTemperatureDecimalNumber ?? 0,
+                                                            onChanged: controller.setTemperatureDecimalNumber,
+                                                            textStyle: TextStyle(color: Colors.grey),
+                                                            selectedTextStyle: TextStyle(
+                                                              color: Color(0xFFFF6868),
+                                                              fontSize: 23.sp,
+                                                              fontFamily: 'Poppins',
+                                                              fontWeight: FontWeight.w600,
+                                                            ),
+                                                            infiniteLoop: true,
+                                                            decoration: BoxDecoration(
+                                                              border: Border(
+                                                                top: BorderSide(color: Colors.black),
+                                                                bottom: BorderSide(color: Colors.black),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          " °C",
+                                                          style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            fontFamily: 'Poppins',
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Color(0xFFFF6868),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 30.h),
+                                                    CustomButton(
+                                                      text: "Save Temperature",
+                                                      onPressed: () {
+                                                        controller.updateTemperature();
+                                                        Navigator.pop(context, true);
+                                                      },
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(height: 30.h),
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFD6666), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), minimumSize: Size(Get.width, 45.h)),
-                                                  child: Text(
-                                                    "Save",
-                                                    style: TextStyle(
-                                                      fontFamily: 'Poppins',
-                                                      fontSize: 16.sp,
-                                                      fontWeight: FontWeight.w600,
-                                                      letterSpacing: 0.38,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       );
                                     },
@@ -914,8 +904,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Obx(() {
-                                                    final temperatureValue = controller.temperature.value;
-                                                    return temperatureValue.isNotEmpty
+                                                    return controller.temperature != 0.0
                                                         ? Column(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
@@ -931,7 +920,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                               ),
                                                               Text.rich(
                                                                 TextSpan(
-                                                                  text: "$temperatureValue",
+                                                                  text: "${controller.getTemperature()}",
                                                                   style: TextStyle(
                                                                     fontSize: 24.sp,
                                                                     fontFamily: 'Poppins',
@@ -980,116 +969,116 @@ class DailyLogView extends GetView<DailyLogController> {
                                   showModalBottomSheet(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return SizedBox(
-                                        height: 400,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Center(
-                                            child: Column(
-                                              children: [
-                                                SizedBox(height: 35.h),
-                                                Icon(
-                                                  Iconsax.weight,
-                                                  size: 35,
-                                                  color: Color(0xFFFF6868),
-                                                ),
-                                                SizedBox(height: 10.h),
-                                                Text(
-                                                  "My Weight",
-                                                  style: TextStyle(
-                                                    fontSize: 16.sp,
-                                                    letterSpacing: 0.8,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 10.h),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Obx(
-                                                      () => NumberPicker(
-                                                        minValue: 30,
-                                                        maxValue: 150,
-                                                        value: controller.wholeNumberWeight.value,
-                                                        onChanged: controller.onWholeNumberWeightChanged,
-                                                        textStyle: TextStyle(color: Colors.grey),
-                                                        selectedTextStyle: TextStyle(
-                                                          color: Color(0xFFFF6868),
-                                                          fontSize: 23.sp,
-                                                          fontFamily: 'Poppins',
-                                                          fontWeight: FontWeight.w600,
-                                                        ),
-                                                        infiniteLoop: true,
-                                                        decoration: BoxDecoration(
-                                                          border: Border(
-                                                            top: BorderSide(color: Colors.black),
-                                                            bottom: BorderSide(color: Colors.black),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      ".",
-                                                      style: TextStyle(
-                                                        fontSize: 24.sp,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Obx(
-                                                      () => NumberPicker(
-                                                        minValue: 0,
-                                                        maxValue: 9,
-                                                        value: controller.decimalNumberWeight.value,
-                                                        onChanged: controller.onDecimalNumberWeightChanged,
-                                                        textStyle: TextStyle(color: Colors.grey),
-                                                        selectedTextStyle: TextStyle(
-                                                          color: Color(0xFFFF6868),
-                                                          fontSize: 23.sp,
-                                                          fontFamily: 'Poppins',
-                                                          fontWeight: FontWeight.w600,
-                                                        ),
-                                                        infiniteLoop: true,
-                                                        decoration: BoxDecoration(
-                                                          border: Border(
-                                                            top: BorderSide(color: Colors.black),
-                                                            bottom: BorderSide(color: Colors.black),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      " Kg",
-                                                      style: TextStyle(
-                                                        fontSize: 16.sp,
-                                                        fontFamily: 'Poppins',
-                                                        fontWeight: FontWeight.bold,
+                                      return PopScope(
+                                        onPopInvoked: (didPop) {
+                                          if (didPop) {
+                                            controller.resetWeight();
+                                          }
+                                        },
+                                        child: Wrap(
+                                          children: [
+                                            Container(
+                                              child: Padding(
+                                                padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
+                                                child: Center(
+                                                  child: Column(
+                                                    children: [
+                                                      Icon(
+                                                        Iconsax.weight,
+                                                        size: 35,
                                                         color: Color(0xFFFF6868),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(height: 30.h),
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFD6666), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), minimumSize: Size(Get.width, 45.h)),
-                                                  child: Text(
-                                                    "Save",
-                                                    style: TextStyle(
-                                                      fontFamily: 'Poppins',
-                                                      fontSize: 16.sp,
-                                                      fontWeight: FontWeight.w600,
-                                                      letterSpacing: 0.38,
-                                                      color: Colors.white,
-                                                    ),
+                                                      SizedBox(height: 10.h),
+                                                      Text(
+                                                        "My Weight",
+                                                        style: TextStyle(
+                                                          fontSize: 16.sp,
+                                                          letterSpacing: 0.8,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight: FontWeight.w600,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10.h),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Obx(
+                                                            () => NumberPicker(
+                                                              minValue: 30,
+                                                              maxValue: 150,
+                                                              value: controller.selectedWeightWholeNumber ?? 70,
+                                                              onChanged: controller.setWeightWholeNumber,
+                                                              textStyle: TextStyle(color: Colors.grey),
+                                                              selectedTextStyle: TextStyle(
+                                                                color: Color(0xFFFF6868),
+                                                                fontSize: 23.sp,
+                                                                fontFamily: 'Poppins',
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
+                                                              infiniteLoop: true,
+                                                              decoration: BoxDecoration(
+                                                                border: Border(
+                                                                  top: BorderSide(color: Colors.black),
+                                                                  bottom: BorderSide(color: Colors.black),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            ".",
+                                                            style: TextStyle(
+                                                              fontSize: 24.sp,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                          Obx(
+                                                            () => NumberPicker(
+                                                              minValue: 0,
+                                                              maxValue: 9,
+                                                              value: controller.selectedWeightDecimalNumber ?? 0,
+                                                              onChanged: controller.setWeightDecimalNumber,
+                                                              textStyle: TextStyle(color: Colors.grey),
+                                                              selectedTextStyle: TextStyle(
+                                                                color: Color(0xFFFF6868),
+                                                                fontSize: 23.sp,
+                                                                fontFamily: 'Poppins',
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
+                                                              infiniteLoop: true,
+                                                              decoration: BoxDecoration(
+                                                                border: Border(
+                                                                  top: BorderSide(color: Colors.black),
+                                                                  bottom: BorderSide(color: Colors.black),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            " Kg",
+                                                            style: TextStyle(
+                                                              fontSize: 16.sp,
+                                                              fontFamily: 'Poppins',
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color(0xFFFF6868),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 30.h),
+                                                      CustomButton(
+                                                        text: "Save Weight",
+                                                        onPressed: () {
+                                                          controller.updateWeight();
+                                                          Navigator.pop(context, true);
+                                                        },
+                                                      ),
+                                                    ],
                                                   ),
-                                                )
-                                              ],
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       );
                                     },
@@ -1117,8 +1106,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Obx(() {
-                                                    final weightValue = controller.weights.value;
-                                                    return weightValue.isNotEmpty
+                                                    return controller.getWeight() != 0.0
                                                         ? Column(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
@@ -1134,7 +1122,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                               ),
                                                               Text.rich(
                                                                 TextSpan(
-                                                                  text: "$weightValue",
+                                                                  text: "${controller.getWeight()}",
                                                                   style: TextStyle(
                                                                     fontSize: 24.sp,
                                                                     fontFamily: 'Poppins',
@@ -1180,77 +1168,57 @@ class DailyLogView extends GetView<DailyLogController> {
                               ),
                               GestureDetector(
                                 onTap: () {
+                                  controller.originalWeight.value = controller.weights.value;
                                   showModalBottomSheet(
                                     isScrollControlled: true,
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return Padding(
-                                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                        child: SizedBox(
-                                          height: 430,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(25),
-                                            child: Center(
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(height: 25.h),
-                                                  Icon(
-                                                    Iconsax.edit_24,
-                                                    size: 35,
-                                                    color: Color(0xFFFF6868),
+                                      return Wrap(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
+                                            child: Column(
+                                              children: [
+                                                Icon(
+                                                  Iconsax.edit_24,
+                                                  size: 35,
+                                                  color: Color(0xFFFF6868),
+                                                ),
+                                                SizedBox(height: 10.h),
+                                                Text(
+                                                  "Daily Notes",
+                                                  style: TextStyle(
+                                                    fontSize: 16.sp,
+                                                    letterSpacing: 0.8,
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black,
                                                   ),
-                                                  SizedBox(height: 10.h),
-                                                  Text(
-                                                    "Daily Notes",
-                                                    style: TextStyle(
-                                                      fontSize: 16.sp,
-                                                      letterSpacing: 0.8,
-                                                      fontFamily: 'Poppins',
-                                                      fontWeight: FontWeight.w600,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 15.h),
-                                                  TextFormField(
-                                                    minLines: 7,
-                                                    maxLines: 7,
-                                                    style: TextStyle(fontSize: 14),
-                                                    onChanged: controller.updateNotes,
-                                                    initialValue: controller.getNotes(),
-                                                    decoration: InputDecoration(
-                                                      border: OutlineInputBorder(
-                                                        borderRadius: BorderRadius.circular(10.0),
-                                                      ),
+                                                ),
+                                                SizedBox(height: 20.h),
+                                                TextFormField(
+                                                  minLines: 7,
+                                                  maxLines: 7,
+                                                  style: TextStyle(fontSize: 14),
+                                                  onChanged: controller.updateNotes,
+                                                  initialValue: controller.getNotes(),
+                                                  decoration: InputDecoration(
+                                                    border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(10.0),
                                                     ),
                                                   ),
-                                                  SizedBox(height: 30.h),
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: Color(0xFFFD6666),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(30),
-                                                      ),
-                                                      minimumSize: Size(Get.width, 45.h),
-                                                    ),
-                                                    child: Text(
-                                                      "Save",
-                                                      style: TextStyle(
-                                                        fontFamily: 'Poppins',
-                                                        fontSize: 16.sp,
-                                                        fontWeight: FontWeight.w600,
-                                                        letterSpacing: 0.38,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                                ),
+                                                SizedBox(height: 25.h),
+                                                CustomButton(
+                                                  text: "Save notes",
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ),
+                                        ],
                                       );
                                     },
                                   );
@@ -1335,8 +1303,8 @@ class DailyLogView extends GetView<DailyLogController> {
                         height: 80.h,
                         color: Colors.white,
                         padding: EdgeInsets.all(16.0),
-                        child: CustomColoredButton(
-                          text: "add",
+                        child: CustomButton(
+                          text: "Add Daily Log",
                           onPressed: () {
                             controller.saveLog();
                           },

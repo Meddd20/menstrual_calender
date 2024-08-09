@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/weight_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -50,13 +51,15 @@ class WeightView extends GetView<WeightController> {
                   ),
                 ),
               ),
-              Text(
-                "from ${controller.formatDate(controller.selectedDate.value)} up to today",
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 15,
-                  height: 2.0,
-                  fontWeight: FontWeight.w600,
+              Obx(
+                () => Text(
+                  "from ${controller.formatDate(controller.selectedDate.value)} up to today",
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(0.4),
+                    fontSize: 15,
+                    height: 2.0,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               Container(
@@ -67,22 +70,14 @@ class WeightView extends GetView<WeightController> {
                     if (controller.weight.isEmpty) {
                       return Center(child: CircularProgressIndicator());
                     } else {
-                      List<double> values = controller.weight.entries
-                          .map((entry) => double.parse(entry.value))
-                          .toList();
-                      double max = values.isNotEmpty
-                          ? values.reduce((a, b) => a > b ? a : b)
-                          : 0;
-                      double min = values.isNotEmpty
-                          ? values.reduce((a, b) => a < b ? a : b)
-                          : 0;
+                      List<double> values = controller.weight.entries.map((entry) => double.parse(entry.value)).toList();
+                      double max = values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
+                      double min = values.isNotEmpty ? values.reduce((a, b) => a < b ? a : b) : 0;
                       return SfCartesianChart(
                         tooltipBehavior: TooltipBehavior(
                           enable: true,
-                          builder: (dynamic data, dynamic point, dynamic series,
-                              int pointIndex, int seriesIndex) {
-                            final MapEntry<String, dynamic> entry =
-                                controller.weight.entries.elementAt(pointIndex);
+                          builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
+                            final MapEntry<String, dynamic> entry = controller.weight.entries.elementAt(pointIndex);
 
                             return Container(
                               padding: EdgeInsets.all(10),
@@ -95,8 +90,7 @@ class WeightView extends GetView<WeightController> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   SizedBox(height: 5),
-                                  Text('Temperature: ${entry.value} °C',
-                                      style: TextStyle(color: Colors.white)),
+                                  Text('Temperature: ${entry.value} °C', style: TextStyle(color: Colors.white)),
                                 ],
                               ),
                             );
@@ -104,14 +98,12 @@ class WeightView extends GetView<WeightController> {
                         ),
                         primaryXAxis: DateTimeAxis(
                           interval: 1,
-                          initialVisibleMinimum:
-                              DateTime.now().subtract(Duration(days: 5)),
+                          initialVisibleMinimum: DateTime.now().subtract(Duration(days: 5)),
                           initialVisibleMaximum: DateTime.now(),
                           edgeLabelPlacement: EdgeLabelPlacement.none,
                           plotOffset: 34,
                           dateFormat: DateFormat('MMM dd'),
-                          labelIntersectAction:
-                              AxisLabelIntersectAction.multipleRows,
+                          labelIntersectAction: AxisLabelIntersectAction.multipleRows,
                         ),
                         primaryYAxis: NumericAxis(
                           minimum: min - 1,
@@ -121,12 +113,8 @@ class WeightView extends GetView<WeightController> {
                         series: <CartesianSeries>[
                           LineSeries<MapEntry<String, dynamic>, DateTime>(
                             dataSource: controller.weight.entries.toList(),
-                            xValueMapper:
-                                (MapEntry<String, dynamic> entry, _) =>
-                                    DateTime.parse(entry.key),
-                            yValueMapper:
-                                (MapEntry<String, dynamic> entry, _) =>
-                                    double.parse(entry.value),
+                            xValueMapper: (MapEntry<String, dynamic> entry, _) => DateTime.parse(entry.key),
+                            yValueMapper: (MapEntry<String, dynamic> entry, _) => double.parse(entry.value),
                             markerSettings: MarkerSettings(
                               isVisible: true,
                               height: 15,
@@ -192,9 +180,7 @@ class WeightView extends GetView<WeightController> {
                     child: ListView.builder(
                       itemCount: controller.specificWeightData.entries.length,
                       itemBuilder: (context, index) {
-                        final MapEntry<String, dynamic> entry = controller
-                            .specificWeightData.entries
-                            .elementAt(index);
+                        final MapEntry<String, dynamic> entry = controller.specificWeightData.entries.elementAt(index);
 
                         return CustomDateLook(entry: entry);
                       },

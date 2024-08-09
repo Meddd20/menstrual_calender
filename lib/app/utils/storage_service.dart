@@ -20,7 +20,8 @@ class StorageService {
   }
 
   int? getAccountId() {
-    return box.read("loginId");
+    int? loginId = box.read("loginId");
+    return loginId ?? 0;
   }
 
   void storeAccountLocalId(int id) {
@@ -28,7 +29,12 @@ class StorageService {
   }
 
   int getAccountLocalId() {
-    return box.read("localId");
+    int? localId = box.read("localId");
+    return localId ?? 0;
+  }
+
+  void deleteAccountLocalId() {
+    box.remove("localId");
   }
 
   void storeIsAuth(bool isAuth) {
@@ -39,17 +45,30 @@ class StorageService {
     return box.read("isAuth");
   }
 
-  void storePrimaryDataMechanism() {
-    box.write("storeDataMechanism", "primary");
+  void storeIsBackup(bool isBackup) {
+    box.write("isBackup", isBackup);
   }
 
-  void storeManyDataMechanism() {
-    box.write("storeDataMechanism", "many");
+  bool getIsBackup() {
+    return box.read("isBackup");
   }
 
-  String? getStoreDataMechanism() {
-    return box.read("storeDataMechanism");
-  }
+  // void storePrimaryDataMechanism() {
+  //   box.write("storeDataMechanism", "primary");
+  // }
+
+  // void storeManyDataMechanism() {
+  //   box.write("storeDataMechanism", "many");
+  // }
+
+  // String? getStoreDataMechanism() {
+  //   String? storageMechanism = box.read("storeDataMechanism");
+  //   if (storageMechanism == null) {
+  //     setLanguage("primary");
+  //     return "primary";
+  //   }
+  //   return storageMechanism;
+  // }
 
   void storeIsPregnant(String isPregnant) {
     box.write("isPregnant", isPregnant);
@@ -61,5 +80,31 @@ class StorageService {
 
   void deleteIsPregnant() {
     box.remove("isPregnant");
+  }
+
+  String getLanguage() {
+    String? language = box.read("language");
+    if (language == null) {
+      setLanguage("en");
+      return "en";
+    }
+    return language;
+  }
+
+  void setLanguage(String language) {
+    box.write("language", language);
+  }
+
+  bool isDataSync() {
+    bool isDataSync = box.read("hasSyncData");
+    if (isDataSync.toString() == "null") {
+      setHasSyncData(false);
+      return false;
+    }
+    return isDataSync;
+  }
+
+  void setHasSyncData(bool isSync) {
+    box.write("hasSyncData", isSync);
   }
 }

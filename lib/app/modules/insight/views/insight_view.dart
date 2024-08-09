@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/modules/insight/views/insight_detail_view.dart';
+import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
 import '../controllers/insight_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
@@ -47,11 +48,9 @@ class InsightView extends GetView<InsightController> {
                                   .map(
                                     (tag) => ChoiceChip(
                                       label: Text(tag),
-                                      selected:
-                                          controller.getSelectedTag() == tag,
+                                      selected: controller.getSelectedTag() == tag,
                                       onSelected: (bool isSelected) {
-                                        print(
-                                            "Tag selected: $tag, isSelected: $isSelected");
+                                        print("Tag selected: $tag, isSelected: $isSelected");
                                         if (isSelected) {
                                           controller.setSelectedTag(tag);
                                         } else {
@@ -59,10 +58,7 @@ class InsightView extends GetView<InsightController> {
                                         }
                                       },
                                       labelStyle: TextStyle(
-                                        color:
-                                            controller.getSelectedTag() == tag
-                                                ? AppColors.white
-                                                : AppColors.black,
+                                        color: controller.getSelectedTag() == tag ? AppColors.white : AppColors.black,
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -91,40 +87,31 @@ class InsightView extends GetView<InsightController> {
                                         InkWell(
                                           onTap: () {
                                             int? articleId = article.id;
-                                            Get.to(() => InsightDetailView(),
-                                                arguments: articleId);
+                                            Get.to(() => InsightDetailView(), arguments: articleId);
                                           },
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                           child: Container(
                                             padding: EdgeInsets.all(16.0),
                                             decoration: ShapeDecoration(
                                               shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
+                                                borderRadius: BorderRadius.circular(12),
                                               ),
                                               color: AppColors.white,
                                             ),
                                             child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Container(
                                                   width: Get.width,
                                                   height: 136,
                                                   decoration: ShapeDecoration(
                                                     image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          "${article.banner}"),
+                                                      image: article.banner != null ? NetworkImage("http://10.0.2.2:8000/${article.banner}") : AssetImage("assets/image/no-image.png") as ImageProvider,
                                                       fit: BoxFit.fill,
                                                     ),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10),
                                                     ),
                                                   ),
                                                 ),
@@ -138,8 +125,7 @@ class InsightView extends GetView<InsightController> {
                                                     fontWeight: FontWeight.w500,
                                                   ),
                                                   maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
                                                 SizedBox(height: 5.h),
                                                 Text(
@@ -151,8 +137,7 @@ class InsightView extends GetView<InsightController> {
                                                     fontWeight: FontWeight.w300,
                                                   ),
                                                   maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
                                                 SizedBox(height: 10.h),
                                                 IntrinsicWidth(
@@ -160,17 +145,12 @@ class InsightView extends GetView<InsightController> {
                                                     height: 30.h,
                                                     decoration: ShapeDecoration(
                                                       color: Color(0x7F88E6BF),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(8),
                                                       ),
                                                     ),
                                                     child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 12),
+                                                      padding: const EdgeInsets.symmetric(horizontal: 12),
                                                       child: Center(
                                                         child: Text(
                                                           article.tags ?? "",
@@ -178,8 +158,7 @@ class InsightView extends GetView<InsightController> {
                                                             color: Colors.black,
                                                             fontSize: 12,
                                                             fontFamily: 'Inter',
-                                                            fontWeight:
-                                                                FontWeight.w400,
+                                                            fontWeight: FontWeight.w400,
                                                           ),
                                                         ),
                                                       ),

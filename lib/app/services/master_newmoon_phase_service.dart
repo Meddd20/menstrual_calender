@@ -6,33 +6,33 @@ class MasterNewmoonPhaseService {
 
   MasterNewmoonPhaseService(this._masterNewmoonRepository);
 
-  Future<List<MasterNewmoonPhase>> getAllMasterNewmoonPhase() async {
-    return await _masterNewmoonRepository.getAllMasterNewmoonPhase();
+  Future<List<MasterNewmoonPhase>> getAllNewmoonPhase() async {
+    return await _masterNewmoonRepository.getAllNewmoonPhase();
   }
 
-  Future<MasterNewmoonPhase?> getMasterNewmoonPhaseById(int? id) async {
-    return await _masterNewmoonRepository.getMasterNewmoonPhaseById(id);
+  Future<MasterNewmoonPhase?> getNewmoonPhaseById(int? id) async {
+    return await _masterNewmoonRepository.getNewmoonPhaseById(id);
   }
 
-  Future<void> addMasterNewmoonPhase(MasterNewmoonPhase masterNewmoonPhase) async {
-    await _masterNewmoonRepository.addMasterNewmoonPhase(masterNewmoonPhase);
+  Future<void> addNewmoonPhase(MasterNewmoonPhase newmoonPhase) async {
+    await _masterNewmoonRepository.addNewmoonPhase(newmoonPhase);
   }
 
-  Future<void> editMasterNewmoonPhase(MasterNewmoonPhase editedMasterNewmoonPhaseData) async {
-    MasterNewmoonPhase? masterNewmoonPhaseData = await getMasterNewmoonPhaseById(editedMasterNewmoonPhaseData.id);
-    if (masterNewmoonPhaseData != null) {
-      MasterNewmoonPhase updatedNewmoonPhase = masterNewmoonPhaseData.copyWith(
-        id: editedMasterNewmoonPhaseData.id,
-        year: editedMasterNewmoonPhaseData.year,
-        newMoon: editedMasterNewmoonPhaseData.newMoon,
+  Future<void> editNewmoonPhase(MasterNewmoonPhase newmoonPhase) async {
+    MasterNewmoonPhase? editedNewmoonPhaseData = await getNewmoonPhaseById(newmoonPhase.id);
+    if (editedNewmoonPhaseData != null) {
+      MasterNewmoonPhase updatedNewmoonPhase = editedNewmoonPhaseData.copyWith(
+        id: newmoonPhase.id,
+        year: newmoonPhase.year,
+        newMoon: newmoonPhase.newMoon,
       );
-      await _masterNewmoonRepository.editMasterNewmoonPhase(updatedNewmoonPhase);
+      await _masterNewmoonRepository.editNewmoonPhase(updatedNewmoonPhase);
     } else {
-      throw Exception('Master Newmoon Phase Data not found');
+      throw Exception('Newmoon Phase Data not found');
     }
   }
 
-  Future<void> deleteMasterNewmoonPhase(int id) async {
-    await _masterNewmoonRepository.deleteMasterNewmoonPhase(id);
+  Future<void> deleteNewmoonPhase(int id) async {
+    await _masterNewmoonRepository.deleteNewmoonPhase(id);
   }
 }

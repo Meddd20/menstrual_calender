@@ -99,9 +99,7 @@ class SyncDataRepository {
   Future<List<SyncLog>> getAllSyncLogData() async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> syncLogData = await db.query(
-        "sync_log",
-      );
+      List<Map<String, dynamic>> syncLogData = await db.query("sync_log");
       return List.generate(syncLogData.length, (i) {
         return SyncLog.fromJson(syncLogData[i]);
       });

@@ -7,9 +7,7 @@ import 'package:get/get.dart';
 class DetailPregnancyView extends GetView {
   final String appbarTitle;
   final String? bannerPicture;
-  const DetailPregnancyView(
-      {Key? key, required this.appbarTitle, this.bannerPicture})
-      : super(key: key);
+  const DetailPregnancyView({Key? key, required this.appbarTitle, this.bannerPicture}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final pregnancyData = Get.arguments as String;
@@ -22,19 +20,18 @@ class DetailPregnancyView extends GetView {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                width: Get.width,
-                // height: 250,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.zero,
-                ),
-                child: Image.asset(
-                  bannerPicture ??
-                      'assets/image/bd48b2bc7befdf66265a70239c555886.png',
-                  fit: BoxFit.fitWidth,
-                ),
-              ),
-              SizedBox(height: 15),
+              // Container(
+              //   width: Get.width,
+              //   // height: 250,
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.zero,
+              //   ),
+              //   child: Image.asset(
+              //     bannerPicture ?? 'assets/image/bd48b2bc7befdf66265a70239c555886.png',
+              //     fit: BoxFit.fitWidth,
+              //   ),
+              // ),
+              // SizedBox(height: 15),
               Padding(
                 padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0.h),
                 child: HtmlWidget(

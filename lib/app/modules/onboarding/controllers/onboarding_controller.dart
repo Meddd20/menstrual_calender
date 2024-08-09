@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding2_view.dart';
-import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
+import 'package:periodnpregnancycalender/app/modules/register/views/register_view.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class OnboardingController extends GetxController {
@@ -81,7 +81,7 @@ class OnboardingController extends GetxController {
       Get.showSnackbar(Ui.ErrorSnackBar(message: "Please select only 3 period range."));
       print("Error: Please select only 3 period range.");
     } else {
-      Get.toNamed(Routes.REGISTER);
+      Get.to(() => BackupDataView());
     }
   }
 }

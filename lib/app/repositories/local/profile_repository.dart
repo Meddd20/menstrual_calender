@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
@@ -13,7 +11,11 @@ class LocalProfileRepository {
   Future<void> createProfile(User profile) async {
     final db = await _databaseHelper.database;
     try {
-      await db.insert("tb_user", profile.toJson(includeRole: false, includeEmail: false));
+      Map<String, dynamic> data = profile.toJson();
+      data.remove('token');
+      data.remove('device_token');
+      data.remove('role');
+      await db.insert("tb_user", data);
     } catch (e) {
       _logger.e("Error during create profile: $e");
       rethrow;
@@ -23,7 +25,12 @@ class LocalProfileRepository {
   Future<void> updateProfile(User profile) async {
     final db = await _databaseHelper.database;
     try {
-      await db.update("tb_user", profile.toJson(), where: 'id = ?', whereArgs: [profile.id]);
+      Map<String, dynamic> data = profile.toJson();
+      data.remove('token');
+      data.remove('device_token');
+      data.remove('role');
+      print(data.toString());
+      await db.update("tb_user", data, where: 'id = ?', whereArgs: [profile.id]);
     } catch (e) {
       _logger.e("Error during update profile: $e");
       rethrow;
@@ -33,9 +40,7 @@ class LocalProfileRepository {
   Future<User?> getProfile() async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> profiles = await db.query(
-        "tb_user",
-      );
+      List<Map<String, dynamic>> profiles = await db.query("tb_user");
 
       if (profiles.isNotEmpty) {
         return User.fromJson(profiles.first);
@@ -47,15 +52,15 @@ class LocalProfileRepository {
     }
   }
 
-  Future<void> deleteProfile(int id) async {
+  Future<void> deleteProfile() async {
     final db = await _databaseHelper.database;
     await db.transaction((txn) async {
       try {
-        await txn.delete("tb_user", where: 'id = ?', whereArgs: [id]);
-        await txn.delete("tb_berat_badan_kehamilan", where: 'user_id = ?', whereArgs: [id]);
-        await txn.delete("tb_data_harian", where: 'user_id = ?', whereArgs: [id]);
-        await txn.delete("tb_riwayat_kehamilan", where: 'user_id = ?', whereArgs: [id]);
-        await txn.delete("tb_riwayat_mens", where: 'user_id = ?', whereArgs: [id]);
+        await txn.delete("tb_user");
+        await txn.delete("tb_berat_badan_kehamilan");
+        await txn.delete("tb_data_harian");
+        await txn.delete("tb_riwayat_kehamilan");
+        await txn.delete("tb_riwayat_mens");
       } catch (e) {
         _logger.e("Error during delete profile: $e");
         rethrow;
@@ -63,48 +68,15 @@ class LocalProfileRepository {
     });
   }
 
-  Future<void> saveChangeToSyncLog(String tableName, int recordId, Map<String, dynamic> data, String operation) async {
+  Future<void> deletePendingDataChanges() async {
     final db = await _databaseHelper.database;
-
-    try {
-      if (operation != 'create' || operation != 'update' || operation != 'delete') {
-        throw ArgumentError('Invalid operation: $operation. Operation must be "create", "update", or "delete".');
+    await db.transaction((txn) async {
+      try {
+        await txn.delete("sync_log");
+      } catch (e) {
+        _logger.e("Error during delete pending data changes: $e");
+        rethrow;
       }
-
-      await db.insert('sync_log', {
-        'table_name': tableName,
-        'record_id': recordId,
-        'data': jsonEncode(data),
-        'operation': operation,
-        'updated_at': DateTime.now().toIso8601String(),
-      });
-    } catch (e) {
-      _logger.e("Error during save changes to synclog: $e");
-      rethrow;
-    }
-  }
-
-  Future<void> deleteSyncLogEntry(int recordId, String tableName, String operation) async {
-    final db = await _databaseHelper.database;
-    try {
-      await db.delete(
-        'sync_log',
-        where: 'record_id = ? AND table_name = ? AND operation = ?',
-        whereArgs: [recordId, tableName, operation],
-      );
-    } catch (e) {
-      _logger.e("Error during delete changes to synclog: $e");
-      rethrow;
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> getSyncLogEntry() async {
-    final db = await _databaseHelper.database;
-    try {
-      return await db.query('sync_log');
-    } catch (e) {
-      _logger.e("Error during get all changes in synclog: $e");
-      rethrow;
-    }
+    });
   }
 }

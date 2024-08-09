@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/temperature_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -50,13 +51,15 @@ class TemperatureView extends GetView<TemperatureController> {
                   ),
                 ),
               ),
-              Text(
-                "from ${controller.formatDate(controller.selectedDate.value)} up to today",
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 15,
-                  height: 2.0,
-                  fontWeight: FontWeight.w600,
+              Obx(
+                () => Text(
+                  "from ${controller.formatDate(controller.selectedDate.value)} up to today",
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(0.4),
+                    fontSize: 15,
+                    height: 2.0,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               Container(
@@ -67,23 +70,14 @@ class TemperatureView extends GetView<TemperatureController> {
                     if (controller.temperatures.isEmpty) {
                       return Center(child: CircularProgressIndicator());
                     } else {
-                      List<double> values = controller.temperatures.entries
-                          .map((entry) => double.parse(entry.value))
-                          .toList();
-                      double max = values.isNotEmpty
-                          ? values.reduce((a, b) => a > b ? a : b)
-                          : 0;
-                      double min = values.isNotEmpty
-                          ? values.reduce((a, b) => a < b ? a : b)
-                          : 0;
+                      List<double> values = controller.temperatures.entries.map((entry) => double.parse(entry.value)).toList();
+                      double max = values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
+                      double min = values.isNotEmpty ? values.reduce((a, b) => a < b ? a : b) : 0;
                       return SfCartesianChart(
                         tooltipBehavior: TooltipBehavior(
                           enable: true,
-                          builder: (dynamic data, dynamic point, dynamic series,
-                              int pointIndex, int seriesIndex) {
-                            final MapEntry<String, dynamic> entry = controller
-                                .temperatures.entries
-                                .elementAt(pointIndex);
+                          builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
+                            final MapEntry<String, dynamic> entry = controller.temperatures.entries.elementAt(pointIndex);
 
                             return Container(
                               padding: EdgeInsets.all(10),
@@ -96,8 +90,7 @@ class TemperatureView extends GetView<TemperatureController> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   SizedBox(height: 5),
-                                  Text('Temperature: ${entry.value} °C',
-                                      style: TextStyle(color: Colors.white)),
+                                  Text('Temperature: ${entry.value} °C', style: TextStyle(color: Colors.white)),
                                 ],
                               ),
                             );
@@ -105,14 +98,12 @@ class TemperatureView extends GetView<TemperatureController> {
                         ),
                         primaryXAxis: DateTimeAxis(
                           interval: 1,
-                          initialVisibleMinimum:
-                              DateTime.now().subtract(Duration(days: 5)),
+                          initialVisibleMinimum: DateTime.now().subtract(Duration(days: 5)),
                           initialVisibleMaximum: DateTime.now(),
                           edgeLabelPlacement: EdgeLabelPlacement.none,
                           plotOffset: 34,
                           dateFormat: DateFormat('MMM dd'),
-                          labelIntersectAction:
-                              AxisLabelIntersectAction.multipleRows,
+                          labelIntersectAction: AxisLabelIntersectAction.multipleRows,
                         ),
                         primaryYAxis: NumericAxis(
                           minimum: min - 1,
@@ -121,14 +112,9 @@ class TemperatureView extends GetView<TemperatureController> {
                         ),
                         series: <CartesianSeries>[
                           ScatterSeries<MapEntry<String, dynamic>, DateTime>(
-                            dataSource:
-                                controller.temperatures.entries.toList(),
-                            xValueMapper:
-                                (MapEntry<String, dynamic> entry, _) =>
-                                    DateTime.parse(entry.key),
-                            yValueMapper:
-                                (MapEntry<String, dynamic> entry, _) =>
-                                    double.parse(entry.value),
+                            dataSource: controller.temperatures.entries.toList(),
+                            xValueMapper: (MapEntry<String, dynamic> entry, _) => DateTime.parse(entry.key),
+                            yValueMapper: (MapEntry<String, dynamic> entry, _) => double.parse(entry.value),
                             markerSettings: MarkerSettings(
                               isVisible: true,
                               height: 15,
@@ -192,12 +178,9 @@ class TemperatureView extends GetView<TemperatureController> {
                   child: Container(
                     height: Get.height,
                     child: ListView.builder(
-                      itemCount:
-                          controller.specificTemperaturesData.entries.length,
+                      itemCount: controller.specificTemperaturesData.entries.length,
                       itemBuilder: (context, index) {
-                        final MapEntry<String, dynamic> entry = controller
-                            .specificTemperaturesData.entries
-                            .elementAt(index);
+                        final MapEntry<String, dynamic> entry = controller.specificTemperaturesData.entries.elementAt(index);
 
                         return CustomDateLook(entry: entry);
                       },

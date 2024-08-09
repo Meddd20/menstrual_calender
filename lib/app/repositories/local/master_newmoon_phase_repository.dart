@@ -8,65 +8,65 @@ class MasterNewmoonPhaseRepository {
 
   MasterNewmoonPhaseRepository(this._databaseHelper);
 
-  Future<List<MasterNewmoonPhase>> getAllMasterNewmoonPhase() async {
+  Future<List<MasterNewmoonPhase>> getAllNewmoonPhase() async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> masterNewmoonPhase = await db.query(
+      List<Map<String, dynamic>> newmoonPhases = await db.query(
         "tb_master_newmoon_phase",
       );
-      return List.generate(masterNewmoonPhase.length, (i) {
-        return MasterNewmoonPhase.fromJson(masterNewmoonPhase[i]);
+      return List.generate(newmoonPhases.length, (i) {
+        return MasterNewmoonPhase.fromJson(newmoonPhases[i]);
       });
     } catch (e) {
-      _logger.e("Error during get all master newmoon phase: $e");
+      _logger.e("Error during get all newmoon phase: $e");
       rethrow;
     }
   }
 
-  Future<MasterNewmoonPhase?> getMasterNewmoonPhaseById(int? id) async {
+  Future<MasterNewmoonPhase?> getNewmoonPhaseById(int? id) async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> masterNewmoonPhase = await db.query(
+      List<Map<String, dynamic>> newmoonPhase = await db.query(
         "tb_master_newmoon_phase",
         where: 'id = ?',
         whereArgs: [id],
       );
-      if (masterNewmoonPhase.isNotEmpty) {
-        return MasterNewmoonPhase.fromJson(masterNewmoonPhase.first);
+      if (newmoonPhase.isNotEmpty) {
+        return MasterNewmoonPhase.fromJson(newmoonPhase.first);
       }
       return null;
     } catch (e) {
-      _logger.e("Error during get master newmoon phase by id: $e");
+      _logger.e("Error during get newmoon phase by id: $e");
       rethrow;
     }
   }
 
-  Future<void> addMasterNewmoonPhase(MasterNewmoonPhase masterNewmoonPhase) async {
+  Future<void> addNewmoonPhase(MasterNewmoonPhase newmoonPhase) async {
     final db = await _databaseHelper.database;
     try {
-      await db.insert("tb_master_newmoon_phase", masterNewmoonPhase.toJson());
+      await db.insert("tb_master_newmoon_phase", newmoonPhase.toJson());
     } catch (e) {
-      _logger.e("Error during add master newmoon phase: $e");
+      _logger.e("Error during add newmoon phase: $e");
       rethrow;
     }
   }
 
-  Future<void> editMasterNewmoonPhase(MasterNewmoonPhase masterNewmoonPhase) async {
+  Future<void> editNewmoonPhase(MasterNewmoonPhase newmoonPhase) async {
     final db = await _databaseHelper.database;
     try {
       await db.update(
         "tb_master_newmoon_phase",
-        masterNewmoonPhase.toJson(),
+        newmoonPhase.toJson(),
         where: 'id = ?',
-        whereArgs: [masterNewmoonPhase.id],
+        whereArgs: [newmoonPhase.id],
       );
     } catch (e) {
-      _logger.e("Error during edit master newmoon phase: $e");
+      _logger.e("Error during edit newmoon phase: $e");
       rethrow;
     }
   }
 
-  Future<void> deleteMasterNewmoonPhase(int id) async {
+  Future<void> deleteNewmoonPhase(int id) async {
     final db = await _databaseHelper.database;
     try {
       await db.delete(
@@ -75,7 +75,7 @@ class MasterNewmoonPhaseRepository {
         whereArgs: [id],
       );
     } catch (e) {
-      _logger.e("Error during delete master newmoon phase: $e");
+      _logger.e("Error during delete newmoon phase: $e");
       rethrow;
     }
   }

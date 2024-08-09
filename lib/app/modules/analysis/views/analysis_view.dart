@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_card.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/logs_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/notes_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
@@ -243,58 +243,58 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                               crossAxisSpacing: 6,
                             ),
                             children: [
-                              CustomIconCard(
-                                icon: Icons.bloodtype_outlined,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/bleed.png',
                                 text: "Bleeding Flow",
                                 onTap: () => Get.to(() => LogsView(), arguments: "bleeding_flow"),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/sex.png',
                                 text: "Sex Activity",
                                 onTap: () => Get.to(() => LogsView(), arguments: "sex_activity"),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/acne.png',
                                 text: "Symptoms",
                                 onTap: () => Get.to(() => LogsView(), arguments: "symptoms"),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/raining.png',
                                 text: "Vaginal Discharge",
                                 onTap: () => Get.to(() => LogsView(), arguments: "vaginal_discharge"),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/mood-changes.png',
                                 text: "Moods",
                                 onTap: () => Get.to(() => LogsView(), arguments: "moods"),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/passport.png',
                                 text: "Others",
                                 onTap: () => Get.to(() => LogsView(), arguments: "others"),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/yoga.png',
                                 text: "Physical Activity",
                                 onTap: () => Get.to(() => LogsView(), arguments: "physical_activity"),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/temperature.png',
                                 text: "Temperature",
                                 onTap: () => Get.to(() => TemperatureView()),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/weighing-machine.png',
                                 text: "Weight",
                                 onTap: () => Get.to(() => WeightView()),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/alarm.png',
                                 text: "Reminder",
                                 onTap: () => Get.to(() => ReminderView()),
                               ),
-                              CustomIconCard(
-                                icon: Icons.crisis_alert,
+                              CustomCircularCard(
+                                iconPath: 'assets/icon/notes.png',
                                 text: "Notes",
                                 onTap: () => Get.to(() => NotesView()),
                               ),

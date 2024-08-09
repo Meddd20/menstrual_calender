@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:like_button/like_button.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/modules/insight/controllers/insight_detail_controller.dart';
+import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
 
 class InsightDetailView extends GetView<InsightDetailController> {
   const InsightDetailView({Key? key}) : super(key: key);
@@ -49,21 +50,15 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                 height: 200,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.zero,
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        "${controller.data?.banner}"),
-                                    fit: BoxFit.fitWidth,
-                                  ),
                                 ),
+                                child: Image.network('http://10.0.2.2:8000/${controller.data?.banner}'),
                               ),
                               Container(
                                 width: Get.width,
                                 child: Padding(
-                                  padding:
-                                      EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                                  padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         child: Text(
@@ -81,8 +76,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
-                                              text:
-                                                  "${controller.data?.writter ?? ""} - ",
+                                              text: "${controller.data?.writter ?? ""} - ",
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 13.sp,
@@ -92,8 +86,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                               ),
                                             ),
                                             TextSpan(
-                                              text:
-                                                  "${controller.data?.tags ?? ""}",
+                                              text: "${controller.data?.tags ?? ""}",
                                               style: TextStyle(
                                                 color: Colors.blue,
                                                 fontSize: 13.sp,
@@ -107,8 +100,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                         ),
                                       ),
                                       Text(
-                                        controller.formatDate(
-                                            "${controller.data?.createdAt}"),
+                                        controller.formatDate("${controller.data?.createdAt}"),
                                         style: TextStyle(
                                           color: Colors.grey,
                                           fontSize: 13.sp,
@@ -173,91 +165,53 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                         return SingleChildScrollView(
                                           child: ListView.builder(
                                             shrinkWrap: true,
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            itemCount:
-                                                controller.comment.length,
+                                            physics: NeverScrollableScrollPhysics(),
+                                            itemCount: controller.comment.length,
                                             itemBuilder: (context, index) {
-                                              final comment =
-                                                  controller.comment[index];
-                                              final commentReply =
-                                                  comment.children;
+                                              final comment = controller.comment[index];
+                                              final commentReply = comment.children;
                                               return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   InkWell(
                                                     onLongPress: () {
-                                                      var accountId =
-                                                          box.read('loginId');
-                                                      if (accountId ==
-                                                          comment.userId) {
+                                                      var accountId = box.read('loginId');
+                                                      if (accountId == comment.userId) {
                                                         showModalBottomSheet(
                                                           context: context,
-                                                          builder: (BuildContext
-                                                              context) {
+                                                          builder: (BuildContext context) {
                                                             return Wrap(
                                                               children: [
                                                                 Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .center,
+                                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                                   children: [
                                                                     Container(
-                                                                      height:
-                                                                          4.h,
-                                                                      width:
-                                                                          32.w,
-                                                                      margin: EdgeInsets.only(
-                                                                          top: 16
-                                                                              .h),
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        color: Colors
-                                                                            .blueGrey,
-                                                                        borderRadius:
-                                                                            BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              3.0),
+                                                                      height: 4.h,
+                                                                      width: 32.w,
+                                                                      margin: EdgeInsets.only(top: 16.h),
+                                                                      decoration: BoxDecoration(
+                                                                        color: Colors.blueGrey,
+                                                                        borderRadius: BorderRadius.all(
+                                                                          Radius.circular(3.0),
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    SizedBox(
-                                                                        height:
-                                                                            10.h),
+                                                                    SizedBox(height: 10.h),
                                                                     Padding(
-                                                                      padding: EdgeInsets
-                                                                          .fromLTRB(
-                                                                              10,
-                                                                              0,
-                                                                              10,
-                                                                              0),
-                                                                      child:
-                                                                          InkWell(
-                                                                        onTap:
-                                                                            () {
-                                                                          controller.deleteComment(comment.id ??
-                                                                              0);
+                                                                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                                                      child: InkWell(
+                                                                        onTap: () {
+                                                                          controller.deleteComment(comment.id ?? 0);
                                                                           Get.back();
-                                                                          controller
-                                                                              .focusNode
-                                                                              .unfocus();
+                                                                          controller.focusNode.unfocus();
                                                                         },
-                                                                        child:
-                                                                            Container(
-                                                                          padding: EdgeInsets.only(
-                                                                              left: 16,
-                                                                              right: 16),
-                                                                          height:
-                                                                              50,
-                                                                          width:
-                                                                              Get.width,
-                                                                          child:
-                                                                              Align(
-                                                                            alignment:
-                                                                                Alignment.centerLeft,
-                                                                            child:
-                                                                                Row(
+                                                                        child: Container(
+                                                                          padding: EdgeInsets.only(left: 16, right: 16),
+                                                                          height: 50,
+                                                                          width: Get.width,
+                                                                          child: Align(
+                                                                            alignment: Alignment.centerLeft,
+                                                                            child: Row(
                                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                               children: [
                                                                                 Text(
@@ -275,193 +229,106 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    SizedBox(
-                                                                        height:
-                                                                            10.h),
+                                                                    SizedBox(height: 10.h),
                                                                   ],
                                                                 ),
                                                               ],
                                                             );
                                                           },
                                                         ).then((value) {
-                                                          controller.focusNode
-                                                              .unfocus();
+                                                          controller.focusNode.unfocus();
                                                         });
                                                       }
                                                     },
                                                     onTap: () {
-                                                      controller
-                                                          .isReplyingComment
-                                                          .value = true;
-                                                      controller
-                                                          .setParentCommentId(
-                                                              comment.id ?? 0);
-                                                      controller
-                                                          .setCommentUsername(
-                                                              comment.username ??
-                                                                  "");
-                                                      controller.focusNode
-                                                          .requestFocus();
+                                                      controller.isReplyingComment.value = true;
+                                                      controller.setParentCommentId(comment.id ?? 0);
+                                                      controller.setCommentUsername(comment.username ?? "");
+                                                      controller.focusNode.requestFocus();
                                                     },
                                                     child: Row(
                                                       children: [
                                                         Expanded(
                                                           child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
-                                                              SizedBox(
-                                                                  height: 5),
+                                                              SizedBox(height: 5),
                                                               Text(
                                                                 "${comment.username ?? ""}",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
                                                                   fontSize: 16,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                  fontWeight: FontWeight.bold,
                                                                 ),
                                                               ),
                                                               Text(
-                                                                comment.content ??
-                                                                    "",
+                                                                comment.content ?? "",
                                                                 maxLines: 3,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left,
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontSize:
-                                                                      14.sp,
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
+                                                                textAlign: TextAlign.left,
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 14.sp,
+                                                                  fontFamily: 'Poppins',
+                                                                  fontWeight: FontWeight.w400,
                                                                   height: 1.7,
                                                                 ),
                                                               ),
-                                                              SizedBox(
-                                                                  height: 5),
+                                                              SizedBox(height: 5),
                                                               Row(
                                                                 children: [
                                                                   Text(
                                                                     "${controller.formatDateTime(comment.createdAt ?? "")}   ",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: AppColors
-                                                                          .black
-                                                                          .withOpacity(
-                                                                              0.5),
-                                                                      fontSize:
-                                                                          13.sp,
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400,
+                                                                    style: TextStyle(
+                                                                      color: AppColors.black.withOpacity(0.5),
+                                                                      fontSize: 13.sp,
+                                                                      fontFamily: 'Poppins',
+                                                                      fontWeight: FontWeight.w400,
                                                                     ),
                                                                   ),
                                                                   InkWell(
                                                                     onTap: () {
-                                                                      controller
-                                                                          .isReplyingComment
-                                                                          .value = true;
-                                                                      controller.setParentCommentId(
-                                                                          comment.id ??
-                                                                              0);
-                                                                      controller.setCommentUsername(
-                                                                          comment.username ??
-                                                                              "");
-                                                                      controller
-                                                                          .focusNode
-                                                                          .requestFocus();
+                                                                      controller.isReplyingComment.value = true;
+                                                                      controller.setParentCommentId(comment.id ?? 0);
+                                                                      controller.setCommentUsername(comment.username ?? "");
+                                                                      controller.focusNode.requestFocus();
                                                                     },
                                                                     child: Text(
                                                                       "Reply",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: AppColors
-                                                                            .black
-                                                                            .withOpacity(0.6),
-                                                                        fontSize:
-                                                                            13.sp,
-                                                                        fontFamily:
-                                                                            'Poppins',
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
+                                                                      style: TextStyle(
+                                                                        color: AppColors.black.withOpacity(0.6),
+                                                                        fontSize: 13.sp,
+                                                                        fontFamily: 'Poppins',
+                                                                        fontWeight: FontWeight.w600,
                                                                       ),
                                                                     ),
                                                                   ),
                                                                 ],
                                                               ),
-                                                              SizedBox(
-                                                                  height: 10)
+                                                              SizedBox(height: 10)
                                                             ],
                                                           ),
                                                         ),
                                                         Container(
                                                           width: 30,
                                                           child: LikeButton(
-                                                            onTap:
-                                                                ((isLiked) async {
-                                                              bool?
-                                                                  isCommentLiked =
-                                                                  comment
-                                                                      .is_liked_by_active_user;
-                                                              controller
-                                                                  .setUsernameId(
-                                                                      comment.userId ??
-                                                                          0);
-                                                              controller
-                                                                  .setArticleId(
-                                                                      comment.articleId ??
-                                                                          0);
-                                                              controller
-                                                                  .setCommentId(
-                                                                      comment.id ??
-                                                                          0);
-                                                              controller
-                                                                  .likeComment(
-                                                                      isLiked,
-                                                                      comment.id ??
-                                                                          0);
-                                                              return isCommentLiked !=
-                                                                      null
-                                                                  ? !isCommentLiked
-                                                                  : false;
+                                                            onTap: ((isLiked) async {
+                                                              bool? isCommentLiked = comment.is_liked_by_active_user;
+                                                              controller.setUsernameId(comment.userId ?? 0);
+                                                              controller.setArticleId(comment.articleId ?? 0);
+                                                              controller.setCommentId(comment.id ?? 0);
+                                                              controller.likeComment(isLiked, comment.id ?? 0);
+                                                              return isCommentLiked != null ? !isCommentLiked : false;
                                                             }),
-                                                            countPostion:
-                                                                CountPostion
-                                                                    .bottom,
-                                                            likeCount:
-                                                                comment.likes,
+                                                            countPostion: CountPostion.bottom,
+                                                            likeCount: comment.likes,
                                                             size: 25,
-                                                            circleColor: CircleColor(
-                                                                start: Color(
-                                                                    0xff00ddff),
-                                                                end: Color(
-                                                                    0xff0099cc)),
-                                                            bubblesColor:
-                                                                BubblesColor(
-                                                              dotPrimaryColor:
-                                                                  Color(
-                                                                      0xff33b5e5),
-                                                              dotSecondaryColor:
-                                                                  Color(
-                                                                      0xff0099cc),
+                                                            circleColor: CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                                                            bubblesColor: BubblesColor(
+                                                              dotPrimaryColor: Color(0xff33b5e5),
+                                                              dotSecondaryColor: Color(0xff0099cc),
                                                             ),
-                                                            isLiked: comment
-                                                                .is_liked_by_active_user,
-                                                            likeCountAnimationDuration:
-                                                                Duration(
-                                                                    milliseconds:
-                                                                        3000),
+                                                            isLiked: comment.is_liked_by_active_user,
+                                                            likeCountAnimationDuration: Duration(milliseconds: 3000),
                                                           ),
                                                         ),
                                                       ],
@@ -469,87 +336,52 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                   ),
                                                   Obx(
                                                     () => Visibility(
-                                                      visible:
-                                                          comment.children !=
-                                                                  null &&
-                                                              comment.children!
-                                                                  .isNotEmpty,
+                                                      visible: comment.children != null && comment.children!.isNotEmpty,
                                                       child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           InkWell(
                                                             onTap: () {
-                                                              controller
-                                                                  .toggleRepliesVisibility(
-                                                                      index);
+                                                              controller.toggleRepliesVisibility(index);
                                                             },
                                                             child: RichText(
                                                               text: TextSpan(
                                                                 children: [
                                                                   WidgetSpan(
-                                                                    child:
-                                                                        SizedBox(
+                                                                    child: SizedBox(
                                                                       width: 20,
-                                                                      child:
-                                                                          Divider(
-                                                                        color: Colors
-                                                                            .black,
-                                                                        thickness:
-                                                                            1,
+                                                                      child: Divider(
+                                                                        color: Colors.black,
+                                                                        thickness: 1,
                                                                       ),
                                                                     ),
                                                                   ),
                                                                   TextSpan(
-                                                                    text: controller
-                                                                            .isRepliesVisible(index)
-                                                                        ? '  Hide replies'
-                                                                        : '  View ${comment.children?.length} replies',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .black,
-                                                                      fontSize:
-                                                                          14,
+                                                                    text: controller.isRepliesVisible(index) ? '  Hide replies' : '  View ${comment.children?.length} replies',
+                                                                    style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontSize: 14,
                                                                     ),
                                                                   ),
                                                                 ],
                                                               ),
                                                             ),
                                                           ),
-                                                          if (controller
-                                                              .isRepliesVisible(
-                                                                  index))
+                                                          if (controller.isRepliesVisible(index))
                                                             // Text("data"),
                                                             ListView.builder(
                                                               shrinkWrap: true,
-                                                              physics:
-                                                                  NeverScrollableScrollPhysics(),
-                                                              itemCount:
-                                                                  commentReply
-                                                                      ?.length,
-                                                              itemBuilder:
-                                                                  ((context,
-                                                                      index) {
-                                                                var reply =
-                                                                    commentReply?[
-                                                                        index];
+                                                              physics: NeverScrollableScrollPhysics(),
+                                                              itemCount: commentReply?.length,
+                                                              itemBuilder: ((context, index) {
+                                                                var reply = commentReply?[index];
                                                                 return InkWell(
-                                                                  onLongPress:
-                                                                      () {
-                                                                    var accountId =
-                                                                        box.read(
-                                                                            'loginId');
-                                                                    if (accountId ==
-                                                                        reply
-                                                                            ?.userId) {
+                                                                  onLongPress: () {
+                                                                    var accountId = box.read('loginId');
+                                                                    if (accountId == reply?.userId) {
                                                                       showModalBottomSheet(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (BuildContext
-                                                                                context) {
+                                                                        context: context,
+                                                                        builder: (BuildContext context) {
                                                                           return Wrap(
                                                                             children: [
                                                                               Column(
@@ -605,38 +437,23 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                                             ],
                                                                           );
                                                                         },
-                                                                      ).then(
-                                                                          (value) {
-                                                                        controller
-                                                                            .focusNode
-                                                                            .unfocus();
+                                                                      ).then((value) {
+                                                                        controller.focusNode.unfocus();
                                                                       });
                                                                     }
                                                                   },
                                                                   onTap: () {
-                                                                    controller
-                                                                        .isReplyingComment
-                                                                        .value = true;
-                                                                    controller.setParentCommentId(
-                                                                        comment.id ??
-                                                                            0);
-                                                                    controller.setCommentUsername(
-                                                                        comment.username ??
-                                                                            "");
-                                                                    controller
-                                                                        .focusNode
-                                                                        .requestFocus();
+                                                                    controller.isReplyingComment.value = true;
+                                                                    controller.setParentCommentId(comment.id ?? 0);
+                                                                    controller.setCommentUsername(comment.username ?? "");
+                                                                    controller.focusNode.requestFocus();
                                                                   },
                                                                   child: Row(
                                                                     children: [
-                                                                      SizedBox(
-                                                                          width:
-                                                                              30),
+                                                                      SizedBox(width: 30),
                                                                       Expanded(
-                                                                        child:
-                                                                            Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
+                                                                        child: Column(
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
                                                                           children: [
                                                                             SizedBox(height: 10),
                                                                             Row(
@@ -710,43 +527,24 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                                         ),
                                                                       ),
                                                                       Container(
-                                                                        width:
-                                                                            30,
-                                                                        child:
-                                                                            LikeButton(
-                                                                          onTap:
-                                                                              ((isLiked) async {
-                                                                            bool?
-                                                                                isCommentLiked =
-                                                                                reply?.is_liked_by_active_user;
-                                                                            controller.setUsernameId(reply?.userId ??
-                                                                                0);
-                                                                            controller.setCommentId(reply?.id ??
-                                                                                0);
-                                                                            controller.likeComment(isLiked,
-                                                                                reply?.id ?? 0);
-                                                                            return isCommentLiked != null
-                                                                                ? !isCommentLiked
-                                                                                : false;
+                                                                        width: 30,
+                                                                        child: LikeButton(
+                                                                          onTap: ((isLiked) async {
+                                                                            bool? isCommentLiked = reply?.is_liked_by_active_user;
+                                                                            controller.setUsernameId(reply?.userId ?? 0);
+                                                                            controller.setCommentId(reply?.id ?? 0);
+                                                                            controller.likeComment(isLiked, reply?.id ?? 0);
+                                                                            return isCommentLiked != null ? !isCommentLiked : false;
                                                                           }),
-                                                                          countPostion:
-                                                                              CountPostion.bottom,
-                                                                          likeCount:
-                                                                              reply?.likes,
-                                                                          size:
-                                                                              25,
-                                                                          circleColor: CircleColor(
-                                                                              start: Color(0xff00ddff),
-                                                                              end: Color(0xff0099cc)),
-                                                                          bubblesColor:
-                                                                              BubblesColor(
-                                                                            dotPrimaryColor:
-                                                                                Color(0xff33b5e5),
-                                                                            dotSecondaryColor:
-                                                                                Color(0xff0099cc),
+                                                                          countPostion: CountPostion.bottom,
+                                                                          likeCount: reply?.likes,
+                                                                          size: 25,
+                                                                          circleColor: CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                                                                          bubblesColor: BubblesColor(
+                                                                            dotPrimaryColor: Color(0xff33b5e5),
+                                                                            dotSecondaryColor: Color(0xff0099cc),
                                                                           ),
-                                                                          isLiked:
-                                                                              reply?.is_liked_by_active_user,
+                                                                          isLiked: reply?.is_liked_by_active_user,
                                                                         ),
                                                                       ),
                                                                     ],
@@ -796,8 +594,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                    "Replying to ${controller.getCommentUsername()}\'s comment"),
+                                Text("Replying to ${controller.getCommentUsername()}\'s comment"),
                                 IconButton(
                                   onPressed: () {
                                     controller.cancelCommentReply();
@@ -829,17 +626,14 @@ class InsightDetailView extends GetView<InsightDetailController> {
                               borderSide: const BorderSide(color: Colors.black),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            contentPadding: const EdgeInsets.fromLTRB(
-                                16.0, 14.0, 16.0, 16.0),
+                            contentPadding: const EdgeInsets.fromLTRB(16.0, 14.0, 16.0, 16.0),
                             suffixIcon: controller.commentContent.isNotEmpty
                                 ? IconButton(
                                     onPressed: () {
-                                      controller.setArticleId(
-                                          controller.data?.id ?? 0);
+                                      controller.setArticleId(controller.data?.id ?? 0);
                                       controller.storeComment();
                                       controller.textEditingController.clear();
-                                      controller.isReplyingComment.value =
-                                          false;
+                                      controller.isReplyingComment.value = false;
                                       FocusScope.of(context).unfocus();
                                     },
                                     icon: Icon(Icons.send),

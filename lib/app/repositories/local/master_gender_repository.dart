@@ -8,65 +8,65 @@ class MasterGenderRepository {
 
   MasterGenderRepository(this._databaseHelper);
 
-  Future<List<MasterGender>> getAllMasterGenderData() async {
+  Future<List<MasterGender>> getAllGenderData() async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> masterGenderData = await db.query(
+      List<Map<String, dynamic>> getAllGenderData = await db.query(
         "tb_master_gender",
       );
-      return List.generate(masterGenderData.length, (i) {
-        return MasterGender.fromJson(masterGenderData[i]);
+      return List.generate(getAllGenderData.length, (i) {
+        return MasterGender.fromJson(getAllGenderData[i]);
       });
     } catch (e) {
-      _logger.e("Error during get all master gender data: $e");
+      _logger.e("Error during get all gender data: $e");
       rethrow;
     }
   }
 
-  Future<MasterGender?> getMasterGenderById(int? id) async {
+  Future<MasterGender?> getGenderById(int? id) async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> masterGenderData = await db.query(
+      List<Map<String, dynamic>> getGenderData = await db.query(
         "tb_master_gender",
         where: 'id = ?',
         whereArgs: [id],
       );
-      if (masterGenderData.isNotEmpty) {
-        return MasterGender.fromJson(masterGenderData.first);
+      if (getGenderData.isNotEmpty) {
+        return MasterGender.fromJson(getGenderData.first);
       }
       return null;
     } catch (e) {
-      _logger.e("Error during get master gender data by id: $e");
+      _logger.e("Error during get gender data by id: $e");
       rethrow;
     }
   }
 
-  Future<void> addMasterGenderData(MasterGender masterGender) async {
+  Future<void> addGenderData(MasterGender genderData) async {
     final db = await _databaseHelper.database;
     try {
-      await db.insert("tb_master_gender", masterGender.toJson());
+      await db.insert("tb_master_gender", genderData.toJson());
     } catch (e) {
-      _logger.e("Error during add master gender data: $e");
+      _logger.e("Error during add gender data: $e");
       rethrow;
     }
   }
 
-  Future<void> editMasterGenderData(MasterGender masterGender) async {
+  Future<void> editGenderData(MasterGender genderData) async {
     final db = await _databaseHelper.database;
     try {
       await db.update(
         "tb_master_gender",
-        masterGender.toJson(),
+        genderData.toJson(),
         where: 'id = ?',
-        whereArgs: [masterGender.id],
+        whereArgs: [genderData.id],
       );
     } catch (e) {
-      _logger.e("Error during edit master gender data: $e");
+      _logger.e("Error during edit gender data: $e");
       rethrow;
     }
   }
 
-  Future<void> deleteMasterGenderData(int id) async {
+  Future<void> deleteGenderData(int id) async {
     final db = await _databaseHelper.database;
     try {
       await db.delete(
@@ -75,7 +75,7 @@ class MasterGenderRepository {
         whereArgs: [id],
       );
     } catch (e) {
-      _logger.e("Error during delete master gender data: $e");
+      _logger.e("Error during delete gender data: $e");
       rethrow;
     }
   }

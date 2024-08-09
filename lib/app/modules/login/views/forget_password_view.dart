@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_textformfield.dart';
 import 'package:periodnpregnancycalender/app/modules/login/controllers/forget_password_controller.dart';
 
@@ -68,7 +68,7 @@ class ForgetPasswordView extends GetView<ForgetPasswordController> {
                         hintText: "example@example.com",
                       ),
                       SizedBox(height: 25.h),
-                      CustomColoredButton(
+                      CustomButton(
                         text: "Send code",
                         onPressed: () {
                           controller.checkEmailForgetPassword();

@@ -8,9 +8,7 @@ class PregnancyWeightGain {
   PregnancyWeightGain.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null
-        ? new PregnancyWeightGainData.fromJson(json['data'])
-        : null;
+    data = json['data'] != null ? new PregnancyWeightGainData.fromJson(json['data']) : null;
   }
 }
 
@@ -28,19 +26,7 @@ class PregnancyWeightGainData {
   List<WeightHistory>? weightHistory;
   List<RecommendWeightGain>? reccomendWeightGain;
 
-  PregnancyWeightGainData(
-      {this.week,
-      this.prepregnancyWeight,
-      this.currentWeight,
-      this.totalGain,
-      this.prepregnancyBmi,
-      this.prepregnancyHeight,
-      this.bmiCategory,
-      this.isTwin,
-      this.currentWeekReccomendWeight,
-      this.nextWeekReccomendWeight,
-      this.weightHistory,
-      this.reccomendWeightGain});
+  PregnancyWeightGainData({this.week, this.prepregnancyWeight, this.currentWeight, this.totalGain, this.prepregnancyBmi, this.prepregnancyHeight, this.bmiCategory, this.isTwin, this.currentWeekReccomendWeight, this.nextWeekReccomendWeight, this.weightHistory, this.reccomendWeightGain});
 
   PregnancyWeightGainData.fromJson(Map<String, dynamic> json) {
     week = json['week'];
@@ -79,16 +65,7 @@ class WeightHistory {
   String? createdAt;
   String? updatedAt;
 
-  WeightHistory(
-      {this.id,
-      this.userId,
-      this.riwayatKehamilanId,
-      this.beratBadan,
-      this.mingguKehamilan,
-      this.tanggalPencatatan,
-      this.pertambahanBerat,
-      this.createdAt,
-      this.updatedAt});
+  WeightHistory({this.id, this.userId, this.riwayatKehamilanId, this.beratBadan, this.mingguKehamilan, this.tanggalPencatatan, this.pertambahanBerat, this.createdAt, this.updatedAt});
 
   WeightHistory.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -148,12 +125,7 @@ class RecommendWeightGain {
   double? recommendWeightLower;
   double? recommendWeightUpper;
 
-  RecommendWeightGain(
-      {this.week,
-      this.lowerWeightGain,
-      this.upperWeightGain,
-      this.recommendWeightLower,
-      this.recommendWeightUpper});
+  RecommendWeightGain({this.week, this.lowerWeightGain, this.upperWeightGain, this.recommendWeightLower, this.recommendWeightUpper});
 
   RecommendWeightGain.fromJson(Map<String, dynamic> json) {
     week = json['week'];

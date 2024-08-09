@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_doughnut_chart.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/logs_controller.dart';
 
 class LogsView extends GetView<LogsController> {

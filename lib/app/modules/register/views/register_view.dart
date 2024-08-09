@@ -6,13 +6,94 @@ import '../controllers/register_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 
-class RegisterView extends GetView<RegisterController> {
-  const RegisterView({Key? key}) : super(key: key);
+class BackupDataView extends GetView<RegisterController> {
+  const BackupDataView({super.key});
+
   @override
   Widget build(BuildContext context) {
+    Get.put(RegisterController());
+    return SafeArea(
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: AppColors.white,
+          leading: const BackButton(
+            color: AppColors.primary,
+          ),
+        ),
+        body: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(10.w, 40.h, 10.w, 35.h),
+              child: Column(
+                children: [
+                  SizedBox(height: 20.h),
+                  Container(
+                    child: Image.asset(
+                      'assets/image/backup-illustration.png',
+                      width: Get.width,
+                      // height: Get.width,
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Text(
+                    "Keep your health data safe",
+                    style: CustomTextStyle.heading2TextStyle(),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 10.h),
+                  Text(
+                    "Create an account to securely back up your health data and access it from any device.",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      height: 1.5,
+                      color: Colors.black.withOpacity(0.6),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 35,
+              left: 20,
+              right: 20,
+              child: Column(
+                children: [
+                  CustomButton(
+                    text: "I'll Register Later",
+                    backgroundColor: Colors.transparent,
+                    textColor: Colors.black,
+                    onPressed: () {
+                      controller.saveDataAsGuest();
+                    },
+                  ),
+                  SizedBox(height: 8.h),
+                  CustomButton(
+                    text: "Register Now",
+                    onPressed: () {
+                      Get.toNamed(Routes.REGISTER);
+                    },
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RegisterView extends GetView<RegisterController> {
+  final bool? isRegisterToExistingData;
+  const RegisterView({Key? key, this.isRegisterToExistingData = false}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    Get.put(RegisterController());
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -107,70 +188,62 @@ class RegisterView extends GetView<RegisterController> {
                         hintText: "•••••••••",
                       ),
                       SizedBox(height: 20.h),
-                      CustomColoredButton(
+                      CustomButton(
                         text: "Register",
                         onPressed: () {
                           controller.checkRegister();
                         },
                       ),
-                      SizedBox(height: 15.h),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
+                      if (isRegisterToExistingData == false) ...[
+                        SizedBox(height: 15.h),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Divider(),
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                "or",
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(width: 5),
+                              Expanded(
+                                child: Divider(),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Expanded(
-                              child: Divider(),
-                            ),
-                            SizedBox(width: 5),
                             Text(
-                              "or",
+                              "Have an account?",
                               style: TextStyle(
-                                fontSize: 16.sp,
+                                fontSize: 15.sp,
                                 color: Colors.black,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
-                            SizedBox(width: 5),
-                            Expanded(
-                              child: Divider(),
+                            TextButton(
+                              onPressed: () {
+                                Get.toNamed(Routes.LOGIN);
+                              },
+                              child: Text(
+                                "Login Now",
+                                style: CustomTextStyle.buttonTextStyle(
+                                  color: AppColors.contrast,
+                                ),
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                      SizedBox(height: 15.h),
-                      CustomButton(
-                        text: "Continue as Guest",
-                        backgroundColor: Color.fromARGB(255, 236, 234, 234),
-                        textColor: Colors.black,
-                        onPressed: () async {
-                          controller.saveDataAsGuest();
-                        },
-                      ),
-                      SizedBox(height: 5.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Have an account?",
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.toNamed(Routes.LOGIN);
-                            },
-                            child: Text(
-                              "Login Now",
-                              style: CustomTextStyle.buttonTextStyle(
-                                color: AppColors.contrast,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
+                        )
+                      ]
                     ],
                   ),
                 ),

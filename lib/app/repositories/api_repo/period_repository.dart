@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/date_event_model.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
+import 'package:periodnpregnancycalender/app/modules/profile/views/unauthorized_error_view.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 
 class PeriodRepository {
@@ -57,35 +58,37 @@ class PeriodRepository {
 
   Future<List<PeriodHistory>?> storePeriod(List<Map<String, dynamic>> periods, int? periodCycle, String? email_regis) async {
     http.Response response = await apiService.storePeriod(periods, periodCycle, email_regis);
+    try {
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final List<dynamic> periodHistoryJsonList = responseBody["data"] as List<dynamic>;
 
-    if (response.statusCode == 200) {
-      Get.back();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
-      final List<dynamic> periodHistory = jsonDecode(response.body)["data"];
-      final List<PeriodHistory> periods = periodHistory.map<PeriodHistory>((periodHistory) => PeriodHistory.fromJson(periodHistory)).toList();
-      return periods;
-    } else {
-      var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+        final List<PeriodHistory> periodHistories = periodHistoryJsonList.map((json) => PeriodHistory.fromJson(json as Map<String, dynamic>)).toList();
+
+        return periodHistories;
+      } else if (response.statusCode == 401) {
+        Get.to(() => UnauthorizedErrorView());
+        return [];
+      } else {
+        var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
+        _logger.e('[API ERROR] $errorMessage');
+        return null;
+      }
+    } catch (e) {
+      throw e;
     }
   }
 
   Future<void> updatePeriod(int periodId, String firstPeriod, String lastPeriod, int? periodCycle) async {
     http.Response response = await apiService.updatePeriod(periodId, firstPeriod, lastPeriod, periodCycle);
 
-    print('Response body: ${response.body}');
-
     if (response.statusCode == 200) {
-      Get.back();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 }

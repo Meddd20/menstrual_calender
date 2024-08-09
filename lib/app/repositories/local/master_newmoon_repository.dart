@@ -8,65 +8,65 @@ class MasterNewmoonRepository {
 
   MasterNewmoonRepository(this._databaseHelper);
 
-  Future<List<MasterNewmoon>> getAllMasterNewmoon() async {
+  Future<List<MasterNewmoon>> getAllNewmoon() async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> masterNewmoon = await db.query(
+      List<Map<String, dynamic>> getAllNewmoon = await db.query(
         "tb_master_newmoon",
       );
-      return List.generate(masterNewmoon.length, (i) {
-        return MasterNewmoon.fromJson(masterNewmoon[i]);
+      return List.generate(getAllNewmoon.length, (i) {
+        return MasterNewmoon.fromJson(getAllNewmoon[i]);
       });
     } catch (e) {
-      _logger.e("Error during get all master newmoon: $e");
+      _logger.e("Error during get all newmoon: $e");
       rethrow;
     }
   }
 
-  Future<MasterNewmoon?> getMasterNewmoonById(int? id) async {
+  Future<MasterNewmoon?> getNewmoonById(int? id) async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> masterNewmoon = await db.query(
+      List<Map<String, dynamic>> getNewmoon = await db.query(
         "tb_master_newmoon",
         where: 'id = ?',
         whereArgs: [id],
       );
-      if (masterNewmoon.isNotEmpty) {
-        return MasterNewmoon.fromJson(masterNewmoon.first);
+      if (getNewmoon.isNotEmpty) {
+        return MasterNewmoon.fromJson(getNewmoon.first);
       }
       return null;
     } catch (e) {
-      _logger.e("Error during get master newmoon by id: $e");
+      _logger.e("Error during get newmoon by id: $e");
       rethrow;
     }
   }
 
-  Future<void> addMasterNewmoon(MasterNewmoon masterNewmoon) async {
+  Future<void> addNewmoon(MasterNewmoon newmoon) async {
     final db = await _databaseHelper.database;
     try {
-      await db.insert("tb_master_newmoon", masterNewmoon.toJson());
+      await db.insert("tb_master_newmoon", newmoon.toJson());
     } catch (e) {
-      _logger.e("Error during add master newmoon: $e");
+      _logger.e("Error during add newmoon: $e");
       rethrow;
     }
   }
 
-  Future<void> editMasterNewmoon(MasterNewmoon masterNewmoon) async {
+  Future<void> editNewmoon(MasterNewmoon newmoon) async {
     final db = await _databaseHelper.database;
     try {
       await db.update(
         "tb_master_newmoon",
-        masterNewmoon.toJson(),
+        newmoon.toJson(),
         where: 'id = ?',
-        whereArgs: [masterNewmoon.id],
+        whereArgs: [newmoon.id],
       );
     } catch (e) {
-      _logger.e("Error during edit master newmoon: $e");
+      _logger.e("Error during edit newmoon: $e");
       rethrow;
     }
   }
 
-  Future<void> deleteMasterNewmoon(int id) async {
+  Future<void> deleteNewmoon(int id) async {
     final db = await _databaseHelper.database;
     try {
       await db.delete(
@@ -75,7 +75,7 @@ class MasterNewmoonRepository {
         whereArgs: [id],
       );
     } catch (e) {
-      _logger.e("Error during delete master newmoon: $e");
+      _logger.e("Error during delete newmoon: $e");
       rethrow;
     }
   }

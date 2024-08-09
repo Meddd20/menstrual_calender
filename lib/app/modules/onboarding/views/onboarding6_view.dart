@@ -8,7 +8,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
-import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
+import 'package:periodnpregnancycalender/app/modules/register/views/register_view.dart';
 
 class Onboarding6View extends GetView<OnboardingController> {
   const Onboarding6View({Key? key}) : super(key: key);
@@ -74,9 +74,9 @@ class Onboarding6View extends GetView<OnboardingController> {
               left: 20,
               right: 20,
               child: CustomButton(
-                text: "Register",
+                text: "Next",
                 onPressed: () {
-                  Get.toNamed(Routes.REGISTER);
+                  Get.to(() => BackupDataView());
                 },
               ),
             )

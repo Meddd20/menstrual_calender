@@ -4,7 +4,7 @@ import 'package:d_chart/d_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_add_period_bottom_sheet.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/period_cycle_controller.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
@@ -76,7 +76,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             ),
                           ),
                           addPeriodOnPressedButton: () {
-                            controller.addPeriod(controller.periodCycleData.first.avgPeriodDuration ?? 8, controller.periodCycleData.first.avgPeriodCycle ?? 28);
+                            controller.addPeriod(controller.periodCycleData.first.avgPeriodDuration ?? 8, controller.periodCycleData.first.avgPeriodCycle ?? 28, context);
                           },
                           calenderValue: [controller.startDate.value, controller.endDate.value],
                           calenderOnValueChanged: (dates) {
@@ -122,40 +122,31 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                   child: Column(
                     children: [
                       SfCartesianChart(
+                        tooltipBehavior: TooltipBehavior(
+                          enable: true,
+                          format: 'point.x\nDuration: point.y days',
+                        ),
                         enableSideBySideSeriesPlacement: false,
                         primaryXAxis: CategoryAxis(
                           interval: 1,
                           initialVisibleMaximum: 7,
-                          // initialVisibleMaximum:
-                          // (periodHistoryList?.actualPeriod.length ?? 0) > 5
-                          //     ? periodHistoryList!.actualPeriod.length
-                          //             .toDouble() -
-                          //         7
-                          //     : periodHistoryList?.actualPeriod.length
-                          //         .toDouble(),
-                          // initialVisibleMaximum:
-                          //     (periodHistoryList?.actualPeriod.length ?? 0) > 0
-                          //         ? periodHistoryList!.actualPeriod.length
-                          //                 .toDouble() -
-                          //             1
-                          //         : 0,
                           labelIntersectAction: AxisLabelIntersectAction.multipleRows,
                           edgeLabelPlacement: EdgeLabelPlacement.shift,
-                          // plotOffset: 2,
                         ),
                         series: <CartesianSeries>[
                           StackedColumnSeries<PeriodChart, String>(
                             dataSource: periodHistoryList?.periodChart ?? [],
-                            xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}'))}',
-                            yValueMapper: (PeriodChart data, _) => data.periodDuration?.toDouble() ?? 0.0, // Adjust as needed
+                            xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}').add(Duration(days: data.periodCycle!)))}',
+                            yValueMapper: (PeriodChart data, _) => data.periodDuration?.toDouble() ?? 0.0,
                             name: 'Period Duration',
+                            color: AppColors.primary,
                           ),
                           StackedColumnSeries<PeriodChart, String>(
                             dataSource: periodHistoryList?.periodChart ?? [],
-                            xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}'))}',
-
-                            yValueMapper: (PeriodChart data, _) => (data.periodCycle?.toDouble() ?? 0.0) - (data.periodDuration?.toDouble() ?? 0.0), // Adjust as needed
+                            xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}').add(Duration(days: data.periodCycle!)))}',
+                            yValueMapper: (PeriodChart data, _) => (data.periodCycle?.toDouble() ?? 0.0),
                             name: 'Period Cycle',
+                            color: AppColors.highlight,
                           ),
                         ],
                         zoomPanBehavior: ZoomPanBehavior(
@@ -190,7 +181,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                         int? avgPeriodCycle = periodHistory?.avgPeriodCycle;
                         DateTime now = DateTime.now();
                         DateTime? predictEndDate = haidAwalDate?.add(Duration(days: avgPeriodCycle ?? 0));
-                        double max = (lamaSiklus != null)
+                        double max = (lamaSiklus != null && lamaSiklus != 0)
                             ? lamaSiklus.toDouble()
                             : (predictEndDate != null && predictEndDate.isBefore(now))
                                 ? haidAwalDate!.difference(now).inDays.toDouble().abs()
@@ -233,7 +224,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                         ),
                                         addPeriodOnPressedButton: () {
                                           if (actualPeriodHistory?.id != null) {
-                                            controller.editPeriod(actualPeriodHistory!.id!, actualPeriodHistory.remoteId!, periodHistory?.avgPeriodCycle ?? 28, periodHistoryList!.avgPeriodDuration!);
+                                            controller.editPeriod(context, actualPeriodHistory!.id!, actualPeriodHistory.remoteId!, periodHistory?.avgPeriodCycle ?? 28, periodHistoryList!.avgPeriodDuration!);
                                           }
                                         },
                                         calenderValue: [
@@ -257,20 +248,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             controller.update();
                           },
                           child: ListTile(
-                            // selectedTileColor:
-                            //     periodHistory?.isActual == 0 ? Colors.black : Colors.blue,
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${actualPeriodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${actualPeriodHistory.haidAwal}')) : "N/A"} - ${actualPeriodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${actualPeriodHistory.haidAkhir}')) : "N/A"}',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
+                            title: Text(
+                              '${actualPeriodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${actualPeriodHistory.haidAwal}')) : "N/A"} - ${actualPeriodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${actualPeriodHistory.haidAkhir}')) : "N/A"}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                              ),
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,7 +267,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                     value: actualPeriodHistory?.durasiHaid?.toDouble() ?? 0.0,
                                     max: max,
                                     backgroundLabel: Text(
-                                      "${actualPeriodHistory?.lamaSiklus ?? max.toInt()} days",
+                                      "${(actualPeriodHistory?.lamaSiklus == null || actualPeriodHistory?.lamaSiklus == 0) ? max.toInt() : actualPeriodHistory?.lamaSiklus} days",
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w600,

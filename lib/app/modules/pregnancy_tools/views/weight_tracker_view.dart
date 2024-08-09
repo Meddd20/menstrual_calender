@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
-import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/weight_gain_tracker_controller.dart';
+import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/weight_tracker_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/init_weight_gain_tracker_view.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class WeightGainView extends GetView<WeightGainTrackerController> {
-  const WeightGainView({super.key});
-
+class WeightTrackerView extends GetView<WeightTrackerController> {
+  const WeightTrackerView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final WeightGainTrackerController controller = Get.put(WeightGainTrackerController());
-
+    Get.put(WeightTrackerController());
     return FutureBuilder<void>(
       future: controller.weightGainIndexData,
       builder: (context, snapshot) {
@@ -25,24 +24,30 @@ class WeightGainView extends GetView<WeightGainTrackerController> {
         } else if (snapshot.hasError) {
           return Center(child: Text("Error: ${snapshot.error}"));
         } else {
-          return controller.weightGainHistory.isEmpty ? InitWeightGainTrackerView() : WeightGainTrackerView();
+          return (controller.weightGainHistory.length < 1) ? InitWeightGainTrackerView() : WeightGainTrackerView();
         }
       },
     );
   }
 }
 
-class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
+class WeightGainTrackerView extends GetView<WeightTrackerController> {
   const WeightGainTrackerView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Get.put(WeightGainTrackerController());
+    Get.put(WeightTrackerController());
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Weight Gain Tracker'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.popUntil(context, ModalRoute.withName('/navigation-menu'));
+            },
+          ),
         ),
         floatingActionButton: FloatingActionButton.extended(
           label: Text("Add"),
@@ -348,23 +353,7 @@ class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
                               ],
                             ),
                             SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: () {
-                                controller.weeklyWeightGain();
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFD6666), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), minimumSize: Size(Get.width, 45.h)),
-                              child: Text(
-                                "Save",
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.38,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
+                            CustomButton(text: "Save", onPressed: () => controller.weeklyWeightGain(context)),
                           ],
                         ),
                       ),
@@ -395,9 +384,9 @@ class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
                           child: SfCartesianChart(
                             onTrackballPositionChanging: (trackballArgs) {
                               if (trackballArgs.chartPointInfo.seriesIndex == 0) {
-                                trackballArgs.chartPointInfo.label = 'Recommend Weight \n Week-${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].week} \n  ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightLower} - ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightUpper} kg';
+                                trackballArgs.chartPointInfo.label = 'Recommend Weight \n Week ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].week} \n  ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightLower} - ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightUpper} kg';
                               } else {
-                                trackballArgs.chartPointInfo.label = 'Week-${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].mingguKehamilan} \n ${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].beratBadan} kg';
+                                trackballArgs.chartPointInfo.label = 'Week ${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].mingguKehamilan} \n ${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].beratBadan} kg';
                               }
                             },
                             trackballBehavior: TrackballBehavior(
@@ -437,7 +426,7 @@ class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
                             ),
                             primaryYAxis: NumericAxis(
                               minimum: controller.getMinYAxisValue(controller.weightGainHistory, controller.reccomendWeightGain),
-                              maximum: controller.reccomendWeightGain.map((data) => data.recommendWeightUpper!).reduce((value, element) => value > element ? value : element) + 1,
+                              maximum: controller.reccomendWeightGain.isNotEmpty ? controller.reccomendWeightGain.map((data) => data.recommendWeightUpper!).reduce((value, element) => value > element ? value : element) + 1 : 0,
                               labelStyle: TextStyle(
                                 fontSize: 10.sp,
                                 color: Colors.black,
@@ -587,7 +576,7 @@ class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
                                     Column(
                                       children: [
                                         Text(
-                                          "${controller.getPregnancyWeightGainData?.currentWeekReccomendWeight ?? 0} Kg",
+                                          "${controller.getPregnancyWeightGainData?.currentWeekReccomendWeight ?? ""} Kg",
                                           style: TextStyle(
                                             fontSize: 18.sp,
                                             height: 1.5,
@@ -858,11 +847,6 @@ class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
                                                                                       firstDay: controller.tanggalAwalMinggu.first,
                                                                                       lastDay: DateTime.now(),
                                                                                       startingDayOfWeek: StartingDayOfWeek.monday,
-                                                                                      onDaySelected: (selectedDay, focusedDay) {
-                                                                                        controller.setSelectedDate(selectedDay);
-                                                                                        controller.setFocusedDate(focusedDay);
-                                                                                        controller.getSelectedWeek(selectedDay);
-                                                                                      },
                                                                                       onPageChanged: (focusedDay) {
                                                                                         controller.setFocusedDate(focusedDay);
                                                                                       },
@@ -1122,25 +1106,7 @@ class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
                                                                                     ],
                                                                                   ),
                                                                                   SizedBox(height: 10),
-                                                                                  ElevatedButton(
-                                                                                    onPressed: () {
-                                                                                      controller.weeklyWeightGain();
-                                                                                      Navigator.of(context).popUntil((route) {
-                                                                                        return route.settings.name == '/WeightGainTrackerView';
-                                                                                      });
-                                                                                    },
-                                                                                    style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFD6666), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), minimumSize: Size(Get.width, 45.h)),
-                                                                                    child: Text(
-                                                                                      "Save",
-                                                                                      style: TextStyle(
-                                                                                        fontFamily: 'Poppins',
-                                                                                        fontSize: 16.sp,
-                                                                                        fontWeight: FontWeight.w600,
-                                                                                        letterSpacing: 0.38,
-                                                                                        color: Colors.white,
-                                                                                      ),
-                                                                                    ),
-                                                                                  )
+                                                                                  CustomButton(text: "Save", onPressed: () => controller.weeklyWeightGain(context)),
                                                                                 ],
                                                                               ),
                                                                             ),
@@ -1152,7 +1118,7 @@ class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
                                                                       controller.resetValue();
                                                                     });
                                                                   else {
-                                                                    Get.to(() => InitWeightGainTrackerView());
+                                                                    Get.to(() => InitWeightGainTrackerView(isTwin: controller.getPregnancyWeightGainData?.isTwin));
                                                                   }
                                                                 },
                                                                 child: Container(
@@ -1172,7 +1138,7 @@ class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
                                                                             fontWeight: FontWeight.w500,
                                                                           ),
                                                                         ),
-                                                                        Icon(Icons.delete)
+                                                                        Icon(Icons.edit)
                                                                       ],
                                                                     ),
                                                                   ),
@@ -1184,8 +1150,7 @@ class WeightGainTrackerView extends GetView<WeightGainTrackerController> {
                                                                 padding: EdgeInsets.only(left: 25, right: 25),
                                                                 child: InkWell(
                                                                   onTap: () {
-                                                                    controller.deleteWeeklyWeightGain(weightData.id ?? 0);
-                                                                    Get.back();
+                                                                    controller.deleteWeeklyWeightGain(DateTime.parse(weightData.tanggalPencatatan!), context);
                                                                     controller.focusNode.unfocus();
                                                                   },
                                                                   child: Container(

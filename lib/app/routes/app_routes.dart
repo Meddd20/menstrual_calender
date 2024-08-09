@@ -15,6 +15,7 @@ abstract class Routes {
   static const REGISTER_VERIFICATION = _Paths.REGISTER_VERIFICATION;
   static const REMINDER = _Paths.HOME + _Paths.REMINDER;
   static const PREGNANCY_TOOLS = _Paths.PREGNANCY_TOOLS;
+  static const WEIGHT_TRACKER = _Paths.PREGNANCY_TOOLS + _Paths.WEIGHT_TRACKER;
 }
 
 abstract class _Paths {
@@ -31,4 +32,5 @@ abstract class _Paths {
   static const REGISTER_VERIFICATION = '/register-verification';
   static const REMINDER = '/reminder';
   static const PREGNANCY_TOOLS = '/pregnancy-tools';
+  static const WEIGHT_TRACKER = '/weight-tracker';
 }

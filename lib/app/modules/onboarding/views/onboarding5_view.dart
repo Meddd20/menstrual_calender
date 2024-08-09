@@ -108,7 +108,7 @@ class Onboarding5View extends GetView<OnboardingController> {
               left: 20,
               right: 20,
               child: CustomButton(
-                text: "Create Account",
+                text: "Next",
                 onPressed: () {
                   controller.validateLastPeriod();
                 },

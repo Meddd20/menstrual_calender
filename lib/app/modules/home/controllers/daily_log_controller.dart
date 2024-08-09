@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
+import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
@@ -26,8 +29,6 @@ class DailyLogController extends GetxController {
   RxBool isChanged = RxBool(false);
   RxBool isMenstruation = RxBool(false);
 
-  var weights = RxString("");
-  var temperature = RxString("");
   RxString notes = RxString("");
   RxString selectedSexActivity = "".obs;
   RxString selectedBleedingFlow = "".obs;
@@ -37,9 +38,6 @@ class DailyLogController extends GetxController {
   RxList<String> selectedOthers = RxList<String>();
   RxList<String> selectedPhysicalActivity = RxList<String>();
 
-  late var wholeNumberWeight;
-  late var decimalNumberWeight;
-
   final Rx<DateTime> _focusedDate = Rx<DateTime>(DateTime.now());
   DateTime get getFocusedDate => _focusedDate.value;
   void setFocusedDate(DateTime selectedDate) {
@@ -47,21 +45,20 @@ class DailyLogController extends GetxController {
     update();
   }
 
+  late Future<DataHarian?> futureDataHarian;
+  var dailyLogRequested = DataHarian().obs;
+  var isLoading = true.obs;
+
   @override
   void onInit() async {
-    initializeController();
-
-    fetchLog(DateTime.now());
-    wholeNumberWeight = 70.obs;
-    decimalNumberWeight = 0.obs;
-    isChanged.value = false;
-
+    super.onInit();
     final databaseHelper = DatabaseHelper.instance;
     final localLogRepository = LocalLogRepository(databaseHelper);
     _logService = LogService(localLogRepository);
     _syncDataRepository = SyncDataRepository(databaseHelper);
 
-    super.onInit();
+    futureDataHarian = fetchLog(DateTime.now());
+    isChanged.value = false;
   }
 
   @override
@@ -74,31 +71,12 @@ class DailyLogController extends GetxController {
     super.onClose();
   }
 
-  Future<void> initializeController() async {
-    wholeNumberWeight = 70.obs;
-    decimalNumberWeight = 0.obs;
-    isChanged.value = false;
-
-    final databaseHelper = DatabaseHelper.instance;
-    final localLogRepository = LocalLogRepository(databaseHelper);
-    _logService = LogService(localLogRepository);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
-
-    await fetchLog(DateTime.now());
-  }
-
   List<String> sexActivity = ["Didn't have sex", "Unprotected sex", "Protected sex"];
-
   List<String> vaginalDischarge = ["No discharge", "Creamy", "Spotting", "Eggwhite", "Sticky", "Watery", "Unusual"];
-
   List<String> bleedingFlow = ["Light", "Medium", "Heavy"];
-
   List<String> symptoms = ["Abdominal cramps", "Acne", "Backache", "Bloating", "Body aches", "Chills", "Constipation", "Cramps", "Cravings", "Diarrhea", "Dizziness", "Fatigue", "Feel good", "Gas", "Headache", "Hot flashes", "Insomnia", "Low back pain", "Nausea", "Nipple changes", "PMS", "Spotting", "Swelling", "Tender breasts"];
-
   List<String> moods = ["Angry", "Anxious", "Apathetic", "Calm", "Confused", "Cranky", "Depressed", "Emotional", "Energetic", "Excited", "Feeling guilty", "Frisky", "Frustrated", "Happy", "Irritated", "Low energy", "Mood swings", "Obsessive thoughts", "Sad", "Sensitive", "Sleepy", "Tired", "Unfocused", "Very self-critical"];
-
   List<String> others = ["Travel", "Stress", "Disease or Injury", "Alcohol"];
-
   List<String> physicalActivity = ["Didn't exercise", "Yoga", "Gym", "Aerobics & Dancing", "Swimming", "Team sports", "Running", "Cycling", "Walking"];
 
   DateTime get selectedDate => _selectedDate.value;
@@ -115,43 +93,90 @@ class DailyLogController extends GetxController {
     update();
   }
 
-  var wholeNumberTemperature = 36.obs;
-  var decimalNumberTemperature = 0.obs;
+  Rx<int?> _temperatureWholeNumber = Rx<int?>(36);
 
-  void onWholeNumberTemperatureChanged(int value) {
-    wholeNumberTemperature.value = value;
-    isChanged.value = true;
-    updateTemperature();
+  int? get selectedTemperatureWholeNumber => _temperatureWholeNumber.value;
+
+  void setTemperatureWholeNumber(int temperatureWholeNumber) {
+    _temperatureWholeNumber.value = temperatureWholeNumber;
+    update();
   }
 
-  void onDecimalNumberTemperatureChanged(int value) {
-    decimalNumberTemperature.value = value;
-    isChanged.value = true;
-    updateTemperature();
+  Rx<int?> _temperatureDecimalNumber = Rx<int?>(0);
+
+  int? get selectedTemperatureDecimalNumber => _temperatureDecimalNumber.value;
+
+  void setTemperatureDecimalNumber(int temperatureDecimalNumber) {
+    _temperatureDecimalNumber.value = temperatureDecimalNumber;
+    update();
   }
 
-  String getTemperature() => temperature.value;
+  var temperature = Rx<double>(0.0);
+  var originalTemperature = Rx<double>(0.0);
+
+  double getTemperature() => temperature.value;
+
   void updateTemperature() {
-    temperature.value = "${wholeNumberTemperature.value}.${decimalNumberTemperature.value}";
+    temperature.value = double.parse("${selectedTemperatureWholeNumber ?? 36}.${selectedTemperatureDecimalNumber ?? 0}");
+    originalTemperature.value = temperature.value;
+    isChanged.value = true;
     update();
   }
 
-  void onWholeNumberWeightChanged(int value) {
-    wholeNumberWeight.value = value;
-    isChanged.value = true;
-    updateWeight();
+  void resetTemperature() {
+    if (originalTemperature == 0.0) {
+      temperature.value = 0.0;
+      setTemperatureWholeNumber(36);
+      setTemperatureDecimalNumber(0);
+    } else {
+      int wholeNumber = originalTemperature.value.floor();
+      int decimalNumber = ((originalTemperature.value - wholeNumber) * 10).round();
+      setTemperatureWholeNumber(wholeNumber);
+      setTemperatureDecimalNumber(decimalNumber);
+    }
   }
 
-  void onDecimalNumberWeightChanged(int value) {
-    decimalNumberWeight.value = value;
-    isChanged.value = true;
-    updateWeight();
+  Rx<int?> _weightWholeNumber = Rx<int?>(70);
+
+  int? get selectedWeightWholeNumber => _weightWholeNumber.value;
+
+  void setWeightWholeNumber(int weightWholeNumber) {
+    _weightWholeNumber.value = weightWholeNumber;
+    update();
   }
 
-  String getWeight() => weights.value;
+  Rx<int?> _weightDecimalNumber = Rx<int?>(0);
+
+  int? get selectedWeightDecimalNumber => _weightDecimalNumber.value;
+
+  void setWeightDecimalNumber(int weightDecimalNumber) {
+    _weightDecimalNumber.value = weightDecimalNumber;
+    update();
+  }
+
+  var weights = Rx<double>(0.0);
+  var originalWeight = Rx<double>(0.0);
+
+  double getWeight() => weights.value;
+
   void updateWeight() {
-    weights.value = "${wholeNumberWeight.value}.${decimalNumberWeight.value}";
+    weights.value = double.parse("${selectedWeightWholeNumber ?? 70}.${selectedWeightDecimalNumber ?? 0}");
+    originalWeight.value = weights.value;
+    isChanged.value = true;
     update();
+  }
+
+  void resetWeight() {
+    if (originalWeight == 0.0) {
+      weights.value = 0.0;
+      setWeightWholeNumber(70);
+      setWeightDecimalNumber(0);
+    } else {
+      int wholeNumber = originalWeight.value.floor();
+      int decimalNumber = ((originalWeight.value - wholeNumber) * 10).round();
+      setWeightWholeNumber(wholeNumber);
+      setWeightDecimalNumber(decimalNumber);
+    }
   }
 
   String getSelectedSexActivity() => selectedSexActivity.value;
@@ -179,9 +204,7 @@ class DailyLogController extends GetxController {
   void setSelectedSymptoms(List<String> list) {
     selectedSymptoms.value = list;
     isChanged.value = true;
-    print(isChanged.value);
     update();
-    print(getSelectedSymptoms());
   }
 
   RxList<String> getSelectedMoods() => selectedMoods;
@@ -236,15 +259,37 @@ class DailyLogController extends GetxController {
   //   }
   // }
 
-  Future<void> fetchLog(DateTime logDate) async {
+  Future<DataHarian?> fetchLog(DateTime logDate) async {
+    isLoading.value = true;
     var dailyLog = await _logService.getLogsByDate(logDate);
-
-    if (dailyLog != null) {
+    if (dailyLog != null && dailyLog.date != null) {
+      dailyLogRequested.value = dailyLog;
       selectedSexActivity.value = dailyLog.sexActivity ?? "";
       selectedBleedingFlow.value = dailyLog.bleedingFlow ?? "";
       selectedVaginalDischarge.value = dailyLog.vaginalDischarge ?? "";
-      temperature.value = dailyLog.temperature ?? "";
-      weights.value = dailyLog.weight ?? "";
+
+      originalTemperature.value = double.parse(dailyLog.temperature ?? "0.0");
+      if (originalTemperature.value == 0.0) {
+        temperature.value = 0.0;
+      } else {
+        temperature.value = double.parse(dailyLog.temperature ?? "0.0");
+        int wholeNumber = temperature.value.floor();
+        int decimalNumber = ((temperature.value - wholeNumber) * 10).round();
+        setTemperatureWholeNumber(wholeNumber);
+        setTemperatureDecimalNumber(decimalNumber);
+      }
+
+      originalWeight.value = double.parse(dailyLog.weight ?? "0.0");
+      if (originalWeight.value == 0.0) {
+        weights.value = 0.0;
+      } else {
+        weights.value = double.parse(dailyLog.weight ?? "0.0");
+        int wholeNumber = weights.value.floor();
+        int decimalNumber = ((weights.value - wholeNumber) * 10).round();
+        setWeightWholeNumber(wholeNumber);
+        setWeightDecimalNumber(decimalNumber);
+      }
+
       notes.value = dailyLog.notes ?? "";
 
       selectedSymptoms.assignAll(
@@ -264,6 +309,11 @@ class DailyLogController extends GetxController {
       );
 
       update();
+      isLoading.value = false;
+      return dailyLog;
+    } else {
+      isLoading.value = false;
+      return null;
     }
   }
 
@@ -309,29 +359,12 @@ class DailyLogController extends GetxController {
 
   Future<void> saveLog() async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
-
-    await _logService.upsertDailyLog(
-      selectedDate.toString(),
-      getSelectedSexActivity(),
-      getSelectedBleedingFlow(),
-      getUpdatedSymptoms(),
-      getSelectedVaginalDischarge(),
-      getUpdatedMoods(),
-      getUpdatedOthers(),
-      getUpdatedPhysicalActivity(),
-      getTemperature(),
-      getWeight(),
-      getNotes(),
-    );
-
-    if (storageService.getIsAuth() && !isConnected) {
-      saveSyncLog();
-      return;
-    }
+    bool localSuccess = false;
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
 
     try {
-      await logRepository.storeLog(
-        selectedDate.toString(),
+      await _logService.upsertDailyLog(
+        formattedDate,
         getSelectedSexActivity(),
         getSelectedBleedingFlow(),
         getUpdatedSymptoms(),
@@ -339,21 +372,58 @@ class DailyLogController extends GetxController {
         getUpdatedMoods(),
         getUpdatedOthers(),
         getUpdatedPhysicalActivity(),
-        getTemperature(),
-        getWeight(),
+        getTemperature().toString(),
+        getWeight().toString(),
         getNotes(),
       );
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Daily log saved successfully!'));
 
+      localSuccess = true;
       isChanged.value = false;
       fetchLog(selectedDate);
       update();
     } catch (e) {
-      saveSyncLog();
+      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to save log. Please try again!'));
+    }
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await logRepository.storeLog(
+          formattedDate,
+          getSelectedSexActivity(),
+          getSelectedBleedingFlow(),
+          getUpdatedSymptoms(),
+          getSelectedVaginalDischarge(),
+          getUpdatedMoods(),
+          getUpdatedOthers(),
+          getUpdatedPhysicalActivity(),
+          getTemperature().toString(),
+          getWeight().toString(),
+          getNotes(),
+        );
+      } catch (e) {
+        saveSyncLog(formattedDate);
+      }
+    } else if (localSuccess) {
+      saveSyncLog(formattedDate);
     }
   }
 
-  Future<void> saveSyncLog() async {
-    Map<String, dynamic> data = createLogData();
+  Future<void> saveSyncLog(String formattedDate) async {
+    Map<String, dynamic> data = {
+      "date": formattedDate,
+      "sexActivity": getSelectedSexActivity(),
+      "bleedingFlow": getSelectedBleedingFlow(),
+      "symptoms": getUpdatedSymptoms(),
+      "vaginalDischarge": getSelectedVaginalDischarge(),
+      "moods": getUpdatedMoods(),
+      "others": getUpdatedOthers(),
+      "physicalActivity": getUpdatedPhysicalActivity(),
+      "temperature": getTemperature(),
+      "weight": getWeight(),
+      "notes": getNotes(),
+    };
+
     String jsonData = jsonEncode(data);
 
     SyncLog syncLog = SyncLog(
@@ -369,13 +439,13 @@ class DailyLogController extends GetxController {
   Map<String, dynamic> createLogData() {
     return {
       "date": selectedDate.toString(),
-      "sex_activity": getSelectedSexActivity(),
-      "bleeding_flow": getSelectedBleedingFlow(),
+      "sexActivity": getSelectedSexActivity(),
+      "bleedingFlow": getSelectedBleedingFlow(),
       "symptoms": getUpdatedSymptoms(),
-      "vaginal_discharge": getSelectedVaginalDischarge(),
+      "vaginalDischarge": getSelectedVaginalDischarge(),
       "moods": getUpdatedMoods(),
       "others": getUpdatedOthers(),
-      "physical_activity": getUpdatedPhysicalActivity(),
+      "physicalActivity": getUpdatedPhysicalActivity(),
       "temperature": getTemperature(),
       "weight": getWeight(),
       "notes": getNotes(),
@@ -391,8 +461,8 @@ class DailyLogController extends GetxController {
       setSelectedMoods([]);
       setSelectedOthers([]);
       setSelectedPhysicalActivity([]);
-      temperature.value = "";
-      weights.value = "";
+      temperature.value = 0.0;
+      weights.value = 0.0;
       notes.value = "";
       isChanged.value = false;
 

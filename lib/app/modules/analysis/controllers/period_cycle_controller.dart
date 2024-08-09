@@ -1,9 +1,11 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
@@ -40,8 +42,6 @@ class PeriodCycleController extends GetxController {
 
   @override
   void onInit() {
-    periodCycleData = <PeriodCycleIndex>[].obs;
-    fetchPeriod();
     final DatabaseHelper databaseHelper = DatabaseHelper.instance;
     final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
     final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
@@ -54,6 +54,8 @@ class PeriodCycleController extends GetxController {
       masterNewmoonRepository,
       masterGenderRepository,
     );
+    periodCycleData = <PeriodCycleIndex>[].obs;
+    fetchPeriod();
     super.onInit();
   }
 
@@ -76,9 +78,10 @@ class PeriodCycleController extends GetxController {
     if (periodCycle.toString().isNotEmpty) {
       periodCycleData.assignAll([periodCycle]);
     }
+    update();
   }
 
-  void addPeriod(int avgPeriodDuration, int avgPeriodCycle) async {
+  void addPeriod(int avgPeriodDuration, int avgPeriodCycle, context) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
 
     if (startDate.value != null) {
@@ -93,23 +96,32 @@ class PeriodCycleController extends GetxController {
         }
       ];
 
-      if (storageService.getIsAuth() && !isConnected) {
+      var newPeriod;
+      if (isConnected && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        try {
+          newPeriod = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
+        } catch (e) {
+          await syncAddedPeriod(periods, avgPeriodCycle);
+        }
+      } else {
         await syncAddedPeriod(periods, avgPeriodCycle);
-        return;
       }
 
       try {
-        var addPeriod = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
-        var idPeriodAdded = addPeriod?[0].id;
-        await _periodHistoryService.addPeriod(idPeriodAdded ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
-        cancelEdit();
+        await _periodHistoryService.addPeriod(newPeriod?[0].id ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
+        Get.showSnackbar(Ui.SuccessSnackBar(message: 'Period added successfully!'));
+
         await fetchPeriod();
+        cancelEdit();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => PeriodCycleView()),
+        );
       } catch (e) {
-        print("Error adding period: $e");
-        await syncAddedPeriod(periods, avgPeriodCycle);
+        Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add period. Please try again!'));
       }
     } else {
-      print('Please select both start and end dates');
+      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Please select your period start date!'));
     }
   }
 
@@ -118,7 +130,6 @@ class PeriodCycleController extends GetxController {
       "periods": periods,
       "periodCycle": periodCycle,
     };
-
     String jsonData = jsonEncode(data);
 
     SyncLog syncLog = SyncLog(
@@ -131,7 +142,8 @@ class PeriodCycleController extends GetxController {
     await _syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> editPeriod(int periodId, int remoteId, int periodCycle, int avgPeriodDuration) async {
+  Future<void> editPeriod(context, int periodId, int remoteId, int periodCycle, int avgPeriodDuration) async {
+    bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
 
     if (startDate.value != null) {
@@ -139,29 +151,41 @@ class PeriodCycleController extends GetxController {
         setEndDate(startDate.value!.add(Duration(days: avgPeriodDuration)));
       }
 
-      if (storageService.getIsAuth() && !isConnected) {
-        await syncEditPeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
-        return;
+      try {
+        await _periodHistoryService.updatePeriod(periodId, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), periodCycle);
+        Get.showSnackbar(Ui.SuccessSnackBar(message: 'Period edited successfully!'));
+        localSuccess = true;
+      } catch (e) {
+        Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to edit period. Please try again!'));
       }
 
-      try {
-        await periodRepository.updatePeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
-        await _periodHistoryService.updatePeriod(periodId, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), periodCycle);
-        cancelEdit();
-        await fetchPeriod();
-      } catch (e) {
-        print("Error editing period: $e");
+      await fetchPeriod();
+      update();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => PeriodCycleView()),
+      );
+
+      if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        try {
+          await periodRepository.updatePeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
+        } catch (e) {
+          await syncEditPeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
+        }
+      } else {
         await syncEditPeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
       }
+
+      cancelEdit();
     }
   }
 
   Future<void> syncEditPeriod(int remoteId, String firstPeriod, String lastPeriod, int periodCycle) async {
     Map<String, dynamic> data = {
-      "period_id": remoteId.toString(),
-      "first_period": firstPeriod,
-      "last_period": lastPeriod,
-      "period_cycle": periodCycle,
+      "periodId": remoteId.toInt(),
+      "firstPeriod": firstPeriod,
+      "lastPeriod": lastPeriod,
+      "periodCycle": periodCycle,
     };
 
     String jsonData = jsonEncode(data);

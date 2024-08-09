@@ -125,25 +125,32 @@ class PeriodHistory {
   });
 
   factory PeriodHistory.fromJson(Map<String, dynamic> json) {
+    int? parseInt(dynamic value) {
+      if (value == null) return null;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value);
+      return null;
+    }
+
     return PeriodHistory(
-      id: json["id"],
-      userId: json["user_id"],
-      remoteId: json["remote_id"],
+      id: parseInt(json["id"]),
+      userId: parseInt(json["user_id"]),
+      remoteId: parseInt(json["remote_id"] ?? 0),
       haidAwal: DateTime.tryParse(json["haid_awal"] ?? ""),
       haidAkhir: DateTime.tryParse(json["haid_akhir"] ?? ""),
       ovulasi: DateTime.tryParse(json["ovulasi"] ?? ""),
       masaSuburAwal: DateTime.tryParse(json["masa_subur_awal"] ?? ""),
       masaSuburAkhir: DateTime.tryParse(json["masa_subur_akhir"] ?? ""),
       hariTerakhirSiklus: DateTime.tryParse(json["hari_terakhir_siklus"] ?? ""),
-      lamaSiklus: json["lama_siklus"],
-      durasiHaid: json["durasi_haid"],
+      lamaSiklus: parseInt(json["lama_siklus"]),
+      durasiHaid: parseInt(json["durasi_haid"]),
       haidBerikutnyaAwal: DateTime.tryParse(json["haid_berikutnya_awal"] ?? ""),
       haidBerikutnyaAkhir: DateTime.tryParse(json["haid_berikutnya_akhir"] ?? ""),
       ovulasiBerikutnya: DateTime.tryParse(json["ovulasi_berikutnya"] ?? ""),
       masaSuburBerikutnyaAwal: DateTime.tryParse(json["masa_subur_berikutnya_awal"] ?? ""),
       masaSuburBerikutnyaAkhir: DateTime.tryParse(json["masa_subur_berikutnya_akhir"] ?? ""),
       hariTerakhirSiklusBerikutnya: DateTime.tryParse(json["hari_terakhir_siklus_berikutnya"] ?? ""),
-      isActual: json["is_actual"],
+      isActual: json["is_actual"]?.toString(),
       createdAt: json["created_at"] ?? "",
       updatedAt: json["updated_at"] ?? "",
     );
@@ -154,20 +161,20 @@ class PeriodHistory {
       "id": id,
       "user_id": userId,
       "remote_id": remoteId,
-      "haid_awal": haidAwal?.toIso8601String(),
-      "haid_akhir": haidAkhir?.toIso8601String(),
-      "ovulasi": ovulasi?.toIso8601String(),
-      "masa_subur_awal": masaSuburAwal?.toIso8601String(),
-      "masa_subur_akhir": masaSuburAkhir?.toIso8601String(),
-      "hari_terakhir_siklus": hariTerakhirSiklus?.toIso8601String(),
+      "haid_awal": haidAwal?.toString(),
+      "haid_akhir": haidAkhir?.toString(),
+      "ovulasi": ovulasi?.toString(),
+      "masa_subur_awal": masaSuburAwal?.toString(),
+      "masa_subur_akhir": masaSuburAkhir?.toString(),
+      "hari_terakhir_siklus": hariTerakhirSiklus?.toString(),
       "lama_siklus": lamaSiklus,
       "durasi_haid": durasiHaid,
-      "haid_berikutnya_awal": haidBerikutnyaAwal?.toIso8601String(),
-      "haid_berikutnya_akhir": haidBerikutnyaAkhir?.toIso8601String(),
-      "ovulasi_berikutnya": ovulasiBerikutnya?.toIso8601String(),
-      "masa_subur_berikutnya_awal": masaSuburBerikutnyaAwal?.toIso8601String(),
-      "masa_subur_berikutnya_akhir": masaSuburBerikutnyaAkhir?.toIso8601String(),
-      "hari_terakhir_siklus_berikutnya": hariTerakhirSiklusBerikutnya?.toIso8601String(),
+      "haid_berikutnya_awal": haidBerikutnyaAwal?.toString(),
+      "haid_berikutnya_akhir": haidBerikutnyaAkhir?.toString(),
+      "ovulasi_berikutnya": ovulasiBerikutnya?.toString(),
+      "masa_subur_berikutnya_awal": masaSuburBerikutnyaAwal?.toString(),
+      "masa_subur_berikutnya_akhir": masaSuburBerikutnyaAkhir?.toString(),
+      "hari_terakhir_siklus_berikutnya": hariTerakhirSiklusBerikutnya?.toString(),
       "is_actual": isActual,
       "created_at": createdAt,
       "updated_at": updatedAt,

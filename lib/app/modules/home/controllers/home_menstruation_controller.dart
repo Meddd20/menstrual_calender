@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart' as PeriodCycleModel;
 import 'package:periodnpregnancycalender/app/models/date_event_model.dart' as DateEventModel;
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
@@ -10,6 +11,7 @@ import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_r
 import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
+import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
 import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
@@ -55,7 +57,6 @@ class HomeMenstruationController extends GetxController {
   CalendarFormat get getFormat => format.value;
   void setFormat(CalendarFormat newFormat) {
     format.value = newFormat;
-    print(format);
   }
 
   void setStartDate(DateTime? date) {
@@ -72,6 +73,19 @@ class HomeMenstruationController extends GetxController {
 
   @override
   Future<void> onInit() async {
+    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
+    final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
+    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
+    final MasterNewmoonRepository masterNewmoonRepository = MasterNewmoonRepository(databaseHelper);
+    final MasterGenderRepository masterGenderRepository = MasterGenderRepository(databaseHelper);
+    _syncDataRepository = SyncDataRepository(databaseHelper);
+    _periodHistoryService = PeriodHistoryService(
+      periodHistoryRepository,
+      localProfileRepository,
+      masterNewmoonRepository,
+      masterGenderRepository,
+    );
+
     data = PeriodCycleModel.PeriodCycleIndex(
       initialYear: null,
       latestYear: null,
@@ -108,19 +122,6 @@ class HomeMenstruationController extends GetxController {
     nextPredictMasaSuburAwalList = <DateTime>[].obs;
     nextPredictMasaSuburAkhirList = <DateTime>[].obs;
     dateSelectedEvent(DateTime.now());
-
-    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-    final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
-    final MasterNewmoonRepository masterNewmoonRepository = MasterNewmoonRepository(databaseHelper);
-    final MasterGenderRepository masterGenderRepository = MasterGenderRepository(databaseHelper);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
-    _periodHistoryService = PeriodHistoryService(
-      periodHistoryRepository,
-      localProfileRepository,
-      masterNewmoonRepository,
-      masterGenderRepository,
-    );
 
     super.onInit();
   }
@@ -264,22 +265,30 @@ class HomeMenstruationController extends GetxController {
         }
       ];
 
-      if (storageService.getIsAuth() && !isConnected) {
+      var newPeriod;
+      if (isConnected && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        try {
+          newPeriod = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
+        } catch (e) {
+          await syncAddedPeriod(periods, avgPeriodCycle);
+        }
+      } else {
         await syncAddedPeriod(periods, avgPeriodCycle);
-        return;
       }
 
       try {
-        var addPeriod = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
-        var idPeriodAdded = addPeriod?[0].id;
-        await _periodHistoryService.addPeriod(idPeriodAdded ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
+        await _periodHistoryService.addPeriod(newPeriod?[0].id ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
+        Get.showSnackbar(Ui.SuccessSnackBar(message: 'Period added successfully!'));
+
         cancelEdit();
+        await fetchCycleData();
+        dateSelectedEvent(DateTime.now());
+        Get.offAllNamed(Routes.NAVIGATION_MENU);
       } catch (e) {
-        print("Error adding period: $e");
-        await _periodHistoryService.addPeriod(null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
+        Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add period. Please try again!'));
       }
     } else {
-      print('Please select both start and end dates');
+      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Please select your period start date!'));
     }
   }
 

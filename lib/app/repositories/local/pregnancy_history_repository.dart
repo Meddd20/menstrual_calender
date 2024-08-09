@@ -1,6 +1,7 @@
 import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:sqflite/sqflite.dart';
 
 class PregnancyHistoryRepository {
   final DatabaseHelper _databaseHelper;
@@ -24,8 +25,8 @@ class PregnancyHistoryRepository {
       await db.update(
         "tb_riwayat_kehamilan",
         pregnancyHistory.toJson(),
-        where: 'id = ? AND user_id = ?',
-        whereArgs: [pregnancyHistory.id, pregnancyHistory.userId],
+        where: 'id = ?',
+        whereArgs: [pregnancyHistory.id],
       );
     } catch (e) {
       _logger.e("Error during edit pregnancy: $e");
@@ -38,8 +39,8 @@ class PregnancyHistoryRepository {
     try {
       List<Map<String, dynamic>> pregnancyData = await db.query(
         "tb_riwayat_kehamilan",
-        where: 'id = ? AND status = ?',
-        whereArgs: [userId, "Hamil"],
+        where: 'status = ?',
+        whereArgs: ["Hamil"],
       );
 
       if (pregnancyData.isNotEmpty) {
@@ -87,7 +88,11 @@ class PregnancyHistoryRepository {
       if (remoteId != null) {
         pregnancyHistory = pregnancyHistory.copyWith(remoteId: remoteId);
       }
-      await db.insert("tb_riwayat_kehamilan", pregnancyHistory.toJson());
+      await db.insert(
+        "tb_riwayat_kehamilan",
+        pregnancyHistory.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     } catch (e) {
       _logger.e("Error during add pregnancy data: $e");
       rethrow;

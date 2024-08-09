@@ -1,73 +1,109 @@
+import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_model.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
+import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 
 class LogService {
+  final Logger _logger = Logger();
   final LocalLogRepository _localLogRepository;
   final StorageService storageService = StorageService();
+  final LocalNotificationService _localNotificationService = LocalNotificationService();
 
   LogService(this._localLogRepository);
 
   Future<void> upsertDailyLog(String date, String? sexActivity, String? bleedingFlow, Map<String, bool>? symptoms, String? vaginalDischarge, Map<String, bool>? moods, Map<String, bool>? others, Map<String, bool>? physicalActivity, String? temperature, String? weight, String? notes) async {
+    try {
+      int userId = storageService.getAccountLocalId();
+      DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
+
+      DataHarian dailyLogByDate = DataHarian(
+        date: date,
+        sexActivity: sexActivity,
+        bleedingFlow: bleedingFlow,
+        symptoms: Symptoms.fromJson(symptoms ?? {}),
+        vaginalDischarge: vaginalDischarge,
+        moods: Moods.fromJson(moods ?? {}),
+        others: Others.fromJson(others ?? {}),
+        physicalActivity: PhysicalActivity.fromJson(physicalActivity ?? {}),
+        temperature: temperature,
+        weight: weight,
+        notes: notes,
+      );
+
+      List<DataHarian> newDataHarian = [dailyLogByDate];
+
+      if (existingLog != null) {
+        List<DataHarian> existingDataHarian = existingLog.dataHarian ?? [];
+
+        bool found = false;
+
+        for (var i = 0; i < existingDataHarian.length; i++) {
+          DateTime parsedExistingDate = DateTime.parse(existingDataHarian[i].date ?? "${DateTime.now()}");
+          String formattedExistingDate = DateFormat('yyyy-MM-dd').format(parsedExistingDate);
+          DateTime parsedDate = DateTime.parse(date);
+          String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+
+          if (formattedExistingDate == formattedDate) {
+            existingDataHarian[i] = dailyLogByDate;
+            found = true;
+            break;
+          }
+        }
+
+        if (!found) {
+          existingDataHarian.add(dailyLogByDate);
+        }
+
+        DailyLog updatedLog = existingLog.copyWith(
+          dataHarian: existingDataHarian,
+          updatedAt: DateTime.now().toIso8601String(),
+        );
+        await _localLogRepository.upsertDailyLog(updatedLog);
+      } else {
+        DailyLog newLog = DailyLog(
+          userId: userId,
+          dataHarian: newDataHarian,
+          createdAt: DateTime.now().toIso8601String(),
+          updatedAt: DateTime.now().toIso8601String(),
+        );
+        await _localLogRepository.upsertDailyLog(newLog);
+      }
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
+    }
+  }
+
+  Future<void> deleteDailyLog(String date) async {
     int userId = storageService.getAccountLocalId();
     DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
+    try {
+      if (existingLog != null) {
+        List<DataHarian> existingDataHarian = existingLog.dataHarian ?? [];
 
-    DataHarian dailyLogByDate = DataHarian(
-      date: date,
-      sexActivity: sexActivity,
-      bleedingFlow: bleedingFlow,
-      symptoms: Symptoms.fromJson(symptoms ?? {}),
-      vaginalDischarge: vaginalDischarge,
-      moods: Moods.fromJson(moods ?? {}),
-      others: Others.fromJson(others ?? {}),
-      physicalActivity: PhysicalActivity.fromJson(physicalActivity ?? {}),
-      temperature: temperature,
-      weight: weight,
-      notes: notes,
-    );
+        List<DataHarian> updatedDataHarian = existingDataHarian.where((data) {
+          DateTime parsedExistingDate = DateTime.parse(data.date ?? "${DateTime.now()}");
+          String formattedExistingDate = DateFormat('yyyy-MM-dd').format(parsedExistingDate);
+          DateTime parsedDate = DateTime.parse(date);
+          String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
 
-    List<DataHarian> newDataHarian = [dailyLogByDate];
+          return formattedExistingDate != formattedDate;
+        }).toList();
 
-    if (existingLog != null) {
-      List<DataHarian> existingDataHarian = existingLog.dataHarian ?? [];
+        DailyLog updatedLog = existingLog.copyWith(
+          dataHarian: updatedDataHarian,
+          updatedAt: DateTime.now().toIso8601String(),
+        );
 
-      bool found = false;
-
-      for (var i = 0; i < existingDataHarian.length; i++) {
-        DateTime parsedExistingDate = DateTime.parse(existingDataHarian[i].date ?? "${DateTime.now()}");
-        String formattedExistingDate = DateFormat('yyyy-MM-dd').format(parsedExistingDate);
-        DateTime parsedDate = DateTime.parse(date);
-        String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
-
-        if (formattedExistingDate == formattedDate) {
-          existingDataHarian[i] = dailyLogByDate;
-          found = true;
-          break;
-        }
+        await _localLogRepository.upsertDailyLog(updatedLog);
       }
-
-      if (!found) {
-        existingDataHarian.add(dailyLogByDate);
-      }
-
-      DailyLog updatedLog = existingLog.copyWith(
-        dataHarian: existingDataHarian,
-        updatedAt: DateTime.now().toIso8601String(),
-      );
-      await _localLogRepository.upsertDailyLog(updatedLog);
-    } else {
-      DailyLog newLog = DailyLog(
-        userId: userId,
-        dataHarian: newDataHarian,
-        createdAt: DateTime.now().toIso8601String(),
-        updatedAt: DateTime.now().toIso8601String(),
-      );
-      await _localLogRepository.upsertDailyLog(newLog);
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
     }
   }
 
@@ -75,16 +111,95 @@ class LogService {
     int userId = storageService.getAccountLocalId();
     final DailyLog? dailyLog = await _localLogRepository.getDailyLog(userId);
 
+    String formatDates = formatDate(logDate);
+
     if (dailyLog != null && dailyLog.dataHarian != null) {
       final List<DataHarian> dataHarian = dailyLog.dataHarian!;
 
       try {
         DataHarian logByDate = dataHarian.firstWhere(
-          (log) => log.date != null && DateTime.parse(log.date!).isAtSameMomentAs(logDate),
+          (log) => log.date != null && DateTime.parse(log.date!).isAtSameMomentAs(DateTime.parse(formatDates)),
         );
         return logByDate;
       } catch (e) {
-        return DataHarian();
+        return DataHarian(
+          date: formatDates,
+          moods: Moods(
+            sad: false,
+            calm: false,
+            angry: false,
+            happy: false,
+            tired: false,
+            cranky: false,
+            frisky: false,
+            sleepy: false,
+            anxious: false,
+            excited: false,
+            confused: false,
+            apathetic: false,
+            depressed: false,
+            emotional: false,
+            energetic: false,
+            irritated: false,
+            sensitive: false,
+            unfocused: false,
+            frustrated: false,
+            lowEnergy: false,
+            moodSwings: false,
+            feelingGuilty: false,
+            obsessiveThoughts: false,
+            verySelfCritical: false,
+          ),
+          symptoms: Symptoms(
+            gas: false,
+            pMS: false,
+            acne: false,
+            chills: false,
+            cramps: false,
+            nausea: false,
+            fatigue: false,
+            backache: false,
+            bloating: false,
+            cravings: false,
+            diarrhea: false,
+            headache: false,
+            insomnia: false,
+            spotting: false,
+            swelling: false,
+            dizziness: false,
+            feelGood: false,
+            bodyAches: false,
+            hotFlashes: false,
+            constipation: false,
+            lowBackPain: false,
+            nippleChanges: false,
+            tenderBreasts: false,
+            abdominalCramps: false,
+          ),
+          others: Others(
+            stress: false,
+            travel: false,
+            alcohol: false,
+            diseaseOrInjury: false,
+          ),
+          physicalActivity: PhysicalActivity(
+            gym: false,
+            yoga: false,
+            cycling: false,
+            running: false,
+            walking: false,
+            swimming: false,
+            teamSports: false,
+            didnTExercise: false,
+            aerobicsDancing: false,
+          ),
+          notes: null,
+          weight: null,
+          sexActivity: null,
+          temperature: null,
+          vaginalDischarge: null,
+          bleedingFlow: null,
+        );
       }
     }
 
@@ -196,99 +311,117 @@ class LogService {
   }
 
   Future<void> addReminder(Reminders reminder) async {
-    int userId = storageService.getAccountLocalId();
-    var uuid = Uuid();
-    DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
+    try {
+      int userId = storageService.getAccountLocalId();
+      DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
 
-    reminder.id = uuid.v4();
+      _localNotificationService.scheduleReminder(reminder);
 
-    if (existingLog != null) {
-      List<Reminders> existingReminders = existingLog.pengingat ?? [];
+      if (existingLog != null) {
+        List<Reminders> existingReminders = existingLog.pengingat ?? [];
 
-      existingReminders.add(reminder);
+        existingReminders.add(reminder);
 
-      DailyLog updatedLog = existingLog.copyWith(
-        pengingat: existingReminders,
-        updatedAt: DateTime.now().toIso8601String(),
-      );
-      await _localLogRepository.upsertDailyLog(updatedLog);
-    } else {
-      DailyLog newLog = DailyLog(
-        userId: userId,
-        pengingat: [reminder],
-        createdAt: DateTime.now().toIso8601String(),
-        updatedAt: DateTime.now().toIso8601String(),
-      );
-      await _localLogRepository.upsertDailyLog(newLog);
+        DailyLog updatedLog = existingLog.copyWith(
+          pengingat: existingReminders,
+          updatedAt: DateTime.now().toIso8601String(),
+        );
+        await _localLogRepository.upsertDailyLog(updatedLog);
+      } else {
+        DailyLog newLog = DailyLog(
+          userId: userId,
+          pengingat: [reminder],
+          createdAt: DateTime.now().toIso8601String(),
+          updatedAt: DateTime.now().toIso8601String(),
+        );
+        await _localLogRepository.upsertDailyLog(newLog);
+      }
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
     }
   }
 
   Future<void> editReminder(Reminders reminder) async {
-    int userId = storageService.getAccountLocalId();
-    DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
+    try {
+      int userId = storageService.getAccountLocalId();
+      DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
 
-    if (existingLog != null) {
-      List<Reminders> existingReminders = existingLog.pengingat ?? [];
+      _localNotificationService.editReminder(reminder);
 
-      int index = existingReminders.indexWhere((r) => r.id == reminder.id);
+      if (existingLog != null) {
+        List<Reminders> existingReminders = existingLog.pengingat ?? [];
 
-      if (index != -1) {
-        existingReminders[index] = reminder;
+        int index = existingReminders.indexWhere((r) => r.id == reminder.id);
 
-        DailyLog updatedLog = existingLog.copyWith(
-          pengingat: existingReminders,
-          updatedAt: DateTime.now().toIso8601String(),
-        );
+        if (index != -1) {
+          existingReminders[index] = reminder;
 
-        await _localLogRepository.upsertDailyLog(updatedLog);
+          DailyLog updatedLog = existingLog.copyWith(
+            pengingat: existingReminders,
+            updatedAt: DateTime.now().toIso8601String(),
+          );
+
+          await _localLogRepository.upsertDailyLog(updatedLog);
+        } else {
+          throw Exception('Reminder with ID ${reminder.id} not found');
+        }
       } else {
-        throw Exception('Reminder with ID ${reminder.id} not found');
+        throw Exception('No reminder found for user with ID $userId');
       }
-    } else {
-      throw Exception('No log found for user with ID $userId');
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
     }
   }
 
   Future<void> deleteAllReminder() async {
-    int userId = storageService.getAccountLocalId();
-    DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
-    print(existingLog?.pengingat.toString());
+    try {
+      int userId = storageService.getAccountLocalId();
+      DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
 
-    if (existingLog != null) {
-      DailyLog updatedLog = existingLog.copyWith(
-        pengingat: [],
-        updatedAt: DateTime.now().toIso8601String(),
-      );
-
-      await _localLogRepository.upsertDailyLog(updatedLog);
-    } else {
-      throw Exception('No log found for user with ID $userId');
-    }
-  }
-
-  Future<void> deleteReminder(String id) async {
-    int userId = storageService.getAccountLocalId();
-    DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
-
-    if (existingLog != null) {
-      List<Reminders> existingReminders = existingLog.pengingat ?? [];
-
-      int index = existingReminders.indexWhere((r) => r.id == id);
-
-      if (index != -1) {
-        existingReminders.removeAt(index);
-
+      if (existingLog != null) {
         DailyLog updatedLog = existingLog.copyWith(
-          pengingat: existingReminders,
+          pengingat: [],
           updatedAt: DateTime.now().toIso8601String(),
         );
 
         await _localLogRepository.upsertDailyLog(updatedLog);
       } else {
-        throw Exception('Reminder with ID ${id} not found');
+        throw Exception('No reminder found for user with ID $userId');
       }
-    } else {
-      throw Exception('No log found for user with ID $userId');
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
+    }
+  }
+
+  Future<void> deleteReminder(String id) async {
+    try {
+      int userId = storageService.getAccountLocalId();
+      DailyLog? existingLog = await _localLogRepository.getDailyLog(userId);
+
+      _localNotificationService.cancelReminder(id);
+
+      if (existingLog != null) {
+        List<Reminders> existingReminders = existingLog.pengingat ?? [];
+
+        int index = existingReminders.indexWhere((r) => r.id == id);
+
+        if (index != -1) {
+          existingReminders.removeAt(index);
+
+          DailyLog updatedLog = existingLog.copyWith(
+            pengingat: existingReminders,
+            updatedAt: DateTime.now().toIso8601String(),
+          );
+
+          await _localLogRepository.upsertDailyLog(updatedLog);
+        } else {
+          throw Exception('Reminder with ID ${id} not found');
+        }
+      } else {
+        throw Exception('No log found for user with ID $userId');
+      }
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
     }
   }
 }

@@ -2,71 +2,71 @@ import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/master_pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
-class MasterKehamilanRepository {
+class MasterDataKehamilanRepository {
   final DatabaseHelper _databaseHelper;
   final Logger _logger = Logger();
 
-  MasterKehamilanRepository(this._databaseHelper);
+  MasterDataKehamilanRepository(this._databaseHelper);
 
-  Future<List<MasterPregnancy>> getAllMasterKehamilan() async {
+  Future<List<MasterPregnancy>> getAllPregnancyData() async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> masterPregnancyData = await db.query(
+      List<Map<String, dynamic>> getAllPregnancyData = await db.query(
         "tb_master_kehamilan",
       );
-      return List.generate(masterPregnancyData.length, (i) {
-        return MasterPregnancy.fromJson(masterPregnancyData[i]);
+      return List.generate(getAllPregnancyData.length, (i) {
+        return MasterPregnancy.fromJson(getAllPregnancyData[i]);
       });
     } catch (e) {
-      _logger.e("Error during get all master data kehamilan: $e");
+      _logger.e("Error during get all data kehamilan: $e");
       rethrow;
     }
   }
 
-  Future<MasterPregnancy?> getMasterPregnancyById(int? id) async {
+  Future<MasterPregnancy?> getPregnancyDataById(int? id) async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> masterPregnancyData = await db.query(
+      List<Map<String, dynamic>> pregnancyData = await db.query(
         "tb_master_kehamilan",
         where: 'id = ?',
         whereArgs: [id],
       );
-      if (masterPregnancyData.isNotEmpty) {
-        return MasterPregnancy.fromJson(masterPregnancyData.first);
+      if (pregnancyData.isNotEmpty) {
+        return MasterPregnancy.fromJson(pregnancyData.first);
       }
       return null;
     } catch (e) {
-      _logger.e("Error during get master data kehamilan by id: $e");
+      _logger.e("Error during get data kehamilan by id: $e");
       rethrow;
     }
   }
 
-  Future<void> addMasterKehamilan(MasterPregnancy masterPregnancy) async {
+  Future<void> addPregnancyData(MasterPregnancy pregnancyData) async {
     final db = await _databaseHelper.database;
     try {
-      await db.insert("tb_master_kehamilan", masterPregnancy.toJson());
+      await db.insert("tb_master_kehamilan", pregnancyData.toJson());
     } catch (e) {
-      _logger.e("Error during add master data kehamilan: $e");
+      _logger.e("Error during add data kehamilan: $e");
       rethrow;
     }
   }
 
-  Future<void> editMasterKehamilan(MasterPregnancy masterPregnancy) async {
+  Future<void> editPregnancyData(MasterPregnancy pregnancyData) async {
     final db = await _databaseHelper.database;
     try {
       await db.update(
         "tb_master_kehamilan",
-        masterPregnancy.toJson(),
+        pregnancyData.toJson(),
         where: 'id = ?',
-        whereArgs: [masterPregnancy.id],
+        whereArgs: [pregnancyData.id],
       );
     } catch (e) {
-      _logger.e("Error during edit master data kehamilan: $e");
+      _logger.e("Error during edit data kehamilan: $e");
       rethrow;
     }
   }
 
-  Future<void> deleteMasterKehamilan(int id) async {
+  Future<void> deletePregnancyData(int id) async {
     final db = await _databaseHelper.database;
     try {
       await db.delete(
@@ -75,7 +75,7 @@ class MasterKehamilanRepository {
         whereArgs: [id],
       );
     } catch (e) {
-      _logger.e("Error during delete master data kehamilan: $e");
+      _logger.e("Error during delete data kehamilan: $e");
       rethrow;
     }
   }

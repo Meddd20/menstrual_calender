@@ -6,6 +6,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
   final bool obscureText;
+  final bool readOnly;
   final Widget? suffixIcon;
   final void Function(String)? onChanged;
   final String? hintText;
@@ -15,6 +16,7 @@ class CustomTextFormField extends StatelessWidget {
     required this.labelText,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.readOnly = false,
     this.obscureText = false,
     this.suffixIcon,
     this.onChanged,
@@ -26,6 +28,7 @@ class CustomTextFormField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       autocorrect: false,
+      readOnly: readOnly,
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: labelText,

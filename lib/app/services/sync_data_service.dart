@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_model.dart';
@@ -25,6 +26,7 @@ import 'package:periodnpregnancycalender/app/services/period_history_service.dar
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/weight_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class SyncDataService {
@@ -43,7 +45,7 @@ class SyncDataService {
   final ApiService apiService = ApiService();
   final StorageService storageService = StorageService();
   final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  late final ProfileRepository profileRepository = ProfileRepository(apiService, databaseHelper);
+  late final ProfileRepository profileRepository = ProfileRepository(apiService);
   late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
   late final PeriodRepository periodRepository = PeriodRepository(apiService);
   late final LogRepository logRepository = LogRepository(apiService);
@@ -63,14 +65,10 @@ class SyncDataService {
 
       DataCategoryByTable? dataFetchFromAPI = await profileRepository.fetchSyncDataFromApi();
       User? profileFetchFromAPI = dataFetchFromAPI?.user;
-      DailyLog? dailyLogFetchFromAPI = dataFetchFromAPI?.logHistory;
+      DailyLogss? dailyLogFetchFromAPI = dataFetchFromAPI?.logHistory;
       List<PeriodHistory>? periodHistoryFetchFromAPI = dataFetchFromAPI?.periodHistory;
       List<PregnancyHistory>? pregnancyHistoryFetchFromAPI = dataFetchFromAPI?.pregnancyHistory;
       List<WeightHistory>? weightHistoryFetchFromAPI = dataFetchFromAPI?.weightGainHistory;
-
-      print(profileFetchFromAPI?.toJson());
-      print(dailyLogFetchFromAPI?.toJson());
-      print(periodHistoryFetchFromAPI?.toList());
 
       await _syncUserData(profile, profileFetchFromAPI, userId);
       await _syncDailyLogData(dailyLog, dailyLogFetchFromAPI, userId);
@@ -85,29 +83,40 @@ class SyncDataService {
 
   Future<void> _syncUserData(User? profile, User? profileFetchFromAPI, int userId) async {
     if (profileFetchFromAPI != null && profile != null) {
+      print(profileFetchFromAPI.toJson());
       if (profileFetchFromAPI.nama != profile.nama || profileFetchFromAPI.tanggalLahir != profile.tanggalLahir || profileFetchFromAPI.isPregnant != profile.isPregnant || profileFetchFromAPI.email != profile.email) {
+        print("truess");
         User syncUserProfile = User(
-          nama: profile.nama,
-          email: profile.email,
-          tanggalLahir: profile.tanggalLahir,
-          isPregnant: profile.isPregnant,
+          nama: profileFetchFromAPI.nama,
+          email: profileFetchFromAPI.email,
+          tanggalLahir: profileFetchFromAPI.tanggalLahir,
+          isPregnant: profileFetchFromAPI.isPregnant,
         );
-        await _syncDataRepository.fetchNewlySyncUserData(syncUserProfile);
+        print("${syncUserProfile.toJson()}");
+        await _localProfileRepository.updateProfile(syncUserProfile);
+        // await _syncDataRepository.fetchNewlySyncUserData(syncUserProfile);
       }
     }
   }
 
-  Future<void> _syncDailyLogData(DailyLog? localDailyLog, DailyLog? fetchedDailyLog, int userId) async {
+  Future<void> _syncDailyLogData(DailyLog? localDailyLog, DailyLogss? fetchedDailyLog, int userId) async {
     List<DataHarian>? localDataHarian = localDailyLog?.dataHarian;
     List<Reminders>? localReminders = localDailyLog?.pengingat;
-    List<DataHarian>? fetchedDataHarian = fetchedDailyLog?.dataHarian;
+    Map<String, DataHarian>? fetchedDataHarian = fetchedDailyLog?.dataHarian;
     List<Reminders>? fetchedReminders = fetchedDailyLog?.pengingat;
 
     if (fetchedDailyLog != null) {
       if (localDataHarian != null && localReminders != null) {
-        // Sync DataHarian
         if (fetchedDataHarian != null) {
-          for (var fetchedData in fetchedDataHarian) {
+          Set<String> fetchedDates = fetchedDataHarian.keys.toSet();
+          for (var localData in localDataHarian) {
+            if (localData.date != null && !fetchedDates.contains(localData.date!)) {
+              await logService.deleteDailyLog(localData.date!);
+            }
+          }
+
+          for (var entry in fetchedDataHarian.entries) {
+            DataHarian fetchedData = entry.value;
             await logService.upsertDailyLog(
               fetchedData.date ?? "",
               fetchedData.sexActivity,
@@ -132,7 +141,7 @@ class SyncDataService {
             bool foundMatch = false;
 
             for (var localReminder in localReminders) {
-              if (localReminder.remoteId == fetchedReminders[i].id && localReminder.title == fetchedReminders[i].title && localReminder.datetime == fetchedReminders[i].datetime && localReminder.description == fetchedReminders[i].description) {
+              if (localReminder.id == fetchedReminders[i].id && localReminder.title == fetchedReminders[i].title && localReminder.datetime == fetchedReminders[i].datetime && localReminder.description == fetchedReminders[i].description) {
                 foundMatch = true;
                 break;
               }
@@ -147,7 +156,7 @@ class SyncDataService {
             bool foundInApi = false;
 
             for (var fetchedReminder in fetchedReminders) {
-              if (localReminder.remoteId == fetchedReminder.id && localReminder.title == fetchedReminder.title && localReminder.datetime == fetchedReminder.datetime && localReminder.description == fetchedReminder.description) {
+              if (localReminder.id == fetchedReminder.id && localReminder.title == fetchedReminder.title && localReminder.datetime == fetchedReminder.datetime && localReminder.description == fetchedReminder.description) {
                 foundInApi = true;
                 break;
               }
@@ -160,7 +169,7 @@ class SyncDataService {
 
           for (var index in notFoundInLocal) {
             Reminders newReminder = Reminders(
-              remoteId: fetchedReminders[index].id ?? "",
+              id: fetchedReminders[index].id ?? "",
               title: fetchedReminders[index].title,
               description: fetchedReminders[index].description,
               datetime: fetchedReminders[index].datetime,
@@ -171,7 +180,8 @@ class SyncDataService {
       } else {
         // Sync DataHarian jika localDataHarian kosong
         if (fetchedDataHarian != null) {
-          for (var fetchedData in fetchedDataHarian) {
+          for (var entry in fetchedDataHarian.entries) {
+            DataHarian fetchedData = entry.value;
             await logService.upsertDailyLog(
               fetchedData.date ?? "",
               fetchedData.sexActivity,
@@ -192,7 +202,7 @@ class SyncDataService {
         if (fetchedReminders != null) {
           for (var fetchedReminder in fetchedReminders) {
             Reminders newReminder = Reminders(
-              remoteId: fetchedReminder.id,
+              id: fetchedReminder.id,
               title: fetchedReminder.title,
               description: fetchedReminder.description,
               datetime: fetchedReminder.datetime,
@@ -212,12 +222,20 @@ class SyncDataService {
       if (isActualPeriodHistory.isEmpty) {
         // Jika data lokal kosong, sinkronkan semua data dari API
         for (var periodHistory in isActualPeriodHistoryFromAPI) {
-          await periodHistoryService.addPeriod(
-            periodHistory.id!,
-            periodHistory.haidAwal!,
-            periodHistory.haidAkhir!,
-            periodHistory.lamaSiklus!,
-          );
+          try {
+            if (periodHistory.id != null && periodHistory.haidAwal != null && periodHistory.haidAkhir != null) {
+              print(periodHistory.toJson());
+              await periodHistoryService.addPeriod(
+                periodHistory.id,
+                periodHistory.haidAwal!,
+                periodHistory.haidAkhir!,
+                periodHistory.lamaSiklus,
+              );
+            }
+          } catch (e) {
+            // Log the error and continue with the next iteration
+            print("Error processing periodHistory with id ${periodHistory.id}: $e");
+          }
         }
       } else {
         // Jika panjang data tidak sama atau sama, lakukan sinkronisasi dengan API
@@ -255,10 +273,10 @@ class SyncDataService {
 
         for (var index in notFoundInLocal) {
           await periodHistoryService.addPeriod(
-            isActualPeriodHistoryFromAPI[index].id!,
+            isActualPeriodHistoryFromAPI[index].id,
             isActualPeriodHistoryFromAPI[index].haidAwal!,
             isActualPeriodHistoryFromAPI[index].haidAkhir!,
-            isActualPeriodHistoryFromAPI[index].lamaSiklus!,
+            isActualPeriodHistoryFromAPI[index].lamaSiklus,
           );
         }
       }
@@ -364,11 +382,13 @@ class SyncDataService {
         }
 
         for (var index in notFoundInLocal) {
-          await weightHistoryService.addWeeklyWeightGain(
-            DateTime.parse(weightHistoryFetchFromAPI[index].tanggalPencatatan!),
-            weightHistoryFetchFromAPI[index].beratBadan!,
-            weightHistoryFetchFromAPI[index].mingguKehamilan!,
-          );
+          await weightHistoryService.syncWeeklyWeightGain(WeightHistory(
+            riwayatKehamilanId: weightHistoryFetchFromAPI[index].riwayatKehamilanId,
+            beratBadan: weightHistoryFetchFromAPI[index].beratBadan,
+            mingguKehamilan: weightHistoryFetchFromAPI[index].mingguKehamilan,
+            tanggalPencatatan: weightHistoryFetchFromAPI[index].tanggalPencatatan,
+            pertambahanBerat: weightHistoryFetchFromAPI[index].pertambahanBerat,
+          ));
         }
       }
     }
@@ -378,6 +398,11 @@ class SyncDataService {
     try {
       int userId = storageService.getAccountLocalId();
       List<SyncLog> getAllSyncLogData = await _syncDataRepository.getAllSyncLogData();
+      print(getAllSyncLogData.length);
+
+      // for (var synclog in getAllSyncLogData) {
+      //   _syncDataRepository.deleteSyncLogData(synclog.id ?? 0);
+      // }
 
       if (getAllSyncLogData.isNotEmpty) {
         for (var syncLog in getAllSyncLogData) {
@@ -418,25 +443,19 @@ class SyncDataService {
                     );
                     success = true;
                   } else if (syncLog.operation == "addReminder") {
-                    var reminderAdded = await logRepository.storeReminder(
+                    await logRepository.storeReminder(
+                      data['id'],
                       data['title'],
                       data['description'],
-                      data['dateTime'],
+                      data['datetime'],
                     );
-
-                    await logService.addReminder(Reminders(
-                      remoteId: reminderAdded['data']['id'],
-                      title: data['title'],
-                      description: data['description'],
-                      datetime: data['dateTime'],
-                    ));
                     success = true;
                   } else if (syncLog.operation == "editReminder") {
                     await logRepository.editReminder(
                       data['id'],
                       data['title'],
                       data['description'],
-                      data['dateTime'],
+                      data['datetime'],
                     );
                     success = true;
                   } else if (syncLog.operation == "deleteReminder") {
@@ -449,24 +468,32 @@ class SyncDataService {
 
                 case "tb_riwayat_mens":
                   if (syncLog.operation == "addPeriod") {
-                    List<PeriodHistory>? periodAdded = await periodRepository.storePeriod(
-                      data['periods'],
-                      data['periodCycle'],
-                      null,
-                    );
+                    if (data['periods'] is List) {
+                      List<Map<String, dynamic>> periods = List<Map<String, dynamic>>.from(data['periods']);
+                      List<PeriodHistory>? periodAdded = await periodRepository.storePeriod(
+                        periods,
+                        data['periodCycle'],
+                        null,
+                      );
 
-                    if (periodAdded != null) {
-                      for (var newPeriodAdd in periodAdded) {
-                        List<PeriodHistory> getAllPeriodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
-                        PeriodHistory? localPeriodAdded = getAllPeriodHistory.firstWhere((period) => period.haidAwal == newPeriodAdd.haidAwal && period.haidAkhir == newPeriodAdd.haidAkhir);
-                        if (localPeriodAdded != null) {
-                          PeriodHistory editPeriodId = localPeriodAdded.copyWith(remoteId: newPeriodAdd.id);
-                          await _periodHistoryRepository.editPeriodHistory(editPeriodId);
+                      if (periodAdded != null) {
+                        for (var newPeriodAdd in periodAdded) {
+                          List<PeriodHistory> getAllPeriodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
+                          PeriodHistory? localPeriodAdded = getAllPeriodHistory.firstWhereOrNull(
+                            (period) => formatDate(period.haidAwal!) == formatDate(newPeriodAdd.haidAwal!) && formatDate(period.haidAkhir!) == formatDate(newPeriodAdd.haidAkhir!),
+                          );
+
+                          if (localPeriodAdded != null) {
+                            PeriodHistory editPeriodId = localPeriodAdded.copyWith(remoteId: newPeriodAdd.id);
+                            await _periodHistoryRepository.editPeriodHistory(editPeriodId);
+                          }
                         }
                       }
-                    }
 
-                    success = true;
+                      success = true;
+                    } else {
+                      _logger.e("Error: periods data is not a list of maps");
+                    }
                   } else if (syncLog.operation == "updatePeriod") {
                     await periodRepository.updatePeriod(
                       data['periodId'],
@@ -480,15 +507,15 @@ class SyncDataService {
 
                 case "tb_riwayat_kehamilan":
                   if (syncLog.operation == "beginPregnancy") {
-                    var pregnancyAdded = await pregnancyRepository.pregnancyBegin(
+                    var addedPregnancy = await pregnancyRepository.pregnancyBegin(
                       data['firstDayLastMenstruation'],
                       null,
                     );
-
                     List<PregnancyHistory> getAllPregnancyHistory = await _pregnancyHistoryRepository.getAllPregnancyHistory(userId);
-                    PregnancyHistory? localPregnancyAdded = getAllPregnancyHistory.firstWhere((pregnancyData) => pregnancyData.hariPertamaHaidTerakhir == data['firstDayLastMenstruation']) ?? null;
-                    if (localPregnancyAdded != null) {
-                      PregnancyHistory editPregnancyId = localPregnancyAdded.copyWith(remoteId: pregnancyAdded["data"]["id"]);
+                    PregnancyHistory? pregnancyHistoryAdded = getAllPregnancyHistory.firstWhereOrNull((pregnancy) => formatDate(DateTime.parse(pregnancy.hariPertamaHaidTerakhir!)) == formatDate(DateTime.parse(data['firstDayLastMenstruation'])));
+
+                    if (pregnancyHistoryAdded != null) {
+                      PregnancyHistory editPregnancyId = pregnancyHistoryAdded.copyWith(remoteId: addedPregnancy["data"]["user_id"]);
                       await _pregnancyHistoryRepository.editPregnancy(editPregnancyId);
                     }
 
@@ -540,9 +567,113 @@ class SyncDataService {
             }
           }
         }
+      } else {
+        _logger.i("No pending data change");
       }
     } catch (e) {
       _logger.e("Error during sync data: $e");
+      throw Exception('Data tidak lengkap');
+    }
+  }
+
+  Future<void> rebackupData() async {
+    try {
+      int userId = storageService.getAccountLocalId();
+      User? profile = await _localProfileRepository.getProfile();
+      DailyLog? dailyLog = await _localLogRepository.getDailyLog(userId);
+      List<PeriodHistory>? periodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
+      List<PeriodHistory>? isActualPeriodHistory = periodHistory.where((period) => period.isActual == "1").toList();
+      List<PregnancyHistory>? pregnancyHistory = await _pregnancyHistoryRepository.getAllPregnancyHistory(userId);
+      List<WeightHistory>? weightHistory = await _weightHistoryRepository.getWeightHistory(userId);
+
+      if (profile != null) {
+        await profileRepository.editProfile(profile.nama!, profile.tanggalLahir!);
+      }
+
+      if (dailyLog != null) {
+        List<DataHarian>? localDataHarian = dailyLog.dataHarian;
+        List<Reminders>? localReminders = dailyLog.pengingat;
+
+        if (localDataHarian!.length > 0) {
+          for (var dataHarian in localDataHarian) {
+            await logRepository.storeLog(
+              dataHarian.date!,
+              dataHarian.sexActivity ?? "",
+              dataHarian.bleedingFlow ?? "",
+              dataHarian.symptoms?.toJson() ?? {},
+              dataHarian.vaginalDischarge ?? "",
+              dataHarian.moods?.toJson() ?? {},
+              dataHarian.others?.toJson() ?? {},
+              dataHarian.physicalActivity?.toJson() ?? {},
+              dataHarian.temperature ?? "",
+              dataHarian.weight ?? "",
+              dataHarian.notes ?? "",
+            );
+          }
+        }
+
+        if (localReminders!.length > 0) {
+          for (var reminder in localReminders) {
+            await logRepository.storeReminder(
+              reminder.id!,
+              reminder.title!,
+              reminder.description!,
+              reminder.datetime!,
+            );
+          }
+        }
+      }
+
+      if (isActualPeriodHistory.length > 0) {
+        for (var period in isActualPeriodHistory) {
+          var periodAdded = await periodRepository.storePeriod([
+            {
+              "first_period": formatDate(period.haidAwal!),
+              "last_period": formatDate(period.haidAkhir!),
+            }
+          ], period.lamaSiklus, null);
+
+          if (periodAdded != null) {
+            for (var newPeriodAdd in periodAdded) {
+              PeriodHistory editPeriodId = period.copyWith(remoteId: newPeriodAdd.id);
+              await _periodHistoryRepository.editPeriodHistory(editPeriodId);
+            }
+          }
+        }
+      }
+
+      if (pregnancyHistory.length > 0) {
+        for (var pregnancy in pregnancyHistory) {
+          if (pregnancy.kehamilanAkhir != null) {
+            var pregnancyBegin = await pregnancyRepository.pregnancyBegin(pregnancy.hariPertamaHaidTerakhir!, null);
+            if (pregnancyBegin != null) {
+              PregnancyHistory editPregnancyId = pregnancy.copyWith(remoteId: pregnancyBegin["data"]["user_id"]);
+              await _pregnancyHistoryRepository.editPregnancy(editPregnancyId);
+            }
+            await pregnancyRepository.pregnancyEnded(pregnancy.kehamilanAkhir!, pregnancy.gender!);
+          } else {
+            var pregnancyBegin = await pregnancyRepository.pregnancyBegin(pregnancy.hariPertamaHaidTerakhir!, null);
+            if (pregnancyBegin != null) {
+              PregnancyHistory editPregnancyId = pregnancy.copyWith(remoteId: pregnancyBegin["data"]["user_id"]);
+              await _pregnancyHistoryRepository.editPregnancy(editPregnancyId);
+            }
+          }
+
+          if (weightHistory.length > 0) {
+            for (var weight in weightHistory) {
+              if (weight.riwayatKehamilanId == pregnancy.id) {
+                if (weight.mingguKehamilan == 0) {
+                  await pregnancyRepository.initializeWeightGain(pregnancy.tinggiBadan!, weight.beratBadan!, int.parse(pregnancy.isTwin!));
+                } else {
+                  await pregnancyRepository.weeklyWeightGain(weight.beratBadan!, weight.mingguKehamilan!, weight.tanggalPencatatan!);
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      _logger.e("Error during rebackup data: $e");
       throw Exception('Data tidak lengkap');
     }
   }

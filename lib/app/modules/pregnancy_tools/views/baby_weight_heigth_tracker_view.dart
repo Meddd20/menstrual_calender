@@ -6,8 +6,7 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/baby_weight_heigth_tracker_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class BabyWeightHeigthTrackerView
-    extends GetView<BabyWeightHeigthTrackerController> {
+class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerController> {
   const BabyWeightHeigthTrackerView({Key? key}) : super(key: key);
 
   @override
@@ -17,8 +16,7 @@ class BabyWeightHeigthTrackerView
 
     return Scaffold(
       appBar: AppBar(
-        title: Obx(() => Text(
-            '${controller.selectedDataType.value == "Weight" ? "Fetal Weight Development" : "Fetal Height Development"} ')),
+        title: Obx(() => Text('${controller.selectedDataType.value == "Weight" ? "Fetal Weight Development" : "Fetal Height Development"} ')),
         centerTitle: true,
       ),
       body: Padding(
@@ -74,20 +72,22 @@ class BabyWeightHeigthTrackerView
                 ],
               ),
             ),
-            Obx(() => Expanded(
-                  child: PageView(
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: _pageController,
-                    onPageChanged: (index) {
-                      controller.tabController.animateTo(index);
-                      controller.updateTabBar(index);
-                    },
-                    children: [
-                      _buildChart(controller.babyWeightData),
-                      _buildChart(controller.babyHeightData),
-                    ],
-                  ),
-                )),
+            Obx(
+              () => Expanded(
+                child: PageView(
+                  physics: NeverScrollableScrollPhysics(),
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    controller.tabController.animateTo(index);
+                    controller.updateTabBar(index);
+                  },
+                  children: [
+                    _buildChart(controller.babyWeightData),
+                    _buildChart(controller.babyHeightData),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -95,6 +95,9 @@ class BabyWeightHeigthTrackerView
   }
 
   Widget _buildChart(RxList<Map<String, dynamic>> data) {
+    if (data.isEmpty) {
+      return Center(child: CircularProgressIndicator());
+    }
     return Column(
       children: [
         Expanded(
@@ -105,8 +108,7 @@ class BabyWeightHeigthTrackerView
                 color: Colors.black,
               ),
               title: AxisTitle(
-                text:
-                    "${controller.selectedDataType.value == "Weight" ? "Fetal Weight (gram)" : "Fetal Height (milimeter)"} ",
+                text: "${controller.selectedDataType.value == "Weight" ? "Fetal Weight (gram)" : "Fetal Height (milimeter)"} ",
                 textStyle: TextStyle(
                   color: Colors.black,
                   fontSize: 12,
@@ -115,7 +117,6 @@ class BabyWeightHeigthTrackerView
                 alignment: ChartAlignment.center,
               ),
               minimum: 0,
-              maximum: _calculateMaxYValue(data),
             ),
             primaryXAxis: CategoryAxis(
               labelStyle: TextStyle(
@@ -134,11 +135,9 @@ class BabyWeightHeigthTrackerView
               axisLabelFormatter: (AxisLabelRenderDetails details) {
                 int week = details.value.toInt();
                 if ([0, 12, 28, 40].contains(week)) {
-                  return ChartAxisLabel(
-                      '$week', TextStyle(color: Colors.black));
+                  return ChartAxisLabel('$week', TextStyle(color: Colors.black));
                 } else {
-                  return ChartAxisLabel(
-                      '', TextStyle(color: Colors.transparent));
+                  return ChartAxisLabel('', TextStyle(color: Colors.transparent));
                 }
               },
             ),
@@ -147,8 +146,7 @@ class BabyWeightHeigthTrackerView
               lineType: TrackballLineType.vertical,
               tooltipSettings: InteractiveTooltip(
                 enable: true,
-                format:
-                    '${controller.selectedDataType.value == "Weight" ? "#Week point.x \n  point.y gram" : "#Week point.x \n  point.y milimeter"}',
+                format: '${controller.selectedDataType.value == "Weight" ? "#Week point.x \n  point.y gram" : "#Week point.x \n  point.y milimeter"}',
               ),
               activationMode: ActivationMode.singleTap,
               tooltipAlignment: ChartAlignment.center,
@@ -157,10 +155,8 @@ class BabyWeightHeigthTrackerView
             series: [
               LineSeries<Map<String, dynamic>, int>(
                 dataSource: data,
-                xValueMapper: (Map<String, dynamic> entry, _) =>
-                    entry['week'] as int,
-                yValueMapper: (Map<String, dynamic> entry, _) =>
-                    entry['weight'] ?? entry['height'] as double,
+                xValueMapper: (Map<String, dynamic> entry, _) => entry['week'] as int,
+                yValueMapper: (Map<String, dynamic> entry, _) => entry['weight'] ?? entry['height'] as double,
                 markerSettings: MarkerSettings(
                   isVisible: true,
                   shape: DataMarkerType.circle,
@@ -174,16 +170,5 @@ class BabyWeightHeigthTrackerView
         ),
       ],
     );
-  }
-
-  double _calculateMaxYValue(RxList<Map<String, dynamic>> data) {
-    double max = 0;
-    for (var entry in data) {
-      double value = entry['weight'] ?? entry['height'];
-      if (value > max) {
-        max = value;
-      }
-    }
-    return max + 50;
   }
 }

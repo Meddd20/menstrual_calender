@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "724266695440",
+    "project_id": "menstrual-calendar-n-pregnancy",
+    "storage_bucket": "menstrual-calendar-n-pregnancy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:724266695440:android:b5a4728efb19dbbab68395",
+        "android_client_info": {
+          "package_name": "com.medhikobiraja.periodnpregnancycalender"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBPIBeR19p6RfRezj5FlYzEfY9CXVtCjs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

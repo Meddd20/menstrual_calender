@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/baby_weight_heigth_tracker_view.dart';
-import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_gain_tracker_view.dart';
+import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_tracker_view.dart';
 
 import '../controllers/pregnancy_tools_controller.dart';
 
@@ -12,18 +13,9 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, String>> tools = [
-      {
-        'name': 'Fetal Development',
-        'icon': 'assets/image/bd48b2bc7befdf66265a70239c555886.png'
-      },
-      {
-        'name': 'Weight Gain Tracker',
-        'icon': 'assets/image/bd48b2bc7befdf66265a70239c555886.png'
-      },
-      {
-        'name': 'Tool 3',
-        'icon': 'assets/image/bd48b2bc7befdf66265a70239c555886.png'
-      },
+      {'name': 'Fetal Development', 'icon': 'assets/icon/fetal.png'},
+      {'name': 'Weight Gain Tracker', 'icon': 'assets/icon/weight-tracker.png'},
+      {'name': 'Reminder', 'icon': 'assets/icon/alarm.png'},
     ];
     return SafeArea(
       child: Scaffold(
@@ -34,8 +26,7 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
         body: Padding(
           padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0.h),
           child: GridView.builder(
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
             itemCount: tools.length,
             itemBuilder: (context, index) {
               final tool = tools[index];
@@ -46,9 +37,10 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
                       Get.to(() => BabyWeightHeigthTrackerView());
                       break;
                     case 1:
-                      Get.to(() => WeightGainView());
+                      Get.to(() => WeightTrackerView());
                       break;
                     case 2:
+                      Get.to(() => ReminderView());
                       break;
                   }
                 },

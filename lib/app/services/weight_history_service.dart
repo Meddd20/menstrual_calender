@@ -1,190 +1,241 @@
 import 'dart:math';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/weight_history_repository.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class WeightHistoryService {
   final WeightHistoryRepository _weightHistoryRepository;
   final PregnancyHistoryRepository _pregnancyHistoryRepository;
+
+  final Logger _logger = Logger();
   final StorageService storageService = StorageService();
 
   WeightHistoryService(this._weightHistoryRepository, this._pregnancyHistoryRepository);
 
   Future<void> initWeightGain(double tinggiBadan, double beratPrakehamilan, int isTwin) async {
-    int userId = storageService.getAccountLocalId();
+    try {
+      int userId = storageService.getAccountLocalId();
+      PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      List<WeightHistory?> weightHistory = await _weightHistoryRepository.getWeightHistory(userId);
+      List<WeightHistory?> weightDataOnThisPregnancy = weightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData!.id).toList();
 
-    PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
-    List<WeightHistory?> weightHistory = await _weightHistoryRepository.getWeightHistory(userId);
-
-    if (isTwin != 0 || isTwin != 1) {
-      throw Exception("Is Twin harus diisi dengan 0 atau 1");
-    }
-
-    if (currentPregnancyData != null) {
-      double tinggiBadanByMeter = tinggiBadan / 100;
-      double bmiPrakehamilan = beratPrakehamilan / pow(tinggiBadanByMeter, 2);
-
-      String kategoriBMI;
-      if (bmiPrakehamilan < 18.5) {
-        kategoriBMI = "underweight";
-      } else if (bmiPrakehamilan >= 18.5 && bmiPrakehamilan < 24.9) {
-        kategoriBMI = "normal";
-      } else if (bmiPrakehamilan >= 25 && bmiPrakehamilan < 29.9) {
-        kategoriBMI = "overweight";
-      } else {
-        kategoriBMI = "obese";
+      if (isTwin != 0 || isTwin != 1) {
+        Exception("Is Twin harus diisi dengan 0 atau 1");
       }
 
-      PregnancyHistory? updatedPregnancyWeightData = currentPregnancyData.copyWith(
-        tinggiBadan: tinggiBadan,
-        beratPrakehamilan: beratPrakehamilan,
-        bmiPrakehamilan: bmiPrakehamilan,
-        kategoriBmi: kategoriBMI,
-        isTwin: isTwin.toString(),
-        updatedAt: DateTime.now().toIso8601String(),
-      );
+      if (currentPregnancyData != null) {
+        double tinggiBadanByMeter = tinggiBadan / 100;
+        double bmiPrakehamilan = beratPrakehamilan / pow(tinggiBadanByMeter, 2);
 
-      await _pregnancyHistoryRepository.editPregnancy(updatedPregnancyWeightData);
+        String kategoriBMI;
+        if (bmiPrakehamilan < 18.5) {
+          kategoriBMI = "underweight";
+        } else if (bmiPrakehamilan >= 18.5 && bmiPrakehamilan < 24.9) {
+          kategoriBMI = "normal";
+        } else if (bmiPrakehamilan >= 25 && bmiPrakehamilan < 29.9) {
+          kategoriBMI = "overweight";
+        } else {
+          kategoriBMI = "obese";
+        }
 
-      if (weightHistory.length > 0) {
-        WeightHistory? initWeightHistory = weightHistory[0];
-        WeightHistory? nextWeightHistory = weightHistory.length > 1 ? weightHistory[1] : null;
-
-        WeightHistory updatedinitWeightHistory = initWeightHistory!.copyWith(
-          beratBadan: beratPrakehamilan,
-          pertambahanBerat: 0,
+        PregnancyHistory? updatedPregnancyWeightData = currentPregnancyData.copyWith(
+          tinggiBadan: tinggiBadan,
+          beratPrakehamilan: beratPrakehamilan,
+          bmiPrakehamilan: bmiPrakehamilan,
+          kategoriBmi: kategoriBMI,
+          isTwin: isTwin.toString(),
           updatedAt: DateTime.now().toIso8601String(),
         );
 
-        double? weightGain;
-        if (nextWeightHistory != null && nextWeightHistory.beratBadan != null) {
-          weightGain = nextWeightHistory.beratBadan! - beratPrakehamilan;
-          WeightHistory updatednextWeightHistory = nextWeightHistory.copyWith(
-            pertambahanBerat: weightGain,
-            updatedAt: DateTime.now().toIso8601String(),
+        await _pregnancyHistoryRepository.editPregnancy(updatedPregnancyWeightData);
+
+        if (weightDataOnThisPregnancy.length > 0) {
+          WeightHistory? initWeightHistory = weightDataOnThisPregnancy[0];
+          WeightHistory? nextWeightHistory = weightDataOnThisPregnancy.length > 1 ? weightDataOnThisPregnancy[1] : null;
+
+          WeightHistory updatedinitWeightHistory = initWeightHistory!.copyWith(
+            beratBadan: beratPrakehamilan,
+            pertambahanBerat: 0,
+            updatedAt: DateTime.now().toString(),
           );
-          await _weightHistoryRepository.editWeightHistory(updatednextWeightHistory);
-        }
 
-        await _weightHistoryRepository.editWeightHistory(updatedinitWeightHistory);
-      } else {
-        DateTime hariPertamaHaidTerakhirDate = DateTime.parse(currentPregnancyData.hariPertamaHaidTerakhir ?? "");
-        DateTime tanggalPencatatan = hariPertamaHaidTerakhirDate.subtract(Duration(days: 1));
+          await _weightHistoryRepository.editWeightHistory(updatedinitWeightHistory);
 
-        await _weightHistoryRepository.addWeightHistory(
-          WeightHistory(
+          double? weightGain;
+          if (nextWeightHistory != null && nextWeightHistory.beratBadan != null) {
+            weightGain = nextWeightHistory.beratBadan! - beratPrakehamilan;
+            WeightHistory updatednextWeightHistory = nextWeightHistory.copyWith(
+              pertambahanBerat: weightGain,
+              updatedAt: DateTime.now().toIso8601String(),
+            );
+            await _weightHistoryRepository.editWeightHistory(updatednextWeightHistory);
+          }
+        } else {
+          DateTime hariPertamaHaidTerakhirDate = DateTime.parse(currentPregnancyData.hariPertamaHaidTerakhir ?? "");
+          DateTime tanggalPencatatan = hariPertamaHaidTerakhirDate.subtract(Duration(days: 1));
+
+          WeightHistory? newWeightData = WeightHistory(
             userId: userId,
             riwayatKehamilanId: currentPregnancyData.id,
             beratBadan: beratPrakehamilan,
             mingguKehamilan: 0,
-            tanggalPencatatan: tanggalPencatatan.toIso8601String(),
+            tanggalPencatatan: tanggalPencatatan.toString(),
             pertambahanBerat: 0,
-            createdAt: DateTime.now().toIso8601String(),
-            updatedAt: DateTime.now().toIso8601String(),
-          ),
-        );
+            updatedAt: DateTime.now().toString(),
+            createdAt: DateTime.now().toString(),
+          );
+
+          await _weightHistoryRepository.addWeightHistory(newWeightData);
+        }
+      } else {
+        throw Exception('Data tidak lengkap');
       }
-    } else {
-      throw Exception('Data tidak lengkap');
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
     }
   }
 
   Future<void> addWeeklyWeightGain(DateTime tanggalPencatatan, double beratBadan, int mingguKehamilan) async {
-    String formattedDate = DateFormat('yyyy-MM-dd').format(tanggalPencatatan);
+    try {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(tanggalPencatatan);
 
-    int userId = storageService.getAccountLocalId();
-    PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
-    List<WeightHistory?> getAllWeightHistory = await _weightHistoryRepository.getWeightHistory(userId);
+      int userId = storageService.getAccountLocalId();
+      PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      List<WeightHistory?> getAllWeightHistory = await _weightHistoryRepository.getWeightHistory(userId);
+      List<WeightHistory?> weightDataOnThisPregnancy = getAllWeightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData?.id).toList();
 
-    if (currentPregnancyData != null) {
-      DateTime hariPertamaHaidTerakhir = DateTime.parse(currentPregnancyData.hariPertamaHaidTerakhir ?? "");
-      DateTime tanggalPerkiraanLahir = DateTime.parse(currentPregnancyData.tanggalPerkiraanLahir ?? "");
+      if (currentPregnancyData != null) {
+        DateTime hariPertamaHaidTerakhir = DateTime.parse(currentPregnancyData.hariPertamaHaidTerakhir ?? "");
+        DateTime tanggalPerkiraanLahir = DateTime.parse(currentPregnancyData.tanggalPerkiraanLahir ?? "");
 
-      if (tanggalPencatatan.isAfter(hariPertamaHaidTerakhir) && tanggalPencatatan.isBefore(tanggalPerkiraanLahir) || tanggalPencatatan.isAtSameMomentAs(hariPertamaHaidTerakhir) || tanggalPencatatan.isAtSameMomentAs(tanggalPerkiraanLahir)) {
-        WeightHistory? matchingTanggalPencatatan = getAllWeightHistory.firstWhere((wh) => wh != null && wh.userId == userId && wh.riwayatKehamilanId == currentPregnancyData.id && wh.tanggalPencatatan == formattedDate, orElse: () => null);
-
-        if (matchingTanggalPencatatan != null) {
-          WeightHistory updatedCurrentIndexWeightData = matchingTanggalPencatatan.copyWith(
-            beratBadan: beratBadan,
-            updatedAt: DateTime.now().toIso8601String(),
+        if ((tanggalPencatatan.isAfter(hariPertamaHaidTerakhir) && tanggalPencatatan.isBefore(tanggalPerkiraanLahir)) || tanggalPencatatan.isAtSameMomentAs(hariPertamaHaidTerakhir) || tanggalPencatatan.isAtSameMomentAs(tanggalPerkiraanLahir)) {
+          WeightHistory? matchingTanggalPencatatan = weightDataOnThisPregnancy.firstWhereOrNull(
+            (wh) => wh?.userId == userId && wh?.riwayatKehamilanId == currentPregnancyData.id && wh?.tanggalPencatatan == formattedDate,
           );
-          await _weightHistoryRepository.editWeightHistory(updatedCurrentIndexWeightData);
-        } else {
-          WeightHistory? newWeightData = WeightHistory(
-            beratBadan: beratBadan,
-            mingguKehamilan: mingguKehamilan,
-            tanggalPencatatan: tanggalPencatatan.toIso8601String(),
-            updatedAt: DateTime.now().toIso8601String(),
-            createdAt: DateTime.now().toIso8601String(),
-          );
-          await _weightHistoryRepository.addWeightHistory(newWeightData);
-        }
 
-        List<WeightHistory?> updatedWeightHistory = await _weightHistoryRepository.getWeightHistory(userId);
-
-        WeightHistory? matchingNewTanggalPencatatan = updatedWeightHistory.firstWhere((wh) => wh != null && wh.userId == userId && wh.riwayatKehamilanId == currentPregnancyData.id && wh.tanggalPencatatan == tanggalPencatatan, orElse: () => null);
-
-        int index = updatedWeightHistory.indexWhere((r) => r?.id == matchingNewTanggalPencatatan?.id);
-        WeightHistory? previousIndexWeightData = updatedWeightHistory[index - 1];
-        WeightHistory? nextIndexWeightData = updatedWeightHistory[index + 1];
-
-        if (matchingNewTanggalPencatatan != null) {
-          if (nextIndexWeightData != null && nextIndexWeightData.beratBadan != null) {
-            double pertambahanBeratNextIndexData = nextIndexWeightData.beratBadan! - beratBadan;
-            WeightHistory updatedNextIndexWeightData = nextIndexWeightData.copyWith(
-              pertambahanBerat: pertambahanBeratNextIndexData,
-              updatedAt: DateTime.now().toIso8601String(),
+          if (matchingTanggalPencatatan != null) {
+            WeightHistory updatedCurrentIndexWeightData = matchingTanggalPencatatan.copyWith(
+              beratBadan: beratBadan,
+              updatedAt: DateTime.now().toString(),
             );
-            await _weightHistoryRepository.editWeightHistory(updatedNextIndexWeightData);
-          }
-          if (previousIndexWeightData != null && previousIndexWeightData.beratBadan != null) {
-            double pertambahanBeratCurrentIndexData = beratBadan - previousIndexWeightData.beratBadan!;
-            WeightHistory updatedCurrentIndexWeightData = matchingNewTanggalPencatatan.copyWith(
-              pertambahanBerat: pertambahanBeratCurrentIndexData,
-              updatedAt: DateTime.now().toIso8601String(),
-            );
-
             await _weightHistoryRepository.editWeightHistory(updatedCurrentIndexWeightData);
+          } else {
+            WeightHistory newWeightData = WeightHistory(
+              userId: userId,
+              riwayatKehamilanId: currentPregnancyData.id,
+              beratBadan: beratBadan,
+              mingguKehamilan: mingguKehamilan,
+              tanggalPencatatan: formattedDate,
+              createdAt: DateTime.now().toString(),
+              updatedAt: DateTime.now().toString(),
+            );
+
+            await _weightHistoryRepository.addWeightHistory(newWeightData);
+          }
+
+          List<WeightHistory?> updatedWeightHistory = await _weightHistoryRepository.getWeightHistory(userId);
+          List<WeightHistory?> updatedWeightDataOnThisPregnancy = updatedWeightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData.id).toList();
+
+          updatedWeightDataOnThisPregnancy.sort((a, b) {
+            if (a != null && b != null) {
+              int compareMinggu = a.mingguKehamilan!.compareTo(b.mingguKehamilan!);
+              if (compareMinggu != 0) {
+                return compareMinggu;
+              }
+              return a.tanggalPencatatan!.compareTo(b.tanggalPencatatan!);
+            }
+            return 0;
+          });
+
+          WeightHistory? matchingNewTanggalPencatatan = updatedWeightDataOnThisPregnancy.firstWhereOrNull((wh) {
+            if (wh?.userId == userId && wh?.tanggalPencatatan != null) {
+              DateTime whDate = DateTime.parse(wh!.tanggalPencatatan!);
+              String whFormattedDate = DateFormat('yyyy-MM-dd').format(whDate);
+              return whFormattedDate == formattedDate;
+            }
+            return false;
+          });
+
+          if (matchingNewTanggalPencatatan != null) {
+            int index = updatedWeightDataOnThisPregnancy.indexWhere((r) => r?.id == matchingNewTanggalPencatatan.id);
+            WeightHistory? previousIndexWeightData = index > 0 ? updatedWeightDataOnThisPregnancy[index - 1] : null;
+            WeightHistory? nextIndexWeightData = index < updatedWeightDataOnThisPregnancy.length - 1 ? updatedWeightDataOnThisPregnancy[index + 1] : null;
+
+            if (nextIndexWeightData != null && nextIndexWeightData.beratBadan != null) {
+              double pertambahanBeratNextIndexData = nextIndexWeightData.beratBadan! - beratBadan;
+              WeightHistory updatedNextIndexWeightData = nextIndexWeightData.copyWith(
+                pertambahanBerat: pertambahanBeratNextIndexData,
+                updatedAt: DateTime.now().toString(),
+              );
+              await _weightHistoryRepository.editWeightHistory(updatedNextIndexWeightData);
+            }
+            if (previousIndexWeightData != null && previousIndexWeightData.beratBadan != null) {
+              double pertambahanBeratCurrentIndexData = beratBadan - previousIndexWeightData.beratBadan!;
+              WeightHistory updatedCurrentIndexWeightData = matchingNewTanggalPencatatan.copyWith(
+                pertambahanBerat: pertambahanBeratCurrentIndexData,
+                updatedAt: DateTime.now().toString(),
+              );
+
+              await _weightHistoryRepository.editWeightHistory(updatedCurrentIndexWeightData);
+            }
+          } else {
+            throw Exception("Data Weight History tidak ditemukan");
+          }
+        } else {
+          throw Exception('Tanggal pencatatan harus antara hari pertama haid terakhir dan tanggal perkiraan lahir');
+        }
+      } else {
+        throw Exception('Data kehamilan tidak ditemukan');
+      }
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
+    }
+  }
+
+  Future<void> deleteWeeklyWeightGain(String tanggalPencatatan) async {
+    try {
+      int userId = storageService.getAccountLocalId();
+      PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      List<WeightHistory?> getAllWeightHistory = await _weightHistoryRepository.getWeightHistory(userId);
+      List<WeightHistory?> weightDataOnThisPregnancy = getAllWeightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData?.id).toList();
+
+      WeightHistory? matchingDataById = weightDataOnThisPregnancy.firstWhereOrNull((wh) => wh != null && wh.tanggalPencatatan! == tanggalPencatatan && wh.userId == userId);
+
+      if (matchingDataById != null) {
+        int index = weightDataOnThisPregnancy.indexWhere((r) => r != null && formatDate(DateTime.parse(r.tanggalPencatatan!)) == tanggalPencatatan);
+
+        if (index != -1) {
+          WeightHistory? previousIndexWeightData = index > 0 ? weightDataOnThisPregnancy[index - 1] : null;
+          WeightHistory? nextIndexWeightData = index < weightDataOnThisPregnancy.length - 1 ? weightDataOnThisPregnancy[index + 1] : null;
+
+          print(previousIndexWeightData?.toJson());
+
+          await _weightHistoryRepository.deleteWeightHistory(tanggalPencatatan.toString(), userId);
+
+          if (nextIndexWeightData != null && nextIndexWeightData.beratBadan != null && previousIndexWeightData != null && previousIndexWeightData.beratBadan != null) {
+            double pertambahanBeratNewNextData = nextIndexWeightData.beratBadan! - previousIndexWeightData.beratBadan!;
+
+            WeightHistory? updateNextWeightData = nextIndexWeightData.copyWith(
+              pertambahanBerat: pertambahanBeratNewNextData,
+              updatedAt: DateTime.now().toString(),
+            );
+
+            await _weightHistoryRepository.editWeightHistory(updateNextWeightData);
           }
         } else {
           throw Exception("Data Weight History tidak ditemukan");
         }
       } else {
-        throw Exception('Tanggal pencatatan harus antara hari pertama haid terakhir dan tanggal perkiraan lahir');
+        throw Exception("Data Weight History tidak ditemukan");
       }
-    } else {
-      throw Exception('Data kehamilan tidak ditemukan');
-    }
-  }
-
-  Future<void> deleteWeeklyWeightGain(DateTime tanggalPencatatan) async {
-    int userId = storageService.getAccountLocalId();
-    List<WeightHistory?> getAllWeightHistory = await _weightHistoryRepository.getWeightHistory(userId);
-
-    WeightHistory? matchingDataById = getAllWeightHistory.firstWhere((wh) => wh != null && wh.tanggalPencatatan == tanggalPencatatan && wh.userId == userId, orElse: () => null);
-
-    if (matchingDataById != null) {
-      int index = getAllWeightHistory.indexWhere((r) => r?.tanggalPencatatan == tanggalPencatatan);
-      WeightHistory? previousIndexWeightData = getAllWeightHistory[index - 1];
-      WeightHistory? nextIndexWeightData = getAllWeightHistory[index + 1];
-
-      await _weightHistoryRepository.deleteWeightHistory(tanggalPencatatan.toString(), userId);
-
-      if (nextIndexWeightData != null && nextIndexWeightData.beratBadan != null && previousIndexWeightData != null && previousIndexWeightData.beratBadan != null) {
-        double pertambahanBeratNewNextData = nextIndexWeightData.beratBadan! - previousIndexWeightData.beratBadan!;
-
-        WeightHistory? updateNextWeightData = nextIndexWeightData.copyWith(
-          pertambahanBerat: pertambahanBeratNewNextData,
-          updatedAt: DateTime.now().toString(),
-        );
-
-        await _weightHistoryRepository.editWeightHistory(updateNextWeightData);
-      }
-    } else {
-      throw Exception("Data Weight History tidak ditemukan");
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
     }
   }
 
@@ -192,12 +243,17 @@ class WeightHistoryService {
     int userId = storageService.getAccountLocalId();
     PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
     List<WeightHistory>? getAllWeightHistory = await _weightHistoryRepository.getWeightHistory(userId);
+    List<WeightHistory>? weightDataOnThisPregnancy = getAllWeightHistory.where((weight) => weight.riwayatKehamilanId == currentPregnancyData!.id).toList();
 
-    WeightHistory? initWeightData = getAllWeightHistory.isNotEmpty ? getAllWeightHistory[0] : null;
-    WeightHistory? lastWeightData = getAllWeightHistory.isNotEmpty ? getAllWeightHistory[getAllWeightHistory.length - 1] : null;
+    WeightHistory? initWeightData = weightDataOnThisPregnancy.isNotEmpty ? weightDataOnThisPregnancy[0] : null;
+    WeightHistory? lastWeightData = weightDataOnThisPregnancy.isNotEmpty ? weightDataOnThisPregnancy[weightDataOnThisPregnancy.length - 1] : null;
 
     if (currentPregnancyData == null) {
       throw Exception('Data kehamilan tidak ditemukan');
+    }
+
+    if (weightDataOnThisPregnancy.length < 1) {
+      return PregnancyWeightGainData();
     }
 
     double? totalGain;
@@ -237,10 +293,16 @@ class WeightHistoryService {
       }
     }
 
-    double? thisWeekLower = thisWeekData?.recommendWeightLower ?? 0;
-    double? thisWeekUpper = thisWeekData?.recommendWeightUpper ?? 0;
-    double? nextWeekLower = nextWeekData?.recommendWeightLower ?? 0;
-    double? nextWeekUpper = nextWeekData?.recommendWeightUpper ?? 0;
+    weightDataOnThisPregnancy.sort((a, b) {
+      if (a != null && b != null) {
+        int compareMinggu = b.mingguKehamilan!.compareTo(a.mingguKehamilan!);
+        if (compareMinggu != 0) {
+          return compareMinggu;
+        }
+        return b.tanggalPencatatan!.compareTo(a.tanggalPencatatan!);
+      }
+      return 0;
+    });
 
     return PregnancyWeightGainData(
       week: weeksPregnant,
@@ -251,11 +313,38 @@ class WeightHistoryService {
       prepregnancyHeight: currentPregnancyData.tinggiBadan,
       bmiCategory: currentPregnancyData.kategoriBmi,
       isTwin: currentPregnancyData.isTwin,
-      currentWeekReccomendWeight: "${thisWeekLower - thisWeekUpper}",
-      nextWeekReccomendWeight: "${nextWeekLower - nextWeekUpper}",
-      weightHistory: getAllWeightHistory,
+      currentWeekReccomendWeight: "${thisWeekData?.recommendWeightLower} - ${thisWeekData?.recommendWeightUpper}",
+      nextWeekReccomendWeight: "${nextWeekData?.recommendWeightLower} - ${nextWeekData?.recommendWeightUpper}",
+      weightHistory: weightDataOnThisPregnancy,
       reccomendWeightGain: recommendWeightGain,
     );
+  }
+
+  Future<void> syncWeeklyWeightGain(WeightHistory weightHistory) async {
+    int userId = storageService.getAccountLocalId();
+    List<PregnancyHistory>? allPregnancyHistory = await _pregnancyHistoryRepository.getAllPregnancyHistory(userId);
+
+    PregnancyHistory? currentPregnancyData = allPregnancyHistory.firstWhere(
+      (ph) => ph.remoteId == weightHistory.riwayatKehamilanId,
+      orElse: () => PregnancyHistory(id: -1),
+    );
+
+    if (currentPregnancyData.id == -1) {
+      throw Exception("Pregnancy history not found for the given weight history.");
+    }
+
+    WeightHistory? newWeightData = WeightHistory(
+      userId: userId,
+      riwayatKehamilanId: currentPregnancyData.id,
+      beratBadan: weightHistory.beratBadan,
+      mingguKehamilan: weightHistory.mingguKehamilan,
+      tanggalPencatatan: weightHistory.tanggalPencatatan.toString(),
+      pertambahanBerat: weightHistory.pertambahanBerat,
+      updatedAt: DateTime.now().toString(),
+      createdAt: DateTime.now().toString(),
+    );
+
+    await _weightHistoryRepository.addWeightHistory(newWeightData);
   }
 }
 

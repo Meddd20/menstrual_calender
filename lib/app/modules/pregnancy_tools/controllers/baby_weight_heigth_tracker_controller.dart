@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
@@ -10,6 +9,7 @@ import 'package:periodnpregnancycalender/app/repositories/local/profile_reposito
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class BabyWeightHeigthTrackerController extends GetxController {
   final ApiService apiService = ApiService();
@@ -30,13 +30,10 @@ class BabyWeightHeigthTrackerController extends GetxController {
 
   @override
   void onInit() {
-    tabController = TabController(length: 2, vsync: MyTickerProvider());
-    pregnancyData = fetchPregnancyData();
-
     final DatabaseHelper databaseHelper = DatabaseHelper.instance;
     final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
     final PregnancyHistoryRepository pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    final MasterKehamilanRepository masterKehamilanRepository = MasterKehamilanRepository(databaseHelper);
+    final MasterDataKehamilanRepository masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
     final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
     _pregnancyHistoryService = PregnancyHistoryService(
       pregnancyHistoryRepository,
@@ -44,6 +41,10 @@ class BabyWeightHeigthTrackerController extends GetxController {
       periodHistoryRepository,
       localProfileRepository,
     );
+
+    fetchPregnancyData();
+    tabController = TabController(length: 2, vsync: MyTickerProvider());
+
     super.onInit();
   }
 

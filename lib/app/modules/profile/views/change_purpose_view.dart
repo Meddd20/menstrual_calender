@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/controllers/profile_controller.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -16,14 +16,11 @@ class ChangePurposeView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     final box = GetStorage();
-    return box.read("isPregnant") == "0"
-        ? changePurposeToPregnancy(context)
-        : changePurposeToPeriod(context);
+    return box.read("isPregnant") == "0" ? changePurposeToPregnancy(context) : changePurposeToPeriod(context);
   }
 
   Widget changePurposeToPregnancy(BuildContext context) {
-    HomeMenstruationController homeMenstruationController =
-        Get.find<HomeMenstruationController>();
+    HomeMenstruationController homeMenstruationController = Get.find<HomeMenstruationController>();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -54,13 +51,16 @@ class ChangePurposeView extends GetView<ProfileController> {
                           ),
                           child: TableCalendar(
                             focusedDay: controller.getFocusedDate,
-                            firstDay:
-                                DateTime.now().subtract(Duration(days: 280)),
+                            firstDay: DateTime.now().subtract(Duration(days: 280)),
                             lastDay: DateTime.now(),
                             startingDayOfWeek: StartingDayOfWeek.monday,
                             onDaySelected: (selectedDay, focusedDay) {
                               controller.setSelectedDate(selectedDay);
                               controller.setFocusedDate(focusedDay);
+
+                              if (selectedDay != homeMenstruationController.haidAwalList.first) {
+                                controller.useLastPeriodData.value = false;
+                              }
                             },
                             onPageChanged: (focusedDay) {
                               controller.setFocusedDate(focusedDay);
@@ -199,19 +199,16 @@ class ChangePurposeView extends GetView<ProfileController> {
                               Obx(
                                 () => Switch(
                                   value: controller.useLastPeriodData.value,
-                                  onChanged: (bool twin) {
-                                    controller.useLastPeriodData.value = twin;
-                                    if (twin == true) {
-                                      controller.setFocusedDate(
-                                          homeMenstruationController
-                                              .haidAwalList.last);
-                                      controller.setSelectedDate(
-                                          homeMenstruationController
-                                              .haidAwalList.last);
-                                    } else {
-                                      controller.setFocusedDate(DateTime.now());
-                                      controller
-                                          .setSelectedDate(DateTime.now());
+                                  onChanged: (bool isUsingLastPeriod) {
+                                    if (controller.selectedDate != homeMenstruationController.haidAwalList.first) {
+                                      controller.useLastPeriodData.value = isUsingLastPeriod;
+                                      if (isUsingLastPeriod == true) {
+                                        controller.setFocusedDate(homeMenstruationController.haidAwalList.first);
+                                        controller.setSelectedDate(homeMenstruationController.haidAwalList.first);
+                                      } else {
+                                        controller.setFocusedDate(DateTime.now());
+                                        controller.setSelectedDate(DateTime.now());
+                                      }
                                     }
                                   },
                                 ),
@@ -254,23 +251,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                   bottom: 15,
                   child: Column(
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          controller.startPregnancy();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          minimumSize: Size(Get.width, 45.h),
-                        ),
-                        child: Text(
-                          "Start Pregnancy",
-                          style: CustomTextStyle.buttonTextStyle(
-                              color: Colors.white),
-                        ),
-                      ),
+                      CustomButton(text: "Start Pregnancy", onPressed: () => controller.startPregnancy()),
                     ],
                   ),
                 )
@@ -313,11 +294,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                           ),
                           child: TableCalendar(
                             focusedDay: controller.getFocusedDate,
-                            firstDay: DateTime.parse(controller
-                                    .currentlyPregnantData
-                                    .value
-                                    .hariPertamaHaidTerakhir ??
-                                DateTime.now().toString()),
+                            firstDay: DateTime.parse(controller.currentlyPregnantData.value.hariPertamaHaidTerakhir ?? DateTime.now().toString()),
                             lastDay: DateTime.now(),
                             startingDayOfWeek: StartingDayOfWeek.monday,
                             onDaySelected: (selectedDay, focusedDay) {
@@ -377,8 +354,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                               headerMargin: EdgeInsets.only(bottom: 10),
                             ),
                             availableGestures: AvailableGestures.all,
-                            calendarBuilders:
-                                CalendarBuilders(dowBuilder: (context, day) {
+                            calendarBuilders: CalendarBuilders(dowBuilder: (context, day) {
                               return Center(
                                 child: Text(
                                   DateFormat.E().format(day),
@@ -437,11 +413,8 @@ class ChangePurposeView extends GetView<ProfileController> {
                                 ),
                               );
                             }, markerBuilder: (context, day, events) {
-                              for (var i = 0;
-                                  i < controller.tanggalAwalMinggu.length;
-                                  i++) {
-                                var weekDatePregnancy =
-                                    controller.tanggalAwalMinggu[i];
+                              for (var i = 0; i < controller.tanggalAwalMinggu.length; i++) {
+                                var weekDatePregnancy = controller.tanggalAwalMinggu[i];
                                 if (day.isAtSameMomentAs(weekDatePregnancy)) {
                                   return Align(
                                     alignment: Alignment.bottomRight,
@@ -533,8 +506,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                       )
                                     ],
                                   ),
-                                  contentPadding: EdgeInsets.fromLTRB(
-                                      16.0, 0.0, 16.0, 20.0),
+                                  contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
                                   value: 'Girl',
                                   groupValue: controller.gender.value,
                                   onChanged: (String? value) {
@@ -570,8 +542,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                       )
                                     ],
                                   ),
-                                  contentPadding: EdgeInsets.fromLTRB(
-                                      16.0, 0.0, 16.0, 20.0),
+                                  contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
                                   value: 'Boy',
                                   groupValue: controller.gender.value,
                                   onChanged: (String? value) {
@@ -591,8 +562,10 @@ class ChangePurposeView extends GetView<ProfileController> {
                     bottom: 15,
                     child: Column(
                       children: [
-                        CustomTransparentButton(
+                        CustomButton(
                           text: "Delete Pregnancy",
+                          textColor: AppColors.black,
+                          backgroundColor: AppColors.transparent,
                           onPressed: () {
                             showDialog(
                               context: context,
@@ -609,28 +582,23 @@ class ChangePurposeView extends GetView<ProfileController> {
                                   contentPadding: EdgeInsets.all(16.0),
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Expanded(
                                           child: ElevatedButton(
                                             onPressed: () => Get.back(),
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  Colors.transparent,
+                                              backgroundColor: Colors.transparent,
                                               elevation: 0,
                                               shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                                                borderRadius: BorderRadius.circular(10),
                                               ),
                                               shadowColor: Colors.transparent,
-                                              minimumSize:
-                                                  Size(Get.width, 45.h),
+                                              minimumSize: Size(Get.width, 45.h),
                                             ),
                                             child: Text(
                                               "No",
-                                              style: CustomTextStyle
-                                                  .buttonTextStyle(),
+                                              style: CustomTextStyle.buttonTextStyle(),
                                             ),
                                           ),
                                         ),
@@ -641,16 +609,13 @@ class ChangePurposeView extends GetView<ProfileController> {
                                               controller.deletePregnancy();
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  AppColors.primary,
+                                              backgroundColor: AppColors.primary,
                                               elevation: 0,
                                               shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                                                borderRadius: BorderRadius.circular(10),
                                               ),
                                               shadowColor: AppColors.primary,
-                                              minimumSize:
-                                                  Size(Get.width, 45.h),
+                                              minimumSize: Size(Get.width, 45.h),
                                             ),
                                             child: Text(
                                               "Yes",
@@ -673,25 +638,13 @@ class ChangePurposeView extends GetView<ProfileController> {
                           },
                         ),
                         SizedBox(height: 5.h),
-                        ElevatedButton(
-                          onPressed: () {
-                            (controller.gender.value == "")
-                                ? null
-                                : controller.endPregnancy();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: (controller.gender.value == "")
-                                ? Colors.grey
-                                : AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            minimumSize: Size(Get.width, 45.h),
-                          ),
-                          child: Text(
-                            "End Pregnancy",
-                            style: CustomTextStyle.buttonTextStyle(
-                                color: Colors.white),
+                        Obx(
+                          () => CustomButton(
+                            text: "End Pregnancy",
+                            onPressed: () {
+                              (controller.gender.value == "") ? null : controller.endPregnancy();
+                            },
+                            backgroundColor: (controller.gender.value == "") ? Colors.grey : AppColors.primary,
                           ),
                         ),
                       ],

@@ -2,17 +2,21 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
+import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
+import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:uuid/uuid.dart';
 
 class ReminderController extends GetxController {
   final ApiService apiService = ApiService();
@@ -20,6 +24,7 @@ class ReminderController extends GetxController {
   late final LogRepository logRepository = LogRepository(apiService);
   late final LogService _logService;
   late final SyncDataRepository _syncDataRepository;
+  final LocalNotificationService localNotificationService = LocalNotificationService();
 
   RxList<Reminders> reminders = <Reminders>[].obs;
   Rx<DateTime?> dateSelected = Rx<DateTime?>(DateTime.now());
@@ -132,60 +137,84 @@ class ReminderController extends GetxController {
   // }
 
   Future<void> fetchAllReminder() async {
-    try {
-      List<Reminders>? result = await _logService.getAllReminder();
+    List<Reminders>? result = await _logService.getAllReminder();
 
-      if (result != null) {
-        reminders.assignAll(result);
-      } else {
-        print("Error: Unable to fetch articles");
-      }
-
+    if (result != null) {
+      reminders.assignAll(result);
       update();
-    } catch (e) {
-      print("Error fetching articles: $e");
+    } else {
+      print("Error: Unable to fetch reminders");
     }
   }
 
-  Future<void> storeReminder() async {
-    bool isConnected = await CheckConnectivity().isConnectedToInternet();
-    String? selectedDate = formattedSelectedDate;
-
-    if (selectedDate == null || selectedDate.isEmpty) {
-      selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    }
-
-    Reminders newReminder = Reminders(
-      title: getReminderTitle(),
-      description: getReminderDescription(),
-      datetime: '$selectedDate $formattedSelectedTime',
-    );
-
-    if (storageService.getIsAuth() && !isConnected) {
-      await _logService.addReminder(newReminder);
-      saveSyncLog(selectedDate);
-      return;
-    }
-
+  void checkReminder(BuildContext context) {
     try {
-      var reminderAdded = await logRepository.storeReminder(getReminderTitle(), getReminderDescription(), '$selectedDate $formattedSelectedTime');
-      Reminders newReminders = Reminders(
-        remoteId: reminderAdded["data"]["id"],
+      if (formattedSelectedDate == null || formattedSelectedDate!.isEmpty) {
+        throw "Please select a date when the reminder will be triggered";
+      }
+      if (formattedSelectedTime == null || formattedSelectedTime!.isEmpty) {
+        throw "Please select a time when the reminder will be triggered";
+      }
+      if (getReminderTitle().isEmpty) {
+        throw "Please fill out the reminder title";
+      }
+      if (getReminderDescription().isEmpty) {
+        throw "Please fill out the reminder description";
+      }
+
+      storeReminder(context);
+    } catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
+  }
+
+  Future<void> storeReminder(context) async {
+    bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool localSuccess = false;
+    String? selectedDate = formattedSelectedDate;
+    var uuid = Uuid();
+    var id = uuid.v4();
+
+    if (selectedDate != null && formattedSelectedTime != null) {
+      Reminders newReminder = Reminders(
+        id: id,
         title: getReminderTitle(),
         description: getReminderDescription(),
         datetime: '$selectedDate $formattedSelectedTime',
       );
 
-      await _logService.addReminder(newReminders);
+      try {
+        await _logService.addReminder(newReminder);
+        Get.showSnackbar(Ui.SuccessSnackBar(message: 'Reminder added successfully!'));
+        localSuccess = true;
+      } catch (e) {
+        Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add reminder. Please try again later!'));
+      }
+
+      await fetchAllReminder();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => ReminderView()),
+        (Route<dynamic> route) => route.isFirst,
+      );
+
+      if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        try {
+          await logRepository.storeReminder(id, getReminderTitle(), getReminderDescription(), '$selectedDate $formattedSelectedTime');
+        } catch (e) {
+          await saveAddSyncReminder(id, selectedDate);
+        }
+      } else if (localSuccess) {
+        await saveAddSyncReminder(id, selectedDate);
+      }
+
       cancelEdit();
-      fetchAllReminder();
-    } catch (e) {
-      saveSyncLog(selectedDate);
     }
   }
 
-  Future<void> saveSyncLog(String selectedDate) async {
+  Future<void> saveAddSyncReminder(String id, String selectedDate) async {
     Map<String, dynamic> data = {
+      'id': id,
       'title': getReminderTitle(),
       'description': getReminderDescription(),
       'datetime': '$selectedDate $formattedSelectedTime',
@@ -203,8 +232,9 @@ class ReminderController extends GetxController {
     await _syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> editReminder(String id, String remoteId, String originalTitle, String? originalDescription, String? originalDateTime) async {
+  Future<void> editReminder(String id, String originalTitle, String? originalDescription, String? originalDateTime, context) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool localSuccess = false;
     String editedTitle = getReminderTitle().isEmpty ? originalTitle : getReminderTitle();
     String? editedDescription = getReminderDescription().isEmpty ? originalDescription : getReminderDescription();
     String? editedSelectedDate = formattedSelectedDate?.isEmpty ?? true ? null : formattedSelectedDate;
@@ -214,116 +244,102 @@ class ReminderController extends GetxController {
     editedSelectedTime ??= originalDateTime != null ? DateFormat('HH:mm').format(DateTime.parse(originalDateTime)) : null;
 
     String? editedDateTime = (editedSelectedDate != null && editedSelectedTime != null) ? '$editedSelectedDate $editedSelectedTime' : null;
-
     Reminders editReminder = Reminders(
       id: id,
-      remoteId: remoteId,
       title: editedTitle,
       description: editedDescription,
       datetime: editedDateTime,
     );
 
-    await _logService.editReminder(editReminder);
-
-    if (storageService.getIsAuth() && !isConnected) {
-      Map<String, dynamic> data = {
-        'title': editedTitle,
-        'description': editedDescription,
-        'datetime': editedDateTime,
-      };
-
-      String jsonData = jsonEncode(data);
-
-      SyncLog syncLog = SyncLog(
-        tableName: 'tb_data_harian',
-        operation: 'addReminder',
-        data: jsonData,
-        createdAt: DateTime.now().toString(),
-      );
-
-      await _syncDataRepository.addSyncLogData(syncLog);
-      return;
+    try {
+      await _logService.editReminder(editReminder);
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Reminder edited successfully!'));
+      localSuccess = true;
+    } catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to edit reminder. Please try again later!'));
     }
 
+    await fetchAllReminder();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => ReminderView()),
+      (Route<dynamic> route) => route.isFirst,
+    );
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await logRepository.editReminder(id, editedTitle, editedDescription, editedDateTime ?? "${DateTime.now()}");
+      } catch (e) {
+        await saveEditSyncReminder(id, editedTitle, editedDescription, editedDateTime);
+      }
+    } else if (localSuccess) {
+      await saveEditSyncReminder(id, editedTitle, editedDescription, editedDateTime);
+    }
+
+    cancelEdit();
+  }
+
+  Future<void> saveEditSyncReminder(String id, String? editedTitle, String? editedDescription, String? editedDateTime) async {
+    Map<String, dynamic> data = {
+      'id': id,
+      'title': editedTitle,
+      'description': editedDescription,
+      'datetime': editedDateTime,
+    };
+
+    String jsonData = jsonEncode(data);
+
+    SyncLog syncLog = SyncLog(
+      tableName: 'tb_data_harian',
+      operation: 'editReminder',
+      data: jsonData,
+      createdAt: DateTime.now().toString(),
+    );
+
+    await _syncDataRepository.addSyncLogData(syncLog);
+  }
+
+  Future<void> deleteReminder(String id) async {
+    bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool localSuccess = false;
+
     try {
-      print(remoteId);
-      await logRepository.editReminder(
-        remoteId,
-        editedTitle,
-        editedDescription,
-        editedDateTime ?? "${DateTime.now()}",
-      );
-      await _logService.editReminder(editReminder);
-      fetchAllReminder();
-      cancelEdit();
+      await _logService.deleteReminder(id);
+      localSuccess = true;
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'All reminder deleted successfully!'));
     } catch (e) {
-      print("Error fetching reminders: $e");
-      Map<String, dynamic> data = {
-        'title': editedTitle,
-        'description': editedDescription,
-        'datetime': editedDateTime,
-      };
+      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to delete all reminder. Please try again later!'));
+    }
 
-      String jsonData = jsonEncode(data);
+    await fetchAllReminder();
+    update();
 
-      SyncLog syncLog = SyncLog(
-        tableName: 'tb_data_harian',
-        operation: 'addReminder',
-        data: jsonData,
-        createdAt: DateTime.now().toString(),
-      );
-
-      await _syncDataRepository.addSyncLogData(syncLog);
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await logRepository.deleteReminder(id);
+      } catch (e) {
+        await deleteSyncReminder(id);
+      }
+    } else {
+      await deleteSyncReminder(id);
     }
   }
 
-  Future<void> deleteReminder(String id, String remoteId) async {
-    bool isConnected = await CheckConnectivity().isConnectedToInternet();
-    await _logService.deleteReminder(id);
+  Future<void> deleteSyncReminder(String id) async {
+    Map<String, dynamic> data = {
+      'id': id,
+    };
 
-    if (storageService.getIsAuth() && !isConnected) {
-      Map<String, dynamic> data = {
-        'id': remoteId,
-      };
+    String jsonData = jsonEncode(data);
 
-      String jsonData = jsonEncode(data);
+    SyncLog syncLog = SyncLog(
+      tableName: 'tb_data_harian',
+      operation: 'deleteReminder',
+      data: jsonData,
+      createdAt: DateTime.now().toString(),
+    );
 
-      SyncLog syncLog = SyncLog(
-        tableName: 'tb_data_harian',
-        operation: 'addReminder',
-        data: jsonData,
-        createdAt: DateTime.now().toString(),
-      );
-
-      await _syncDataRepository.addSyncLogData(syncLog);
-      return;
-    }
-
-    try {
-      await logRepository.deleteReminder(remoteId);
-      fetchAllReminder();
-      update();
-    } catch (e) {
-      print("Error fetching reminders: $e");
-      Map<String, dynamic> data = {
-        'id': remoteId,
-      };
-
-      String jsonData = jsonEncode(data);
-
-      SyncLog syncLog = SyncLog(
-        tableName: 'tb_data_harian',
-        operation: 'addReminder',
-        data: jsonData,
-        createdAt: DateTime.now().toString(),
-      );
-
-      await _syncDataRepository.addSyncLogData(syncLog);
-    }
-
-    await logRepository.deleteReminder(id);
-    fetchAllReminder();
-    update();
+    await _syncDataRepository.addSyncLogData(syncLog);
   }
 
   void cancelEdit() {

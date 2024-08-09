@@ -10,8 +10,7 @@ import 'package:periodnpregnancycalender/app/services/api_service.dart';
 
 class InsightDetailController extends GetxController {
   final ApiService apiService = ApiService();
-  late final ArticleRepository articleRepository =
-      ArticleRepository(apiService);
+  late final ArticleRepository articleRepository = ArticleRepository(apiService);
   late int? id;
   final TextEditingController textEditingController = TextEditingController();
   late Stream<void> articleStream;
@@ -60,9 +59,7 @@ class InsightDetailController extends GetxController {
     setCommentContent("");
 
     actionStream.listen((action) {
-      if (action == "comment_added" ||
-          action == "comment_deleted" ||
-          action == "comment_liked") {
+      if (action == "comment_added" || action == "comment_deleted" || action == "comment_liked") {
         updateComments();
       }
     });
@@ -147,8 +144,7 @@ class InsightDetailController extends GetxController {
 
   Future<void> storeComment() async {
     try {
-      await articleRepository.storeComment(
-          getParentCommentId(), getArticleId(), getCommentContent());
+      await articleRepository.storeComment(getParentCommentId(), getArticleId(), getCommentContent());
       setCommentContent("");
       addAction("comment_added");
       update();
@@ -159,7 +155,7 @@ class InsightDetailController extends GetxController {
 
   Future<void> likeComment(bool isLiked, int commentId) async {
     try {
-      await articleRepository.likeComment(getUsernameId(), getCommentId());
+      await articleRepository.likeComment(getCommentId());
       addAction("comment_liked");
       update();
     } catch (e) {

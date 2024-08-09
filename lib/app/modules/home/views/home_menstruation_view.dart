@@ -9,13 +9,14 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_add_period_bottom_sheet.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_card_predictions.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/chinese_pred_detail_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/daily_log_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/shettles_pred_detail_view.dart';
-import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../controllers/home_menstruation_controller.dart';
@@ -31,22 +32,12 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
           headerSliverBuilder: ((context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
-                // shadowColor: Colors.white,
                 backgroundColor: Colors.white,
                 surfaceTintColor: Colors.white,
                 floating: true,
                 title: Text('Appbar'),
                 centerTitle: true,
-                snap: true,
-                actions: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: IconButton(
-                      icon: Icon(Icons.notifications),
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
+                // snap: true,
               )
             ];
           }),
@@ -56,7 +47,6 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                Get.log("[ERROR] $snapshot.error", isError: true);
                 return Text("Error: ${snapshot.error}");
               } else {
                 return Padding(
@@ -150,17 +140,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                 availableGestures: AvailableGestures.all,
                                 calendarBuilders: CalendarBuilders(
                                   defaultBuilder: (context, day, focusedDay) {
-                                    for (int i = 0;
-                                        i < controller.haidAwalList.length;
-                                        i++) {
-                                      if (day.isAtSameMomentAs(
-                                              controller.haidAwalList[i]) ||
-                                          day.isAfter(
-                                                  controller.haidAwalList[i]) &&
-                                              day.isBefore(controller
-                                                  .haidAkhirList[i]) ||
-                                          day.isAtSameMomentAs(
-                                              controller.haidAkhirList[i]))
+                                    for (int i = 0; i < controller.haidAwalList.length; i++) {
+                                      if (day.isAtSameMomentAs(controller.haidAwalList[i]) || day.isAfter(controller.haidAwalList[i]) && day.isBefore(controller.haidAkhirList[i]) || day.isAtSameMomentAs(controller.haidAkhirList[i]))
                                         return Container(
                                           margin: EdgeInsets.all(6),
                                           decoration: BoxDecoration(
@@ -180,11 +161,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                         );
                                     }
 
-                                    for (int j = 0;
-                                        j < controller.ovulasiList.length;
-                                        j++) {
-                                      if (day.isAtSameMomentAs(
-                                          controller.ovulasiList[j])) {
+                                    for (int j = 0; j < controller.ovulasiList.length; j++) {
+                                      if (day.isAtSameMomentAs(controller.ovulasiList[j])) {
                                         return Container(
                                           margin: EdgeInsets.all(6),
                                           decoration: BoxDecoration(
@@ -205,17 +183,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       }
                                     }
 
-                                    for (int i = 0;
-                                        i < controller.masaSuburAwalList.length;
-                                        i++) {
-                                      if (day.isAtSameMomentAs(controller
-                                              .masaSuburAwalList[i]) ||
-                                          day.isAfter(controller
-                                                  .masaSuburAwalList[i]) &&
-                                              day.isBefore(controller
-                                                  .masaSuburAkhirList[i]) ||
-                                          day.isAtSameMomentAs(controller
-                                              .masaSuburAkhirList[i])) {
+                                    for (int i = 0; i < controller.masaSuburAwalList.length; i++) {
+                                      if (day.isAtSameMomentAs(controller.masaSuburAwalList[i]) || day.isAfter(controller.masaSuburAwalList[i]) && day.isBefore(controller.masaSuburAkhirList[i]) || day.isAtSameMomentAs(controller.masaSuburAkhirList[i])) {
                                         return Container(
                                           margin: EdgeInsets.all(6),
                                           decoration: BoxDecoration(
@@ -236,19 +205,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       }
                                     }
 
-                                    for (int i = 0;
-                                        i <
-                                            controller
-                                                .predictHaidAwalList.length;
-                                        i++) {
-                                      if ((day.isAtSameMomentAs(controller
-                                              .predictHaidAwalList[i]) ||
-                                          day.isAfter(controller
-                                                  .predictHaidAwalList[i]) &&
-                                              day.isBefore(controller
-                                                  .predictHaidAkhirList[i]) ||
-                                          day.isAtSameMomentAs(controller
-                                              .predictHaidAkhirList[i]))) {
+                                    for (int i = 0; i < controller.predictHaidAwalList.length; i++) {
+                                      if ((day.isAtSameMomentAs(controller.predictHaidAwalList[i]) || day.isAfter(controller.predictHaidAwalList[i]) && day.isBefore(controller.predictHaidAkhirList[i]) || day.isAtSameMomentAs(controller.predictHaidAkhirList[i]))) {
                                         return Container(
                                           margin: EdgeInsets.all(8),
                                           child: DottedBorder(
@@ -271,13 +229,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       }
                                     }
 
-                                    for (int j = 0;
-                                        j <
-                                            controller
-                                                .predictOvulasiList.length;
-                                        j++) {
-                                      if (day.isAtSameMomentAs(
-                                          controller.predictOvulasiList[j])) {
+                                    for (int j = 0; j < controller.predictOvulasiList.length; j++) {
+                                      if (day.isAtSameMomentAs(controller.predictOvulasiList[j])) {
                                         return Container(
                                           margin: EdgeInsets.all(8),
                                           child: DottedBorder(
@@ -300,21 +253,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       }
                                     }
 
-                                    for (int i = 0;
-                                        i <
-                                            controller.predictMasaSuburAwalList
-                                                .length;
-                                        i++) {
-                                      if ((day.isAtSameMomentAs(controller
-                                              .predictMasaSuburAwalList[i]) ||
-                                          day.isAfter(controller
-                                                      .predictMasaSuburAwalList[
-                                                  i]) &&
-                                              day.isBefore(controller
-                                                      .predictMasaSuburAkhirList[
-                                                  i]) ||
-                                          day.isAtSameMomentAs(controller
-                                              .predictMasaSuburAkhirList[i]))) {
+                                    for (int i = 0; i < controller.predictMasaSuburAwalList.length; i++) {
+                                      if ((day.isAtSameMomentAs(controller.predictMasaSuburAwalList[i]) || day.isAfter(controller.predictMasaSuburAwalList[i]) && day.isBefore(controller.predictMasaSuburAkhirList[i]) || day.isAtSameMomentAs(controller.predictMasaSuburAkhirList[i]))) {
                                         return Container(
                                           margin: EdgeInsets.all(8),
                                           child: DottedBorder(
@@ -399,20 +339,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     );
                                   },
                                   markerBuilder: (context, day, events) {
-                                    for (var prediction in controller
-                                            .data?.shettlesGenderPrediction ??
-                                        []) {
-                                      if ((day.isAtSameMomentAs(
-                                              prediction.boyStartDate ??
-                                                  DateTime.now()) ||
-                                          day.isAfter(prediction.boyStartDate ??
-                                                  DateTime.now()) &&
-                                              day.isBefore(
-                                                  prediction.boyEndDate ??
-                                                      DateTime.now()) ||
-                                          day.isAtSameMomentAs(
-                                              prediction.boyEndDate ??
-                                                  DateTime.now()))) {
+                                    for (var prediction in controller.data?.shettlesGenderPrediction ?? []) {
+                                      if ((day.isAtSameMomentAs(prediction.boyStartDate ?? DateTime.now()) || day.isAfter(prediction.boyStartDate ?? DateTime.now()) && day.isBefore(prediction.boyEndDate ?? DateTime.now()) || day.isAtSameMomentAs(prediction.boyEndDate ?? DateTime.now()))) {
                                         return Align(
                                           alignment: Alignment.bottomRight,
                                           child: SvgPicture.asset(
@@ -422,18 +350,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                         );
                                       }
 
-                                      if ((day.isAtSameMomentAs(
-                                                  prediction.girlStartDate ??
-                                                      DateTime.now()) ||
-                                              day.isAfter(
-                                                  prediction.girlStartDate ??
-                                                      DateTime.now())) &&
-                                          (day.isBefore(
-                                                  prediction.girlEndDate ??
-                                                      DateTime.now()) ||
-                                              day.isAtSameMomentAs(
-                                                  prediction.girlEndDate ??
-                                                      DateTime.now()))) {
+                                      if ((day.isAtSameMomentAs(prediction.girlStartDate ?? DateTime.now()) || day.isAfter(prediction.girlStartDate ?? DateTime.now())) && (day.isBefore(prediction.girlEndDate ?? DateTime.now()) || day.isAtSameMomentAs(prediction.girlEndDate ?? DateTime.now()))) {
                                         return Align(
                                           alignment: Alignment.bottomRight,
                                           child: SvgPicture.asset(
@@ -443,6 +360,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                         );
                                       }
                                     }
+                                    return Container();
                                   },
                                 ),
                               ),
@@ -464,8 +382,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Obx(() => Text(
                                             "${controller.eventDatas.value.event}",
@@ -506,8 +423,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                           TextSpan(
                                             children: [
                                               TextSpan(
-                                                text:
-                                                    "${controller.eventDatas.value.cycleDay ?? 'null'}",
+                                                text: "${controller.eventDatas.value.cycleDay ?? 'null'}",
                                                 style: TextStyle(
                                                   color: Color(0xFF090A0A),
                                                   fontSize: 24,
@@ -516,12 +432,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                 ),
                                               ),
                                               TextSpan(
-                                                text: controller
-                                                    .getOrdinalSuffix(controller
-                                                            .eventDatas
-                                                            .value
-                                                            .cycleDay ??
-                                                        0),
+                                                text: controller.getOrdinalSuffix(controller.eventDatas.value.cycleDay ?? 0),
                                                 style: TextStyle(
                                                   color: Color(0xFF090A0A),
                                                   fontSize: 20,
@@ -563,66 +474,54 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                           Column(
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Obx(
-                                    () => CustomCardPredictionCycle(
+                                    () => CustomCardPrediction(
                                       containerColor: Color(0xFFFFD7DF),
                                       primaryColor: AppColors.primary,
-                                      daysLeft:
-                                          '${controller.eventDatas.value.daysUntilNextMenstruation} Days Left',
+                                      daysLeft: '${controller.eventDatas.value.daysUntilNextMenstruation} Days Left',
                                       predictionType: 'Period',
-                                      datePrediction:
-                                          "${controller.formatDate(controller.eventDatas.value.nextMenstruationStart)} - ${controller.formatDate(controller.eventDatas.value.nextMenstruationEnd)}",
-                                      icons: FontAwesomeIcons.droplet,
+                                      datePrediction: "${controller.formatDate(controller.eventDatas.value.nextMenstruationStart)} - ${controller.formatDate(controller.eventDatas.value.nextMenstruationEnd)}",
+                                      iconPath: 'assets/icon/blood.png',
                                     ),
                                   ),
                                   SizedBox(width: 10.h),
                                   Obx(
-                                    () => CustomCardPredictionCycle(
+                                    () => CustomCardPrediction(
                                       containerColor: Color(0xFFFFE69E),
                                       primaryColor: Color(0xFFFD9414),
-                                      daysLeft:
-                                          '${controller.eventDatas.value.daysUntilNextFertile} Days Left',
+                                      daysLeft: '${controller.eventDatas.value.daysUntilNextFertile} Days Left',
                                       predictionType: 'Fertile days',
-                                      datePrediction:
-                                          '${controller.formatDate(controller.eventDatas.value.nextFertileStart)} - ${controller.formatDate(controller.eventDatas.value.nextFertileEnd)}',
-                                      icons: FontAwesomeIcons.droplet,
+                                      datePrediction: '${controller.formatDate(controller.eventDatas.value.nextFertileStart)} - ${controller.formatDate(controller.eventDatas.value.nextFertileEnd)}',
+                                      iconPath: 'assets/icon/sunflower.png',
                                     ),
                                   ),
                                 ],
                               ),
                               SizedBox(height: 15.h),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Obx(
-                                    () => CustomCardPredictionCycle(
+                                    () => CustomCardPrediction(
                                       containerColor: Color(0x7FA5F9FF),
-                                      primaryColor:
-                                          Color.fromARGB(255, 64, 176, 184),
-                                      daysLeft:
-                                          '${controller.eventDatas.value.daysUntilNextOvulation} Days Left',
+                                      primaryColor: Color.fromARGB(255, 64, 176, 184),
+                                      daysLeft: '${controller.eventDatas.value.daysUntilNextOvulation} Days Left',
                                       predictionType: 'Ovulation',
-                                      datePrediction:
-                                          '${controller.formatDate(controller.eventDatas.value.nextOvulation)}',
-                                      icons: Icons.abc,
+                                      datePrediction: '${controller.formatDate(controller.eventDatas.value.nextOvulation)}',
+                                      iconPath: 'assets/icon/ovulation.png',
                                     ),
                                   ),
                                   SizedBox(width: 10.h),
                                   Obx(
-                                    () => CustomCardPredictionCycle(
+                                    () => CustomCardPrediction(
                                       containerColor: Color(0xFFC6FCE5),
-                                      primaryColor:
-                                          Color.fromARGB(255, 111, 200, 161),
-                                      daysLeft:
-                                          '${controller.eventDatas.value.daysUntilNextLuteal} Days Left',
+                                      primaryColor: Color.fromARGB(255, 111, 200, 161),
+                                      daysLeft: '${controller.eventDatas.value.daysUntilNextLuteal} Days Left',
                                       predictionType: 'Safe days',
-                                      datePrediction:
-                                          '${controller.formatDate(controller.eventDatas.value.nextLutealStart)} - ${controller.formatDate(controller.eventDatas.value.nextLutealEnd)}',
-                                      icons: FontAwesomeIcons.shieldHalved,
+                                      datePrediction: '${controller.formatDate(controller.eventDatas.value.nextLutealStart)} - ${controller.formatDate(controller.eventDatas.value.nextLutealEnd)}',
+                                      iconPath: 'assets/icon/shield.png',
                                     ),
                                   )
                                 ],
@@ -641,19 +540,16 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  16.0, 16.0, 16.0, 16.0),
+                              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         "My Cycle",
-                                        style:
-                                            CustomTextStyle.heading4TextStyle(),
+                                        style: CustomTextStyle.heading4TextStyle(),
                                       ),
                                       GestureDetector(
                                         child: Row(
@@ -661,8 +557,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                             Text(
                                               "See more",
                                               style: TextStyle(
-                                                color: Colors.black
-                                                    .withOpacity(0.6),
+                                                color: Colors.black.withOpacity(0.6),
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -687,10 +582,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                   ),
                                   SizedBox(height: 5),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Column(
                                         children: [
@@ -698,8 +591,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                             height: 100.h,
                                             width: 155,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
+                                              borderRadius: BorderRadius.circular(12),
                                               color: Color(0xFFFFD7DF),
                                               border: Border.all(
                                                 color: AppColors.primary,
@@ -707,22 +599,17 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               ),
                                             ),
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(8.0),
                                               child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     "Average Cycle Length",
                                                     style: TextStyle(
                                                       color: AppColors.primary,
                                                       fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w700,
+                                                      fontWeight: FontWeight.w700,
                                                     ),
                                                   ),
                                                   SizedBox(height: 10),
@@ -730,26 +617,21 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                     text: TextSpan(
                                                       children: [
                                                         TextSpan(
-                                                          text:
-                                                              "${controller.data?.avgPeriodCycle}",
+                                                          text: "${controller.data?.avgPeriodCycle}",
                                                           style: TextStyle(
                                                             fontSize: 23.sp,
-                                                            fontFamily:
-                                                                'Poppins',
+                                                            fontFamily: 'Poppins',
                                                             color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.w800,
+                                                            fontWeight: FontWeight.w800,
                                                           ),
                                                         ),
                                                         TextSpan(
                                                           text: " days",
                                                           style: TextStyle(
                                                             fontSize: 14.sp,
-                                                            fontFamily:
-                                                                'Poppins',
+                                                            fontFamily: 'Poppins',
                                                             color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                            fontWeight: FontWeight.w500,
                                                           ),
                                                         ),
                                                       ],
@@ -767,8 +649,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                             height: 100.h,
                                             width: 155,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
+                                              borderRadius: BorderRadius.circular(12),
                                               // color: Color(0xFFFFE69E),
                                               border: Border.all(
                                                 color: Color(0xFFFD9414),
@@ -777,22 +658,17 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               color: Color(0xFFFFE69E),
                                             ),
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(8.0),
                                               child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     "Average Period Length",
                                                     style: TextStyle(
                                                       color: Color(0xFFFD9414),
                                                       fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w700,
+                                                      fontWeight: FontWeight.w700,
                                                     ),
                                                   ),
                                                   SizedBox(height: 10),
@@ -800,26 +676,21 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                     text: TextSpan(
                                                       children: [
                                                         TextSpan(
-                                                          text:
-                                                              "${controller.data?.avgPeriodDuration}",
+                                                          text: "${controller.data?.avgPeriodDuration}",
                                                           style: TextStyle(
                                                             fontSize: 23.sp,
-                                                            fontFamily:
-                                                                'Poppins',
+                                                            fontFamily: 'Poppins',
                                                             color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.w700,
+                                                            fontWeight: FontWeight.w700,
                                                           ),
                                                         ),
                                                         TextSpan(
                                                           text: " days",
                                                           style: TextStyle(
                                                             fontSize: 14.sp,
-                                                            fontFamily:
-                                                                'Poppins',
+                                                            fontFamily: 'Poppins',
                                                             color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                            fontWeight: FontWeight.w500,
                                                           ),
                                                         ),
                                                       ],
@@ -852,10 +723,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       child: Container(
                                         height: 320.h,
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          color: const Color.fromARGB(
-                                              255, 234, 255, 44),
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: const Color.fromARGB(255, 234, 255, 44),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
@@ -880,30 +749,12 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                 ),
                                               ),
                                               SizedBox(height: 10),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Get.to(() => ReminderView());
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      AppColors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                  minimumSize:
-                                                      Size(Get.width, 45.h),
-                                                ),
-                                                child: Text(
-                                                  "Reminder",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              )
+                                              CustomButton(
+                                                text: "Reminder",
+                                                textColor: Colors.black,
+                                                backgroundColor: AppColors.white,
+                                                onPressed: () => Get.to(() => ReminderView()),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -929,8 +780,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       child: Container(
                                         height: 320.h,
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                           color: Colors.cyan,
                                         ),
                                         child: Padding(
@@ -956,30 +806,12 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                 ),
                                               ),
                                               SizedBox(height: 10),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Get.to(() => DailyLogView());
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      AppColors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                  minimumSize:
-                                                      Size(Get.width, 45.h),
-                                                ),
-                                                child: Text(
-                                                  "Log",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              )
+                                              CustomButton(
+                                                text: "Daily Log",
+                                                textColor: Colors.black,
+                                                backgroundColor: AppColors.white,
+                                                onPressed: () => Get.to(() => DailyLogView()),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -1001,12 +833,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                           SizedBox(height: 15),
                           Obx(
                             () => Visibility(
-                              visible: controller
-                                      .eventDatas
-                                      .value
-                                      .chineseGenderPrediction
-                                      ?.genderPrediction !=
-                                  null,
+                              visible: controller.eventDatas.value.chineseGenderPrediction?.genderPrediction != null,
                               child: Container(
                                 height: 350,
                                 width: Get.width,
@@ -1021,8 +848,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                         height: 295.h,
                                         width: Get.width,
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                           color: Color(0xFF97B3E4),
                                         ),
                                         child: Padding(
@@ -1030,8 +856,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                           child: Row(
                                             children: [
                                               Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   SvgPicture.asset(
                                                     '${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? 'assets/image/baby-girl.svg' : 'assets/image/baby-boy.svg'}',
@@ -1045,8 +870,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                       height: 1.5,
                                                       fontFamily: 'Poppins',
                                                       color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w700,
+                                                      fontWeight: FontWeight.w700,
                                                     ),
                                                   )
                                                 ],
@@ -1054,8 +878,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               SizedBox(width: 20),
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       "Did you know?",
@@ -1064,8 +887,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                         height: 1.5,
                                                         fontFamily: 'Poppins',
                                                         color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                     SizedBox(height: 5),
@@ -1076,40 +898,24 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                         height: 1.5,
                                                         fontFamily: 'Poppins',
                                                         color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.w400,
+                                                        fontWeight: FontWeight.w400,
                                                       ),
                                                     ),
                                                     SizedBox(height: 5),
                                                     ElevatedButton(
                                                       onPressed: () {
-                                                        Get.to(
-                                                            () =>
-                                                                ChinesePredDetailView(),
-                                                            arguments: controller
-                                                                .eventDatas
-                                                                .value
-                                                                .chineseGenderPrediction);
+                                                        Get.to(() => ChinesePredDetailView(), arguments: controller.eventDatas.value.chineseGenderPrediction);
                                                       },
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        backgroundColor:
-                                                            AppColors.primary,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: AppColors.primary,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(10),
                                                         ),
-                                                        minimumSize:
-                                                            Size(50.w, 40.h),
+                                                        minimumSize: Size(50.w, 40.h),
                                                       ),
                                                       child: Text(
                                                         "Learn more",
-                                                        style: CustomTextStyle
-                                                            .buttonTextStyle(
-                                                                color: Colors
-                                                                    .white),
+                                                        style: CustomTextStyle.buttonTextStyle(color: Colors.white),
                                                       ),
                                                     )
                                                   ],
@@ -1129,12 +935,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                           height: 60,
                                           decoration: BoxDecoration(
                                             color: Color(0xFF97B3E4),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            border: Border.all(
-                                                color: Color.fromARGB(
-                                                    255, 68, 99, 153),
-                                                width: 5.0),
+                                            borderRadius: BorderRadius.circular(12),
+                                            border: Border.all(color: Color.fromARGB(255, 68, 99, 153), width: 5.0),
                                           ),
                                           child: Center(
                                               child: Padding(
@@ -1161,9 +963,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                           SizedBox(height: 5),
                           Obx(
                             () => Visibility(
-                              visible: controller.eventDatas.value
-                                      .shettlesGenderPrediction !=
-                                  null,
+                              visible: controller.eventDatas.value.shettlesGenderPrediction != null,
                               child: Container(
                                 width: Get.width,
                                 height: 380,
@@ -1177,15 +977,13 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                         height: 335.h,
                                         width: Get.width,
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                           color: Color(0xFFC1ECF0),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(20.0),
                                           child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 "Increase Gender Prediction Probability",
@@ -1203,47 +1001,39 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                   TextSpan(
                                                     children: [
                                                       TextSpan(
-                                                        text:
-                                                            'Aim for intercourse on ovulation day and the next 2-3 days ',
+                                                        text: 'Aim for intercourse on ovulation day and the next 2-3 days ',
                                                         style: TextStyle(
                                                           fontSize: 14.sp,
                                                           height: 1.5,
                                                           fontFamily: 'Poppins',
                                                           color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w400,
+                                                          fontWeight: FontWeight.w400,
                                                         ),
                                                       ),
                                                       TextSpan(
-                                                        text:
-                                                            'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate.toString())} to likely conceive a male',
+                                                        text: 'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate.toString())} to likely conceive a male',
                                                         style: TextStyle(
                                                           fontSize: 15.sp,
                                                           color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       TextSpan(
-                                                        text:
-                                                            ', and have intercourse from the end of menstruation until three days before ovulation, avoiding sex 2-3 days before ovulation ',
+                                                        text: ', and have intercourse from the end of menstruation until three days before ovulation, avoiding sex 2-3 days before ovulation ',
                                                         style: TextStyle(
                                                           fontSize: 14.sp,
                                                           height: 1.5,
                                                           fontFamily: 'Poppins',
                                                           color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w400,
+                                                          fontWeight: FontWeight.w400,
                                                         ),
                                                       ),
                                                       TextSpan(
-                                                        text:
-                                                            'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate.toString())} to likely conceive a female.',
+                                                        text: 'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate.toString())} to likely conceive a female.',
                                                         style: TextStyle(
                                                           fontSize: 15.sp,
                                                           color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                     ],
@@ -1253,29 +1043,18 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               SizedBox(height: 5),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  Get.to(
-                                                      () =>
-                                                          ShettlesPredDetailView(),
-                                                      arguments: controller
-                                                          .eventDatas
-                                                          .value
-                                                          .shettlesGenderPrediction);
+                                                  Get.to(() => ShettlesPredDetailView(), arguments: controller.eventDatas.value.shettlesGenderPrediction);
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      AppColors.primary,
+                                                  backgroundColor: AppColors.primary,
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                                    borderRadius: BorderRadius.circular(10),
                                                   ),
                                                   minimumSize: Size(50.w, 40.h),
                                                 ),
                                                 child: Text(
                                                   "Learn more",
-                                                  style: CustomTextStyle
-                                                      .buttonTextStyle(
-                                                          color: Colors.white),
+                                                  style: CustomTextStyle.buttonTextStyle(color: Colors.white),
                                                 ),
                                               )
                                             ],
@@ -1292,12 +1071,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                           height: 60,
                                           decoration: BoxDecoration(
                                             color: Color(0xFFC1ECF0),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            border: Border.all(
-                                                color: Color.fromARGB(
-                                                    255, 85, 148, 154),
-                                                width: 5.0),
+                                            borderRadius: BorderRadius.circular(12),
+                                            border: Border.all(color: Color.fromARGB(255, 85, 148, 154), width: 5.0),
                                           ),
                                           child: Center(
                                               child: Padding(
@@ -1354,7 +1129,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                           AddPeriodBottomSheetWidget(
                             closeModalBottomSheet: () async {
                               controller.cancelEdit();
-                              Get.back();
+                              Get.back(closeOverlays: true);
                             },
                             title: "Add Period Cycle",
                             buttonCaption: "Add Period",
@@ -1379,29 +1154,19 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                               ),
                             ),
                             addPeriodOnPressedButton: () async {
-                              controller.addPeriod(
-                                  controller.data?.avgPeriodDuration ?? 7,
-                                  controller.data?.avgPeriodCycle ?? 28);
-                              await controller.fetchCycleData();
-                              controller.dateSelectedEvent(DateTime.now());
-                              Get.offAllNamed(Routes.NAVIGATION_MENU);
+                              controller.addPeriod(controller.data?.avgPeriodDuration ?? 7, controller.data?.avgPeriodCycle ?? 28);
                             },
-                            calenderValue: [
-                              controller.startDate.value,
-                              controller.endDate.value
-                            ],
+                            calenderValue: [controller.startDate.value, controller.endDate.value],
                             calenderOnValueChanged: (dates) {
                               if (dates.first != null) {
                                 controller.setStartDate(dates.first);
 
-                                final avgPeriodDuration =
-                                    controller.data?.avgPeriodDuration;
+                                final avgPeriodDuration = controller.data?.avgPeriodDuration;
 
                                 if (dates.last != null) {
                                   controller.setEndDate(dates.last);
                                 } else {
-                                  final lastDate = dates.first!.add(
-                                      Duration(days: avgPeriodDuration ?? 8));
+                                  final lastDate = dates.first!.add(Duration(days: avgPeriodDuration ?? 8));
 
                                   controller.setEndDate(lastDate);
                                 }

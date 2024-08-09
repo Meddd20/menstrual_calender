@@ -1,14 +1,19 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
+import 'package:periodnpregnancycalender/app/models/profile_model.dart';
+import 'package:periodnpregnancycalender/app/modules/register/controllers/register_controller.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:periodnpregnancycalender/app/services/profile_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class RegisterVerificationController extends GetxController {
   final ApiService apiService = ApiService();
@@ -17,7 +22,11 @@ class RegisterVerificationController extends GetxController {
   late final PeriodRepository periodRepository = PeriodRepository(apiService);
   late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
   late Map<String, dynamic> requestVerificationResponse;
+  final StorageService storageService = StorageService();
   final pinController = TextEditingController();
+  final RegisterController registerController = Get.find<RegisterController>();
+  late final ProfileService _profileService;
+  late final LocalProfileRepository _localProfileRepository;
   var userEmail = "".obs;
   var verificationCode = "".obs;
   RxInt countdown = 60.obs;
@@ -26,6 +35,10 @@ class RegisterVerificationController extends GetxController {
 
   @override
   void onInit() {
+    final databaseHelper = DatabaseHelper.instance;
+    final localProfileRepository = LocalProfileRepository(databaseHelper);
+    _localProfileRepository = LocalProfileRepository(databaseHelper);
+    _profileService = ProfileService(localProfileRepository);
     requestVerificationResponse = Get.arguments as Map<String, dynamic>;
     userEmail.value = requestVerificationResponse["email"];
     startResendTimer();
@@ -54,8 +67,31 @@ class RegisterVerificationController extends GetxController {
       );
 
       if (data["status"] == "success") {
-        storePeriodData();
-        Get.offNamed(Routes.LOGIN);
+        if (storageService.getAccountLocalId() == null && storageService.getCredentialToken() == null) {
+          storePeriodData();
+          Get.offNamed(Routes.LOGIN, arguments: true);
+        } else {
+          User? user = await authRepository.login(registerController.emailC.text.trim(), registerController.passwordC.text.trim());
+          if (user != null && user.token != null) {
+            User? localProfile = await _profileService.getProfile();
+            if (localProfile != null) {
+              User updatedProfile = localProfile.copyWith(
+                nama: user.nama,
+                tanggalLahir: user.tanggalLahir,
+                isPregnant: user.isPregnant,
+                email: user.email,
+              );
+              await _localProfileRepository.updateProfile(updatedProfile);
+              localProfile = updatedProfile;
+            }
+
+            storageService.storeCredentialToken(user.token!);
+            storageService.storeIsAuth(true);
+            storageService.storeAccountId(user.id!);
+            storageService.storeIsBackup(true);
+            Get.offAllNamed(Routes.NAVIGATION_MENU);
+          }
+        }
       }
     }
   }

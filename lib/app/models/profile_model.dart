@@ -1,31 +1,31 @@
 class Profile {
   String? status;
   String? message;
-  UserData? userData;
+  User? user;
 
-  Profile({this.status, this.message, this.userData});
+  Profile({this.status, this.message, this.user});
 
   Profile.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    userData = json['data'] != null ? new UserData.fromJson(json['data']) : null;
+    user = json['data'] != null ? new User.fromJson(json['data']) : null;
   }
 }
 
-class UserData {
-  Credential? credential;
-  User? user;
+// class UserData {
+//   Credential? credential;
+//   User? user;
 
-  UserData({
-    this.credential,
-    this.user,
-  });
+//   UserData({
+//     this.credential,
+//     this.user,
+//   });
 
-  UserData.fromJson(Map<String, dynamic> json) {
-    credential = json['credential'] != null ? new Credential.fromJson(json['credential']) : null;
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
-  }
-}
+//   UserData.fromJson(Map<String, dynamic> json) {
+//     credential = json['credential'] != null ? new Credential.fromJson(json['credential']) : null;
+//     user = json['user'] != null ? new User.fromJson(json['user']) : null;
+//   }
+// }
 
 class Credential {
   int? userId;
@@ -49,10 +49,12 @@ class User {
   String? tanggalLahir;
   String? isPregnant;
   String? email;
+  String? token;
+  String? deviceToken;
   String? createdAt;
   String? updatedAt;
 
-  User({this.id, this.status, this.role, this.nama, this.tanggalLahir, this.isPregnant, this.email, this.createdAt, this.updatedAt});
+  User({this.id, this.status, this.role, this.nama, this.tanggalLahir, this.isPregnant, this.email, this.token, this.deviceToken, this.createdAt, this.updatedAt});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -62,23 +64,23 @@ class User {
     tanggalLahir = json['tanggal_lahir'];
     isPregnant = json['is_pregnant'];
     email = json['email'];
+    token = json['token'];
+    deviceToken = json['device_token'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
 
-  Map<String, dynamic> toJson({bool includeRole = false, bool includeEmail = false}) {
+  Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['status'] = this.status;
-    if (includeRole) {
-      data['role'] = this.role;
-    }
+    data['role'] = this.role;
     data['nama'] = this.nama;
     data['tanggal_lahir'] = this.tanggalLahir;
     data['is_pregnant'] = this.isPregnant;
-    if (includeEmail) {
-      data['email'] = this.email;
-    }
+    data['email'] = this.email;
+    data['token'] = this.token;
+    data['device_token'] = this.deviceToken;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     return data;
@@ -92,6 +94,8 @@ class User {
     String? tanggalLahir,
     String? isPregnant,
     String? email,
+    String? token,
+    String? deviceToken,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -103,6 +107,8 @@ class User {
       tanggalLahir: tanggalLahir ?? this.tanggalLahir,
       isPregnant: isPregnant ?? this.isPregnant,
       email: email ?? this.email,
+      token: token ?? this.token,
+      deviceToken: email ?? this.email,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

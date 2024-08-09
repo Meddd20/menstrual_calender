@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
+import 'package:periodnpregnancycalender/app/modules/profile/views/unauthorized_error_view.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -42,13 +43,14 @@ class PregnancyRepository {
     http.Response response = await apiService.pregnancyBegin(formattedDate, email_regis);
 
     if (response.statusCode == 200) {
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
+      return {};
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
+      return {};
     }
   }
 
@@ -59,13 +61,12 @@ class PregnancyRepository {
     http.Response response = await apiService.pregnancyEnded(formattedDate, gender);
 
     if (response.statusCode == 200) {
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 
@@ -73,13 +74,12 @@ class PregnancyRepository {
     http.Response response = await apiService.deletePregnancy();
 
     if (response.statusCode == 200) {
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 
@@ -106,43 +106,41 @@ class PregnancyRepository {
 
   Future<void> initializeWeightGain(double tinggiBadan, double beratBadan, int isTwin) async {
     http.Response response = await apiService.initializeWeightGain(tinggiBadan, beratBadan, isTwin);
+    print("${response.statusCode} initialized weight gain");
 
     if (response.statusCode == 200) {
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 
   Future<void> weeklyWeightGain(double beratBadan, int mingguKehamilan, String dateRecord) async {
     http.Response response = await apiService.weeklyWeightGain(beratBadan, mingguKehamilan, dateRecord);
-
+    print("${response.statusCode} weekly weight gain");
     if (response.statusCode == 200) {
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 
-  Future<void> deleteWeeklyWeightGain(DateTime dateRecord) async {
-    http.Response response = await apiService.deleteWeeklyWeightGain(dateRecord.toString());
+  Future<void> deleteWeeklyWeightGain(String tanggalPencatatan) async {
+    http.Response response = await apiService.deleteWeeklyWeightGain(tanggalPencatatan);
 
     if (response.statusCode == 200) {
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 }

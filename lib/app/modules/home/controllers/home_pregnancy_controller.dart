@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/navigation_menu/views/navigation_menu_view.dart';
@@ -49,13 +50,19 @@ class HomePregnancyController extends GetxController {
 
   @override
   void onInit() {
+    // storageService.storeIsPregnant("0");
     final databaseHelper = DatabaseHelper.instance;
     final PregnancyHistoryRepository pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    final MasterKehamilanRepository masterKehamilanRepository = MasterKehamilanRepository(databaseHelper);
+    final MasterDataKehamilanRepository masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
     final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
     final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
     _syncDataRepository = SyncDataRepository(databaseHelper);
-    _pregnancyHistoryService = PregnancyHistoryService(pregnancyHistoryRepository, masterKehamilanRepository, periodHistoryRepository, localProfileRepository);
+    _pregnancyHistoryService = PregnancyHistoryService(
+      pregnancyHistoryRepository,
+      masterKehamilanRepository,
+      periodHistoryRepository,
+      localProfileRepository,
+    );
     pregnancyData = fetchPregnancyData();
     super.onInit();
   }
@@ -91,26 +98,35 @@ class HomePregnancyController extends GetxController {
   }
 
   Future<void> editPregnancyStartDate() async {
-    bool isConnected = await CheckConnectivity().isConnectedToInternet();
-    await _pregnancyHistoryService.beginPregnancy(selectedDate!);
+    bool localSuccess = false;
 
-    if (storageService.getIsAuth() && !isConnected) {
-      await _syncPregnancyBegin();
-      return;
-    }
+    bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate!);
 
     try {
-      await pregnancyRepository.pregnancyBegin(selectedDate.toString(), null);
-      Get.offAll(() => NavigationMenuView());
+      await _pregnancyHistoryService.beginPregnancy(selectedDate!, null);
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Reminder added successfully!'));
+      localSuccess = true;
     } catch (e) {
-      print("Error editing pregnancy start date: $e");
-      await _syncPregnancyBegin();
+      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add reminder. Please try again!'));
+    }
+
+    Get.offAll(() => NavigationMenuView());
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await pregnancyRepository.pregnancyBegin(formattedDate, null);
+      } catch (e) {
+        await _syncPregnancyBegin(formattedDate);
+      }
+    } else if (localSuccess) {
+      await _syncPregnancyBegin(formattedDate);
     }
   }
 
-  Future<void> _syncPregnancyBegin() async {
+  Future<void> _syncPregnancyBegin(String selectedDate) async {
     Map<String, dynamic> data = {
-      "hari_pertama_haid_terakhir": selectedDate,
+      "firstDayLastMenstruation": selectedDate,
     };
 
     String jsonData = jsonEncode(data);

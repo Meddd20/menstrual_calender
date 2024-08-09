@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_pinput.dart';
 import 'package:periodnpregnancycalender/app/modules/register/controllers/register_verification_controller.dart';
 
@@ -11,6 +11,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
   const RegisterVerificationView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    Get.put(RegisterVerificationController());
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -55,7 +56,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                       showCursor: true,
                     ),
                     SizedBox(height: 25.h),
-                    CustomColoredButton(
+                    CustomButton(
                       text: "Send Code",
                       onPressed: () {
                         controller.codeVerification();

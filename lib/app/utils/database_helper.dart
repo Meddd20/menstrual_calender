@@ -19,9 +19,11 @@ class DatabaseHelper {
   Future<Database> _initializeDB(String fileName) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, fileName);
-    Database db = await database;
-    List<Map> result = await db.rawQuery('PRAGMA table_info(tb_riwayat_mens)');
-    print(result);
+
+    // if (await databaseExists(path)) {
+    //   await deleteDatabase(path);
+    // }
+
     return await openDatabase(
       path,
       version: 1,
@@ -43,6 +45,9 @@ class DatabaseHelper {
     await db.execute(_createTableTbRiwayatKehamilan);
     await db.execute(_createTableTbRiwayatMens);
     await db.execute(_createTableSyncLog);
+    await db.execute(_createTableTbMasterFood);
+    await db.execute(_createTableTbMasterVaccines);
+    await db.execute(_createTableTbMasterVitamins);
   }
 
   Future<void> _seedData(Database db) async {
@@ -64,6 +69,18 @@ class DatabaseHelper {
       batch.insert('tb_master_newmoon_phase', item);
     });
 
+    initialTbMasterFood.forEach((item) {
+      batch.insert('tb_master_food', item);
+    });
+
+    initialTbMasterVaccines.forEach((item) {
+      batch.insert('tb_master_vaccines', item);
+    });
+
+    initialTbMasterVitamins.forEach((item) {
+      batch.insert('tb_master_vitamins', item);
+    });
+
     await batch.commit(noResult: true);
   }
 
@@ -79,6 +96,7 @@ class DatabaseHelper {
       nama TEXT,
       tanggal_lahir DATE,
       is_pregnant TEXT CHECK(is_pregnant IN ('0', '1')) DEFAULT '0',
+      email TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -213,8 +231,45 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         table_name TEXT NOT NULL,
         operation TEXT NOT NULL,
-        data TEXT NOT NULL,
+        data TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  ''';
+
+  static const String _createTableTbMasterFood = '''
+    CREATE TABLE tb_master_food (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      food_id TEXT,
+      food_en TEXT,
+      description_id TEXT,
+      description_en TEXT,
+      food_safety TEXT CHECK(food_safety IN ('Safe','Unsafe','Caution')),
+      created_at DATE,
+      updated_at DATE,
+    )
+  ''';
+
+  static const String _createTableTbMasterVaccines = '''
+    CREATE TABLE tb_master_vaccines (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vaccines_id TEXT,
+      vaccines_en TEXT,
+      description_id TEXT,
+      description_en TEXT,
+      created_at DATE,
+      updated_at DATE,
+    )
+  ''';
+
+  static const String _createTableTbMasterVitamins = '''
+    CREATE TABLE tb_master_vitamins (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vitamins_id TEXT,
+      vitamins_en TEXT,
+      description_id TEXT,
+      description_en TEXT,
+      created_at DATE,
+      updated_at DATE,
     )
   ''';
 }
@@ -559,8 +614,8 @@ List<Map<String, dynamic>> initialTbMasterGender = [
 ];
 
 List<Map<String, dynamic>> initialTbMasterKehamilan = [
-  {"id": "1", "minggu_kehamilan": "1", "berat_janin": null, "tinggi_badan_janin": null, "ukuran_bayi_id": null, "ukuran_bayi_en": null, "poin_utama_id": null, "poin_utama_en": null, "perkembangan_bayi_id": null, "perkembangan_bayi_en": null, "perubahan_tubuh_id": null, "perubahan_tubuh_en": null, "gejala_umum_id": null, "gejala_umum_en": null, "tips_mingguan_id": null, "tips_mingguan_en": null, "bayi_img_path": null, "ukuran_bayi_img_path": null},
-  {"id": "2", "minggu_kehamilan": "2", "berat_janin": null, "tinggi_badan_janin": null, "ukuran_bayi_id": null, "ukuran_bayi_en": null, "poin_utama_id": null, "poin_utama_en": null, "perkembangan_bayi_id": null, "perkembangan_bayi_en": null, "perubahan_tubuh_id": null, "perubahan_tubuh_en": null, "gejala_umum_id": null, "gejala_umum_en": null, "tips_mingguan_id": null, "tips_mingguan_en": null, "bayi_img_path": null, "ukuran_bayi_img_path": null},
+  {"id": "1", "minggu_kehamilan": "1", "berat_janin": null, "tinggi_badan_janin": null, "ukuran_bayi_id": null, "ukuran_bayi_en": null, "poin_utama_id": null, "poin_utama_en": null, "perkembangan_bayi_id": null, "perkembangan_bayi_en": null, "perubahan_tubuh_id": null, "perubahan_tubuh_en": null, "gejala_umum_id": null, "gejala_umum_en": null, "tips_mingguan_id": null, "tips_mingguan_en": null, "bayi_img_path": "week_1.jpg", "ukuran_bayi_img_path": null},
+  {"id": "2", "minggu_kehamilan": "2", "berat_janin": null, "tinggi_badan_janin": null, "ukuran_bayi_id": null, "ukuran_bayi_en": null, "poin_utama_id": null, "poin_utama_en": null, "perkembangan_bayi_id": null, "perkembangan_bayi_en": null, "perubahan_tubuh_id": null, "perubahan_tubuh_en": null, "gejala_umum_id": null, "gejala_umum_en": null, "tips_mingguan_id": null, "tips_mingguan_en": null, "bayi_img_path": "week_2.jpg", "ukuran_bayi_img_path": null},
   {
     "id": "3",
     "minggu_kehamilan": "3",
@@ -666,7 +721,7 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li>Drinking alcohol</li>
 </ul>
 <p>Additionally, your provider might suggest limiting caffeine intake. Consult your healthcare provider for the best ways to maintain health and safety during pregnancy.</p>""",
-    "bayi_img_path": null,
+    "bayi_img_path": "week_3.jpg",
     "ukuran_bayi_img_path": null
   },
   {
@@ -758,8 +813,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Research the type of healthcare provider</strong> you'd prefer to collaborate with during your pregnancy.</li>
   <li><strong>Commence capturing memories,</strong> whether through a photo album, pregnancy journal, or diary. Consider including images of your growing bump week by week, significant dates such as when you discovered your pregnancy, a letter to your future child, or even predictions about their eye and hair color.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_4.jpg",
+    "ukuran_bayi_img_path": "week_4_poppy_seed.svg"
   },
   {
     "id": "5",
@@ -858,8 +913,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Journaling:</strong> Start a journal to express your emotions and document your pregnancy journey.</li>
   <li><strong>Baby bump photos:</strong> Commence a monthly baby bump photo shoot to capture the progression of your pregnancy. Whether for personal keepsake or sharing on social media, these photos will be cherished memories.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_5.jpg",
+    "ukuran_bayi_img_path": "week_5_sesame_seed.svg"
   },
   {
     "id": "6",
@@ -944,8 +999,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
         <li>If you’re contemplating taking a pregnancy test at six weeks, be aware that it’s still possible to receive a false negative result, as the pregnancy hormone hCG levels may not be detectable. Confirming your pregnancy with a healthcare provider is the best course of action.</li>
         <li>Consider starting a weekly photo journal or pregnancy scrapbook to document your journey with notes, photos, and keepsakes. It’s a wonderful way to celebrate your pregnancy and create a cherished memento for your baby in the years to come.</li>
     </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_6.jpg",
+    "ukuran_bayi_img_path": "week_6_lentil.svg"
   },
   {
     "id": "7",
@@ -1036,8 +1091,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Manage Symptoms:</strong> Learn effective ways to cope with physical and emotional symptoms. Remember that many symptoms tend to ease up in the second trimester, and your healthcare provider can provide guidance on managing them.</li>
   <li><strong>Start Monthly Bump Photos:</strong> Begin taking monthly photos to document your pregnancy journey. Use the same setup each month and create a keepsake that you'll cherish in the future. You can also share these photos on social media or with loved ones.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_7.jpg",
+    "ukuran_bayi_img_path": "week_7_blueberry.svg"
   },
   {
     "id": "8",
@@ -1128,16 +1183,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Explore baby names:</strong> Start brainstorming baby names and keep a list of your favorites. Consider adding them to a pregnancy memory book for future reference.</li>
   <li><strong>Connect with other parents:</strong> Join social media groups or community support groups to connect with other expecting parents. Sharing experiences and advice can be valuable during this time.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_8.jpg",
+    "ukuran_bayi_img_path": "week_8_kidney_bean.svg"
   },
   {
     "id": "9",
     "minggu_kehamilan": "9",
     "berat_janin": null,
     "tinggi_badan_janin": 23,
-    "ukuran_bayi_id": "Zaitun Hijau",
-    "ukuran_bayi_en": "Green Olive",
+    "ukuran_bayi_id": "Anggur",
+    "ukuran_bayi_en": "Grape",
     "poin_utama_id": """<h2>Info Penting pada Usia Kehamilan 9 Minggu</h2>
 <p>Berikut adalah ringkasan singkat dari beberapa perkembangan penting yang dapat diantisipasi selama kehamilan minggu ke-9:</p>
 <ul>
@@ -1224,16 +1279,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Keep an eye on your <strong>caffeine intake</strong> during pregnancy, limiting it to about 200 mg per day.</li>
   <li>Plan for potential additional expenses related to pregnancy and baby gear. Consider creating a budget and seeking support from family, friends, and other parents.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_9.jpg",
+    "ukuran_bayi_img_path": "week_9_grape.svg"
   },
   {
     "id": "10",
     "minggu_kehamilan": "10",
     "berat_janin": 35,
     "tinggi_badan_janin": 32,
-    "ukuran_bayi_id": "Stroberi",
-    "ukuran_bayi_en": "Strawberry",
+    "ukuran_bayi_id": "Jeruk Kumkuat",
+    "ukuran_bayi_en": "Kumquat",
     "poin_utama_id": """<h2>Perkembangan pada 10 Minggu Kehamilan</h2>
 <p>Berikut adalah beberapa hal penting yang perlu diperhatikan tentang pertumbuhan dan perubahan bayi Anda, serta bagaimana perasaan Anda mungkin pada usia kehamilan 10 minggu:</p>
 <ul>
@@ -1334,8 +1389,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     </ul>
   </li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_10.jpg",
+    "ukuran_bayi_img_path": "week_10_kumquat.svg"
   },
   {
     "id": "11",
@@ -1416,8 +1471,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>While you’re pregnant, you need about 80 to 85 milligrams of vitamin C each day to help your baby’s bones and teeth develop. Add oranges and other citrus fruits, strawberries, tomatoes, and broccoli to your diet to boost your vitamin C intake. If you’re unsure if you’re getting enough vitamin C, check with your healthcare provider.</li>
   <li>Think about where you will give birth. You don’t have to decide right now, but start researching your options and visiting places. Ask your healthcare provider for advice and talk to other moms in your area to get their opinions too.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_11.jpg",
+    "ukuran_bayi_img_path": "week_11_fig.svg"
   },
   {
     "id": "12",
@@ -1510,16 +1565,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Plan how you’ll <strong>announce your pregnancy to colleagues</strong>, especially if you’re a working parent. Early second-trimester announcements are common.</li>
   <li>If you have an <strong>ultrasound around this time</strong> revealing a twin pregnancy or more, congratulations! Fraternal and identical twins bring double the joy.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_12.jpg",
+    "ukuran_bayi_img_path": "week_12_lime.svg"
   },
   {
     "id": "13",
     "minggu_kehamilan": "13",
     "berat_janin": 73,
     "tinggi_badan_janin": 67,
-    "ukuran_bayi_id": "Lemon",
-    "ukuran_bayi_en": "Lemon",
+    "ukuran_bayi_id": "Kacang Polong",
+    "ukuran_bayi_en": "Peapod",
     "poin_utama_id": """<h2>Yang Perlu Diketahui Saat Hamil 13 Minggu</h2>
 <ul>
   <li>Bayi Anda tumbuh dengan cepat, dan semua organ mereka sudah terbentuk sepenuhnya.</li>
@@ -1600,16 +1655,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Abdominal exercises:</strong> Be cautious with exercises that involve lying flat on your back, as this position can restrict blood flow due to the weight of your uterus. Consult your healthcare provider for alternatives.</li>
   <li><strong>Pelvic floor exercises:</strong> Strengthening pelvic floor muscles can improve bladder control and provide pelvic organ support. Kegel exercises, which involve squeezing and relaxing pelvic muscles, are beneficial.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_13.jpg",
+    "ukuran_bayi_img_path": "week_13_pea_pod.svg"
   },
   {
     "id": "14",
     "minggu_kehamilan": "14",
     "berat_janin": 93,
     "tinggi_badan_janin": 147,
-    "ukuran_bayi_id": "Persik",
-    "ukuran_bayi_en": "Peach",
+    "ukuran_bayi_id": "Lemon",
+    "ukuran_bayi_en": "Lemon",
     "poin_utama_id": """<h2>Perkembangan pada Minggu ke-14 Kehamilan</h2>
 <p>Berikut adalah beberapa hal menarik yang bisa dinantikan selama minggu ke-14 kehamilan Anda:</p>
 <ul>
@@ -1686,8 +1741,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Childbirth classes:</strong> Have you considered childbirth classes? Now is an excellent time to explore available options in your area to find the right class for you.</li>
   <li><strong>Twin pregnancy:</strong> If you're expecting twins, you might be curious about how your pregnancy experience differs, including symptoms and weight gain. Seek personalized advice and guidance from your healthcare provider.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_14.jpg",
+    "ukuran_bayi_img_path": "week_14_lemon.svg"
   },
   {
     "id": "15",
@@ -1776,8 +1831,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Sex during pregnancy:</strong> Communicate openly with your partner about your sexual desires and concerns. It's generally safe to have sex during pregnancy, but consult your healthcare provider if you have any questions or concerns.</li>
   <li><strong>Mid-pregnancy ultrasound:</strong> If you're eager to know your baby's gender, the mid-pregnancy ultrasound, usually done between 16 and 20 weeks of pregnancy, is approaching. Take advantage of fun quizzes to guess your baby's gender while you wait.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_15.jpg",
+    "ukuran_bayi_img_path": "week_15_apple.svg"
   },
   {
     "id": "16",
@@ -1862,16 +1917,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>The second trimester is an ideal time for a short babymoon. Whether it's a weekend getaway or a longer trip, consult with your healthcare provider before traveling, especially if flying. Take our quiz to discover your ideal babymoon destination!</li>
   <li>If this is your second pregnancy, consider how things might be different this time around. Learn more about the variances in symptoms during a second pregnancy.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_16.jpg",
+    "ukuran_bayi_img_path": "week_16_avocado.svg"
   },
   {
     "id": "17",
     "minggu_kehamilan": "17",
     "berat_janin": 181,
     "tinggi_badan_janin": 204,
-    "ukuran_bayi_id": "Delima",
-    "ukuran_bayi_en": "Pomegranate",
+    "ukuran_bayi_id": "Lobak",
+    "ukuran_bayi_en": "Turnip",
     "poin_utama_id": """<h2>Highlights pada Usia Kehamilan 17 Minggu</h2>
 <p>Berikut adalah beberapa perkembangan menarik yang dapat dinantikan pada usia kehamilan 17 minggu:</p>
 <ul>
@@ -1948,16 +2003,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>If you have spare time, begin researching healthcare providers for your baby. Seek recommendations from other parents or consult a list of providers covered by your insurance. Discuss with your healthcare provider and schedule face-to-face meetings with potential pediatricians.</li>
   <li>Pregnancy can strain relationships, so ensure open communication with your partner. Involve them in pregnancy-related events and seek support if needed. Counseling and support groups are available if you require outside assistance.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_17.jpg",
+    "ukuran_bayi_img_path": "week_17_turnip.svg"
   },
   {
     "id": "18",
     "minggu_kehamilan": "18",
     "berat_janin": 223,
     "tinggi_badan_janin": 220,
-    "ukuran_bayi_id": "Mentimun",
-    "ukuran_bayi_en": "Cucumber",
+    "ukuran_bayi_id": "Paprika",
+    "ukuran_bayi_en": "Bell Pepper",
     "poin_utama_id": """<h2>Hal Menarik Saat Hamil 18 Minggu</h2>
 <ul>
   <li>Pada usia kehamilan 18 minggu, bayi Anda kira-kira sebesar kentang manis!</li>
@@ -2024,16 +2079,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Handle unsolicited pregnancy advice gracefully:</strong> It's common to receive advice from various sources, but you don't have to follow all suggestions. Respond politely to unwanted advice, acknowledging the input without feeling obligated to implement it. Remember that most people mean well and are simply excited for you.</li>
   <li><strong>Trust your healthcare provider:</strong> In rare cases, mid-pregnancy ultrasounds may reveal placenta-related issues such as placenta accreta or placenta previa. Trust your healthcare provider to guide you and provide appropriate care to address any potential risks associated with these conditions.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_18.jpg",
+    "ukuran_bayi_img_path": "week_18_bellpepper.svg"
   },
   {
     "id": "19",
     "minggu_kehamilan": "19",
     "berat_janin": 273,
     "tinggi_badan_janin": 240,
-    "ukuran_bayi_id": "Mangga",
-    "ukuran_bayi_en": "Mango",
+    "ukuran_bayi_id": "Tomat Pusaka",
+    "ukuran_bayi_en": "Heirloom Tomato",
     "poin_utama_id": """<h2>Highlights pada Minggu ke-19 Kehamilan</h2>
 <ul>
   <li>Bayi Anda kira-kira sebesar mangga pada usia kehamilan 19 minggu.</li>
@@ -2106,16 +2161,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Prepare for baby gear:</strong> Take time to research and shop for baby gear, considering recommendations from other parents and product reviews. Remember, you may not need everything advertised as essential during the newborn phase.</li>
   <li><strong>Gender reveal:</strong> If you're interested in finding out your baby's gender, you'll likely have the opportunity during the mid-pregnancy ultrasound exam. Explore the science behind gender determination or try lighthearted gender prediction methods.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_19.jpg",
+    "ukuran_bayi_img_path": "week_19_tomato.svg"
   },
   {
     "id": "20",
     "minggu_kehamilan": "20",
     "berat_janin": 331,
     "tinggi_badan_janin": 257,
-    "ukuran_bayi_id": "Jeruk Bali",
-    "ukuran_bayi_en": "Grapefruit",
+    "ukuran_bayi_id": "Pisang",
+    "ukuran_bayi_en": "Banana",
     "poin_utama_id": """<h2>Perkembangan Kehamilan 20 Minggu</h2>
 <ul>
   <li>Bayi Anda kini memiliki ukuran sekitar sebesar paprika.</li>
@@ -2190,16 +2245,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Start planning the color scheme or theme for your baby's nursery, considering neutral paint colors or themed decorations. Seek inspiration online and involve your partner in the decision-making process.</li>
   <li>Research baby products with reviews from other parents to make informed decisions about cribs, strollers, and car seats.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_20.jpg",
+    "ukuran_bayi_img_path": "week_20_banana.svg"
   },
   {
     "id": "21",
     "minggu_kehamilan": "21",
     "berat_janin": 399,
     "tinggi_badan_janin": 274,
-    "ukuran_bayi_id": "Pisang",
-    "ukuran_bayi_en": "Banana",
+    "ukuran_bayi_id": "Wortel",
+    "ukuran_bayi_en": "Carrot",
     "poin_utama_id": """<h2>Perkembangan pada Minggu ke-21 Kehamilan</h2>
 <ul>
   <li>Pola tidur dan bangun bayi Anda menjadi lebih teratur.</li>
@@ -2268,16 +2323,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Use the next few months to prepare for your baby's arrival, as energy levels may decrease in the third trimester. Set up the nursery, compile a list of necessary baby items, and create a baby budget if you haven't already.</li>
   <li>Remaining active throughout pregnancy is beneficial. Consult your healthcare provider for safe exercise recommendations. Walking, prenatal yoga, and swimming are typically suitable options.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_21.jpg",
+    "ukuran_bayi_img_path": "week_21_carrot.svg"
   },
   {
     "id": "22",
     "minggu_kehamilan": "22",
     "berat_janin": 478,
     "tinggi_badan_janin": 290,
-    "ukuran_bayi_id": "Tongkong Jagung",
-    "ukuran_bayi_en": "Ear of Corn",
+    "ukuran_bayi_id": "Labu Spaghetti",
+    "ukuran_bayi_en": "Spaghetti Squash",
     "poin_utama_id": """<h2>Hal-Hal Menarik pada Minggu ke-22 Kehamilan</h2>
 <ul>
   <li>Bayi Anda sekarang memiliki alis mata kecil!</li>
@@ -2350,16 +2405,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Discuss with your partner how to inform other children about the new baby and involve them in the pregnancy journey.</li>
   <li>Start planning the baby's nursery and make necessary adjustments to accommodate their needs. If the baby will share a room with a toddler, read up on creating a shared space for both.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_22.jpg",
+    "ukuran_bayi_img_path": "week_22_spaghetti_squash.svg"
   },
   {
     "id": "23",
     "minggu_kehamilan": "23",
     "berat_janin": 568,
-    "tinggi_badan_janin": 206,
-    "ukuran_bayi_id": "Labu Kecil",
-    "ukuran_bayi_en": "Small Squash",
+    "tinggi_badan_janin": 306,
+    "ukuran_bayi_id": "Mangga Besar",
+    "ukuran_bayi_en": "Large Mango",
     "poin_utama_id": """<h2>Hal Penting saat Hamil 23 Minggu</h2>
 <ul>
   <li>Bayi Anda saat ini seukuran terong!</li>
@@ -2440,16 +2495,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Prepare older children:</strong> If you have older children, involve them in the pregnancy journey and address any questions or concerns they may have about the new sibling. For younger children, explain pregnancy changes as they arise and seek guidance from your healthcare provider on how to handle their inquiries.</li>
   <li><strong>Explore baby names:</strong> Use a baby name generator to explore various naming themes and find the perfect name for your baby.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_23.jpg",
+    "ukuran_bayi_img_path": "week_23_mango.svg"
   },
   {
     "id": "24",
     "minggu_kehamilan": "24",
     "berat_janin": 670,
     "tinggi_badan_janin": 320,
-    "ukuran_bayi_id": "Terong",
-    "ukuran_bayi_en": "Eggplant",
+    "ukuran_bayi_id": "Tongkol Jagung",
+    "ukuran_bayi_en": "Ear of Corn",
     "poin_utama_id": """<h2>Hal Penting pada Minggu ke-24 Kehamilan</h2>
 <ul>
   <li>Bayi Anda saat ini memiliki ukuran sekitar satu tongkol jagung.</li>
@@ -2574,16 +2629,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <strong>Strange experiences:</strong> You may notice unusual things during pregnancy, such as vivid dreams or difficulty focusing. Read up on these experiences to understand why they may be happening.
   </li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_24.jpg",
+    "ukuran_bayi_img_path": "week_24_corn.svg"
   },
   {
     "id": "25",
     "minggu_kehamilan": "25",
     "berat_janin": 785,
     "tinggi_badan_janin": 337,
-    "ukuran_bayi_id": "Anggur",
-    "ukuran_bayi_en": "Bunch of Grapes",
+    "ukuran_bayi_id": "Lobak Swedia",
+    "ukuran_bayi_en": "Rutabaga",
     "poin_utama_id": """<h2>Highlights di Minggu ke-25 Kehamilan</h2>
 <ul>
   <li>Bayi Anda menambah lemak lebih banyak minggu ini, membuat mereka terlihat lebih halus.</li>
@@ -2654,16 +2709,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li>Consider enrolling in a parenting class to learn about newborn care, including safe sleeping practices to reduce the risk of Sudden Infant Death Syndrome (SIDS).</li>
     <li>If you're planning your baby's nursery, make a list of essentials and consider adding them to your baby shower registry. Take a nursery style quiz for decorating inspiration.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_25.jpg",
+    "ukuran_bayi_img_path": "week_25_rutabaga.svg"
   },
   {
     "id": "26",
     "minggu_kehamilan": "26",
     "berat_janin": 913,
     "tinggi_badan_janin": 351,
-    "ukuran_bayi_id": "Lobak",
-    "ukuran_bayi_en": "Turnip",
+    "ukuran_bayi_id": "Daun Bawang",
+    "ukuran_bayi_en": "Scallion",
     "poin_utama_id": """<h2>Sorotan pada Kehamilan 26 Minggu</h2>
 <ul>
     <li>Pada kehamilan 26 minggu, bayi Anda sebesar zucchini.</li>
@@ -2738,16 +2793,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>With your growing bump, you might wonder if sex is safe at 26 weeks pregnant. Generally, if your pregnancy is normal and both of you are comfortable, sex is safe. Consult your healthcare provider for personalized advice, and try different positions if your bump gets in the way.</li>
   <li>Consider taking a trip now, as the second trimester is usually a good time for travel. Check with your healthcare provider before planning any trips.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_26.jpg",
+    "ukuran_bayi_img_path": "week_26_scallion.svg"
   },
   {
     "id": "27",
     "minggu_kehamilan": "27",
     "berat_janin": 1000,
     "tinggi_badan_janin": 366,
-    "ukuran_bayi_id": "Kembang Kol",
-    "ukuran_bayi_en": "Cauliflower",
+    "ukuran_bayi_id": "Kepala Kembang Kol",
+    "ukuran_bayi_en": "Head of Cauliflower",
     "poin_utama_id": """<h2>Sorotan pada 27 Minggu Kehamilan</h2>
 <p>Banyak yang terjadi pada kehamilan 27 minggu. Berikut beberapa poin penting:</p>
 <ul>
@@ -2832,16 +2887,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>If your nesting instincts are kicking in, you might want to organize things at home, make a list of repairs, or start baby proofing. Don't overdo it. Make time to rest and ask for help with tasks that might be unsafe for you, like climbing a ladder.</li>
   <li>Consider going on a babymoon before your baby arrives while you still feel comfortable traveling. Check with your healthcare provider before planning a flight.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_27.jpg",
+    "ukuran_bayi_img_path": "week_27_coliflor.svg"
   },
   {
     "id": "28",
     "minggu_kehamilan": "28",
     "berat_janin": 1200,
     "tinggi_badan_janin": 379,
-    "ukuran_bayi_id": "Kelapa",
-    "ukuran_bayi_en": "Coconut",
+    "ukuran_bayi_id": "Terong Besar",
+    "ukuran_bayi_en": "Large Eggplant",
     "poin_utama_id": """<h2>Peristiwa Penting di Minggu ke-28 Kehamilan</h2>
 <p>Inilah yang mungkin terjadi untuk Anda dan bayi Anda saat usia kehamilan 28 minggu:</p>
 <ul>
@@ -2918,16 +2973,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>As your belly grows, inquire with your healthcare provider about comfortable sleeping positions and consider purchasing a pregnancy pillow for added support.</li>
   <li>If you feel the urge to nest, indulge it by organizing your home or preparing your baby’s nursery. Just remember to take breaks and conserve your energy for the days ahead.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_28.jpg",
+    "ukuran_bayi_img_path": "week_28_egg_plant.svg"
   },
   {
     "id": "29",
     "minggu_kehamilan": "29",
     "berat_janin": 1400,
     "tinggi_badan_janin": 393,
-    "ukuran_bayi_id": "Pomelo",
-    "ukuran_bayi_en": "Pomelo",
+    "ukuran_bayi_id": "Labu Butternut",
+    "ukuran_bayi_en": "Butternut Squash",
     "poin_utama_id": """<h2>Hal Menarik Saat Hamil 29 Minggu</h2>
 <ul>
   <li>Pada usia kehamilan 29 minggu, perkembangan utama bayi Anda telah selesai dan kini mereka fokus pada pertumbuhan dan penambahan berat badan untuk persiapan kelahiran.</li>
@@ -2996,16 +3051,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Birth partner:</strong> Decide who you want to be with you during labor and delivery, whether it's your partner, a friend, or a family member. Discuss your preferences and feelings about labor and delivery with your chosen birth partner well in advance.</li>
   <li><strong>Child care:</strong> Plan ahead for child care arrangements after your baby is born, especially if you and your partner will be returning to work. Research different options, such as child care centers or in-home care, and make arrangements in advance to alleviate stress after your baby arrives.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_29.jpg",
+    "ukuran_bayi_img_path": "week_29_butternut_squash.svg"
   },
   {
     "id": "30",
     "minggu_kehamilan": "30",
     "berat_janin": 1600,
     "tinggi_badan_janin": 405,
-    "ukuran_bayi_id": "Kol",
-    "ukuran_bayi_en": "Cabbage",
+    "ukuran_bayi_id": "Kol Besar",
+    "ukuran_bayi_en": "Large Cabbage",
     "poin_utama_id": """<h2>Peristiwa Penting saat Hamil 30 Minggu</h2>
 <ul>
   <li>Pada usia kehamilan 30 minggu, bayi Anda memiliki ukuran sebesar kubis.</li>
@@ -3072,16 +3127,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Baby Shower:</strong> Finalize your baby registry details so your baby shower host can send out invitations in time. Ensure you've included all the essentials on your registry checklist.</li>
     <li><strong>Doula:</strong> Consider hiring a doula for labor support. A doula can offer comfort and assistance before, during, and after labor and childbirth.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_30.jpg",
+    "ukuran_bayi_img_path": "week_30_cabage.svg"
   },
   {
     "id": "31",
     "minggu_kehamilan": "31",
     "berat_janin": 1800,
     "tinggi_badan_janin": 418,
-    "ukuran_bayi_id": "Zukini",
-    "ukuran_bayi_en": "Zucchini",
+    "ukuran_bayi_id": "Kelapa",
+    "ukuran_bayi_en": "Coconut",
     "poin_utama_id": """<h2>31 Minggu Hamil: Sorotan</h2>
 <ul>
     <li>Bayi Anda sekarang sekitar ukuran kelapa!</li>
@@ -3144,16 +3199,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Feeding Plans:</strong> Start thinking about whether you plan to breastfeed or formula feed. Discuss your options with your healthcare provider, attend lactation classes if necessary, and gather information about equipment you may need.</li>
   <li><strong>Natural Childbirth:</strong> Consider preparing for a natural delivery if it aligns with your preferences and your healthcare provider approves. Research alternative pain relief options and discuss your birth plan with your partner or doula.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_31.jpg",
+    "ukuran_bayi_img_path": "week_31_coconut.svg"
   },
   {
     "id": "32",
     "minggu_kehamilan": "32",
     "berat_janin": 2000,
     "tinggi_badan_janin": 430,
-    "ukuran_bayi_id": "Kol Napa",
-    "ukuran_bayi_en": "Napa Cabbage",
+    "ukuran_bayi_id": "Bengkuang",
+    "ukuran_bayi_en": "Jicama",
     "poin_utama_id": """<h2>Info Penting pada Usia Kehamilan 32 Minggu</h2>
 <ul>
   <li>Bayi Anda mungkin akan mengubah posisinya menjadi kepala turun dalam persiapan persalinan sekitar usia kehamilan 32 minggu.</li>
@@ -3232,8 +3287,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Around 32 weeks, your healthcare provider may advise you to monitor fetal movements. One method is doing "kick counts" to track your baby's movements. Choose a time when your baby is usually active, such as after a meal.</li>
   <li>Although you still have some time until full term, the final weeks of pregnancy can be overwhelming. Simplify your preparations by exploring a list of recommended baby products. Diapers will be one of your essential items, so refer to a diaper size and weight chart guide for assistance.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_32.jpg",
+    "ukuran_bayi_img_path": "week_32_jicama.svg"
   },
   {
     "id": "33",
@@ -3366,16 +3421,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
         <strong>Prepare your hospital bag:</strong> Make sure you pack all essentials for yourself, your birth partner, and your baby for your hospital stay. Download a hospital bag checklist to ensure you have everything you need.
     </li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_33.jpg",
+    "ukuran_bayi_img_path": "week_33_pineapple.svg"
   },
   {
     "id": "34",
     "minggu_kehamilan": "34",
     "berat_janin": 2400,
     "tinggi_badan_janin": 452,
-    "ukuran_bayi_id": "Labu Kuning",
-    "ukuran_bayi_en": "Butternut Squash",
+    "ukuran_bayi_id": "Blewah",
+    "ukuran_bayi_en": "Cantaloupe",
     "poin_utama_id": """<h2>Hal-Hal Penting pada Minggu ke-34 Kehamilan</h2>
 <ul>
     <li>
@@ -3540,16 +3595,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Stocking Up Pantry:</strong> Consider stocking your pantry and preparing meals to freeze for postpartum convenience. Online grocery deliveries or assistance from friends and family can also lighten your load after the baby's arrival.</li>
     <li><strong>Comfort Measures During Labor:</strong> Plan comfort measures for labor, such as medical pain relief or non-medical techniques like massage or breathing exercises. Discuss options with your healthcare provider to determine what's best for you.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_34.jpg",
+    "ukuran_bayi_img_path": "week_34_cantalope.svg"
   },
   {
     "id": "35",
     "minggu_kehamilan": "35",
     "berat_janin": 2600,
     "tinggi_badan_janin": 463,
-    "ukuran_bayi_id": "Pepaya",
-    "ukuran_bayi_en": "Papaya",
+    "ukuran_bayi_id": "Melon Madu",
+    "ukuran_bayi_en": "Honeydew Melon",
     "poin_utama_id": """<h2>Highlights pada Usia Kehamilan 35 Minggu</h2>
 <ul>
     <li>Bayi Anda sekarang memiliki ukuran sekitar sebesar melon madu.</li>
@@ -3634,8 +3689,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Self-Care:</strong> Take some time to focus on yourself and indulge in activities that bring you joy and relaxation. Whether it's spending time alone, going on a date with your partner, or meeting friends, prioritize self-care.</li>
   <li><strong>Choosing a Pediatrician:</strong> Begin the process of finding a pediatrician for your baby if you haven't already. Seek recommendations from your healthcare provider and other parents in your community.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_35.jpg",
+    "ukuran_bayi_img_path": "week_35_honeydew.svg"
   },
   {
     "id": "36",
@@ -3643,7 +3698,7 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     "berat_janin": 2800,
     "tinggi_badan_janin": 473,
     "ukuran_bayi_id": "Kepala Selada Romaine",
-    "ukuran_bayi_en": "Head of Romaine",
+    "ukuran_bayi_en": "Head of Romaine Lettuce",
     "poin_utama_id": """<h2>Info Penting pada Kehamilan 36 Minggu</h2>
 <p>Berikut adalah beberapa poin penting yang perlu diperhatikan pada kehamilan 36 minggu:</p>
 <ul>
@@ -3720,16 +3775,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Track baby movements:</strong> Track your baby's movements daily. Count at least 10 movements in a 2-hour period, often after a meal. If you don't feel 10 movements, try again later or check with your healthcare provider for reassurance.</li>
     <li><strong>Baby's position:</strong> Your healthcare provider will check your baby's position. If your baby seems to be in the breech position, your provider may suggest an ultrasound to confirm. There are still a few weeks for your baby to change positions, but your provider will monitor this closely.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_36.jpg",
+    "ukuran_bayi_img_path": "week_36_roman_lettuce.svg"
   },
   {
     "id": "37",
     "minggu_kehamilan": "37",
     "berat_janin": 3000,
     "tinggi_badan_janin": 480,
-    "ukuran_bayi_id": "Labu Spaghetti",
-    "ukuran_bayi_en": "Spaghetti Squash",
+    "ukuran_bayi_id": "Seikat Swiss Chard",
+    "ukuran_bayi_en": "Bunch of Swiss Chard",
     "poin_utama_id": """<h2>Perkembangan di Minggu ke-37 Kehamilan</h2>
 <ul>
     <li><strong>Menambah lemak:</strong> Bayi Anda menambah lemak untuk menjaga kehangatan setelah lahir.</li>
@@ -3816,16 +3871,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Group B strep test.</strong> Your provider may offer a test to check if you carry GBS bacteria. If positive, your provider will advise on treatment to protect your baby during birth.</li>
   <li><strong>Full-term pregnancy.</strong> Your pregnancy is considered full term at 39 weeks. Your baby still has some developing to do, but you’re only weeks away from meeting your newborn!</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_37.jpg",
+    "ukuran_bayi_img_path": "week_37_swiss_chard.svg"
   },
   {
     "id": "38",
     "minggu_kehamilan": "38",
     "berat_janin": 3200,
     "tinggi_badan_janin": 490,
-    "ukuran_bayi_id": "Melon",
-    "ukuran_bayi_en": "Melon",
+    "ukuran_bayi_id": "Bawang Prei",
+    "ukuran_bayi_en": "Leek",
     "poin_utama_id": """<h2>Sorotan pada Kehamilan 38 Minggu</h2>
 <p>Berikut beberapa poin penting yang perlu diingat pada kehamilan 38 minggu:</p>
 <ul>
@@ -3904,16 +3959,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Researching Breastfeeding:</strong> Consider researching lactation consultants who can help with breastfeeding challenges. Knowing where to find support can make a big difference.</li>
     <li><strong>Preparing for Postpartum:</strong> Take some time to educate yourself about the postpartum period, including recovery, diastasis recti, postpartum hair loss, and other common experiences.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_38.jpg",
+    "ukuran_bayi_img_path": "week_38_leek.svg"
   },
   {
     "id": "39",
     "minggu_kehamilan": "39",
     "berat_janin": 3400,
     "tinggi_badan_janin": 500,
-    "ukuran_bayi_id": "Labu",
-    "ukuran_bayi_en": "Pumkin",
+    "ukuran_bayi_id": "Semangka Kecil",
+    "ukuran_bayi_en": "Mini Watermelon",
     "poin_utama_id": """<h2>Highlights pada Minggu Kehamilan ke-39</h2>
 <p>Saat Anda mencapai usia kehamilan 39 minggu, berikut adalah beberapa poin penting yang perlu diperhatikan:</p>
 <ul>
@@ -3984,16 +4039,16 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li>Take time to finalize your birth plan, considering your preferences for labor and comfort techniques. However, be prepared to adapt your plan as needed during labor.</li>
     <li>Use this time to complete any last-minute shopping for newborn essentials and familiarize yourself with what to expect after giving birth, including skin-to-skin contact, the Apgar score, postpartum care, and recovery.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_39.jpg",
+    "ukuran_bayi_img_path": "week_39_watermelon.svg"
   },
   {
     "id": "40",
     "minggu_kehamilan": "40",
     "berat_janin": 3600,
     "tinggi_badan_janin": 510,
-    "ukuran_bayi_id": "Semangka",
-    "ukuran_bayi_en": "Watermelon",
+    "ukuran_bayi_id": "Labu Kecil",
+    "ukuran_bayi_en": "Small Pumkin",
     "poin_utama_id": """<h2>Peristiwa Penting pada Minggu ke-40 Kehamilan</h2>
 <ul>
     <li>Tiba di usia kehamilan 40 minggu menandai tonggak penting dalam perjalanan Anda. Berikut yang perlu Anda ketahui:</li>
@@ -4088,8 +4143,8 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Support During Labor:</strong> Enlist your birth partner to support you during labor. They can keep you company, time contractions, and offer comfort.</li>
     <li><strong>Prepare for Postpartum:</strong> Take some time to read about what to expect after giving birth, including postpartum recovery, diastasis recti, postpartum hair loss, and signs of postpartum depression.</li>
 </ul>""",
-    "bayi_img_path": null,
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "week_40.jpg",
+    "ukuran_bayi_img_path": "week_40_pumpkin.svg"
   }
 ];
 
@@ -4890,4 +4945,373 @@ List<Map<String, dynamic>> initialTbMasterNewmoonPhase = [
   {'id': 148, 'year': 2030, 'new_moon': '2030-10-27'},
   {'id': 149, 'year': 2030, 'new_moon': '2030-11-25'},
   {'id': 150, 'year': 2030, 'new_moon': '2030-12-25'}
+];
+
+List<Map<String, dynamic>> initialTbMasterFood = [
+  {
+    "id": 1,
+    "food_id": "Makanan Laut Mentah (misalnya Sushi, sashimi, tiramisu mentah, kerang mentah, scallop mentah, ceviche)",
+    "food_en": "Raw Seafood (e.g Sushi, sashimi, raw oysters, raw clams, raw scallops, ceviche)",
+    "description_id": "Makanan laut mentah dapat mengandung parasit atau bakteri seperti Listeria, yang dapat menyebabkan penyakit pada ibu hamil dan mungkin membahayakan bayi.",
+    "description_en": "Raw seafood can contain parasites or bacteria like Listeria, which can cause illness in pregnant women and may harm the baby.",
+    "food_safety": "Unsafe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {
+    "id": 2,
+    "food_id": "Makanan Laut Asap (misalnya Salmon asap dingin, trout, ikan putih, cod, tuna, mackerel)",
+    "food_en": "Smoked Seafood (e.g Cold-smoked salmon, trout, whitefish, cod, tuna, mackerel)",
+    "description_id": "Makanan laut asap yang didinginkan mungkin mengandung Listeria, yang berbahaya selama kehamilan. Aman untuk dimakan hanya jika dimasak hingga suhu internal 165°F (74°C) atau jika dikemas dalam kaleng atau tahan rak.",
+    "description_en": "Refrigerated smoked seafood may contain Listeria, which is harmful during pregnancy. It's safe to eat only if it’s cooked to an internal temperature of 165°F (74°C) or if it’s canned or shelf-stable.",
+    "food_safety": "Unsafe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {
+    "id": 3,
+    "food_id": "Ikan Bermerkuri Tinggi (Shark, swordfish, king mackerel, bigeye tuna, marlin, tilefish, orange roughy)",
+    "food_en": "High-Mercury Fish (Shark, swordfish, king mackerel, bigeye tuna, marlin, tilefish, orange roughy)",
+    "description_id": "Ikan bermerkuri tinggi dapat merusak sistem saraf, sistem kekebalan tubuh, dan ginjal serta menyebabkan masalah perkembangan pada anak-anak. Sebaiknya hindari ikan ini selama kehamilan dan menyusui.",
+    "description_en": "High-mercury fish can damage the nervous system, immune system, and kidneys and cause developmental issues in children. It’s best to avoid them during pregnancy and breastfeeding.",
+    "food_safety": "Unsafe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {
+    "id": 4,
+    "food_id": "Jus atau Cider Tidak Dipasteurisasi (misalnya Jus segar, cider tidak dipasteurisasi)",
+    "food_en": "Unpasteurized Juice or Cider (e.g Fresh-squeezed juice, unpasteurized cider)",
+    "description_id": "Jus tidak dipasteurisasi dapat mengandung bakteri berbahaya seperti E. coli. Lebih aman memilih versi yang dipasteurisasi atau merebus jus tidak dipasteurisasi selama setidaknya satu menit sebelum diminum.",
+    "description_en": "Unpasteurized juice can contain harmful bacteria like E. coli. It’s safer to choose pasteurized versions or boil unpasteurized juice for at least one minute before drinking.",
+    "food_safety": "Unsafe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {
+    "id": 5,
+    "food_id": "Produk Susu Mentah (misalnya Susu mentah, keju lembut seperti Brie, feta, camembert, queso blanco)",
+    "food_en": "Raw Milk Products (e.g Raw milk, soft cheeses like Brie, feta, camembert, queso blanco)",
+    "description_id": "Susu mentah dan produk yang terbuat darinya mungkin mengandung bakteri berbahaya seperti Listeria. Hanya konsumsi susu dan produk susu yang dipasteurisasi selama kehamilan.",
+    "description_en": "Raw milk and products made from it may contain harmful bacteria like Listeria. Only consume pasteurized milk and milk products during pregnancy.",
+    "food_safety": "Unsafe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {
+    "id": 6,
+    "food_id": "Telur Setengah Matang (misalnya Dressing salad Caesar buatan sendiri, tiramisu, eggs benedict, adonan mentah)",
+    "food_en": "Undercooked Eggs (e.g Homemade Caesar salad dressing, tiramisu, eggs benedict, raw batter)",
+    "description_id": "Telur setengah matang mungkin mengandung Salmonella. Pastikan telur matang sepenuhnya dan hindari makanan yang dibuat dengan telur mentah selama kehamilan.",
+    "description_en": "Undercooked eggs may contain Salmonella. Ensure eggs are fully cooked and avoid foods made with raw eggs during pregnancy.",
+    "food_safety": "Unsafe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {"id": 7, "food_id": "Salad Siap Saji (misalnya Salad ham, ayam, atau makanan laut siap saji)", "food_en": "Premade Salads (e.g Premade ham, chicken, seafood salads)", "description_id": "Salad ini mungkin mengandung Listeria, yang berbahaya selama kehamilan.", "description_en": "These salads may contain Listeria, which is dangerous during pregnancy.", "food_safety": "Unsafe", "created_at": "2024-08-09 16:44:44", "updated_at": "2024-08-09 16:44:44"},
+  {
+    "id": 8,
+    "food_id": "Tunas Mentah (misalnya Alfalfa, clover, kacang hijau, tunas lobak)",
+    "food_en": "Raw Sprouts (e.g Alfalfa, clover, mung bean, radish sprouts)",
+    "description_id": "Tunas mentah mungkin mengandung bakteri berbahaya seperti E. coli atau Salmonella. Masak tunas hingga matang sebelum dimakan.",
+    "description_en": "Raw sprouts may contain harmful bacteria like E. coli or Salmonella. Cook sprouts thoroughly before eating.",
+    "food_safety": "Unsafe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {
+    "id": 9,
+    "food_id": "Daging dan Unggas Setengah Matang",
+    "food_en": "Undercooked Meat and Poultry",
+    "description_id": "Daging dan unggas setengah matang dapat mengandung bakteri berbahaya seperti Salmonella atau E. coli. Pastikan mereka dimasak hingga suhu internal yang direkomendasikan.",
+    "description_en": "Undercooked meat and poultry can contain harmful bacteria like Salmonella or E. coli. Ensure they are cooked to the recommended internal temperatures.",
+    "food_safety": "Unsafe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {
+    "id": 10,
+    "food_id": "Hot Dog dan Daging Selingan (misalnya Hot dog, potongan dingin, daging gaya deli)",
+    "food_en": "Hot Dogs and Luncheon Meats (e.g Hot dogs, cold cuts, deli-style meats)",
+    "description_id": "Daging ini mungkin mengandung Listeria. Panaskan hingga mendidih atau 165°F (74°C) sebelum dikonsumsi selama kehamilan.",
+    "description_en": "These meats may contain Listeria. Reheat them to steaming hot or 165°F (74°C) before consuming during pregnancy.",
+    "food_safety": "Unsafe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {"id": 11, "food_id": "Saus Daging atau Pâté (misalnya Pâté yang didinginkan, saus daging dari deli)", "food_en": "Meat Spreads or Pâté (e.g Refrigerated pâté, meat spreads from delis)", "description_id": "Ini mungkin mengandung Listeria. Pilih versi kalengan atau tahan rak sebagai gantinya.", "description_en": "These may contain Listeria. Choose canned or shelf-stable versions instead.", "food_safety": "Unsafe", "created_at": "2024-08-09 16:44:44", "updated_at": "2024-08-09 16:44:44"},
+  {"id": 12, "food_id": "Adonan Mentah", "food_en": "Raw Dough", "description_id": "Adonan mentah dapat mengandung bakteri berbahaya seperti E. coli atau Salmonella. Selalu panggang atau masak adonan sebelum dimakan.", "description_en": "Raw dough can contain harmful bacteria like E. coli or Salmonella. Always bake or cook dough before eating.", "food_safety": "Unsafe", "created_at": "2024-08-09 16:44:44", "updated_at": "2024-08-09 16:44:44"},
+  {"id": 13, "food_id": "Buah dan Sayuran Tidak Dicuci", "food_en": "Unwashed Fruits and Vegetables", "description_id": "Buah dan sayuran yang tidak dicuci mungkin mengandung bakteri seperti E. coli atau Listeria. Cuci dengan bersih sebelum dimakan.", "description_en": "Unwashed produce may contain bacteria like E. coli or Listeria. Wash thoroughly before eating.", "food_safety": "Unsafe", "created_at": "2024-08-09 16:44:44", "updated_at": "2024-08-09 16:44:44"},
+  {
+    "id": 14,
+    "food_id": "Makanan Olahan (misalnya Camilan kemasan, sereal manis, makanan beku)",
+    "food_en": "Processed Foods (e.g Packaged snacks, sugary cereals, frozen meals)",
+    "description_id": "Makanan olahan seringkali rendah nutrisi dan tinggi kalori, gula, dan lemak tidak sehat. Pilih makanan dan camilan bergizi selama kehamilan.",
+    "description_en": "Processed foods are often low in nutrients and high in calories, sugar, and unhealthy fats. Opt for nutritious meals and snacks during pregnancy.",
+    "food_safety": "Caution",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {"id": 15, "food_id": "Alkohol", "food_en": "Alcohol", "description_id": "Alkohol meningkatkan risiko komplikasi kehamilan dan sindrom alkohol janin. Sebaiknya hindari alkohol sepenuhnya selama kehamilan.", "description_en": "Alcohol increases the risk of pregnancy complications and fetal alcohol syndrome. It’s best to avoid alcohol completely during pregnancy.", "food_safety": "Unsafe", "created_at": "2024-08-09 16:44:44", "updated_at": "2024-08-09 16:44:44"},
+  {
+    "id": 16,
+    "food_id": "Kafein (misalnya Kopi, teh, minuman ringan, kakao)",
+    "food_en": "Caffeine (e.g Coffee, tea, soft drinks, cocoa)",
+    "description_id": "Konsumsi kafein yang tinggi dapat menyebabkan kehilangan kehamilan dan masalah perkembangan. Batasi kafein hingga kurang dari 200 mg per hari selama kehamilan.",
+    "description_en": "High caffeine intake can lead to pregnancy loss and developmental issues. Limit caffeine to less than 200 mg per day during pregnancy.",
+    "food_safety": "Caution",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {"id": 17, "food_id": "Daging atau unggas yang dimasak", "food_en": "Cooked meat or poultry", "description_id": null, "description_en": null, "food_safety": "Safe", "created_at": "2024-08-09 16:44:44", "updated_at": "2024-08-09 16:44:44"},
+  {
+    "id": 18,
+    "food_id": "Ikan Bermerkuri Rendah",
+    "food_en": "Lower-Mercury Fish",
+    "description_id": "(Anchovy, Atlantic croaker, Atlantic mackerel, Black sea bass, Butterfish, Catfish, Clam, Cod, Crab, Crawfish, Flounder, Haddock, Hake, Herring, Lobster, American dan spiny, Mullet, Oyster, Pacific chub mackerel, Perch, air tawar dan laut, Pickerel, Plaice, Pollock, Salmon, Sardine, Scallop, Shad, Shrimp, Skate, Smelt, Sole, Squid, Tilapia, Trout, air tawar, Tuna, kalengan ringan (termasuk skipjack), Whitefish, Whiting)",
+    "description_en": "(Anchovy, Atlantic croaker, Atlantic mackerel, Black sea bass, Butterfish, Catfish, Clam, Cod, Crab, Crawfish, Flounder, Haddock, Hake, Herring, Lobster, American and spiny, Mullet, Oyster, Pacific chub mackerel, Perch, freshwater and ocean, Pickerel, Plaice, Pollock, Salmon, Sardine, Scallop, Shad, Shrimp, Skate, Smelt, Sole, Squid, Tilapia, Trout, freshwater, Tuna, canned light (includes skipjack), Whitefish, Whiting)",
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {
+    "id": 19,
+    "food_id": "Ikan atau makanan laut yang dimasak",
+    "food_en": "Fully cooked fish or seafood",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 20,
+    "food_id": "Ikan dan makanan laut kalengan",
+    "food_en": "Canned fish and seafood",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 21,
+    "food_id": "Susu yang dipasteurisasi",
+    "food_en": "Pasteurized milk",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 22,
+    "food_id": "Resep dengan telur mentah menggunakan telur pasteurisasi",
+    "food_en": "Recipes with raw eggs use pasteurized eggs",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 23,
+    "food_id": "Tunas yang dimasak",
+    "food_en": "Cooked sprouts",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 24,
+    "food_id": "Buah dan Sayuran segar yang dicuci, termasuk salad",
+    "food_en": "Washed fresh fruits and vegetables, including salads",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 25,
+    "food_id": "Sayuran yang dimasak",
+    "food_en": "Cooked vegetables",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 26,
+    "food_id": "Keju keras atau olahan",
+    "food_en": "Hard or processed cheeses",
+    "description_id": "(Keju keras, keju olahan, keju krim, mozzarella)",
+    "description_en": "(Hard cheeses, processed cheeses, cream cheese, mozzarella)",
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 27,
+    "food_id": "Keju lunak terbuat dari susu yang dipasteurisasi.",
+    "food_en": "Soft cheeses made from pasteurized milk.",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 28,
+    "food_id": "Hot dog, daging makan siang, dan daging deli yang dipanaskan",
+    "food_en": "Hot dogs, luncheon meats, and deli meats reheated to steaming hot",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 29,
+    "food_id": "Salad deli yang baru disiapkan di rumah",
+    "food_en": "Deli salads freshly prepared at home",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  },
+  {
+    "id": 30,
+    "food_id": "Pâté atau selai daging kalengan atau tahan rak",
+    "food_en": "Canned or shelf-stable pâtés or meat spreads",
+    "description_id": null,
+    "description_en": null,
+    "food_safety": "Safe",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44",
+  }
+];
+
+List<Map<String, dynamic>> initialTbMasterVaccines = [
+  {
+    "id": 1,
+    "vaccines_id": "Vaksin Influenza",
+    "vaccines_en": "Influenza Vaccine",
+    "description_id":
+        "Mendapatkan vaksin flu selama musim flu dapat mencegah ibu dari komplikasi medis dan kehamilan yang serius, serta melindungi bayi baru lahir selama awal masa bayi. Vaksin ini aman diberikan kapan saja selama kehamilan. Wanita hamil dan pasca melahirkan lebih rentan terhadap penyakit parah dan komplikasi dari flu karena perubahan pada sistem kekebalan tubuh, jantung, dan paru-paru mereka. Wanita yang sedang hamil atau akan hamil selama musim flu sebaiknya mendapatkan vaksin influenza inaktif (IIV) atau vaksin influenza rekombinan (RIV).",
+    "description_en":
+        "Getting the flu vaccine during flu season can help prevent serious health and pregnancy-related complications for mothers and protect their newborns in early infancy. This vaccine is safe to take at any stage of pregnancy. Pregnant and postpartum women are at higher risk for severe illness and complications from the flu because of changes in their immune systems, hearts, and lungs. Women who are pregnant or will be pregnant during flu season should get either the inactivated influenza vaccine (IIV) or the recombinant influenza vaccine (RIV).",
+    "created_at": "2024-08-09 15:03:11",
+    "updated_at": "2024-08-09 15:03:14"
+  },
+  {
+    "id": 2,
+    "vaccines_id": "Vaksin Tdap",
+    "vaccines_en": "Tdap Vaccine",
+    "description_id":
+        "Vaksin Tdap, yang melindungi dari tetanus, difteri, dan batuk rejan, disarankan diberikan pada trimester ketiga kehamilan. Vaksin ini membantu melindungi ibu dan bayi baru lahir dari batuk rejan. Vaksin ini juga disarankan bagi siapa saja yang akan berdekatan dengan bayi di bawah satu tahun, seperti kakek-nenek atau pengasuh di daycare. Penyedia layanan kesehatan harus memberikan dosis Tdap selama setiap kehamilan, terlepas dari riwayat vaksinasi sebelumnya. Waktu terbaik untuk mendapatkan vaksin Tdap adalah antara minggu ke-27 dan ke-36 kehamilan, karena waktu ini meningkatkan respons antibodi ibu dan menyalurkan antibodi ini ke bayi. Namun, vaksin ini dapat diberikan kapan saja selama kehamilan. Jika tidak diberikan selama kehamilan, harus diberikan segera setelah melahirkan.",
+    "description_en":
+        "The Tdap vaccine, which protects against tetanus, diphtheria, and whooping cough, is recommended during the third trimester of pregnancy. It helps protect both the mother and the newborn from whooping cough. This vaccine is also recommended for anyone who will be in close contact with infants under one year old, such as grandparents or daycare workers. Healthcare providers should give a Tdap dose during each pregnancy, regardless of previous vaccinations. The best time to get the Tdap vaccine is between 27 and 36 weeks of pregnancy, as this timing boosts the mother’s antibody response and passes these antibodies to the baby. However, it can be given at any time during pregnancy. If not given during pregnancy, it should be administered right after birth.",
+    "created_at": "2024-08-09 15:05:12",
+    "updated_at": "2024-08-09 15:05:14"
+  },
+  {
+    "id": 3,
+    "vaccines_id": "COVID-19",
+    "vaccines_en": "COVID-19",
+    "description_id": "Wanita hamil yang terinfeksi SARS-CoV-2 memiliki risiko lebih tinggi terkena penyakit COVID-19 yang parah dibandingkan dengan wanita yang tidak hamil. Wanita hamil yang sehat hingga empat kali lebih mungkin membutuhkan perawatan intensif dan dukungan pernapasan daripada wanita yang tidak hamil. Bayi yang lahir dari ibu dengan COVID-19 hingga tujuh kali lebih mungkin lahir prematur dan hingga lima kali lebih mungkin membutuhkan perawatan intensif untuk bayi baru lahir.",
+    "description_en": "Pregnant women who get infected with SARS-CoV-2 are at a higher risk of severe COVID-19 compared to non-pregnant women. Healthy pregnant women are up to four times more likely to need intensive care and breathing support than non-pregnant women. Babies born to mothers with COVID-19 are up to seven times more likely to be born prematurely and up to five times more likely to need newborn intensive care.",
+    "created_at": "2024-08-09 15:07:24",
+    "updated_at": "2024-08-09 15:07:26"
+  },
+  {
+    "id": 4,
+    "vaccines_id": "Vaksin Tambahan",
+    "vaccines_en": "Additional Vaccines",
+    "description_id": "Vaksin Hepatitis A, Hepatitis B, dan pneumokokus mungkin disarankan jika Anda memiliki faktor risiko tertentu atau sedang melanjutkan rangkaian vaksinasi yang dimulai sebelum kehamilan. Konsultasikan dengan dokter Anda untuk menentukan apakah vaksin ini bermanfaat bagi Anda.",
+    "description_en": "Hepatitis A, Hepatitis B, and pneumococcal vaccines may be recommended if you have certain risk factors or are in the middle of a vaccination series that started before pregnancy. Talk to your doctor to see if these vaccines are beneficial for you.",
+    "created_at": "2024-08-09 15:08:19",
+    "updated_at": "2024-08-09 15:08:21"
+  },
+];
+
+List<Map<String, dynamic>> initialTbMasterVitamins = [
+  {
+    "id": 1,
+    "vitamins_id": "Asam Folat (Folat)",
+    "vitamins_en": "Folic Acid (Folate)",
+    "description_id":
+        "Asam folat sangat penting untuk mencegah cacat tabung saraf pada bayi, seperti spina bifida dan anensefali. Cacat ini berkembang pada awal kehamilan, sering kali sebelum seorang wanita tahu bahwa dia hamil. Itulah mengapa disarankan untuk mulai mengonsumsi asam folat sebelum konsepsi dan melanjutkan hingga trimester pertama. Meskipun asam folat secara alami ditemukan dalam makanan seperti sayuran berdaun hijau, kacang-kacangan, dan kacang polong, suplemen disarankan untuk memastikan asupan yang cukup, terutama selama tahap awal kehamilan.",
+    "description_en":
+        "Folic acid is vital for preventing neural tube defects in babies, such as spina bifida and anencephaly. These defects develop early in pregnancy, often before a woman knows she’s pregnant. That’s why it’s recommended to start taking folic acid before conception and continue through the first trimester. While folic acid is naturally found in foods like green leafy vegetables, nuts, and beans, supplementation is recommended to ensure adequate intake, especially during the early stages of pregnancy.",
+    "created_at": "2024-08-09 15:13:55",
+    "updated_at": "2024-08-09 15:13:57"
+  },
+  {
+    "id": 2,
+    "vitamins_id": "Kalsium",
+    "vitamins_en": "Calcium",
+    "description_id": "Kalsium sangat penting untuk perkembangan tulang dan gigi bayi. Meskipun beberapa vitamin prenatal mengandung kalsium, suplemen tambahan mungkin diperlukan untuk memenuhi kebutuhan yang meningkat selama kehamilan. Asupan kalsium yang cukup juga mendukung kesehatan tulang ibu selama kehamilan.",
+    "description_en": "Calcium is crucial for the development of the baby’s bones and teeth. While some prenatal vitamins contain calcium, additional supplementation may be needed to meet the increased demands of pregnancy. Adequate calcium intake also supports the mother’s bone health during pregnancy.",
+    "created_at": "2024-08-09 15:14:24",
+    "updated_at": "2024-08-09 15:14:26"
+  },
+  {
+    "id": 3,
+    "vitamins_id": "Yodium",
+    "vitamins_en": "Iodine",
+    "description_id": "Yodium penting untuk menjaga fungsi tiroid yang sehat selama kehamilan. Kekurangan yodium dapat menyebabkan keguguran, lahir mati, atau masalah perkembangan pada bayi, seperti pertumbuhan yang terhambat, disabilitas mental parah, atau ketulian. Penting untuk memastikan asupan yodium yang cukup, baik melalui diet atau suplemen.",
+    "description_en": "Iodine is important for maintaining healthy thyroid function during pregnancy. Not getting enough iodine can lead to miscarriage, stillbirth, or developmental issues in the baby, like stunted growth, severe mental disability, or deafness. It’s important to ensure enough iodine intake either through diet or supplementation.",
+    "created_at": "2024-08-09 15:14:28",
+    "updated_at": "2024-08-09 15:14:30"
+  },
+  {
+    "id": 4,
+    "vitamins_id": "Zat Besi",
+    "vitamins_en": "Iron",
+    "description_id": "Zat besi diperlukan untuk memproduksi sel darah merah, yang membawa oksigen ke bayi untuk perkembangan yang tepat. Banyak wanita hamil tidak mendapatkan cukup zat besi dari diet mereka untuk memenuhi kebutuhan yang meningkat selama kehamilan, yang mengarah pada anemia defisiensi besi. Suplementasi zat besi selama kehamilan membantu mencegah anemia dan mengurangi risiko kelahiran prematur dan berat lahir rendah.",
+    "description_en": "Iron is necessary for producing red blood cells, which carry oxygen to the baby for proper development. Many pregnant women don’t get enough iron from their diet to meet the increased demands of pregnancy, leading to iron deficiency anemia. Iron supplementation during pregnancy helps prevent anemia and reduces the risk of preterm delivery and low birth weight.",
+    "created_at": "2024-08-09 15:16:16",
+    "updated_at": "2024-08-09 15:16:19"
+  },
+  {
+    "id": 5,
+    "vitamins_id": "Asam Lemak Omega-3",
+    "vitamins_en": "Omega-3 Fatty Acids",
+    "description_id": "Asam lemak omega-3, termasuk DHA dan EPA, penting untuk perkembangan otak, saraf, dan mata bayi. Meskipun beberapa vitamin prenatal mungkin tidak mengandung asam lemak omega-3, mereka dapat ditemukan dalam makanan seperti ikan berlemak dan kacang-kacangan. Suplementasi mungkin diperlukan jika asupan makanan tidak mencukupi.",
+    "description_en": "Omega-3 fatty acids, including DHA and EPA, are essential for the development of the baby’s brain, nerves, and eyes. While some prenatal vitamins may not include omega-3 fatty acids, they can be found in foods like fatty fish and nuts. Supplementation may be necessary if dietary intake is not enough.",
+    "created_at": "2024-08-09 15:16:21",
+    "updated_at": "2024-08-09 15:16:23"
+  },
+  {
+    "id": 6,
+    "vitamins_id": "Vitamin D",
+    "vitamins_en": "Vitamin D",
+    "description_id": "Vitamin D penting untuk membangun tulang dan gigi bayi serta menjaga kadar kalsium dan fosfor dalam tubuh. Asupan vitamin D yang cukup selama kehamilan membantu mencegah masalah tulang pada ibu dan bayi. Kekurangan vitamin D telah dikaitkan dengan peningkatan risiko komplikasi kehamilan seperti preeklamsia dan diabetes gestasional.",
+    "description_en": "Vitamin D is important for building the baby’s bones and teeth and maintaining calcium and phosphorus levels in the body. Adequate vitamin D intake during pregnancy helps prevent bone-related issues in both the mother and the baby. Deficiency in vitamin D has been linked to a higher risk of pregnancy complications like preeclampsia and gestational diabetes.",
+    "created_at": "2024-08-09 15:16:25",
+    "updated_at": "2024-08-09 15:16:27"
+  },
+  {
+    "id": 7,
+    "vitamins_id": "Kolin",
+    "vitamins_en": "Choline",
+    "description_id": "Kolin sangat penting untuk perkembangan otak bayi yang sehat. Meskipun tubuh dapat memproduksi sebagian kolin, sebagian besar berasal dari sumber makanan seperti daging dan telur. Wanita hamil harus memastikan asupan kolin yang cukup melalui diet atau suplemen untuk mendukung perkembangan otak bayi.",
+    "description_en": "Choline is crucial for healthy brain development in the baby. While the body can produce some choline, most of it comes from food sources like meat and eggs. Pregnant women should ensure enough choline intake through diet or supplements to support the baby’s brain development.",
+    "created_at": "2024-08-09 15:16:29",
+    "updated_at": "2024-08-09 15:16:31"
+  },
+  {
+    "id": 8,
+    "vitamins_id": "Protein",
+    "vitamins_en": "Protein",
+    "description_id": "Asupan protein perlu ditingkatkan selama kehamilan untuk mendukung kebutuhan ibu dan bayi yang sedang tumbuh. Asupan protein yang cukup membantu pembentukan jaringan baru, termasuk plasenta, yang menyediakan oksigen dan nutrisi untuk bayi. Makanan yang kaya protein harus dimasukkan dalam diet ibu untuk memenuhi kebutuhan protein yang meningkat selama kehamilan.",
+    "description_en": "Protein intake needs to increase during pregnancy to support the growing needs of both the mother and the baby. Adequate protein intake helps form new tissue, including the placenta, which provides oxygen and nutrients to the baby. Protein-rich foods should be included in the mother’s diet to meet the increased protein requirements during pregnancy.",
+    "created_at": "2024-08-09 15:16:33",
+    "updated_at": "2024-08-09 15:16:36"
+  },
 ];

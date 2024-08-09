@@ -7,6 +7,7 @@ environment:
 
 dependencies:
   android_alarm_manager_plus: ^3.0.4
+  cached_network_image: ^3.4.0
   calendar_date_picker2: null
   cherry_toast: ^1.10.1
   connectivity_plus: ^6.0.3
@@ -16,9 +17,13 @@ dependencies:
   dio: ^5.4.0
   dotted_border: ^2.1.0
   filter_list: ^1.0.2
+  firebase_analytics: ^11.2.1
+  firebase_core: ^3.2.0
+  firebase_messaging: ^15.0.3
   flutter:
     sdk: flutter
   flutter_datetime_picker_plus: ^2.1.0
+  flutter_local_notifications: ^17.2.1+2
   flutter_neat_and_clean_calendar: ^0.3.14+32
   flutter_screenutil: null
   flutter_speed_dial: ^7.0.0
@@ -32,9 +37,11 @@ dependencies:
   iconsax: null
   like_button: ^2.0.5
   logger: ^2.3.0
+  lottie: ^3.1.2
   numberpicker: ^2.1.2
   path: ^1.9.0
   path_provider: ^2.1.1
+  permission_handler: ^11.3.1
   photo_view: ^0.15.0
   pinput: ^3.0.1
   scrollable_clean_calendar: ^1.4.1
@@ -43,6 +50,7 @@ dependencies:
   syncfusion_flutter_charts: ^24.2.8
   syncfusion_flutter_datepicker: ^24.1.44
   table_calendar: ^3.1.1
+  timezone: ^0.9.4
   uuid: ^4.4.0
 
 dev_dependencies:
@@ -58,4 +66,8 @@ flutter:
   assets:
     - assets/
     - assets/image/
+    - assets/image/baby_comparison/
+    - assets/image/fetal_development/
+    - assets/icon/
+    - assets/lottie/
     # - assets/image/chinese chart.jpg

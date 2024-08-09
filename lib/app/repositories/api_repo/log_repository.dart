@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
+import 'package:periodnpregnancycalender/app/modules/profile/views/unauthorized_error_view.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class LogRepository {
   final ApiService apiService;
@@ -60,9 +62,8 @@ class LogRepository {
     }
   }
 
-  Future<void> storeLog(String date, String? sexActivity, String? bleedingFlow, Map<String, bool> symptoms, String? vaginalDischarge, Map<String, bool> moods, Map<String, bool> others, Map<String, bool> physicalActivity, String? temperature, String? weight, String? notes) async {
-    DateTime parsedDate = DateTime.parse(date);
-    String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+  Future<void> storeLog(String date, String? sexActivity, String? bleedingFlow, Map<String, dynamic> symptoms, String? vaginalDischarge, Map<String, dynamic> moods, Map<String, dynamic> others, Map<String, dynamic> physicalActivity, String? temperature, String? weight, String? notes) async {
+    String formattedDate = formatDate(DateTime.parse(date));
 
     http.Response response = await apiService.storeLog(
       formattedDate,
@@ -79,28 +80,25 @@ class LogRepository {
     );
 
     if (response.statusCode == 200) {
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 
-  Future<Map<String, dynamic>> storeReminder(String title, String description, String dateTime) async {
-    http.Response response = await apiService.storeReminder(title, description, dateTime);
+  Future<void> storeReminder(String id, String title, String description, String dateTime) async {
+    http.Response response = await apiService.storeReminder(id, title, description, dateTime);
 
     if (response.statusCode == 200) {
-      Get.back();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 
@@ -108,14 +106,12 @@ class LogRepository {
     http.Response response = await apiService.editReminder(id, title, description, dateTime);
 
     if (response.statusCode == 200) {
-      Get.back();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 
@@ -123,13 +119,12 @@ class LogRepository {
     http.Response response = await apiService.deleteReminder(id);
 
     if (response.statusCode == 200) {
-      Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
       return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-      Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-      _logger.e("Error during get daily log: $errorMessage");
-      throw Exception(errorMessage);
+      _logger.e('[API ERROR] $errorMessage');
     }
   }
 

@@ -1,23 +1,33 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/weight_history_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
+import 'package:periodnpregnancycalender/app/services/log_service.dart';
+import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/profile_service.dart';
+import 'package:periodnpregnancycalender/app/services/sync_data_service.dart';
+import 'package:periodnpregnancycalender/app/services/weight_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
@@ -25,94 +35,203 @@ import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 class ProfileController extends GetxController {
   final ApiService apiService = ApiService();
   final StorageService storageService = StorageService();
-  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  late final ProfileRepository profileRepository = ProfileRepository(apiService, databaseHelper);
+  late final ProfileRepository profileRepository = ProfileRepository(apiService);
   late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
   late final AuthRepository authRepository = AuthRepository(apiService);
   Rx<User?> profile = Rx<User?>(null);
-  TextEditingController namaC = TextEditingController();
-  TextEditingController emailC = TextEditingController();
   var radioGoalSelect = 0.obs;
   var periodStartDate = DateTime.now().obs;
-  var birthDate = DateTime.now().obs;
+  var birthDate = "".obs;
   var gender = "".obs;
   var firstDayLastPeriod = DateTime.now().obs;
   Rx<CurrentlyPregnant> currentlyPregnantData = Rx<CurrentlyPregnant>(CurrentlyPregnant());
   RxList<WeeklyData> weeklyData = <WeeklyData>[].obs;
   var purposeText = "".obs;
   var useLastPeriodData = true.obs;
-  late final ProfileService _profileService;
-  late final SyncDataRepository _syncDataRepository;
+  Rx<int?> selectedLanguage = Rx<int>(0);
+  Rx<int?> syncPreferences = Rx<int>(0);
+  Rx<bool?> isDataBackedup = Rx<bool>(false);
+
+  late final Future<User?> profileUser;
+
+  late final ProfileService profileService;
+  late final SyncDataRepository syncDataRepository;
   late final PregnancyHistoryService _pregnancyHistoryService;
+  late final SyncDataService syncDataService;
 
   @override
   void onInit() async {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   ever<Profile?>(profile, (newProfile) {
-    //     if (newProfile != null) {
-    //       namaC.text = newProfile.userData!.user!.nama ?? '';
-    //       emailC.text = newProfile.userData!.user!.email ?? '';
-    //     }
-    //   });
-    // });
-    fetchProfile();
+    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
+    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
+    final PregnancyHistoryRepository pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
+    final MasterDataKehamilanRepository masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
+    final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
+    final weightHistoryRepository = WeightHistoryRepository(databaseHelper);
+    final localLogRepository = LocalLogRepository(databaseHelper);
+    final masterNewmoonRepository = MasterNewmoonRepository(databaseHelper);
+    final masterGenderRepository = MasterGenderRepository(databaseHelper);
+    final periodHistoryService = PeriodHistoryService(periodHistoryRepository, localProfileRepository, masterNewmoonRepository, masterGenderRepository);
+    final pregnancyHistoryService = PregnancyHistoryService(pregnancyHistoryRepository, masterKehamilanRepository, periodHistoryRepository, localProfileRepository);
+    final weightHistoryService = WeightHistoryService(weightHistoryRepository, pregnancyHistoryRepository);
+    final logService = LogService(localLogRepository);
+
+    syncDataRepository = SyncDataRepository(databaseHelper);
+    profileService = ProfileService(localProfileRepository);
+    _pregnancyHistoryService = PregnancyHistoryService(
+      pregnancyHistoryRepository,
+      masterKehamilanRepository,
+      periodHistoryRepository,
+      localProfileRepository,
+    );
+
+    syncDataService = SyncDataService(
+      weightHistoryRepository,
+      periodHistoryRepository,
+      pregnancyHistoryRepository,
+      localProfileRepository,
+      syncDataRepository,
+      localLogRepository,
+      periodHistoryService,
+      weightHistoryService,
+      pregnancyHistoryService,
+      logService,
+    );
+    profileUser = fetchProfile();
     usePurpose();
+
     if (storageService.getIsPregnant() == "1") {
       fetchPregnancyData();
     } else {
       HomeMenstruationController homeMenstruationController = Get.find<HomeMenstruationController>();
-      setFocusedDate(homeMenstruationController.haidAwalList.last);
-      setSelectedDate(homeMenstruationController.haidAwalList.last);
+      setFocusedDate(homeMenstruationController.haidAwalList.first);
+      setSelectedDate(homeMenstruationController.haidAwalList.first);
     }
-
-    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
-    final PregnancyHistoryRepository pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    final MasterKehamilanRepository masterKehamilanRepository = MasterKehamilanRepository(databaseHelper);
-    final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
-    _profileService = ProfileService(localProfileRepository);
-    _pregnancyHistoryService = PregnancyHistoryService(pregnancyHistoryRepository, masterKehamilanRepository, periodHistoryRepository, localProfileRepository);
-
+    selectedLanguage.value = storageService.getLanguage() == "en" ? 0 : 1;
+    // syncPreferences.value = storageService.getStoreDataMechanism() == "primary" ? 0 : 1;
+    isDataBackedup.value = storageService.getIsBackup();
     super.onInit();
   }
 
   @override
   void onClose() {
-    namaC.dispose();
     super.onClose();
+  }
+
+  final Rx<DateTime> _focusedDate = Rx<DateTime>(DateTime.now());
+  DateTime get getFocusedDate => _focusedDate.value;
+
+  void setFocusedDate(DateTime selectedDate) {
+    _focusedDate.value = selectedDate;
+    update();
+  }
+
+  final Rx<DateTime?> _selectedDate = Rx<DateTime?>(DateTime.now());
+
+  DateTime? get selectedDate => _selectedDate.value;
+
+  void setSelectedDate(DateTime selectedDate) {
+    _selectedDate.value = selectedDate;
+    update();
+  }
+
+  void setSelectedLanguage(int value) {
+    selectedLanguage.value = value;
+    update();
+  }
+
+  void setLanguage() {
+    if (selectedLanguage.value == 0) {
+      storageService.setLanguage("en");
+    } else {
+      storageService.setLanguage("id");
+    }
+    Get.offAllNamed(Routes.NAVIGATION_MENU);
+  }
+
+  void setSelectedSyncPreferences(int value) {
+    syncPreferences.value = value;
+    update();
+  }
+
+  // void setSyncPreferences() {
+  //   if (syncPreferences.value == 0) {
+  //     storageService.storePrimaryDataMechanism();
+  //   } else {
+  //     storageService.storeManyDataMechanism();
+  //   }
+  //   Get.offAllNamed(Routes.NAVIGATION_MENU);
+  // }
+
+  Future<void> _handleDataBackup(bool backup) async {
+    isDataBackedup.value = backup;
+
+    if (backup) {
+      syncDataService.rebackupData();
+    } else {
+      authRepository.deleteData();
+    }
+
+    storageService.storeIsBackup(backup);
+    update();
+
+    await Future.delayed(Duration(milliseconds: 350));
+    Get.offAllNamed(Routes.NAVIGATION_MENU);
+  }
+
+  Future<void> unbackupData() async {
+    await _handleDataBackup(false);
+  }
+
+  Future<void> rebackupData() async {
+    await _handleDataBackup(true);
   }
 
   // Future<void> fetchProfile() async {
   //   profile.value = await profileRepository.getProfile();
   // }
 
-  Future<void> fetchProfile() async {
-    profile.value = await _profileService.getProfile();
+  Future<User?> fetchProfile() async {
+    User? user = await profileService.getProfile();
+    birthDate.value = user!.tanggalLahir!;
+    print(birthDate.value);
+    return user;
   }
 
-  Future<void> startPregnancy() async {
+  void startPregnancy() async {
+    bool remoteSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
-    _pregnancyHistoryService.beginPregnancy(selectedDate!);
 
-    if (storageService.getIsAuth() && !isConnected) {
+    var pregnancy;
+    if (isConnected && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        pregnancy = await pregnancyRepository.pregnancyBegin(selectedDate!.toString(), null);
+        remoteSuccess = true;
+      } catch (e) {
+        await _syncPregnancyBegin();
+      }
+    } else {
       await _syncPregnancyBegin();
-      return;
     }
 
     try {
-      await pregnancyRepository.pregnancyBegin(selectedDate.toString(), null);
-      Get.offAllNamed(Routes.NAVIGATION_MENU);
+      if (remoteSuccess) {
+        await _pregnancyHistoryService.beginPregnancy(selectedDate!, pregnancy["data"]["id"]);
+      } else {
+        await _pregnancyHistoryService.beginPregnancy(selectedDate!, null);
+        await _syncPregnancyBegin();
+      }
+
       storageService.storeIsPregnant("1");
+      Get.offAllNamed(Routes.NAVIGATION_MENU);
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Pregnancy started successfully!'));
     } catch (e) {
-      print("Error editing pregnancy start date: $e");
-      _syncPregnancyBegin();
+      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to begin pregnancy. Please try again!'));
     }
   }
 
   Future<void> _syncPregnancyBegin() async {
     Map<String, dynamic> data = {
-      "hari_pertama_haid_terakhir": selectedDate,
+      "firstDayLastMenstruation": selectedDate.toString(),
     };
 
     String jsonData = jsonEncode(data);
@@ -124,31 +243,39 @@ class ProfileController extends GetxController {
       createdAt: DateTime.now().toString(),
     );
 
-    await _syncDataRepository.addSyncLogData(syncLog);
+    await syncDataRepository.addSyncLogData(syncLog);
   }
 
   Future<void> endPregnancy() async {
+    bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
-    _pregnancyHistoryService.endPregnancy(selectedDate!, gender.value);
-
-    if (storageService.getIsAuth() && !isConnected) {
-      await _syncPregnancyEnded();
-      return;
-    }
 
     try {
-      await pregnancyRepository.pregnancyEnded(selectedDate.toString(), gender.value);
-      Get.offAllNamed(Routes.NAVIGATION_MENU);
-      storageService.storeIsPregnant("0");
+      await _pregnancyHistoryService.endPregnancy(selectedDate!, gender.value);
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Pregnancy ended successfully!'));
+      localSuccess = true;
     } catch (e) {
-      print("Error editing pregnancy start date: $e");
-      _syncPregnancyEnded();
+      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to end pregnancy. Please try again!'));
+    }
+
+    storageService.storeIsPregnant("0");
+    LocalNotificationService().cancelAllPregnancyNotifications(storageService.getAccountLocalId());
+    Get.offAllNamed(Routes.NAVIGATION_MENU);
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await pregnancyRepository.pregnancyEnded(selectedDate.toString(), gender.value);
+      } catch (e) {
+        await _syncPregnancyEnded();
+      }
+    } else if (localSuccess) {
+      await _syncPregnancyEnded();
     }
   }
 
   Future<void> _syncPregnancyEnded() async {
     Map<String, dynamic> data = {
-      "pregnancy_end": selectedDate,
+      "pregnancyEndDate": selectedDate.toString(),
       "gender": gender.value,
     };
 
@@ -161,25 +288,33 @@ class ProfileController extends GetxController {
       createdAt: DateTime.now().toString(),
     );
 
-    await _syncDataRepository.addSyncLogData(syncLog);
+    await syncDataRepository.addSyncLogData(syncLog);
   }
 
   Future<void> deletePregnancy() async {
+    bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
-    _pregnancyHistoryService.deletePregnancy();
-
-    if (storageService.getIsAuth() && !isConnected) {
-      await _syncPregnancyDelete();
-      return;
-    }
 
     try {
-      await pregnancyRepository.deletePregnancy();
-      Get.offAllNamed(Routes.NAVIGATION_MENU);
-      storageService.storeIsPregnant("0");
+      await _pregnancyHistoryService.deletePregnancy();
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Pregnancy deleted successfully!'));
+      localSuccess = true;
     } catch (e) {
-      print("Error editing pregnancy start date: $e");
-      _syncPregnancyDelete();
+      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to delete pregnancy. Please try again!'));
+    }
+
+    storageService.storeIsPregnant("0");
+    LocalNotificationService().cancelAllPregnancyNotifications(storageService.getAccountLocalId());
+    Get.offAllNamed(Routes.NAVIGATION_MENU);
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await pregnancyRepository.deletePregnancy();
+      } catch (e) {
+        await _syncPregnancyDelete();
+      }
+    } else if (localSuccess) {
+      await _syncPregnancyDelete();
     }
   }
 
@@ -187,25 +322,26 @@ class ProfileController extends GetxController {
     SyncLog syncLog = SyncLog(
       tableName: 'tb_riwayat_kehamilan',
       operation: 'deletePregnancy',
+      data: '{}',
       createdAt: DateTime.now().toString(),
     );
 
-    await _syncDataRepository.addSyncLogData(syncLog);
+    await syncDataRepository.addSyncLogData(syncLog);
   }
 
   Future<void> performLogout() async {
     try {
-      Get.dialog(
-        Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-
+      await Center(child: CircularProgressIndicator());
       await Future.delayed(Duration(milliseconds: 400));
       storageService.storeIsAuth(false);
       storageService.deleteCredentialToken();
       storageService.deleteIsPregnant();
-      await _profileService.deleteProfile();
+      storageService.setHasSyncData(false);
+      LocalNotificationService().cancelAllNotifications();
+      // storageService.storePrimaryDataMechanism();
+      storageService.deleteAccountLocalId();
+      // await profileService.deleteProfile();
+      await profileService.deletePendingDataChanges();
       await authRepository.logout();
       Get.offAllNamed(Routes.ONBOARDING);
     } catch (error) {
@@ -277,23 +413,6 @@ class ProfileController extends GetxController {
       }
     }
 
-    update();
-  }
-
-  final Rx<DateTime> _focusedDate = Rx<DateTime>(DateTime.now());
-  DateTime get getFocusedDate => _focusedDate.value;
-
-  void setFocusedDate(DateTime selectedDate) {
-    _focusedDate.value = selectedDate;
-    update();
-  }
-
-  final Rx<DateTime?> _selectedDate = Rx<DateTime?>(DateTime.now());
-
-  DateTime? get selectedDate => _selectedDate.value;
-
-  void setSelectedDate(DateTime selectedDate) {
-    _selectedDate.value = selectedDate;
     update();
   }
 

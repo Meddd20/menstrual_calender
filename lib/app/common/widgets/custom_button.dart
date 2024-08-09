@@ -9,12 +9,16 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final Color? textColor;
+  final String? prefixIcon;
+  final Color? iconColor;
 
   const CustomButton({
     required this.text,
     required this.onPressed,
     this.backgroundColor,
     this.textColor,
+    this.prefixIcon,
+    this.iconColor,
   });
 
   @override
@@ -30,9 +34,23 @@ class CustomButton extends StatelessWidget {
         shadowColor: Colors.transparent,
         minimumSize: Size(Get.width, 50.h),
       ),
-      child: Text(
-        text,
-        style: CustomTextStyle.buttonTextStyle(color: textColor ?? Colors.white),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (prefixIcon != null) ...[
+            Image.asset(
+              prefixIcon!,
+              width: 24,
+              height: 24,
+              color: iconColor,
+            ),
+            SizedBox(width: 10),
+          ],
+          Text(
+            text,
+            style: CustomTextStyle.buttonTextStyle(color: textColor ?? Colors.white),
+          ),
+        ],
       ),
     );
   }

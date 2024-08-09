@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:periodnpregnancycalender/app/common/widgets.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 

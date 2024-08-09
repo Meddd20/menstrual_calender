@@ -6,34 +6,34 @@ class MasterNewmoonService {
 
   MasterNewmoonService(this._masterNewmoonRepository);
 
-  Future<List<MasterNewmoon>> getAllMasterNewmoon() async {
-    return await _masterNewmoonRepository.getAllMasterNewmoon();
+  Future<List<MasterNewmoon>> getAllNewmoon() async {
+    return await _masterNewmoonRepository.getAllNewmoon();
   }
 
-  Future<MasterNewmoon?> getMasterNewmoonById(int? id) async {
-    return await _masterNewmoonRepository.getMasterNewmoonById(id);
+  Future<MasterNewmoon?> getNewmoonById(int? id) async {
+    return await _masterNewmoonRepository.getNewmoonById(id);
   }
 
-  Future<void> addMasterNewmoon(MasterNewmoon masterNewmoon) async {
-    await _masterNewmoonRepository.addMasterNewmoon(masterNewmoon);
+  Future<void> addNewmoon(MasterNewmoon masterNewmoon) async {
+    await _masterNewmoonRepository.addNewmoon(masterNewmoon);
   }
 
-  Future<void> editMasterNewmoon(MasterNewmoon editedMasterNewmoonData) async {
-    MasterNewmoon? masterNewmoonData = await getMasterNewmoonById(editedMasterNewmoonData.id);
+  Future<void> editNewmoon(MasterNewmoon editedNewmoonData) async {
+    MasterNewmoon? masterNewmoonData = await getNewmoonById(editedNewmoonData.id);
     if (masterNewmoonData != null) {
       MasterNewmoon updatedNewmoon = masterNewmoonData.copyWith(
-        id: editedMasterNewmoonData.id,
-        lunarMonth: editedMasterNewmoonData.lunarMonth,
-        newMoon: editedMasterNewmoonData.newMoon,
-        shio: editedMasterNewmoonData.shio,
+        id: editedNewmoonData.id,
+        lunarMonth: editedNewmoonData.lunarMonth,
+        newMoon: editedNewmoonData.newMoon,
+        shio: editedNewmoonData.shio,
       );
-      await _masterNewmoonRepository.editMasterNewmoon(updatedNewmoon);
+      await _masterNewmoonRepository.editNewmoon(updatedNewmoon);
     } else {
       throw Exception('Master Newmoon Data not found');
     }
   }
 
-  Future<void> deleteMasterNewmoon(int id) async {
-    await _masterNewmoonRepository.deleteMasterNewmoon(id);
+  Future<void> deleteNewmoon(int id) async {
+    await _masterNewmoonRepository.deleteNewmoon(id);
   }
 }

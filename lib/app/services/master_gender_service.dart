@@ -6,34 +6,34 @@ class MasterGenderService {
 
   MasterGenderService(this._masterGenderRepository);
 
-  Future<List<MasterGender>> getMasterGenderData() async {
-    return await _masterGenderRepository.getAllMasterGenderData();
+  Future<List<MasterGender>> getGenderData() async {
+    return await _masterGenderRepository.getAllGenderData();
   }
 
-  Future<MasterGender?> getMasterGenderById(int? id) async {
-    return await _masterGenderRepository.getMasterGenderById(id);
+  Future<MasterGender?> getGenderById(int? id) async {
+    return await _masterGenderRepository.getGenderById(id);
   }
 
-  Future<void> addMasterGenderData(MasterGender masterGender) async {
-    await _masterGenderRepository.addMasterGenderData(masterGender);
+  Future<void> addGenderData(MasterGender masterGender) async {
+    await _masterGenderRepository.addGenderData(masterGender);
   }
 
-  Future<void> editMasterGenderData(MasterGender updatedMasterGenderData) async {
-    MasterGender? masterGenderData = await getMasterGenderById(updatedMasterGenderData.id);
-    if (masterGenderData != null) {
-      MasterGender updatedGender = masterGenderData.copyWith(
-        id: updatedMasterGenderData.id,
-        usia: updatedMasterGenderData.usia,
-        bulan: updatedMasterGenderData.bulan,
-        gender: updatedMasterGenderData.gender,
+  Future<void> editGenderData(MasterGender genderData) async {
+    MasterGender? editedGenderData = await getGenderById(genderData.id);
+    if (editedGenderData != null) {
+      MasterGender updatedGenderData = editedGenderData.copyWith(
+        id: genderData.id,
+        usia: genderData.usia,
+        bulan: genderData.bulan,
+        gender: genderData.gender,
       );
-      await _masterGenderRepository.editMasterGenderData(updatedGender);
+      await _masterGenderRepository.editGenderData(updatedGenderData);
     } else {
       throw Exception('Master Gender Data not found');
     }
   }
 
-  Future<void> deleteMasterGenderData(int id) async {
-    await _masterGenderRepository.deleteMasterGenderData(id);
+  Future<void> deleteGenderData(int id) async {
+    await _masterGenderRepository.deleteGenderData(id);
   }
 }

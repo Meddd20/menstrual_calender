@@ -4,15 +4,19 @@ class ApiEndPoints {
 }
 
 class _AuthEndPoints {
+  final String storeFcmToken = 'notifications/token';
+
   final String login = 'auth/login';
   final String regisUser = 'auth/register/user';
   final String requestVerification = 'auth/requestverification';
   final String verifyCode = 'auth/verifyverification';
   final String resetPassword = 'auth/changepassword';
   final String logOut = 'auth/logout';
+  final String checkToken = 'auth/check-token';
   final String profile = 'auth/get-profile';
   final String editProfile = 'auth/update-profile';
   final String getSycData = 'auth/sync-data';
+  final String deleteData = 'auth/delete-data';
 
   final String getAllArticle = 'articles/show-all-articles';
   final String getArticle = 'articles/show-articles';
