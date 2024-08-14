@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController controller;
@@ -42,6 +43,7 @@ class CustomTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       validator: validator,
       onChanged: onChanged,
+      style: CustomTextStyle.medium(15),
     );
   }
 }

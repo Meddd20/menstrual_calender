@@ -245,7 +245,7 @@ class DatabaseHelper {
       description_en TEXT,
       food_safety TEXT CHECK(food_safety IN ('Safe','Unsafe','Caution')),
       created_at DATE,
-      updated_at DATE,
+      updated_at DATE
     )
   ''';
 
@@ -257,7 +257,7 @@ class DatabaseHelper {
       description_id TEXT,
       description_en TEXT,
       created_at DATE,
-      updated_at DATE,
+      updated_at DATE
     )
   ''';
 
@@ -269,7 +269,7 @@ class DatabaseHelper {
       description_id TEXT,
       description_en TEXT,
       created_at DATE,
-      updated_at DATE,
+      updated_at DATE
     )
   ''';
 }

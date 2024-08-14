@@ -39,17 +39,13 @@ class Onboarding2View extends GetView<OnboardingController> {
                 SizedBox(height: 25.h),
                 Text(
                   "What’s your current goal?",
-                  style: CustomTextStyle.heading3TextStyle(),
+                  style: CustomTextStyle.extraBold(20),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 10.h),
                 Text(
                   "Pick the goal that best fits you. All features are available for you to explore!",
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    height: 1.5,
-                    color: Colors.black.withOpacity(0.6),
-                  ),
+                  style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 32.h),
@@ -79,7 +75,7 @@ class Onboarding2View extends GetView<OnboardingController> {
                             padding: EdgeInsets.only(left: 22),
                             child: Text(
                               "Tracking my period",
-                              style: CustomTextStyle.heading3TextStyle(color: Colors.white),
+                              style: CustomTextStyle.extraBold(20, color: Colors.white),
                               textAlign: TextAlign.left,
                             ),
                           ),
@@ -122,7 +118,7 @@ class Onboarding2View extends GetView<OnboardingController> {
                             padding: EdgeInsets.only(left: 22),
                             child: Text(
                               "Follow my pregnancy",
-                              style: CustomTextStyle.heading3TextStyle(color: Colors.white),
+                              style: CustomTextStyle.extraBold(20, color: Colors.white),
                               textAlign: TextAlign.left,
                             ),
                           ),

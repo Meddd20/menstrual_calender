@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 
 class CustomTabBar extends StatelessWidget {
   final Function(int) onTap;
@@ -25,46 +26,30 @@ class CustomTabBar extends StatelessWidget {
         indicatorPadding: EdgeInsets.all(2),
         labelColor: Colors.black,
         onTap: onTap,
-        unselectedLabelColor: Colors.grey.shade600,
+        unselectedLabelColor: Color(0xFFC7C7C7),
         tabs: [
           Tab(
             child: Text(
               '30 Days',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
+              style: CustomTextStyle.bold(12),
             ),
           ),
           Tab(
             child: Text(
               '3 Months',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
+              style: CustomTextStyle.bold(12),
             ),
           ),
           Tab(
             child: Text(
               '6 Months',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
+              style: CustomTextStyle.bold(12),
             ),
           ),
           Tab(
             child: Text(
               '1 Year',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
+              style: CustomTextStyle.bold(12),
             ),
           ),
         ],

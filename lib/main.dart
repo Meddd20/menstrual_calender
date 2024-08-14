@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           theme: ThemeData(
             scaffoldBackgroundColor: AppColors.white,
+            useMaterial3: true,
           ),
           title: "Period and Pregnancy Calendar",
           debugShowCheckedModeBanner: false,

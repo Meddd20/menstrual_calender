@@ -1,5 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 
 class CustomCalendarDatePicker extends StatelessWidget {
   final List<DateTime?> value;
@@ -27,29 +28,17 @@ class CustomCalendarDatePicker extends StatelessWidget {
         weekdayLabels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         firstDayOfWeek: 1,
         controlsHeight: 50,
-        controlsTextStyle: const TextStyle(
-          color: Colors.black,
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
-        ),
+        controlsTextStyle: CustomTextStyle.bold(15),
         centerAlignModePicker: true,
         customModePickerIcon: const SizedBox(),
         selectedDayHighlightColor: Color(0xFFFF6868),
-        weekdayLabelTextStyle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w400,
-          fontSize: 14,
-        ),
-        dayTextStyle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-        ),
-        selectedDayTextStyle: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-        ),
+        weekdayLabelTextStyle: CustomTextStyle.regular(14),
+        dayTextStyle: CustomTextStyle.bold(16),
+        selectedDayTextStyle: CustomTextStyle.bold(16, color: Colors.white),
+        todayTextStyle: CustomTextStyle.bold(16),
+        monthTextStyle: CustomTextStyle.regular(14),
+        selectedMonthTextStyle: CustomTextStyle.bold(14, color: Colors.white),
+        disabledDayTextStyle: CustomTextStyle.regular(16, color: Colors.black.withOpacity(0.6)),
       ),
       value: value,
       onValueChanged: onValueChanged,

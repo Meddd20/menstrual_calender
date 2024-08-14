@@ -21,7 +21,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           body: Padding(
-            padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 35.h),
+            padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 35.h),
             child: Form(
               key: controller.verifCodeFormKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -31,12 +31,12 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(height: 130.h),
+                      SizedBox(height: 50.h),
                       Container(
                         width: Get.width,
                         child: Text(
                           "Enter Your New Password",
-                          style: CustomTextStyle.heading1TextStyle(),
+                          style: CustomTextStyle.extraBold(24),
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -45,7 +45,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                         width: Get.width,
                         child: Text(
                           "Please enter your new password. Make it secure and easy to remember.",
-                          style: CustomTextStyle.captionTextStyle(),
+                          style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                       ),
                       SizedBox(height: 25.h),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 
 class CustomCardPrediction extends StatelessWidget {
   final Color containerColor;
@@ -45,39 +46,20 @@ class CustomCardPrediction extends StatelessWidget {
                       // height: 22,
                     ),
                   ),
-                  // CustomCircularIcon(
-                  //   iconData: icons,
-                  //   iconSize: 25,
-                  //   iconColor: primaryColor,
-                  //   containerColor: AppColors.white,
-                  //   containerSize: 15.dg,
-                  // ),
                   Text(
                     daysLeft,
-                    style: TextStyle(
-                      color: AppColors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: CustomTextStyle.semiBold(15),
                   ),
                 ],
               ),
               SizedBox(height: 8.h),
               Text(
                 predictionType,
-                style: TextStyle(
-                  color: primaryColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: CustomTextStyle.extraBold(16, color: primaryColor, height: 1.5),
               ),
               Text(
                 datePrediction,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
+                style: CustomTextStyle.semiBold(14),
               )
             ],
           ),

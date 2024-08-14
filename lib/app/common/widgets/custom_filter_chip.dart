@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 
 class CustomFilterChip extends StatelessWidget {
   final String label;
@@ -17,11 +19,7 @@ class CustomFilterChip extends StatelessWidget {
       label: Text(label),
       selected: isSelected,
       onSelected: onSelected,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : Colors.black,
-        fontSize: 14.0,
-        fontWeight: FontWeight.w500,
-      ),
+      labelStyle: CustomTextStyle.semiBold(14, color: isSelected ? AppColors.white : AppColors.black),
       backgroundColor: Colors.transparent,
       selectedColor: Color(0xFF34C2C1),
       shape: RoundedRectangleBorder(

@@ -41,18 +41,17 @@ class BackupDataView extends GetView<RegisterController> {
                   SizedBox(height: 20.h),
                   Text(
                     "Keep your health data safe",
-                    style: CustomTextStyle.heading2TextStyle(),
+                    style: CustomTextStyle.bold(22),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 10.h),
-                  Text(
-                    "Create an account to securely back up your health data and access it from any device.",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      height: 1.5,
-                      color: Colors.black.withOpacity(0.6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      "Create an account to securely back up your health data and access it from any device.",
+                      style: CustomTextStyle.medium(15, height: 1.75, color: Colors.black.withOpacity(0.6)),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -129,16 +128,16 @@ class RegisterView extends GetView<RegisterController> {
                         width: Get.width,
                         child: Text(
                           "Create Account",
-                          style: CustomTextStyle.heading1TextStyle(),
+                          style: CustomTextStyle.extraBold(24),
                           textAlign: TextAlign.left,
                         ),
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 3.h),
                       Container(
                         width: Get.width,
                         child: Text(
                           "Register to securely store your data",
-                          style: CustomTextStyle.bodyTextStyle(color: Colors.black.withOpacity(0.8)),
+                          style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.8), height: 1.75),
                         ),
                       ),
                       SizedBox(height: 20.h),
@@ -205,12 +204,8 @@ class RegisterView extends GetView<RegisterController> {
                               ),
                               SizedBox(width: 5),
                               Text(
-                                "or",
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                "Or",
+                                style: CustomTextStyle.semiBold(16),
                               ),
                               SizedBox(width: 5),
                               Expanded(
@@ -219,26 +214,20 @@ class RegisterView extends GetView<RegisterController> {
                             ],
                           ),
                         ),
+                        SizedBox(height: 15.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "Have an account?",
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400,
-                              ),
+                              style: CustomTextStyle.medium(15),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                Get.toNamed(Routes.LOGIN);
-                              },
+                            SizedBox(width: 10),
+                            GestureDetector(
+                              onTap: () => Get.toNamed(Routes.LOGIN),
                               child: Text(
                                 "Login Now",
-                                style: CustomTextStyle.buttonTextStyle(
-                                  color: AppColors.contrast,
-                                ),
+                                style: CustomTextStyle.extraBold(16, color: AppColors.contrast),
                               ),
                             ),
                           ],

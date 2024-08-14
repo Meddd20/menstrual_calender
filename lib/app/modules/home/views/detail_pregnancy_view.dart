@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
+import 'package:html/parser.dart' as html_parser;
 
 class DetailPregnancyView extends GetView {
   final String appbarTitle;
@@ -11,64 +14,54 @@ class DetailPregnancyView extends GetView {
   @override
   Widget build(BuildContext context) {
     final pregnancyData = Get.arguments as String;
+    final document = html_parser.parse(pregnancyData);
+    final h2Element = document.querySelector('h2');
+    final extractedTitle = h2Element != null ? h2Element.text : appbarTitle;
+
+    document.querySelectorAll('h2').forEach((element) => element.remove());
+    final filteredHtml = document.outerHtml;
+
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(appbarTitle),
-          centerTitle: true,
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Container(
-              //   width: Get.width,
-              //   // height: 250,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.zero,
-              //   ),
-              //   child: Image.asset(
-              //     bannerPicture ?? 'assets/image/bd48b2bc7befdf66265a70239c555886.png',
-              //     fit: BoxFit.fitWidth,
-              //   ),
-              // ),
-              // SizedBox(height: 15),
-              Padding(
-                padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0.h),
-                child: HtmlWidget(
-                  pregnancyData,
-                  textStyle: TextStyle(
-                    fontSize: 16,
-                    height: 1.75,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  customWidgetBuilder: (element) {
-                    if (element.localName == 'h2') {
-                      return Text(
-                        element.text,
-                        style: TextStyle(
-                          fontSize: 24,
-                          height: 1.25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    }
-                    if (element.localName == 'h3') {
-                      return Text(
-                        element.text,
-                        style: TextStyle(
-                          fontSize: 22,
-                          height: 1.25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    }
-                    return null;
-                  },
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar.large(
+              title: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  extractedTitle,
+                  style: CustomTextStyle.extraBold(22, height: 1.5),
                 ),
               ),
-              SizedBox(height: 15),
-            ],
-          ),
+              centerTitle: true,
+              backgroundColor: AppColors.white,
+              surfaceTintColor: AppColors.white,
+              elevation: 4,
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0.h),
+                    child: HtmlWidget(
+                      filteredHtml,
+                      textStyle: CustomTextStyle.medium(16, height: 1.75),
+                      customWidgetBuilder: (element) {
+                        if (element.localName == 'h3') {
+                          return Text(
+                            element.text,
+                            style: CustomTextStyle.extraBold(22, height: 1.25),
+                          );
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

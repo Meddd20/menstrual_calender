@@ -8,12 +8,22 @@ class MasterFoodRepository {
 
   MasterFoodRepository(this._databaseHelper);
 
-  Future<List<MasterFood>> getAllFood() async {
+  Future<List<MasterFood>> getAllFood(String? foodSafety) async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> getAllFoods = await db.query(
-        "tb_master_food",
-      );
+      List<Map<String, dynamic>> getAllFoods;
+      if (foodSafety == null) {
+        getAllFoods = await db.query(
+          "tb_master_food",
+        );
+      } else {
+        getAllFoods = await db.query(
+          "tb_master_food",
+          where: 'food_safety = ?',
+          whereArgs: [foodSafety],
+        );
+      }
+
       return List.generate(getAllFoods.length, (i) {
         return MasterFood.fromJson(getAllFoods[i]);
       });

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 
 class WeeklyInfo extends StatelessWidget {
   final String title;
@@ -31,12 +32,7 @@ class WeeklyInfo extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(8.0, 8.0, 2.0, 8.0),
                   child: Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.black,
-                      height: 1.35,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: CustomTextStyle.bold(13, height: 1.5),
                   ),
                 ),
               ),

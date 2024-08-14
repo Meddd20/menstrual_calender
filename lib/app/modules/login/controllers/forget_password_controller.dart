@@ -26,11 +26,10 @@ class ForgetPasswordController extends GetxController {
   }
 
   Future<void> forgetPassword() async {
-    Map<String, dynamic> data = await authRepository.requestVerificationCode(
-        forgetEmailC.text.trim(), "Lupa Password");
+    Map<String, dynamic> data = await authRepository.requestVerificationCode(forgetEmailC.text.trim(), "Lupa Password");
 
     final verifResponse = data["data"];
-    Get.offAll(() => CodeVerificationView(), arguments: verifResponse);
+    Get.to(() => CodeVerificationView(), arguments: verifResponse);
   }
 
   String? validateForgetEmail(String email) {

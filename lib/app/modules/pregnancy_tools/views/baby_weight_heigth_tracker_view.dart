@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/baby_weight_heigth_tracker_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -16,8 +17,16 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
 
     return Scaffold(
       appBar: AppBar(
-        title: Obx(() => Text('${controller.selectedDataType.value == "Weight" ? "Fetal Weight Development" : "Fetal Height Development"} ')),
+        title: Obx(
+          () => Text(
+            '${controller.selectedDataType.value == "Weight" ? "Fetal Weight Development" : "Fetal Height Development"} ',
+            style: CustomTextStyle.extraBold(20),
+          ),
+        ),
         centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
       ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
@@ -52,26 +61,19 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
                   Tab(
                     child: Text(
                       'Weight',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: CustomTextStyle.bold(15),
                     ),
                   ),
                   Tab(
                     child: Text(
                       'Height',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: CustomTextStyle.bold(15),
                     ),
                   ),
                 ],
               ),
             ),
+            SizedBox(height: 10),
             Obx(
               () => Expanded(
                 child: PageView(
@@ -103,33 +105,19 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
         Expanded(
           child: SfCartesianChart(
             primaryYAxis: NumericAxis(
-              labelStyle: TextStyle(
-                fontSize: 10.sp,
-                color: Colors.black,
-              ),
+              labelStyle: CustomTextStyle.regular(10),
               title: AxisTitle(
                 text: "${controller.selectedDataType.value == "Weight" ? "Fetal Weight (gram)" : "Fetal Height (milimeter)"} ",
-                textStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
+                textStyle: CustomTextStyle.bold(12),
                 alignment: ChartAlignment.center,
               ),
               minimum: 0,
             ),
             primaryXAxis: CategoryAxis(
-              labelStyle: TextStyle(
-                fontSize: 10.sp,
-                color: Colors.black,
-              ),
+              labelStyle: CustomTextStyle.regular(10),
               title: AxisTitle(
                 text: 'Week Pregnancy',
-                textStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
+                textStyle: CustomTextStyle.bold(12),
               ),
               interval: 1,
               axisLabelFormatter: (AxisLabelRenderDetails details) {

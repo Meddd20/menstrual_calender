@@ -41,24 +41,24 @@ class ForgetPasswordView extends GetView<ForgetPasswordController> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(height: 90.h),
+                      SizedBox(height: 50.h),
                       Container(
                         width: Get.width,
                         child: Text(
                           "Forgot your password?",
-                          style: CustomTextStyle.heading1TextStyle(),
+                          style: CustomTextStyle.extraBold(24),
                           textAlign: TextAlign.left,
                         ),
                       ),
-                      SizedBox(height: 10.h),
+                      SizedBox(height: 8.h),
                       Container(
                         width: Get.width,
                         child: Text(
                           "Don’t worry! It happens. Please enter the email associated with your account.",
-                          style: CustomTextStyle.captionTextStyle(),
+                          style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                       ),
-                      SizedBox(height: 25.h),
+                      SizedBox(height: 30.h),
                       CustomTextFormField(
                         controller: controller.forgetEmailC,
                         labelText: "Email Address",

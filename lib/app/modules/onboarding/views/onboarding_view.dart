@@ -33,18 +33,13 @@ class OnboardingView extends GetView<OnboardingController> {
                   SizedBox(height: 30.h),
                   Text(
                     "Welcome to Our Menstrual and Pregnancy Calendar!",
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      height: 1.5,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: CustomTextStyle.bold(22, height: 1.5),
                     textAlign: TextAlign.left,
                   ),
                   SizedBox(height: 15.h),
                   Text(
                     "Easily track your menstrual cycle and pregnancy journey. Receive personalized insights and reminders to support your unique experience.",
-                    style: CustomTextStyle.bodyTextStyle(),
+                    style: CustomTextStyle.medium(14, height: 2.0),
                     textAlign: TextAlign.left,
                   ),
                 ],

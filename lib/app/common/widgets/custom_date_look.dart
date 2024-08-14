@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
@@ -7,8 +6,9 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 
 class CustomDateLook extends StatelessWidget {
   final MapEntry<String, dynamic> entry;
+  final String type;
 
-  CustomDateLook({required this.entry});
+  CustomDateLook({required this.entry, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +16,6 @@ class CustomDateLook extends StatelessWidget {
       children: [
         Container(
           width: Get.width,
-          decoration: BoxDecoration(
-              // border: Border.all(width: 1),
-              ),
           child: Column(
             children: [
               Row(
@@ -31,33 +28,15 @@ class CustomDateLook extends StatelessWidget {
                       children: [
                         Text(
                           DateFormat('dd').format(DateTime.parse(entry.key)),
-                          style: TextStyle(
-                            fontSize: 24.sp,
-                            height: 1,
-                            fontFamily: 'Poppins',
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: CustomTextStyle.extraBold(24),
                         ),
                         Text(
                           DateFormat('MMM').format(DateTime.parse(entry.key)),
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            height: 1,
-                            fontFamily: 'Poppins',
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: CustomTextStyle.bold(15),
                         ),
                         Text(
                           DateFormat('yyyy').format(DateTime.parse(entry.key)),
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            height: 2,
-                            fontFamily: 'Poppins',
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: CustomTextStyle.bold(12),
                         ),
                       ],
                     ),
@@ -74,9 +53,9 @@ class CustomDateLook extends StatelessWidget {
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      entry.value.toString().replaceAll('[', '').replaceAll(']', ''),
+                      "${entry.value.toString().replaceAll('[', '').replaceAll(']', '')} ${type == 'weight' ? 'Kg' : type == 'temperature' ? '°C' : ''}",
                       overflow: TextOverflow.visible,
-                      style: CustomTextStyle.captionTextStyle(),
+                      style: CustomTextStyle.medium(16, height: 1.5),
                     ),
                   ),
                 ],

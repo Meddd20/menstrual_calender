@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_weekly_info.dart';
@@ -24,12 +25,16 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
         headerSliverBuilder: ((context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              // backgroundColor: Colors.white,
-              // surfaceTintColor: Colors.white,
               floating: true,
-              title: Text('Appbar'),
+              title: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  'Pregnancy Mode',
+                  style: CustomTextStyle.extraBold(22),
+                ),
+              ),
               centerTitle: true,
-              snap: true,
+              snap: false,
             )
           ];
         }),
@@ -95,12 +100,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                 ),
                                 Text(
                                   "${(controller.getPregnancyIndex ?? 0) + 1} Weeks Pregnant",
-                                  style: TextStyle(
-                                    fontSize: 24.sp,
-                                    height: 1.5,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                                  style: CustomTextStyle.extraBold(24, height: 1.5),
                                 ),
                                 GestureDetector(
                                   child: Visibility(
@@ -125,21 +125,11 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                             ),
                             Text(
                               "${controller.formatDate(controller.weeklyData[controller.currentPregnancyWeekIndex.value].tanggalAwalMinggu ?? "")} - ${controller.formatDate(controller.weeklyData[controller.currentPregnancyWeekIndex.value].tanggalAkhirMinggu ?? "")}",
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                height: 1.5,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: CustomTextStyle.semiBold(18, height: 1.5),
                             ),
                             Text(
                               "(${controller.weeklyData[controller.currentPregnancyWeekIndex.value].mingguLabel})",
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                height: 1.5,
-                                color: Colors.black.withOpacity(0.6),
-                                fontWeight: FontWeight.w400,
-                              ),
+                              style: CustomTextStyle.regular(14, height: 1.5),
                             ),
                             const SizedBox(height: 10),
                             Container(
@@ -168,11 +158,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                               Text(
                                                 "Due date",
                                                 textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.black.withOpacity(0.6),
-                                                  fontWeight: FontWeight.w500,
-                                                ),
+                                                style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                               ),
                                               const SizedBox(width: 5),
                                               GestureDetector(
@@ -233,12 +219,6 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                                           leftChevronVisible: true,
                                                                           rightChevronVisible: true,
                                                                           titleCentered: true,
-                                                                          formatButtonShowsNext: false,
-                                                                          formatButtonTextStyle: TextStyle(
-                                                                            color: Colors.black,
-                                                                            fontWeight: FontWeight.w600,
-                                                                            fontSize: 14,
-                                                                          ),
                                                                           formatButtonDecoration: BoxDecoration(
                                                                             borderRadius: BorderRadius.circular(10),
                                                                             border: Border.all(
@@ -247,11 +227,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                                             ),
                                                                             color: Colors.red,
                                                                           ),
-                                                                          titleTextStyle: TextStyle(
-                                                                            color: Colors.black,
-                                                                            fontSize: 17,
-                                                                            fontWeight: FontWeight.bold,
-                                                                          ),
+                                                                          titleTextStyle: CustomTextStyle.bold(16),
                                                                           headerMargin: EdgeInsets.only(bottom: 10),
                                                                         ),
                                                                         availableGestures: AvailableGestures.all,
@@ -259,9 +235,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                                           return Center(
                                                                             child: Text(
                                                                               DateFormat.E().format(day),
-                                                                              style: TextStyle(
-                                                                                color: Colors.black,
-                                                                              ),
+                                                                              style: CustomTextStyle.regular(14),
                                                                             ),
                                                                           );
                                                                         }, defaultBuilder: (context, day, focusedDay) {
@@ -269,11 +243,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                                             child: Center(
                                                                               child: Text(
                                                                                 '${day.day}',
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                  fontWeight: FontWeight.w600,
-                                                                                  fontSize: 16,
-                                                                                ),
+                                                                                style: CustomTextStyle.bold(16),
                                                                               ),
                                                                             ),
                                                                           );
@@ -287,11 +257,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                                             child: Center(
                                                                               child: Text(
                                                                                 '${day.day}',
-                                                                                style: TextStyle(
-                                                                                  color: Colors.white,
-                                                                                  fontWeight: FontWeight.w600,
-                                                                                  fontSize: 16,
-                                                                                ),
+                                                                                style: CustomTextStyle.bold(16, color: Colors.white),
                                                                               ),
                                                                             ),
                                                                           );
@@ -305,11 +271,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                                             child: Center(
                                                                               child: Text(
                                                                                 '${day.day}',
-                                                                                style: TextStyle(
-                                                                                  color: Colors.white,
-                                                                                  fontWeight: FontWeight.w600,
-                                                                                  fontSize: 16,
-                                                                                ),
+                                                                                style: CustomTextStyle.bold(16, color: Colors.white),
                                                                               ),
                                                                             ),
                                                                           );
@@ -357,11 +319,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                           Text(
                                             "${DateFormat('yyyy-MM-dd').format(DateTime.parse(controller.currentlyPregnantData.value.tanggalPerkiraanLahir!))}",
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w700,
-                                            ),
+                                            style: CustomTextStyle.bold(15, height: 1.5),
                                           ),
                                         ],
                                       ),
@@ -383,20 +341,12 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                           Text(
                                             "Trimester",
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black.withOpacity(0.6),
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                            style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                           ),
                                           Text(
                                             "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].trimester ?? ""}",
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w700,
-                                            ),
+                                            style: CustomTextStyle.bold(15, height: 1.5),
                                           ),
                                         ],
                                       ),
@@ -418,20 +368,12 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                           Text(
                                             "Due date",
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black.withOpacity(0.6),
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                            style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                           ),
                                           Text(
                                             "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].mingguSisa ?? ""}W",
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w700,
-                                            ),
+                                            style: CustomTextStyle.bold(15, height: 1.5),
                                           ),
                                         ],
                                       ),
@@ -463,20 +405,12 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                 Text(
                                                   "Baby is as big as",
                                                   textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.black.withOpacity(0.6),
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
+                                                  style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                                 ),
                                                 Container(
                                                   child: Text(
                                                     "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].ukuranBayi ?? ""}",
-                                                    style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
+                                                    style: CustomTextStyle.extraBold(20, height: 1.5),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 )
@@ -510,12 +444,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                     ),
                                                     TextSpan(
                                                       text: " Ideal weight",
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.black.withOpacity(0.6),
-                                                        height: 1.5,
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
+                                                      style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                                     ),
                                                   ],
                                                 ),
@@ -523,12 +452,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                               Text(
                                                 "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].beratJanin ?? "-"} g",
                                                 textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.black,
-                                                  height: 1.5,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
+                                                style: CustomTextStyle.extraBold(18, height: 1.5),
                                               ),
                                             ],
                                           ),
@@ -554,12 +478,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                     ),
                                                     TextSpan(
                                                       text: " Ideal height",
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.black.withOpacity(0.6),
-                                                        height: 1.5,
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
+                                                      style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                                     ),
                                                   ],
                                                 ),
@@ -567,12 +486,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                               Text(
                                                 "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].tinggiBadanJanin ?? "-"} mm",
                                                 textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.black,
-                                                  height: 1.5,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
+                                                style: CustomTextStyle.extraBold(20, height: 1.5),
                                               ),
                                             ],
                                           ),
@@ -626,29 +540,9 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                       onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: "Things to Consider"), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].tipsMingguan),
                                     ),
                                     SizedBox(width: 10),
-                                    WeeklyInfo(
-                                      title: "Food To Avoid At Pregnancy",
-                                      imagePath: 'assets/icon/nutrition.png',
-                                      onTap: () => Get.to((() => DetailPregnancyView(appbarTitle: "Food To Avoid")), arguments: foodToAvoidEn),
-                                    ),
+                                    Spacer()
                                   ],
                                 ),
-                                SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    WeeklyInfo(
-                                      title: "Pregnancy Vaccines",
-                                      imagePath: 'assets/icon/vaccination.png',
-                                      onTap: () => Get.to((() => DetailPregnancyView(appbarTitle: "Pregnancy Vaccines")), arguments: pregnancyVaccines),
-                                    ),
-                                    SizedBox(width: 10),
-                                    WeeklyInfo(
-                                      title: "Prenatal Vitamins",
-                                      imagePath: 'assets/icon/vitamin.png',
-                                      onTap: () => Get.to((() => DetailPregnancyView(appbarTitle: "Prenatal Vitamins")), arguments: prenatalVitamins),
-                                    )
-                                  ],
-                                )
                               ],
                             ),
                             const SizedBox(height: 10),

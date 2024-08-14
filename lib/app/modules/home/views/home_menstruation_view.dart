@@ -1,6 +1,5 @@
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:iconsax/iconsax.dart';
@@ -32,12 +31,16 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
           headerSliverBuilder: ((context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
-                backgroundColor: Colors.white,
-                surfaceTintColor: Colors.white,
                 floating: true,
-                title: Text('Appbar'),
+                title: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    'Menstruation Mode',
+                    style: CustomTextStyle.extraBold(22),
+                  ),
+                ),
                 centerTitle: true,
-                // snap: true,
+                snap: false,
               )
             ];
           }),
@@ -59,7 +62,6 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                           Obx(
                             () => Container(
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 246, 245, 245),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: TableCalendar(
@@ -116,12 +118,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                   leftChevronVisible: true,
                                   rightChevronVisible: true,
                                   titleCentered: true,
-                                  formatButtonShowsNext: false,
-                                  formatButtonTextStyle: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
+                                  formatButtonShowsNext: true,
                                   formatButtonDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
@@ -130,11 +127,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     ),
                                     color: Colors.red,
                                   ),
-                                  titleTextStyle: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  titleTextStyle: CustomTextStyle.bold(16),
                                   headerMargin: EdgeInsets.only(bottom: 10),
                                 ),
                                 availableGestures: AvailableGestures.all,
@@ -151,11 +144,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                           child: Center(
                                             child: Text(
                                               '${day.day}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                              ),
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
                                             ),
                                           ),
                                         );
@@ -172,11 +161,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                           child: Center(
                                             child: Text(
                                               '${day.day}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                              ),
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
                                             ),
                                           ),
                                         );
@@ -194,11 +179,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                           child: Center(
                                             child: Text(
                                               '${day.day}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                              ),
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
                                             ),
                                           ),
                                         );
@@ -217,11 +198,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                             child: Center(
                                               child: Text(
                                                 '${day.day}',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16,
-                                                ),
+                                                style: CustomTextStyle.bold(16),
                                               ),
                                             ),
                                           ),
@@ -241,11 +218,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                             child: Center(
                                               child: Text(
                                                 '${day.day}',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16,
-                                                ),
+                                                style: CustomTextStyle.bold(16),
                                               ),
                                             ),
                                           ),
@@ -265,11 +238,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                             child: Center(
                                               child: Text(
                                                 '${day.day}',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16,
-                                                ),
+                                                style: CustomTextStyle.bold(16),
                                               ),
                                             ),
                                           ),
@@ -281,11 +250,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       child: Center(
                                         child: Text(
                                           '${day.day}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
+                                          style: CustomTextStyle.bold(16),
                                         ),
                                       ),
                                     );
@@ -294,9 +259,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     return Center(
                                       child: Text(
                                         DateFormat.E().format(day),
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
+                                        style: CustomTextStyle.regular(14),
                                       ),
                                     );
                                   },
@@ -310,11 +273,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       child: Center(
                                         child: Text(
                                           '${day.day}',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
+                                          style: CustomTextStyle.bold(16, color: Colors.white),
                                         ),
                                       ),
                                     );
@@ -329,11 +288,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       child: Center(
                                         child: Text(
                                           '${day.day}',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
+                                          style: CustomTextStyle.bold(16, color: Colors.white),
                                         ),
                                       ),
                                     );
@@ -386,22 +341,12 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     children: [
                                       Obx(() => Text(
                                             "${controller.eventDatas.value.event}",
-                                            style: TextStyle(
-                                              fontSize: 17.sp,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
+                                            style: CustomTextStyle.extraBold(18),
                                           )),
                                       Obx(
                                         () => Text(
                                           "${DateFormat('MMMM, dd yyyy').format(controller.selectedDate!)}",
-                                          style: TextStyle(
-                                            fontSize: 15.sp,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black,
-                                          ),
+                                          style: CustomTextStyle.medium(15),
                                         ),
                                       ),
                                     ],
@@ -409,12 +354,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                   SizedBox(height: 35.h),
                                   Text(
                                     "Current cycle",
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black,
-                                    ),
+                                    style: CustomTextStyle.medium(14, height: 1.5),
                                   ),
                                   SizedBox(height: 15.h),
                                   Container(
@@ -424,30 +364,20 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                             children: [
                                               TextSpan(
                                                 text: "${controller.eventDatas.value.cycleDay ?? 'null'}",
-                                                style: TextStyle(
-                                                  color: Color(0xFF090A0A),
-                                                  fontSize: 24,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w600,
-                                                ),
+                                                style: CustomTextStyle.bold(24),
                                               ),
-                                              TextSpan(
-                                                text: controller.getOrdinalSuffix(controller.eventDatas.value.cycleDay ?? 0),
-                                                style: TextStyle(
-                                                  color: Color(0xFF090A0A),
-                                                  fontSize: 20,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w600,
+                                              WidgetSpan(
+                                                child: Transform.translate(
+                                                  offset: const Offset(0, -8),
+                                                  child: Text(
+                                                    controller.getOrdinalSuffix(controller.eventDatas.value.cycleDay ?? 0),
+                                                    style: CustomTextStyle.bold(14),
+                                                  ),
                                                 ),
                                               ),
                                               TextSpan(
                                                 text: ' day of the cycle',
-                                                style: TextStyle(
-                                                  color: Color(0xFF090A0A),
-                                                  fontSize: 20,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w400,
-                                                ),
+                                                style: CustomTextStyle.medium(20),
                                               ),
                                             ],
                                           ),
@@ -457,13 +387,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                   Obx(
                                     () => Text(
                                       "${controller.eventDatas.value.pregnancyChances} chances of getting pregnant",
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        // height: 2.0,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                      ),
+                                      style: CustomTextStyle.bold(16, height: 1.75),
                                     ),
                                   ),
                                 ],
@@ -531,7 +455,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                           SizedBox(height: 15.h),
                           Container(
                             width: Get.width,
-                            height: 195.h,
+                            height: 205.h,
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: AppColors.primary,
@@ -549,18 +473,14 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     children: [
                                       Text(
                                         "My Cycle",
-                                        style: CustomTextStyle.heading4TextStyle(),
+                                        style: CustomTextStyle.extraBold(18),
                                       ),
                                       GestureDetector(
                                         child: Row(
                                           children: [
                                             Text(
                                               "See more",
-                                              style: TextStyle(
-                                                color: Colors.black.withOpacity(0.6),
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                              style: CustomTextStyle.bold(15, color: Colors.black.withOpacity(0.6)),
                                             ),
                                             Icon(Icons.keyboard_arrow_right)
                                           ],
@@ -573,12 +493,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                   ),
                                   Text(
                                     "${controller.data?.actualPeriod.length} cycle history logged",
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      height: 2.0,
-                                      fontFamily: 'Poppins',
-                                      color: Colors.black.withOpacity(0.5),
-                                    ),
+                                    style: CustomTextStyle.medium(14, height: 2.0, color: Colors.black.withOpacity(0.6)),
                                   ),
                                   SizedBox(height: 5),
                                   Row(
@@ -588,7 +503,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       Column(
                                         children: [
                                           Container(
-                                            height: 100.h,
+                                            height: 110.h,
                                             width: 155,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(12),
@@ -599,40 +514,26 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               ),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(16.0),
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     "Average Cycle Length",
-                                                    style: TextStyle(
-                                                      color: AppColors.primary,
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
+                                                    style: CustomTextStyle.extraBold(15, color: AppColors.primary),
                                                   ),
-                                                  SizedBox(height: 10),
+                                                  SizedBox(height: 5),
                                                   RichText(
                                                     text: TextSpan(
                                                       children: [
                                                         TextSpan(
                                                           text: "${controller.data?.avgPeriodCycle}",
-                                                          style: TextStyle(
-                                                            fontSize: 23.sp,
-                                                            fontFamily: 'Poppins',
-                                                            color: Colors.black,
-                                                            fontWeight: FontWeight.w800,
-                                                          ),
+                                                          style: CustomTextStyle.extraBold(23),
                                                         ),
                                                         TextSpan(
                                                           text: " days",
-                                                          style: TextStyle(
-                                                            fontSize: 14.sp,
-                                                            fontFamily: 'Poppins',
-                                                            color: Colors.black,
-                                                            fontWeight: FontWeight.w500,
-                                                          ),
+                                                          style: CustomTextStyle.semiBold(14),
                                                         ),
                                                       ],
                                                     ),
@@ -646,11 +547,10 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       Column(
                                         children: [
                                           Container(
-                                            height: 100.h,
+                                            height: 110.h,
                                             width: 155,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(12),
-                                              // color: Color(0xFFFFE69E),
                                               border: Border.all(
                                                 color: Color(0xFFFD9414),
                                                 width: 0.5,
@@ -658,18 +558,14 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               color: Color(0xFFFFE69E),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(16.0),
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     "Average Period Length",
-                                                    style: TextStyle(
-                                                      color: Color(0xFFFD9414),
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
+                                                    style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
                                                   ),
                                                   SizedBox(height: 10),
                                                   RichText(
@@ -677,21 +573,11 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                       children: [
                                                         TextSpan(
                                                           text: "${controller.data?.avgPeriodDuration}",
-                                                          style: TextStyle(
-                                                            fontSize: 23.sp,
-                                                            fontFamily: 'Poppins',
-                                                            color: Colors.black,
-                                                            fontWeight: FontWeight.w700,
-                                                          ),
+                                                          style: CustomTextStyle.extraBold(23),
                                                         ),
                                                         TextSpan(
                                                           text: " days",
-                                                          style: TextStyle(
-                                                            fontSize: 14.sp,
-                                                            fontFamily: 'Poppins',
-                                                            color: Colors.black,
-                                                            fontWeight: FontWeight.w500,
-                                                          ),
+                                                          style: CustomTextStyle.semiBold(14),
                                                         ),
                                                       ],
                                                     ),
@@ -715,7 +601,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                               Stack(
                                 children: [
                                   Container(
-                                    height: 320,
+                                    height: 350.h,
                                     width: Get.width / 2 - 20,
                                     // color: Colors.amberAccent,
                                     child: Padding(
@@ -733,20 +619,12 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               SizedBox(height: 140),
                                               Text(
                                                 "Manage Your Period Events",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                                style: CustomTextStyle.extraBold(16, height: 1.5),
                                               ),
                                               SizedBox(height: 5),
                                               Text(
                                                 "Track your period cycle and other related events",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
+                                                style: CustomTextStyle.medium(13, height: 1.5),
                                               ),
                                               SizedBox(height: 10),
                                               CustomButton(
@@ -773,7 +651,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                               Stack(
                                 children: [
                                   Container(
-                                    height: 320,
+                                    height: 350.h,
                                     width: Get.width / 2 - 20,
                                     child: Padding(
                                       padding: const EdgeInsets.only(top: 10.0),
@@ -790,22 +668,14 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               SizedBox(height: 140),
                                               Text(
                                                 "Remark your body changes",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                                style: CustomTextStyle.extraBold(16, height: 1.5),
                                               ),
                                               SizedBox(height: 5),
                                               Text(
                                                 "Log your body changes in every cycle",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
+                                                style: CustomTextStyle.medium(13, height: 1.5),
                                               ),
-                                              SizedBox(height: 10),
+                                              SizedBox(height: 32),
                                               CustomButton(
                                                 text: "Daily Log",
                                                 textColor: Colors.black,
@@ -835,264 +705,191 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                             () => Visibility(
                               visible: controller.eventDatas.value.chineseGenderPrediction?.genderPrediction != null,
                               child: Container(
-                                height: 350,
                                 width: Get.width,
-                                // color: Colors.black,
-                                child: Stack(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Color(0xFF97B3E4),
+                                ),
+                                child: Wrap(
                                   children: [
-                                    Positioned(
-                                      left: 0,
-                                      right: 0,
-                                      top: 40,
-                                      child: Container(
-                                        height: 295.h,
-                                        width: Get.width,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: Color(0xFF97B3E4),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: Row(
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Row(
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    '${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? 'assets/image/baby-girl.svg' : 'assets/image/baby-boy.svg'}',
-                                                    height: 120,
-                                                  ),
-                                                  SizedBox(height: 10),
-                                                  Text(
-                                                    "${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? 'Girl' : 'Boy'}",
-                                                    style: TextStyle(
-                                                      fontSize: 18.sp,
-                                                      height: 1.5,
-                                                      fontFamily: 'Poppins',
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  )
-                                                ],
+                                              SvgPicture.asset(
+                                                '${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? 'assets/image/baby-girl.svg' : 'assets/image/baby-boy.svg'}',
+                                                height: 120,
                                               ),
-                                              SizedBox(width: 20),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Did you know?",
-                                                      style: TextStyle(
-                                                        fontSize: 22.sp,
-                                                        height: 1.5,
-                                                        fontFamily: 'Poppins',
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    Text(
-                                                      "According to the ancient Chinese gender chart, based on your age and the month of conception, if you were to conceive today, the chart predicts the gender of your future child as ",
-                                                      style: TextStyle(
-                                                        fontSize: 14.sp,
-                                                        height: 1.5,
-                                                        fontFamily: 'Poppins',
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    ElevatedButton(
-                                                      onPressed: () {
-                                                        Get.to(() => ChinesePredDetailView(), arguments: controller.eventDatas.value.chineseGenderPrediction);
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor: AppColors.primary,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        minimumSize: Size(50.w, 40.h),
-                                                      ),
-                                                      child: Text(
-                                                        "Learn more",
-                                                        style: CustomTextStyle.buttonTextStyle(color: Colors.white),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                "${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? 'Girl' : 'Boy'}",
+                                                style: CustomTextStyle.bold(18, height: 1.5),
+                                              )
                                             ],
                                           ),
-                                        ),
+                                          SizedBox(width: 20),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: Get.width,
+                                                  child: Text(
+                                                    "Chinese gender calendar",
+                                                    style: CustomTextStyle.extraBold(16, height: 1.75, color: AppColors.black.withOpacity(0.4)),
+                                                    textAlign: TextAlign.right,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: Get.width,
+                                                  child: Text(
+                                                    "Did you know?",
+                                                    style: CustomTextStyle.extraBold(26, height: 1.75),
+                                                    textAlign: TextAlign.right,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 5),
+                                                Divider(
+                                                  thickness: 1,
+                                                  height: 1.0,
+                                                  color: AppColors.white,
+                                                ),
+                                                SizedBox(height: 5),
+                                                RichText(
+                                                  text: TextSpan(
+                                                    style: CustomTextStyle.medium(15, height: 1.5),
+                                                    children: [
+                                                      TextSpan(
+                                                        text: "According to the ",
+                                                      ),
+                                                      TextSpan(
+                                                        text: "ancient Chinese gender chart",
+                                                        style: CustomTextStyle.extraBold(16, height: 1.5),
+                                                      ),
+                                                      TextSpan(
+                                                        text: ", if you were to conceive today, based on your age and the month of the current month of the conception, it predicts the gender of your future child as ",
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  textAlign: TextAlign.right,
+                                                ),
+                                                SizedBox(height: 15),
+                                                CustomButton(
+                                                  text: "Learn more",
+                                                  textColor: AppColors.white,
+                                                  backgroundColor: AppColors.primary,
+                                                  onPressed: () => Get.to(() => ChinesePredDetailView(), arguments: controller.eventDatas.value.chineseGenderPrediction),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Positioned(
-                                      top: 0,
-                                      left: 10,
-                                      child: FittedBox(
-                                        fit: BoxFit.contain,
-                                        child: Container(
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFF97B3E4),
-                                            borderRadius: BorderRadius.circular(12),
-                                            border: Border.all(color: Color.fromARGB(255, 68, 99, 153), width: 5.0),
-                                          ),
-                                          child: Center(
-                                              child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Chinese Gender Calendar",
-                                              style: TextStyle(
-                                                fontSize: 20.sp,
-                                                height: 1.5,
-                                                fontFamily: 'Poppins',
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          )),
-                                        ),
-                                      ),
-                                    )
                                   ],
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(height: 5),
+                          SizedBox(height: 15),
                           Obx(
                             () => Visibility(
                               visible: controller.eventDatas.value.shettlesGenderPrediction != null,
-                              child: Container(
-                                width: Get.width,
-                                height: 380,
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      top: 40,
-                                      left: 0,
-                                      right: 0,
-                                      child: Container(
-                                        height: 335.h,
-                                        width: Get.width,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: Color(0xFFC1ECF0),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Increase Gender Prediction Probability",
-                                                style: TextStyle(
-                                                  fontSize: 22.sp,
-                                                  height: 1.5,
-                                                  fontFamily: 'Poppins',
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(height: 5),
-                                              Obx(() {
-                                                return Text.rich(
-                                                  TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                        text: 'Aim for intercourse on ovulation day and the next 2-3 days ',
-                                                        style: TextStyle(
-                                                          fontSize: 14.sp,
-                                                          height: 1.5,
-                                                          fontFamily: 'Poppins',
-                                                          color: Colors.black,
-                                                          fontWeight: FontWeight.w400,
-                                                        ),
-                                                      ),
-                                                      TextSpan(
-                                                        text: 'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate.toString())} to likely conceive a male',
-                                                        style: TextStyle(
-                                                          fontSize: 15.sp,
-                                                          color: Colors.black,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      TextSpan(
-                                                        text: ', and have intercourse from the end of menstruation until three days before ovulation, avoiding sex 2-3 days before ovulation ',
-                                                        style: TextStyle(
-                                                          fontSize: 14.sp,
-                                                          height: 1.5,
-                                                          fontFamily: 'Poppins',
-                                                          color: Colors.black,
-                                                          fontWeight: FontWeight.w400,
-                                                        ),
-                                                      ),
-                                                      TextSpan(
-                                                        text: 'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate.toString())} to likely conceive a female.',
-                                                        style: TextStyle(
-                                                          fontSize: 15.sp,
-                                                          color: Colors.black,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              }),
-                                              SizedBox(height: 5),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Get.to(() => ShettlesPredDetailView(), arguments: controller.eventDatas.value.shettlesGenderPrediction);
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: AppColors.primary,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                  ),
-                                                  minimumSize: Size(50.w, 40.h),
-                                                ),
-                                                child: Text(
-                                                  "Learn more",
-                                                  style: CustomTextStyle.buttonTextStyle(color: Colors.white),
-                                                ),
-                                              )
-                                            ],
+                              child: Wrap(
+                                children: [
+                                  Container(
+                                    width: Get.width,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Color(0xFFC1ECF0),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "The Shettles Method",
+                                            style: CustomTextStyle.extraBold(16, height: 1.75, color: AppColors.black.withOpacity(0.4)),
+                                            textAlign: TextAlign.left,
                                           ),
-                                        ),
+                                          Text(
+                                            "Increase Gender Prediction Probability",
+                                            style: TextStyle(
+                                              fontSize: 22.sp,
+                                              height: 1.5,
+                                              fontFamily: 'Poppins',
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                          SizedBox(height: 5),
+                                          Divider(
+                                            thickness: 1,
+                                            height: 1.0,
+                                            color: AppColors.white,
+                                          ),
+                                          SizedBox(height: 5),
+                                          Obx(() {
+                                            return Text.rich(
+                                              TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: 'Aim for intercourse on ovulation day and the next 2-3 days ',
+                                                    style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      height: 1.5,
+                                                      fontFamily: 'Poppins',
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: 'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate.toString())} to likely conceive a male',
+                                                    style: TextStyle(
+                                                      fontSize: 15.sp,
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: ', and have intercourse from the end of menstruation until three days before ovulation, avoiding sex 2-3 days before ovulation ',
+                                                    style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      height: 1.5,
+                                                      fontFamily: 'Poppins',
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: 'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate.toString())} to likely conceive a female.',
+                                                    style: TextStyle(
+                                                      fontSize: 15.sp,
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                          SizedBox(height: 15),
+                                          CustomButton(
+                                            text: "Learn more",
+                                            textColor: AppColors.white,
+                                            backgroundColor: AppColors.primary,
+                                            onPressed: () => Get.to(() => ShettlesPredDetailView(), arguments: controller.eventDatas.value.shettlesGenderPrediction),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Positioned(
-                                      top: 0,
-                                      right: 10,
-                                      child: FittedBox(
-                                        fit: BoxFit.contain,
-                                        child: Container(
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFC1ECF0),
-                                            borderRadius: BorderRadius.circular(12),
-                                            border: Border.all(color: Color.fromARGB(255, 85, 148, 154), width: 5.0),
-                                          ),
-                                          child: Center(
-                                              child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Shettles Method",
-                                              style: TextStyle(
-                                                fontSize: 20.sp,
-                                                height: 1.5,
-                                                fontFamily: 'Poppins',
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          )),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -1136,21 +933,13 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                             startDate: Obx(
                               () => Text(
                                 "${DateFormat('yyyy-MM-dd').format(controller.startDate.value ?? DateTime.now())}",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 16,
-                                ),
+                                style: CustomTextStyle.extraBold(15, height: 1.5),
                               ),
                             ),
                             endDate: Obx(
                               () => Text(
                                 "${DateFormat('yyyy-MM-dd').format(controller.endDate.value ?? DateTime.now())}",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 16,
-                                ),
+                                style: CustomTextStyle.extraBold(15, height: 1.5),
                               ),
                             ),
                             addPeriodOnPressedButton: () async {

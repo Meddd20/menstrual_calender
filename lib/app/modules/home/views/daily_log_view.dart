@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_choice_chip.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_filter_chip.dart';
@@ -24,21 +25,23 @@ class DailyLogView extends GetView<DailyLogController> {
   Widget build(BuildContext context) {
     Get.put(DailyLogController());
     return Scaffold(
-      backgroundColor: Color(0xFFf9f8fb),
       appBar: AppBar(
-        backgroundColor: Color(0xFFf9f8fb),
-        surfaceTintColor: Color(0xFFf9f8fb),
         leading: const BackButton(
           color: Color(0xFFFD6666),
         ),
-        title: Text(
-          'Daily Log',
-          style: TextStyle(
-            fontFamily: "Popins",
-            fontWeight: FontWeight.w500,
+        title: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Obx(
+            () => Text(
+              "Log on ${DateFormat('dd, MMMM yyy').format(controller.selectedDate)}",
+              style: CustomTextStyle.extraBold(20),
+            ),
           ),
         ),
         centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
         actions: [
           TextButton(
             onPressed: () {
@@ -47,11 +50,7 @@ class DailyLogView extends GetView<DailyLogController> {
             },
             child: Text(
               'Reset',
-              style: TextStyle(
-                color: Color(0xFFFD6666),
-                fontFamily: "Popins",
-                fontWeight: FontWeight.w500,
-              ),
+              style: CustomTextStyle.extraBold(15, color: AppColors.primary),
             ),
           ),
         ],
@@ -124,36 +123,11 @@ class DailyLogView extends GetView<DailyLogController> {
                                   ),
                                 ),
                                 headerStyle: HeaderStyle(
-                                  // decoration: BoxDecoration(
-                                  //   borderRadius: BorderRadius.only(
-                                  //     topLeft: Radius.circular(10),
-                                  //     topRight: Radius.circular(10),
-                                  //   ),
-                                  //   color: AppColors.contrast,
-                                  // ),
                                   formatButtonVisible: false,
                                   leftChevronVisible: true,
                                   rightChevronVisible: true,
                                   titleCentered: true,
-                                  formatButtonShowsNext: false,
-                                  formatButtonTextStyle: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                  formatButtonDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: Colors.black,
-                                      width: 2,
-                                    ),
-                                    color: Colors.red,
-                                  ),
-                                  titleTextStyle: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  titleTextStyle: CustomTextStyle.bold(16),
                                   headerMargin: EdgeInsets.only(bottom: 10),
                                 ),
                                 availableGestures: AvailableGestures.all,
@@ -170,11 +144,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Center(
                                             child: Text(
                                               '${day.day}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                              ),
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
                                             ),
                                           ),
                                         );
@@ -191,11 +161,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Center(
                                             child: Text(
                                               '${day.day}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                              ),
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
                                             ),
                                           ),
                                         );
@@ -213,11 +179,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Center(
                                             child: Text(
                                               '${day.day}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                              ),
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
                                             ),
                                           ),
                                         );
@@ -236,11 +198,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                             child: Center(
                                               child: Text(
                                                 '${day.day}',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16,
-                                                ),
+                                                style: CustomTextStyle.bold(16),
                                               ),
                                             ),
                                           ),
@@ -260,11 +218,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                             child: Center(
                                               child: Text(
                                                 '${day.day}',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16,
-                                                ),
+                                                style: CustomTextStyle.bold(16),
                                               ),
                                             ),
                                           ),
@@ -284,11 +238,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                             child: Center(
                                               child: Text(
                                                 '${day.day}',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16,
-                                                ),
+                                                style: CustomTextStyle.bold(16),
                                               ),
                                             ),
                                           ),
@@ -300,11 +250,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                       child: Center(
                                         child: Text(
                                           '${day.day}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
+                                          style: CustomTextStyle.bold(16),
                                         ),
                                       ),
                                     );
@@ -313,9 +259,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                     return Center(
                                       child: Text(
                                         DateFormat.E().format(day),
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
+                                        style: CustomTextStyle.regular(14),
                                       ),
                                     );
                                   },
@@ -329,11 +273,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                       child: Center(
                                         child: Text(
                                           '${day.day}',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
+                                          style: CustomTextStyle.bold(16, color: Colors.white),
                                         ),
                                       ),
                                     );
@@ -348,11 +288,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                       child: Center(
                                         child: Text(
                                           '${day.day}',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
+                                          style: CustomTextStyle.bold(16, color: Colors.white),
                                         ),
                                       ),
                                     );
@@ -382,12 +318,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                         width: Get.width,
                                         child: Text(
                                           "Sex Activity",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                          style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
                                       SizedBox(height: 10),
@@ -439,12 +370,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                             width: Get.width,
                                             child: Text(
                                               "Bleeding Flow",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w700,
-                                              ),
+                                              style: CustomTextStyle.bold(20, height: 1.5),
                                             ),
                                           ),
                                           SizedBox(height: 10),
@@ -494,12 +420,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                         width: Get.width,
                                         child: Text(
                                           "Symptoms",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                          style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
                                       SizedBox(height: 10),
@@ -553,12 +474,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                         width: Get.width,
                                         child: Text(
                                           "Vaginal Discharge",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                          style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
                                       SizedBox(height: 10),
@@ -606,12 +522,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                         width: Get.width,
                                         child: Text(
                                           "Moods",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                          style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
                                       SizedBox(height: 10),
@@ -664,12 +575,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                         width: Get.width,
                                         child: Text(
                                           "Others",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                          style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
                                       SizedBox(height: 10),
@@ -722,12 +628,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                         width: Get.width,
                                         child: Text(
                                           "Physical Activity",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                          style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
                                       SizedBox(height: 10),
@@ -790,13 +691,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                     SizedBox(height: 10.h),
                                                     Text(
                                                       "Basal Temperature",
-                                                      style: TextStyle(
-                                                        fontSize: 16.sp,
-                                                        letterSpacing: 0.8,
-                                                        fontFamily: 'Poppins',
-                                                        fontWeight: FontWeight.w600,
-                                                        color: Colors.black,
-                                                      ),
+                                                      style: CustomTextStyle.bold(20, height: 1.5),
                                                     ),
                                                     SizedBox(height: 10.h),
                                                     Row(
@@ -808,13 +703,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             maxValue: 42,
                                                             value: controller.selectedTemperatureWholeNumber ?? 36,
                                                             onChanged: controller.setTemperatureWholeNumber,
-                                                            textStyle: TextStyle(color: Colors.grey),
-                                                            selectedTextStyle: TextStyle(
-                                                              color: Color(0xFFFF6868),
-                                                              fontSize: 23.sp,
-                                                              fontFamily: 'Poppins',
-                                                              fontWeight: FontWeight.w600,
-                                                            ),
+                                                            textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                            selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
                                                             infiniteLoop: true,
                                                             decoration: BoxDecoration(
                                                               border: Border(
@@ -826,10 +716,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                         ),
                                                         Text(
                                                           ".",
-                                                          style: TextStyle(
-                                                            fontSize: 24.sp,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
+                                                          style: CustomTextStyle.extraBold(20, color: AppColors.primary),
                                                         ),
                                                         Obx(
                                                           () => NumberPicker(
@@ -837,13 +724,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             maxValue: 9,
                                                             value: controller.selectedTemperatureDecimalNumber ?? 0,
                                                             onChanged: controller.setTemperatureDecimalNumber,
-                                                            textStyle: TextStyle(color: Colors.grey),
-                                                            selectedTextStyle: TextStyle(
-                                                              color: Color(0xFFFF6868),
-                                                              fontSize: 23.sp,
-                                                              fontFamily: 'Poppins',
-                                                              fontWeight: FontWeight.w600,
-                                                            ),
+                                                            textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                            selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
                                                             infiniteLoop: true,
                                                             decoration: BoxDecoration(
                                                               border: Border(
@@ -855,12 +737,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                         ),
                                                         Text(
                                                           " °C",
-                                                          style: TextStyle(
-                                                            fontSize: 16.sp,
-                                                            fontFamily: 'Poppins',
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Color(0xFFFF6868),
-                                                          ),
+                                                          style: CustomTextStyle.extraBold(20, color: AppColors.primary),
                                                         ),
                                                       ],
                                                     ),
@@ -910,32 +787,16 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             children: [
                                                               Text(
                                                                 "Temperature",
-                                                                style: TextStyle(
-                                                                  fontSize: 16.sp,
-                                                                  height: 2.0,
-                                                                  fontFamily: 'Poppins',
-                                                                  fontWeight: FontWeight.bold,
-                                                                  color: Colors.black,
-                                                                ),
+                                                                style: CustomTextStyle.bold(20, height: 1.75),
                                                               ),
                                                               Text.rich(
                                                                 TextSpan(
                                                                   text: "${controller.getTemperature()}",
-                                                                  style: TextStyle(
-                                                                    fontSize: 24.sp,
-                                                                    fontFamily: 'Poppins',
-                                                                    fontWeight: FontWeight.w600,
-                                                                    color: Color(0xFFFD6666),
-                                                                  ),
+                                                                  style: CustomTextStyle.extraBold(24, height: 1.5, color: Color(0xFFFD6666)),
                                                                   children: <TextSpan>[
                                                                     TextSpan(
                                                                       text: ' °C',
-                                                                      style: TextStyle(
-                                                                        fontSize: 16.sp,
-                                                                        fontFamily: 'Poppins',
-                                                                        fontWeight: FontWeight.w500,
-                                                                        color: Color(0xFFFD6666),
-                                                                      ),
+                                                                      style: CustomTextStyle.medium(16, height: 1.5, color: Color(0xFFFD6666)),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -944,13 +805,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                           )
                                                         : Text(
                                                             "Temperature",
-                                                            style: TextStyle(
-                                                              fontSize: 18.sp,
-                                                              height: 2.0,
-                                                              fontFamily: 'Poppins',
-                                                              fontWeight: FontWeight.w600,
-                                                              color: Colors.black,
-                                                            ),
+                                                            style: CustomTextStyle.bold(18, height: 1.5),
                                                           );
                                                   }),
                                                 ],
@@ -991,13 +846,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                       SizedBox(height: 10.h),
                                                       Text(
                                                         "My Weight",
-                                                        style: TextStyle(
-                                                          fontSize: 16.sp,
-                                                          letterSpacing: 0.8,
-                                                          fontFamily: 'Poppins',
-                                                          fontWeight: FontWeight.w600,
-                                                          color: Colors.black,
-                                                        ),
+                                                        style: CustomTextStyle.bold(20, height: 1.5),
                                                       ),
                                                       SizedBox(height: 10.h),
                                                       Row(
@@ -1009,13 +858,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                                               maxValue: 150,
                                                               value: controller.selectedWeightWholeNumber ?? 70,
                                                               onChanged: controller.setWeightWholeNumber,
-                                                              textStyle: TextStyle(color: Colors.grey),
-                                                              selectedTextStyle: TextStyle(
-                                                                color: Color(0xFFFF6868),
-                                                                fontSize: 23.sp,
-                                                                fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w600,
-                                                              ),
+                                                              textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                              selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
                                                               infiniteLoop: true,
                                                               decoration: BoxDecoration(
                                                                 border: Border(
@@ -1027,10 +871,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                           ),
                                                           Text(
                                                             ".",
-                                                            style: TextStyle(
-                                                              fontSize: 24.sp,
-                                                              fontWeight: FontWeight.bold,
-                                                            ),
+                                                            style: CustomTextStyle.extraBold(20, color: AppColors.primary),
                                                           ),
                                                           Obx(
                                                             () => NumberPicker(
@@ -1038,13 +879,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                                               maxValue: 9,
                                                               value: controller.selectedWeightDecimalNumber ?? 0,
                                                               onChanged: controller.setWeightDecimalNumber,
-                                                              textStyle: TextStyle(color: Colors.grey),
-                                                              selectedTextStyle: TextStyle(
-                                                                color: Color(0xFFFF6868),
-                                                                fontSize: 23.sp,
-                                                                fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w600,
-                                                              ),
+                                                              textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                              selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
                                                               infiniteLoop: true,
                                                               decoration: BoxDecoration(
                                                                 border: Border(
@@ -1056,12 +892,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                           ),
                                                           Text(
                                                             " Kg",
-                                                            style: TextStyle(
-                                                              fontSize: 16.sp,
-                                                              fontFamily: 'Poppins',
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color(0xFFFF6868),
-                                                            ),
+                                                            style: CustomTextStyle.extraBold(20, color: AppColors.primary),
                                                           ),
                                                         ],
                                                       ),
@@ -1112,32 +943,16 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             children: [
                                                               Text(
                                                                 "Weight",
-                                                                style: TextStyle(
-                                                                  fontSize: 16.sp,
-                                                                  height: 2.0,
-                                                                  fontFamily: 'Poppins',
-                                                                  fontWeight: FontWeight.bold,
-                                                                  color: Colors.black,
-                                                                ),
+                                                                style: CustomTextStyle.bold(20, height: 1.75),
                                                               ),
                                                               Text.rich(
                                                                 TextSpan(
                                                                   text: "${controller.getWeight()}",
-                                                                  style: TextStyle(
-                                                                    fontSize: 24.sp,
-                                                                    fontFamily: 'Poppins',
-                                                                    fontWeight: FontWeight.w600,
-                                                                    color: Color(0xFFFD6666),
-                                                                  ),
+                                                                  style: CustomTextStyle.extraBold(24, height: 1.5, color: Color(0xFFFD6666)),
                                                                   children: <TextSpan>[
                                                                     TextSpan(
                                                                       text: ' Kg',
-                                                                      style: TextStyle(
-                                                                        fontSize: 16.sp,
-                                                                        fontFamily: 'Poppins',
-                                                                        fontWeight: FontWeight.w500,
-                                                                        color: Color(0xFFFD6666),
-                                                                      ),
+                                                                      style: CustomTextStyle.medium(16, height: 1.5, color: Color(0xFFFD6666)),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -1146,13 +961,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                           )
                                                         : Text(
                                                             "Weight",
-                                                            style: TextStyle(
-                                                              fontSize: 18.sp,
-                                                              height: 2.0,
-                                                              fontFamily: 'Poppins',
-                                                              fontWeight: FontWeight.w600,
-                                                              color: Colors.black,
-                                                            ),
+                                                            style: CustomTextStyle.bold(18, height: 1.5),
                                                           );
                                                   }),
                                                 ],
@@ -1187,19 +996,13 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 SizedBox(height: 10.h),
                                                 Text(
                                                   "Daily Notes",
-                                                  style: TextStyle(
-                                                    fontSize: 16.sp,
-                                                    letterSpacing: 0.8,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.black,
-                                                  ),
+                                                  style: CustomTextStyle.bold(20, height: 1.5),
                                                 ),
                                                 SizedBox(height: 20.h),
                                                 TextFormField(
                                                   minLines: 7,
                                                   maxLines: 7,
-                                                  style: TextStyle(fontSize: 14),
+                                                  style: CustomTextStyle.medium(15, height: 1.5),
                                                   onChanged: controller.updateNotes,
                                                   initialValue: controller.getNotes(),
                                                   decoration: InputDecoration(
@@ -1246,24 +1049,13 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 children: [
                                                   Text(
                                                     "Daily Notes",
-                                                    style: TextStyle(
-                                                      fontSize: 16.sp,
-                                                      height: 2.0,
-                                                      fontFamily: 'Poppins',
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.black,
-                                                    ),
+                                                    style: CustomTextStyle.bold(18, height: 1.75),
                                                   ),
                                                   Obx(
                                                     () => controller.notes.value.isNotEmpty
                                                         ? Text(
                                                             "${controller.notes.value}",
-                                                            style: TextStyle(
-                                                              fontSize: 12.sp,
-                                                              fontFamily: 'Poppins',
-                                                              fontWeight: FontWeight.w600,
-                                                              color: Color(0xFFFD6666),
-                                                            ),
+                                                            style: CustomTextStyle.semiBold(14, color: Color(0xFFFD6666)),
                                                             maxLines: 2,
                                                             overflow: TextOverflow.ellipsis,
                                                           )

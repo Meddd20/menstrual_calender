@@ -35,7 +35,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                       width: Get.width,
                       child: Text(
                         "Verification Code",
-                        style: CustomTextStyle.heading1TextStyle(),
+                        style: CustomTextStyle.extraBold(24),
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -45,7 +45,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                         width: Get.width,
                         child: Text(
                           "Please enter verification code send to ${controller.userEmail}",
-                          style: CustomTextStyle.captionTextStyle(),
+                          style: CustomTextStyle.medium(16, height: 1.5),
                         ),
                       ),
                     ),
@@ -68,7 +68,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                       children: [
                         Text(
                           "Didn’t receive any code?  ",
-                          style: CustomTextStyle.captionTextStyle(),
+                          style: CustomTextStyle.medium(16, height: 1.5),
                         ),
                         GestureDetector(
                           onTap: () async {
@@ -79,16 +79,14 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                           },
                           child: Text(
                             "Resend OTP  ",
-                            style: CustomTextStyle.buttonTextStyle(
-                              color: AppColors.contrast,
-                            ),
+                            style: CustomTextStyle.bold(16, color: AppColors.contrast),
                           ),
                         ),
                         Obx(
                           () {
                             return Text(
                               controller.countdown.value > 0 ? "(${controller.countdown})" : "",
-                              style: CustomTextStyle.buttonTextStyle(),
+                              style: CustomTextStyle.bold(16),
                             );
                           },
                         ),

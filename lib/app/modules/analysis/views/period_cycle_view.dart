@@ -18,8 +18,17 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
     Get.put(PeriodCycleController());
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Period Cycle'),
+        title: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            "Period Cycle",
+            style: CustomTextStyle.extraBold(22),
+          ),
+        ),
         centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -58,21 +67,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                           startDate: Obx(
                             () => Text(
                               "${DateFormat('yyyy-MM-dd').format(controller.startDate.value ?? DateTime.now())}",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                              ),
+                              style: CustomTextStyle.extraBold(15, height: 1.5),
                             ),
                           ),
                           endDate: Obx(
                             () => Text(
                               "${DateFormat('yyyy-MM-dd').format(controller.endDate.value ?? DateTime.now())}",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                              ),
+                              style: CustomTextStyle.extraBold(15, height: 1.5),
                             ),
                           ),
                           addPeriodOnPressedButton: () {
@@ -160,7 +161,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                   indicatorColor: AppColors.primary,
                   labelColor: AppColors.primary,
                   unselectedLabelColor: Colors.grey,
-                  labelStyle: CustomTextStyle.headerCalenderTextStyle(),
+                  labelStyle: CustomTextStyle.bold(15),
                   tabs: [
                     Tab(text: "Actual Periods"),
                     Tab(text: "Prediction Periods"),
@@ -205,21 +206,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                         startDate: Obx(
                                           () => Text(
                                             "${DateFormat('yyyy-MM-dd').format(controller.startDate.value!)}",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 16,
-                                            ),
+                                            style: CustomTextStyle.extraBold(15, height: 1.5),
                                           ),
                                         ),
                                         endDate: Obx(
                                           () => Text(
                                             "${DateFormat('yyyy-MM-dd').format(controller.endDate.value!)}",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 16,
-                                            ),
+                                            style: CustomTextStyle.extraBold(15, height: 1.5),
                                           ),
                                         ),
                                         addPeriodOnPressedButton: () {
@@ -250,39 +243,27 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                           child: ListTile(
                             title: Text(
                               '${actualPeriodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${actualPeriodHistory.haidAwal}')) : "N/A"} - ${actualPeriodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${actualPeriodHistory.haidAkhir}')) : "N/A"}',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                              ),
+                              style: CustomTextStyle.medium(14, height: 2.0),
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
                                   width: Get.width,
-                                  height: 22,
+                                  height: 25,
                                   child: DChartSingleBar(
                                     foregroundColor: Color(0xFFFD6666),
                                     value: actualPeriodHistory?.durasiHaid?.toDouble() ?? 0.0,
                                     max: max,
                                     backgroundLabel: Text(
                                       "${(actualPeriodHistory?.lamaSiklus == null || actualPeriodHistory?.lamaSiklus == 0) ? max.toInt() : actualPeriodHistory?.lamaSiklus} days",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15,
-                                      ),
+                                      style: CustomTextStyle.semiBold(15, height: 1.5),
                                     ),
                                     backgroundLabelAlign: Alignment.centerRight,
                                     backgroundLabelPadding: EdgeInsets.only(right: 10.0),
                                     foregroundLabel: Text(
                                       "${actualPeriodHistory?.durasiHaid ?? 0} days",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15,
-                                      ),
+                                      style: CustomTextStyle.semiBold(15, height: 1.5),
                                     ),
                                     foregroundLabelAlign: Alignment.centerLeft,
                                     foregroundLabelPadding: EdgeInsets.only(left: 10.0),
@@ -307,11 +288,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             children: [
                               Text(
                                 '${periodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${periodHistory.haidAwal}')) : "N/A"} - ${periodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${periodHistory.haidAkhir}')) : "N/A"}',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                ),
+                                style: CustomTextStyle.medium(14, height: 2.0),
                               ),
                             ],
                           ),
@@ -327,21 +304,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                   max: periodHistory?.lamaSiklus?.toDouble() ?? 0.0,
                                   backgroundLabel: Text(
                                     "${periodHistory?.lamaSiklus ?? 0} days",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15,
-                                    ),
+                                    style: CustomTextStyle.semiBold(15, height: 1.5),
                                   ),
                                   backgroundLabelAlign: Alignment.centerRight,
                                   backgroundLabelPadding: EdgeInsets.only(right: 10.0),
                                   foregroundLabel: Text(
                                     "${periodHistory?.durasiHaid ?? 0} days",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15,
-                                    ),
+                                    style: CustomTextStyle.semiBold(15, height: 1.5),
                                   ),
                                   foregroundLabelAlign: Alignment.centerLeft,
                                   foregroundLabelPadding: EdgeInsets.only(left: 10.0),

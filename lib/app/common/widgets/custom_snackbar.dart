@@ -1,26 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 
 class Ui {
   static GetSnackBar SuccessSnackBar({String title = 'Success', String message = ''}) {
     return GetSnackBar(
       titleText: Text(
         title.tr,
-        style: TextStyle(
-          fontSize: 15.sp,
-          color: Colors.black,
-          fontWeight: FontWeight.w600,
-        ),
+        style: CustomTextStyle.bold(16),
       ),
       messageText: Text(
         message,
-        style: TextStyle(
-          fontSize: 13.sp,
-          color: Colors.black,
-          fontWeight: FontWeight.w400,
-        ),
+        style: CustomTextStyle.medium(14),
       ),
       snackPosition: SnackPosition.TOP,
       margin: EdgeInsets.all(20),
@@ -41,19 +33,11 @@ class Ui {
     return GetSnackBar(
       titleText: Text(
         title.tr,
-        style: TextStyle(
-          fontSize: 15.sp,
-          color: Colors.black,
-          fontWeight: FontWeight.w600,
-        ),
+        style: CustomTextStyle.bold(16),
       ),
       messageText: Text(
         message,
-        style: TextStyle(
-          fontSize: 13.sp,
-          color: Colors.black,
-          fontWeight: FontWeight.w400,
-        ),
+        style: CustomTextStyle.medium(14),
       ),
       snackPosition: SnackPosition.TOP,
       margin: EdgeInsets.all(20),

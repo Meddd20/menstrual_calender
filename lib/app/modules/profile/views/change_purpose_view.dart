@@ -24,8 +24,17 @@ class ChangePurposeView extends GetView<ProfileController> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('ChangePurposeView'),
+          title: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              'Change Purpose',
+              style: CustomTextStyle.extraBold(22),
+            ),
+          ),
           centerTitle: true,
+          backgroundColor: AppColors.white,
+          surfaceTintColor: AppColors.white,
+          elevation: 4,
           leading: BackButton(
             onPressed: () {
               controller.resetValuePregnancy();
@@ -93,25 +102,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                               leftChevronVisible: true,
                               rightChevronVisible: true,
                               titleCentered: true,
-                              formatButtonShowsNext: false,
-                              formatButtonTextStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                              ),
-                              formatButtonDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                color: Colors.red,
-                              ),
-                              titleTextStyle: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              titleTextStyle: CustomTextStyle.bold(16),
                               headerMargin: EdgeInsets.only(bottom: 10),
                             ),
                             availableGestures: AvailableGestures.all,
@@ -120,9 +111,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                 return Center(
                                   child: Text(
                                     DateFormat.E().format(day),
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
+                                    style: CustomTextStyle.regular(14),
                                   ),
                                 );
                               },
@@ -131,11 +120,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                   child: Center(
                                     child: Text(
                                       '${day.day}',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                      ),
+                                      style: CustomTextStyle.bold(16),
                                     ),
                                   ),
                                 );
@@ -150,11 +135,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                   child: Center(
                                     child: Text(
                                       '${day.day}',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                      ),
+                                      style: CustomTextStyle.bold(16, color: Colors.white),
                                     ),
                                   ),
                                 );
@@ -169,11 +150,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                   child: Center(
                                     child: Text(
                                       '${day.day}',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                      ),
+                                      style: CustomTextStyle.bold(16, color: Colors.white),
                                     ),
                                   ),
                                 );
@@ -189,11 +166,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                             children: [
                               Text(
                                 "Use last period cycle data?",
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                ),
+                                style: CustomTextStyle.medium(15),
                                 textAlign: TextAlign.center,
                               ),
                               Obx(
@@ -224,19 +197,11 @@ class ChangePurposeView extends GetView<ProfileController> {
                             children: [
                               Text(
                                 "Selected Date",
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                ),
+                                style: CustomTextStyle.medium(15),
                               ),
                               Text(
                                 "${DateFormat('yyyy-MM-dd').format(controller.selectedDate ?? DateTime.now())}",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 16,
-                                ),
+                                style: CustomTextStyle.extraBold(15, height: 1.5),
                               )
                             ],
                           ),
@@ -267,8 +232,17 @@ class ChangePurposeView extends GetView<ProfileController> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('ChangePurposeView'),
+          title: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              'Change Purpose',
+              style: CustomTextStyle.extraBold(22),
+            ),
+          ),
           centerTitle: true,
+          backgroundColor: AppColors.white,
+          surfaceTintColor: AppColors.white,
+          elevation: 4,
           leading: BackButton(
             onPressed: () {
               controller.resetValuePregnancy();
@@ -332,25 +306,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                               leftChevronVisible: true,
                               rightChevronVisible: true,
                               titleCentered: true,
-                              formatButtonShowsNext: false,
-                              formatButtonTextStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                              ),
-                              formatButtonDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                color: Colors.red,
-                              ),
-                              titleTextStyle: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              titleTextStyle: CustomTextStyle.bold(16),
                               headerMargin: EdgeInsets.only(bottom: 10),
                             ),
                             availableGestures: AvailableGestures.all,
@@ -358,9 +314,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                               return Center(
                                 child: Text(
                                   DateFormat.E().format(day),
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
+                                  style: CustomTextStyle.regular(14),
                                 ),
                               );
                             }, defaultBuilder: (context, day, focusedDay) {
@@ -368,11 +322,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                 child: Center(
                                   child: Text(
                                     '${day.day}',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
+                                    style: CustomTextStyle.bold(16),
                                   ),
                                 ),
                               );
@@ -386,11 +336,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                 child: Center(
                                   child: Text(
                                     '${day.day}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
+                                    style: CustomTextStyle.bold(16, color: Colors.white),
                                   ),
                                 ),
                               );
@@ -404,11 +350,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                 child: Center(
                                   child: Text(
                                     '${day.day}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
+                                    style: CustomTextStyle.bold(16, color: Colors.white),
                                   ),
                                 ),
                               );
@@ -428,11 +370,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                       ),
                                       child: Text(
                                         '${i + 1}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
+                                        style: CustomTextStyle.bold(12, color: Colors.white),
                                       ),
                                     ),
                                   );
@@ -450,19 +388,11 @@ class ChangePurposeView extends GetView<ProfileController> {
                             children: [
                               Text(
                                 "Selected Date",
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                ),
+                                style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                               ),
                               Text(
                                 "${DateFormat('yyyy-MM-dd').format(controller.selectedDate ?? DateTime.now())}",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 16,
-                                ),
+                                style: CustomTextStyle.bold(15, height: 1.5),
                               )
                             ],
                           ),
@@ -470,11 +400,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                         SizedBox(height: 15.h),
                         Text(
                           "Blessed with a baby?",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                          ),
+                          style: CustomTextStyle.extraBold(18, height: 1.5),
                         ),
                         SizedBox(height: 10.h),
                         Row(
@@ -487,13 +413,9 @@ class ChangePurposeView extends GetView<ProfileController> {
                                     children: [
                                       Container(
                                         width: Get.width * 0.15,
-                                        child: const Text(
+                                        child: Text(
                                           "Yes, it's a Girl",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 14,
-                                          ),
+                                          style: CustomTextStyle.bold(14, height: 1.5),
                                         ),
                                       ),
                                       SizedBox(width: 5),
@@ -523,13 +445,9 @@ class ChangePurposeView extends GetView<ProfileController> {
                                     children: [
                                       Container(
                                         width: Get.width * 0.15,
-                                        child: const Text(
+                                        child: Text(
                                           "Yes, it's a Boy",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 14,
-                                          ),
+                                          style: CustomTextStyle.bold(14, height: 1.5),
                                         ),
                                       ),
                                       SizedBox(width: 5),
@@ -573,11 +491,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                 return SimpleDialog(
                                   title: Text(
                                     "Are you sure you want to delete your current pregnancy?",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 22,
-                                    ),
+                                    style: CustomTextStyle.bold(22),
                                   ),
                                   contentPadding: EdgeInsets.all(16.0),
                                   children: [
@@ -598,7 +512,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                             ),
                                             child: Text(
                                               "No",
-                                              style: CustomTextStyle.buttonTextStyle(),
+                                              style: CustomTextStyle.bold(16),
                                             ),
                                           ),
                                         ),
@@ -619,13 +533,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                             ),
                                             child: Text(
                                               "Yes",
-                                              style: TextStyle(
-                                                fontSize: 16.sp,
-                                                letterSpacing: 0.38,
-                                                fontFamily: 'Poppins',
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
                                             ),
                                           ),
                                         ),

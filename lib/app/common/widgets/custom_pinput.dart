@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:pinput/pinput.dart';
 
 class CustomPinInput extends StatelessWidget {
@@ -18,11 +19,7 @@ class CustomPinInput extends StatelessWidget {
       defaultPinTheme: PinTheme(
         width: 56,
         height: 56,
-        textStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromRGBO(30, 60, 87, 1),
-          fontWeight: FontWeight.w600,
-        ),
+        textStyle: CustomTextStyle.semiBold(20, color: Color(0xFF1E3C57)),
         decoration: BoxDecoration(
           border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
           borderRadius: BorderRadius.circular(8),
@@ -34,11 +31,7 @@ class CustomPinInput extends StatelessWidget {
       focusedPinTheme: PinTheme(
         width: 56,
         height: 56,
-        textStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromRGBO(30, 60, 87, 1),
-          fontWeight: FontWeight.w600,
-        ),
+        textStyle: CustomTextStyle.semiBold(20, color: Color(0xFF1E3C57)),
         decoration: BoxDecoration(
           border: Border.all(color: Color.fromRGBO(114, 178, 238, 1)),
           borderRadius: BorderRadius.circular(8),
@@ -48,11 +41,7 @@ class CustomPinInput extends StatelessWidget {
       submittedPinTheme: PinTheme(
         width: 56,
         height: 56,
-        textStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromRGBO(30, 60, 87, 1),
-          fontWeight: FontWeight.w600,
-        ),
+        textStyle: CustomTextStyle.semiBold(20, color: Color(0xFF1E3C57)),
         decoration: BoxDecoration(
           color: Color.fromRGBO(234, 239, 243, 1),
           borderRadius: BorderRadius.circular(8),

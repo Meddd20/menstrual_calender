@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/insight/views/insight_detail_view.dart';
 import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
 import '../controllers/insight_controller.dart';
@@ -11,34 +12,39 @@ class InsightView extends GetView<InsightController> {
   @override
   Widget build(BuildContext context) {
     Get.put(InsightController());
-    ;
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('InsightView'),
-          centerTitle: true,
-        ),
         body: RefreshIndicator(
           onRefresh: () async {
-            await Future.delayed(Duration(milliseconds: 1400));
-            await controller.articlesFuture;
+            await controller.fetchArticles(null);
           },
-          child: FutureBuilder(
-            future: controller.articlesFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-                // } else if (!snapshot.hasData) {
-                //   return Center(child: Text('No data available'));
-              } else {
-                return Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
-                  child: Column(
-                    children: [
-                      Obx(
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar.medium(
+                title: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    'Insight',
+                    style: CustomTextStyle.extraBold(22),
+                  ),
+                ),
+                centerTitle: true,
+                backgroundColor: AppColors.white,
+                surfaceTintColor: AppColors.white,
+                elevation: 4,
+              ),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _SliverPersistentHeaderDelegate(
+                  maxExtent: 60.0,
+                  minExtent: 60.0,
+                  child: Container(
+                    color: AppColors.white,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                      child: Obx(
                         () => Container(
+                          height: 60,
                           width: Get.width,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
@@ -57,11 +63,7 @@ class InsightView extends GetView<InsightController> {
                                           controller.setSelectedTag("");
                                         }
                                       },
-                                      labelStyle: TextStyle(
-                                        color: controller.getSelectedTag() == tag ? AppColors.white : AppColors.black,
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                      labelStyle: CustomTextStyle.semiBold(14, color: controller.getSelectedTag() == tag ? AppColors.white : AppColors.black),
                                       backgroundColor: AppColors.transparent,
                                       selectedColor: AppColors.contrast,
                                     ),
@@ -71,122 +73,140 @@ class InsightView extends GetView<InsightController> {
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Obx(
-                          () {
-                            if (controller.isLoading.value) {
-                              return Center(child: CircularProgressIndicator());
-                            } else {
-                              return Obx(
-                                () => ListView.builder(
-                                  itemCount: controller.articles.length,
-                                  itemBuilder: (context, index) {
-                                    final article = controller.articles[index];
-                                    return Column(
+                    ),
+                  ),
+                ),
+              ),
+              Obx(
+                () {
+                  if (controller.isLoading.value) {
+                    return SliverToBoxAdapter(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else if (controller.articles.isEmpty) {
+                    return SliverToBoxAdapter(
+                      child: Center(
+                        child: Text('No data available'),
+                      ),
+                    );
+                  } else {
+                    return SliverPadding(
+                      padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final article = controller.articles[index];
+                            return Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    int? articleId = article.id;
+                                    Get.to(() => InsightDetailView(), arguments: articleId);
+                                  },
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Container(
+                                    padding: EdgeInsets.all(16.0),
+                                    decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      color: AppColors.white,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        InkWell(
-                                          onTap: () {
-                                            int? articleId = article.id;
-                                            Get.to(() => InsightDetailView(), arguments: articleId);
-                                          },
-                                          borderRadius: BorderRadius.circular(12),
-                                          child: Container(
-                                            padding: EdgeInsets.all(16.0),
-                                            decoration: ShapeDecoration(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                              ),
-                                              color: AppColors.white,
+                                        Container(
+                                          width: Get.width,
+                                          height: 136,
+                                          decoration: ShapeDecoration(
+                                            image: DecorationImage(
+                                              image: article.banner != null ? NetworkImage("${ApiEndPoints.baseUrl}/${article.banner}") : AssetImage("assets/image/no-image.png") as ImageProvider,
+                                              fit: BoxFit.fill,
                                             ),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  width: Get.width,
-                                                  height: 136,
-                                                  decoration: ShapeDecoration(
-                                                    image: DecorationImage(
-                                                      image: article.banner != null ? NetworkImage("http://10.0.2.2:8000/${article.banner}") : AssetImage("assets/image/no-image.png") as ImageProvider,
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 10.h),
-                                                Text(
-                                                  article.titleInd ?? "",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 18.sp,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                  maxLines: 2,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                SizedBox(height: 5.h),
-                                                Text(
-                                                  article.contentInd ?? "",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14.sp,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                                  maxLines: 2,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                SizedBox(height: 10.h),
-                                                IntrinsicWidth(
-                                                  child: Container(
-                                                    height: 30.h,
-                                                    decoration: ShapeDecoration(
-                                                      color: Color(0x7F88E6BF),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(8),
-                                                      ),
-                                                    ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                                                      child: Center(
-                                                        child: Text(
-                                                          article.tags ?? "",
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 12,
-                                                            fontFamily: 'Inter',
-                                                            fontWeight: FontWeight.w400,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 10)
+                                        SizedBox(height: 10.h),
+                                        Text(
+                                          article.titleInd ?? "",
+                                          style: CustomTextStyle.extraBold(18, height: 1.5),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        Text(
+                                          article.contentInd ?? "",
+                                          style: CustomTextStyle.regular(14, height: 1.5),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        IntrinsicWidth(
+                                          child: Container(
+                                            height: 30.h,
+                                            decoration: ShapeDecoration(
+                                              color: Color.fromARGB(126, 186, 255, 226),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                                              child: Center(
+                                                child: Text(
+                                                  article.tags ?? "",
+                                                  style: CustomTextStyle.bold(12),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ],
-                                    );
-                                  },
+                                    ),
+                                  ),
                                 ),
-                              );
-                            }
+                                SizedBox(height: 10)
+                              ],
+                            );
                           },
+                          childCount: controller.articles.length,
                         ),
                       ),
-                    ],
-                  ),
-                );
-              }
-            },
+                    );
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+}
+
+class _SliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final double minExtent;
+  final double maxExtent;
+  final Widget child;
+
+  _SliverPersistentHeaderDelegate({
+    required this.minExtent,
+    required this.maxExtent,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(_SliverPersistentHeaderDelegate oldDelegate) {
+    return maxExtent != oldDelegate.maxExtent || minExtent != oldDelegate.minExtent || child != oldDelegate.child;
   }
 }

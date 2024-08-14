@@ -7,12 +7,14 @@ import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/models/detail_article_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/article_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
+import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class InsightDetailController extends GetxController {
   final ApiService apiService = ApiService();
   late final ArticleRepository articleRepository = ArticleRepository(apiService);
   late int? id;
   final TextEditingController textEditingController = TextEditingController();
+  final storageService = StorageService();
   late Stream<void> articleStream;
   var parentCommentId = 0.obs;
   var articleId = 0.obs;
@@ -26,6 +28,7 @@ class InsightDetailController extends GetxController {
   RxList<Comment> comment = <Comment>[].obs;
   RxMap<int, bool> showRepliesMap = RxMap<int, bool>();
   FocusNode focusNode = FocusNode();
+  
 
   final StreamController<String> _actionController = StreamController<String>();
 

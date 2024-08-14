@@ -40,20 +40,22 @@ class Onboarding6View extends GetView<OnboardingController> {
                     containerSize: 30.dg,
                   ),
                   SizedBox(height: 25.h),
-                  Text(
-                    "Enter the First Day of Your Last Period",
-                    style: CustomTextStyle.heading3TextStyle(),
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "Enter the First Day of Your Last Period",
+                      style: CustomTextStyle.extraBold(20),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   SizedBox(height: 10.h),
-                  Text(
-                    "Help us calculate your pregnancy week by entering the first day of your last period.",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      height: 1.5,
-                      color: Colors.black.withOpacity(0.6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "Help us calculate your pregnancy week by entering the first day of your last period.",
+                      style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 32.h),
                   CustomCalendarDatePicker(

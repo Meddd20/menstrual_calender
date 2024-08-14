@@ -33,8 +33,17 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Analysis'),
+          title: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              'Period Analysis',
+              style: CustomTextStyle.extraBold(22),
+            ),
+          ),
           centerTitle: true,
+          backgroundColor: AppColors.white,
+          surfaceTintColor: AppColors.white,
+          elevation: 4,
         ),
         body: Padding(
           padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
@@ -49,7 +58,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                     },
                     child: Container(
                       width: Get.width,
-                      height: 195.h,
+                      height: 205.h,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: AppColors.primary,
@@ -67,17 +76,13 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                               children: [
                                 Text(
                                   "My Cycle",
-                                  style: CustomTextStyle.heading4TextStyle(),
+                                  style: CustomTextStyle.extraBold(18),
                                 ),
                                 Row(
                                   children: [
                                     Text(
                                       "See more",
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.6),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: CustomTextStyle.bold(15, color: Colors.black.withOpacity(0.6)),
                                     ),
                                     Icon(Icons.keyboard_arrow_right)
                                   ],
@@ -86,12 +91,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                             ),
                             Text(
                               "${homeController.data?.actualPeriod.length} cycle history logged",
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                height: 2.0,
-                                fontFamily: 'Poppins',
-                                color: Colors.black.withOpacity(0.5),
-                              ),
+                              style: CustomTextStyle.medium(14, height: 2.0, color: Colors.black.withOpacity(0.6)),
                             ),
                             SizedBox(height: 5),
                             Row(
@@ -101,7 +101,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                 Column(
                                   children: [
                                     Container(
-                                      height: 100.h,
+                                      height: 110.h,
                                       width: 155,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
@@ -112,40 +112,26 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                         ),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(16.0),
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Text(
                                               "Average Cycle Length",
-                                              style: TextStyle(
-                                                color: AppColors.primary,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w700,
-                                              ),
+                                              style: CustomTextStyle.extraBold(15, color: AppColors.primary),
                                             ),
-                                            SizedBox(height: 10),
+                                            SizedBox(height: 5),
                                             RichText(
                                               text: TextSpan(
                                                 children: [
                                                   TextSpan(
                                                     text: "${homeController.data?.avgPeriodCycle}",
-                                                    style: TextStyle(
-                                                      fontSize: 23.sp,
-                                                      fontFamily: 'Poppins',
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w800,
-                                                    ),
+                                                    style: CustomTextStyle.extraBold(23),
                                                   ),
                                                   TextSpan(
                                                     text: " days",
-                                                    style: TextStyle(
-                                                      fontSize: 14.sp,
-                                                      fontFamily: 'Poppins',
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
+                                                    style: CustomTextStyle.semiBold(14),
                                                   ),
                                                 ],
                                               ),
@@ -159,11 +145,10 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                 Column(
                                   children: [
                                     Container(
-                                      height: 100.h,
+                                      height: 110.h,
                                       width: 155,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
-                                        // color: Color(0xFFFFE69E),
                                         border: Border.all(
                                           color: Color(0xFFFD9414),
                                           width: 0.5,
@@ -171,40 +156,26 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                         color: Color(0xFFFFE69E),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(16.0),
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Text(
                                               "Average Period Length",
-                                              style: TextStyle(
-                                                color: Color(0xFFFD9414),
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w700,
-                                              ),
+                                              style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
                                             ),
-                                            SizedBox(height: 10),
+                                            SizedBox(height: 5),
                                             RichText(
                                               text: TextSpan(
                                                 children: [
                                                   TextSpan(
                                                     text: "${homeController.data?.avgPeriodDuration}",
-                                                    style: TextStyle(
-                                                      fontSize: 23.sp,
-                                                      fontFamily: 'Poppins',
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
+                                                    style: CustomTextStyle.extraBold(23),
                                                   ),
                                                   TextSpan(
                                                     text: " days",
-                                                    style: TextStyle(
-                                                      fontSize: 14.sp,
-                                                      fontFamily: 'Poppins',
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
+                                                    style: CustomTextStyle.semiBold(14),
                                                   ),
                                                 ],
                                               ),
@@ -222,7 +193,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10.h),
+                  SizedBox(height: 15.h),
                   Wrap(
                     children: [
                       Container(
@@ -231,7 +202,6 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
-                          // border: Border.all(width: 0.5, color: Colors.grey),
                         ),
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(10, 20, 10, 10),

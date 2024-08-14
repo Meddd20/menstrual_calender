@@ -41,7 +41,7 @@ class Onboarding5View extends GetView<OnboardingController> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
                       "Enter Your Previous Period Dates",
-                      style: CustomTextStyle.heading3TextStyle(),
+                      style: CustomTextStyle.extraBold(20),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -50,11 +50,7 @@ class Onboarding5View extends GetView<OnboardingController> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
                       "Choose the start date or range of your previous period(s) to help us predict your next cycle accurately.",
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        height: 1.5,
-                        color: Colors.black.withOpacity(0.6),
-                      ),
+                      style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -64,7 +60,7 @@ class Onboarding5View extends GetView<OnboardingController> {
                     child: SfDateRangePicker(
                       controller: controller.datePickerController.value,
                       headerStyle: DateRangePickerHeaderStyle(
-                        textStyle: CustomTextStyle.headerCalenderTextStyle(),
+                        textStyle: CustomTextStyle.bold(16),
                         textAlign: TextAlign.center,
                       ),
                       minDate: DateTime.now().subtract(Duration(days: 3 * 30)),
@@ -73,12 +69,12 @@ class Onboarding5View extends GetView<OnboardingController> {
                         dayFormat: 'E',
                         viewHeaderHeight: 35,
                         viewHeaderStyle: DateRangePickerViewHeaderStyle(
-                          textStyle: CustomTextStyle.weekCalenderTextStyle(),
+                          textStyle: CustomTextStyle.regular(14),
                         ),
                       ),
                       yearCellStyle: DateRangePickerYearCellStyle(
-                        textStyle: CustomTextStyle.headerCalenderTextStyle(),
-                        todayTextStyle: CustomTextStyle.headerCalenderTextStyle(),
+                        textStyle: CustomTextStyle.bold(14),
+                        todayTextStyle: CustomTextStyle.bold(14),
                         todayCellDecoration: BoxDecoration(
                           border: Border.all(color: AppColors.primary),
                           borderRadius: BorderRadius.circular(16.0),
@@ -87,12 +83,12 @@ class Onboarding5View extends GetView<OnboardingController> {
                       navigationDirection: DateRangePickerNavigationDirection.horizontal,
                       // navigationMode: DateRangePickerNavigationMode.scroll,
                       monthCellStyle: DateRangePickerMonthCellStyle(
-                        textStyle: CustomTextStyle.monthlyCalenderTextStyle(),
-                        todayTextStyle: CustomTextStyle.monthlyCalenderTextStyle(),
+                        textStyle: CustomTextStyle.bold(14),
+                        todayTextStyle: CustomTextStyle.bold(14),
                       ),
-                      selectionTextStyle: CustomTextStyle.selectionCalenderTextStyle(),
+                      selectionTextStyle: CustomTextStyle.bold(14, color: AppColors.white),
                       todayHighlightColor: AppColors.primary,
-                      rangeTextStyle: CustomTextStyle.monthlyCalenderTextStyle(),
+                      rangeTextStyle: CustomTextStyle.bold(14),
                       onSelectionChanged: controller.onSelectionChanged,
                       selectionMode: DateRangePickerSelectionMode.multiRange,
                       rangeSelectionColor: const Color.fromARGB(255, 254, 219, 219),

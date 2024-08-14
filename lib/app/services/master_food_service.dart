@@ -6,8 +6,8 @@ class MasterFoodService {
 
   MasterFoodService(this._masterFoodRepository);
 
-  Future<List<MasterFood>> getAllFood() async {
-    return await _masterFoodRepository.getAllFood();
+  Future<List<MasterFood>> getAllFood(String? foodSafety) async {
+    return await _masterFoodRepository.getAllFood(foodSafety);
   }
 
   Future<MasterFood?> getFoodById(int? id) async {

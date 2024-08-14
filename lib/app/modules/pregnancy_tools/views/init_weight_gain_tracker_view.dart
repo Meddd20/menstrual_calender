@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/weight_tracker_controller.dart';
 
@@ -25,36 +27,19 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
             children: [
               Text(
                 "Pregnancy Weight Gain Tracker",
-                style: TextStyle(
-                  fontSize: 26.sp,
-                  height: 1.5,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: CustomTextStyle.extraBold(24, height: 1.5),
                 textAlign: TextAlign.left,
               ),
               SizedBox(height: 10),
               Text(
                 "The pregnancy weight gain tracker monitors and records a pregnant woman's weight throughout her pregnancy using BMI to categorize weight status.",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  height: 1.75,
-                  color: Colors.black.withOpacity(0.6),
-                  fontWeight: FontWeight.w500,
-                  wordSpacing: 1.5,
-                ),
+                style: CustomTextStyle.medium(14, height: 1.75, color: Colors.black.withOpacity(0.6)),
                 textAlign: TextAlign.left,
               ),
               SizedBox(height: 40),
               Text(
                 "Enter your height and pre-pregnancy weight",
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  height: 1.75,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700,
-                  wordSpacing: 1.5,
-                ),
+                style: CustomTextStyle.extraBold(18, height: 1.5),
                 textAlign: TextAlign.left,
               ),
               SizedBox(height: 30),
@@ -65,13 +50,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                       children: [
                         Text(
                           "Pre-pregnancy weight",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            height: 1.75,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            wordSpacing: 1.5,
-                          ),
+                          style: CustomTextStyle.bold(14, height: 1.5),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 5),
@@ -89,11 +68,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                         children: [
                                           Text(
                                             "Add Pre-Pregnancy Weight",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 20,
-                                            ),
+                                            style: CustomTextStyle.bold(20, height: 1.5),
                                           ),
                                           SizedBox(height: 20),
                                           Obx(
@@ -105,12 +80,8 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                   maxValue: 150,
                                                   value: controller.selectedWeight ?? 0,
                                                   onChanged: controller.setSelectedWeight,
-                                                  textStyle: TextStyle(color: Colors.grey),
-                                                  selectedTextStyle: TextStyle(
-                                                    color: Color(0xFFFF6868),
-                                                    fontSize: 24.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                  textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                  selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
                                                   infiniteLoop: true,
                                                   decoration: BoxDecoration(
                                                     border: Border(
@@ -121,23 +92,15 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                 ),
                                                 Text(
                                                   ".",
-                                                  style: TextStyle(
-                                                    color: Color(0xFFFF6868),
-                                                    fontSize: 24.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                  style: CustomTextStyle.extraBold(20, color: AppColors.primary),
                                                 ),
                                                 NumberPicker(
                                                   minValue: 0,
                                                   maxValue: 9,
                                                   value: controller.selectedWeightDecimal ?? 0,
                                                   onChanged: controller.setSelectedWeightDecimal,
-                                                  textStyle: TextStyle(color: Colors.grey),
-                                                  selectedTextStyle: TextStyle(
-                                                    color: Color(0xFFFF6868),
-                                                    fontSize: 24.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                  textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                  selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
                                                   infiniteLoop: true,
                                                   decoration: BoxDecoration(
                                                     border: Border(
@@ -149,11 +112,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                 SizedBox(width: 10),
                                                 Text(
                                                   "Kg",
-                                                  style: TextStyle(
-                                                    color: Color(0xFFFF6868),
-                                                    fontSize: 20.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                                  style: CustomTextStyle.extraBold(20, color: AppColors.primary),
                                                 ),
                                               ],
                                             ),
@@ -192,13 +151,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                 final weight = controller.getWeight();
                                 return Text(
                                   (weight != 0.0) ? "$weight Kg" : "Weight",
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    height: 1.75,
-                                    color: (weight != 0.0) ? Colors.black : Colors.black.withOpacity(0.6),
-                                    fontWeight: FontWeight.w700,
-                                    wordSpacing: 1.5,
-                                  ),
+                                  style: CustomTextStyle.bold(16, height: 1.75, color: (weight != 0.0) ? Colors.black : Colors.black.withOpacity(0.6)),
                                 );
                               }),
                             ),
@@ -213,13 +166,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                       children: [
                         Text(
                           "Your height",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            height: 1.75,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            wordSpacing: 1.5,
-                          ),
+                          style: CustomTextStyle.bold(14, height: 1.5),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 5),
@@ -236,12 +183,8 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                "Add Pre-Pregnancy Weight",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 20,
-                                                ),
+                                                "Add Height",
+                                                style: CustomTextStyle.bold(20, height: 1.5),
                                               ),
                                               SizedBox(height: 20),
                                               Row(
@@ -252,12 +195,8 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                     maxValue: 200,
                                                     value: controller.selectedInitHeight ?? 0,
                                                     onChanged: controller.setSelectedInitHeight,
-                                                    textStyle: TextStyle(color: Colors.grey),
-                                                    selectedTextStyle: TextStyle(
-                                                      color: Color(0xFFFF6868),
-                                                      fontSize: 24.sp,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
+                                                    textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                    selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
                                                     infiniteLoop: true,
                                                     decoration: BoxDecoration(
                                                       border: Border(
@@ -268,23 +207,15 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                   ),
                                                   Text(
                                                     ".",
-                                                    style: TextStyle(
-                                                      color: Color(0xFFFF6868),
-                                                      fontSize: 24.sp,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
+                                                    style: CustomTextStyle.extraBold(20, color: AppColors.primary),
                                                   ),
                                                   NumberPicker(
                                                     minValue: 0,
                                                     maxValue: 9,
                                                     value: controller.selectedInitHeightDecimal ?? 0,
                                                     onChanged: controller.setSelectedInitHeightDecimal,
-                                                    textStyle: TextStyle(color: Colors.grey),
-                                                    selectedTextStyle: TextStyle(
-                                                      color: Color(0xFFFF6868),
-                                                      fontSize: 24.sp,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
+                                                    textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                    selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
                                                     infiniteLoop: true,
                                                     decoration: BoxDecoration(
                                                       border: Border(
@@ -296,11 +227,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                   SizedBox(width: 10),
                                                   Text(
                                                     "cm",
-                                                    style: TextStyle(
-                                                      color: Color(0xFFFF6868),
-                                                      fontSize: 20.sp,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
+                                                    style: CustomTextStyle.extraBold(20, color: AppColors.primary),
                                                   ),
                                                 ],
                                               )
@@ -338,13 +265,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                 final height = controller.getHeight();
                                 return Text(
                                   (height != 0.0) ? "$height cm" : "Height",
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    height: 1.75,
-                                    color: (height != 0.0) ? Colors.black : Colors.black.withOpacity(0.6),
-                                    fontWeight: FontWeight.w700,
-                                    wordSpacing: 1.5,
-                                  ),
+                                  style: CustomTextStyle.bold(16, height: 1.75, color: (height != 0.0) ? Colors.black : Colors.black.withOpacity(0.6)),
                                 );
                               }),
                             ),
@@ -361,13 +282,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                 children: [
                   Text(
                     "Pregnant with twin baby?",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      height: 1.75,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w700,
-                      wordSpacing: 1.5,
-                    ),
+                    style: CustomTextStyle.bold(14, height: 1.5),
                     textAlign: TextAlign.center,
                   ),
                   Obx(

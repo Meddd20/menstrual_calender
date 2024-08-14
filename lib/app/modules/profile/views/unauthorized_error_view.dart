@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/controllers/profile_controller.dart';
 
 class UnauthorizedErrorView extends GetView<ProfileController> {
@@ -26,22 +27,14 @@ class UnauthorizedErrorView extends GetView<ProfileController> {
               SizedBox(height: 30),
               Text(
                 "Account Activity Detected",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 26,
-                ),
+                style: CustomTextStyle.extraBold(24, height: 1.75),
                 textAlign: TextAlign.center,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
                 child: Text(
                   "We detected a login on another device. Please sign in again to secure your account.",
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.8),
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                  ),
+                  style: CustomTextStyle.medium(16, height: 1.75, color: Colors.black.withOpacity(0.6)),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -61,13 +54,7 @@ class UnauthorizedErrorView extends GetView<ProfileController> {
                 ),
                 child: Text(
                   "Logout",
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    letterSpacing: 0.38,
-                    fontFamily: 'Poppins',
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: CustomTextStyle.bold(16, color: Colors.white),
                 ),
               ),
             ],

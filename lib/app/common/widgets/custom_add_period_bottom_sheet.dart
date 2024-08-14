@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
 
@@ -62,11 +63,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20,
-                            ),
+                            style: CustomTextStyle.extraBold(20),
                           ),
                           IconButton(
                             icon: Icon(
@@ -83,11 +80,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
                         width: Get.width,
                         child: Text(
                           "Update the start and end dates of a specific time period for precise and current tracking.",
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.5),
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                          ),
+                          style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                           softWrap: true,
                         ),
                       ),
@@ -112,11 +105,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
                       children: [
                         Text(
                           "Start Date",
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.5),
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                          ),
+                          style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                         Container(
                           padding: EdgeInsets.only(top: 4.0),
@@ -136,11 +125,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
                       children: [
                         Text(
                           "End Date",
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.5),
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                          ),
+                          style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                         Container(
                           padding: EdgeInsets.only(top: 4.0),

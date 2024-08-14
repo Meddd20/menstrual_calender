@@ -6,15 +6,11 @@ environment:
   sdk: ">=3.3.0-107.0.dev <4.0.0"
 
 dependencies:
-  android_alarm_manager_plus: ^3.0.4
   cached_network_image: ^3.4.0
   calendar_date_picker2: null
-  cherry_toast: ^1.10.1
   connectivity_plus: ^6.0.3
-  cupertino_icons: null
   custom_date_range_picker: ^1.0.10
   d_chart: ^2.6.5
-  dio: ^5.4.0
   dotted_border: ^2.1.0
   filter_list: ^1.0.2
   firebase_analytics: ^11.2.1
@@ -32,7 +28,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   get: null
   get_storage: ^2.1.1
-  google_fonts: ^6.1.0
+  html: ^0.15.4
   http: ^1.1.2
   iconsax: null
   like_button: ^2.0.5
@@ -44,6 +40,7 @@ dependencies:
   permission_handler: ^11.3.1
   photo_view: ^0.15.0
   pinput: ^3.0.1
+  readmore: ^3.0.0
   scrollable_clean_calendar: ^1.4.1
   sqflite: ^2.3.3+1
   step_progress_indicator: ^1.0.2
@@ -70,4 +67,19 @@ flutter:
     - assets/image/fetal_development/
     - assets/icon/
     - assets/lottie/
-    # - assets/image/chinese chart.jpg
+
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/font-family/PlusJakartaSans-Light.ttf
+          weight: 300
+        - asset: assets/font-family/PlusJakartaSans-Regular.ttf
+          weight: 400
+        - asset: assets/font-family/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/font-family/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/font-family/PlusJakartaSans-Bold.ttf
+          weight: 700
+        - asset: assets/font-family/PlusJakartaSans-ExtraBold.ttf
+          weight: 800

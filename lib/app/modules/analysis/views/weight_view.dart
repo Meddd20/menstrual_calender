@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/weight_controller.dart';
@@ -19,8 +21,17 @@ class WeightView extends GetView<WeightController> {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Weigth'),
+          title: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              "Weight",
+              style: CustomTextStyle.extraBold(22),
+            ),
+          ),
           centerTitle: true,
+          backgroundColor: AppColors.white,
+          surfaceTintColor: AppColors.white,
+          elevation: 4,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
@@ -35,31 +46,18 @@ class WeightView extends GetView<WeightController> {
               SizedBox(height: 10),
               Text(
                 "Total Entries",
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: CustomTextStyle.medium(15, color: Colors.black.withOpacity(0.6)),
               ),
               Obx(
                 () => Text(
                   "${controller.specificWeightData.entries.length} Entries",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: CustomTextStyle.extraBold(26, height: 1.75),
                 ),
               ),
               Obx(
                 () => Text(
                   "from ${controller.formatDate(controller.selectedDate.value)} up to today",
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.4),
-                    fontSize: 15,
-                    height: 2.0,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
                 ),
               ),
               Container(
@@ -87,10 +85,13 @@ class WeightView extends GetView<WeightController> {
                                 children: [
                                   Text(
                                     'Date: ${entry.key}',
-                                    style: TextStyle(color: Colors.white),
+                                    style: CustomTextStyle.bold(12, color: Colors.white),
                                   ),
                                   SizedBox(height: 5),
-                                  Text('Temperature: ${entry.value} °C', style: TextStyle(color: Colors.white)),
+                                  Text(
+                                    'Temperature: ${entry.value} °C',
+                                    style: CustomTextStyle.bold(12, color: Colors.white),
+                                  ),
                                 ],
                               ),
                             );
@@ -182,7 +183,7 @@ class WeightView extends GetView<WeightController> {
                       itemBuilder: (context, index) {
                         final MapEntry<String, dynamic> entry = controller.specificWeightData.entries.elementAt(index);
 
-                        return CustomDateLook(entry: entry);
+                        return CustomDateLook(entry: entry, type: "weight");
                       },
                     ),
                   ),

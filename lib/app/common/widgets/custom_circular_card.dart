@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 
 class CustomCircularCard extends StatelessWidget {
   final String iconPath;
@@ -49,13 +50,7 @@ class CustomCircularCard extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.74),
-                fontSize: 12.sp,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w400,
-                // letterSpacing: 0.38,
-              ),
+              style: CustomTextStyle.medium(13, height: 1.5),
             ),
             SizedBox(height: 5.h),
           ],

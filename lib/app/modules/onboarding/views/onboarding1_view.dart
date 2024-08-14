@@ -45,17 +45,13 @@ class Onboarding1View extends GetView<OnboardingController> {
                     SizedBox(height: 25.h),
                     Text(
                       "When's your birthday?",
-                      style: CustomTextStyle.heading3TextStyle(),
+                      style: CustomTextStyle.extraBold(20),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 10.h),
                     Text(
                       "Providing your birthday helps us offer you a more personalized experience.",
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        height: 1.5,
-                        color: Colors.black.withOpacity(0.6),
-                      ),
+                      style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 30.h),

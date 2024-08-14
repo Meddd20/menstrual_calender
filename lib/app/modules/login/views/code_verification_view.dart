@@ -22,19 +22,19 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           body: Padding(
-            padding: EdgeInsets.fromLTRB(15.w, 40.h, 15.w, 35.h),
+            padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 35.h),
             child: Align(
               alignment: Alignment.topCenter,
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(height: 90.h),
+                    SizedBox(height: 50.h),
                     Container(
                       width: Get.width,
                       child: Text(
                         "Verification Code",
-                        style: CustomTextStyle.heading1TextStyle(),
+                        style: CustomTextStyle.extraBold(24),
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -45,14 +45,11 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                         child: Text.rich(
                           TextSpan(
                             text: "Please enter the verification code sent to ",
-                            style: CustomTextStyle.captionTextStyle(),
+                            style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                             children: [
                               TextSpan(
                                 text: "${controller.userEmail}",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: CustomTextStyle.captionTextStyle().color,
-                                ),
+                                style: CustomTextStyle.extraBold(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                               ),
                             ],
                           ),
@@ -76,14 +73,7 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          "Didn’t receive any code?  ",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
+                        Text("Didn’t receive any code?  ", style: CustomTextStyle.medium(15)),
                         GestureDetector(
                           onTap: () async {
                             if (controller.countdown.value == 0) {
@@ -93,16 +83,14 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                           },
                           child: Text(
                             "Resend OTP  ",
-                            style: CustomTextStyle.buttonTextStyle(
-                              color: AppColors.contrast,
-                            ),
+                            style: CustomTextStyle.bold(16, color: AppColors.contrast),
                           ),
                         ),
                         Obx(
                           () {
                             return Text(
                               controller.countdown.value > 0 ? "(${controller.countdown})" : "",
-                              style: CustomTextStyle.buttonTextStyle(),
+                              style: CustomTextStyle.bold(16),
                             );
                           },
                         ),

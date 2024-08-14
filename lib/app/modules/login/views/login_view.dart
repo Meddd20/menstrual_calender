@@ -49,7 +49,7 @@ class LoginView extends GetView<LoginController> {
                         width: Get.width,
                         child: Text(
                           "Welcome Back!",
-                          style: CustomTextStyle.heading1TextStyle(),
+                          style: CustomTextStyle.extraBold(24),
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -58,7 +58,7 @@ class LoginView extends GetView<LoginController> {
                         width: Get.width,
                         child: Text(
                           "Glad to see you again!",
-                          style: CustomTextStyle.captionTextStyle(),
+                          style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                       ),
                       SizedBox(height: 30.h),
@@ -97,38 +97,32 @@ class LoginView extends GetView<LoginController> {
                             },
                             child: Text(
                               "Forgot Password?",
-                              style: CustomTextStyle.bodyTextStyle(),
+                              style: CustomTextStyle.semiBold(14, color: Colors.black.withOpacity(0.6)),
                             ),
                           ),
                         ),
                       ),
+                      // SizedBox(height: 5.h),
                       CustomButton(
                         text: "Login",
                         onPressed: () async {
                           controller.checkLogin();
                         },
                       ),
-                      SizedBox(height: 5.h),
+                      SizedBox(height: 20.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             "Have an account?",
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                            ),
+                            style: CustomTextStyle.semiBold(15),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Get.offAllNamed(Routes.ONBOARDING);
-                            },
+                          SizedBox(width: 10),
+                          GestureDetector(
+                            onTap: () => Get.offAllNamed(Routes.ONBOARDING),
                             child: Text(
                               "Register Now",
-                              style: CustomTextStyle.buttonTextStyle(
-                                color: AppColors.contrast,
-                              ),
+                              style: CustomTextStyle.bold(16, color: AppColors.contrast),
                             ),
                           ),
                         ],

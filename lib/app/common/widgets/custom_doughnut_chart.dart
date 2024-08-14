@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class CustomDougnutChart extends StatelessWidget {
@@ -65,17 +66,13 @@ class CustomDougnutChart extends StatelessWidget {
                   Expanded(
                     child: Text(
                       "$name ",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                        overflow: TextOverflow.visible,
-                      ),
+                      style: CustomTextStyle.semiBold(14),
                     ),
                   ),
                   SizedBox(width: 10),
                   Text(
                     (point.y.toInt()).toString(),
+                    style: CustomTextStyle.bold(14),
                   ),
                 ],
               ),

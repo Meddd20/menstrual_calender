@@ -30,12 +30,12 @@ class ApiService {
   }
 
   Future<http.Response> getSycDataApi() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.getSycData);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getSycData);
     return await http.get(url, headers: loginHeaders);
   }
 
   Future<http.Response> storeFcmToken(String fcmToken, int userId) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.storeFcmToken);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.storeFcmToken);
     Map<String, String> body = {
       "fcm_token": fcmToken,
       "user_id": userId.toString(),
@@ -45,14 +45,14 @@ class ApiService {
   }
 
   Future<http.Response> login(String email, String password) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.login);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.login);
     Map<String, String> body = {"email": email, "password": password};
 
     return await http.post(url, body: body, headers: generalHeaders);
   }
 
   Future<http.Response> register(String name, DateTime birthday, String email, String password) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.regisUser);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.regisUser);
 
     String formattedBirthday = DateFormat('yyyy-MM-dd').format(birthday);
     Map<String, dynamic> body = {"name": name, "birthday": formattedBirthday, "email": email, "password": password};
@@ -61,21 +61,21 @@ class ApiService {
   }
 
   Future<http.Response> requestVerificationCode(String email, String type) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.requestVerification);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.requestVerification);
     Map<String, String> body = {"email": email, "type": type};
 
     return await http.post(url, body: body, headers: generalHeaders);
   }
 
   Future<http.Response> validateCodeVerif(String email, String codeVerif, String type, String role) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.verifyCode);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.verifyCode);
     Map<String, String> body = {"email": email, "verif_code": codeVerif, "type": type, "user_role": role};
 
     return await http.post(url, body: body, headers: generalHeaders);
   }
 
   Future<http.Response> resetPassword(String email, String newPassword, String confirmNewPassword) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.resetPassword);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.resetPassword);
     Map<String, String> body = {
       "email": email,
       "new_password": newPassword,
@@ -86,24 +86,24 @@ class ApiService {
   }
 
   Future<http.Response> logout() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.logOut);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.logOut);
 
     return await http.post(url, headers: loginHeaders);
   }
 
   Future<http.Response> checkToken() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.checkToken);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.checkToken);
 
     return await http.post(url, headers: loginHeaders);
   }
 
   Future<http.Response> getProfile() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.profile);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.profile);
     return await http.get(url, headers: loginHeaders);
   }
 
   Future<http.Response> editProfile(String nama, String tanggalLahir) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.editProfile);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.editProfile);
 
     Map<String, dynamic> body = {"name": nama, "birthday": tanggalLahir};
 
@@ -111,14 +111,14 @@ class ApiService {
   }
 
   Future<http.Response> deleteData() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.deleteData);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.deleteData);
     print(url);
     print(loginHeaders);
     return await http.delete(url, headers: loginHeaders);
   }
 
   Future<http.Response> getAllArticle(String? tags) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.getAllArticle);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getAllArticle);
 
     if (tags != null) {
       url = Uri.parse("$url?tags=$tags");
@@ -128,18 +128,18 @@ class ApiService {
   }
 
   Future<http.Response> getArticle(int id) async {
-    var url = Uri.parse('${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.getArticle}/$id');
+    var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.getArticle}/$id');
 
     return await http.get(url, headers: generalHeaders);
   }
 
   Future<http.Response> getPeriodSummary() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.indexPeriodCycle);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.indexPeriodCycle);
     return await http.get(url, headers: loginHeaders);
   }
 
   Future<http.Response> getDateEvent(String selectedDate) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.dateEvent);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.dateEvent);
     Map<String, String> body = {"date_selected": "${selectedDate}"};
 
     return await http.post(url, headers: loginHeaders, body: body);
@@ -150,10 +150,10 @@ class ApiService {
     late Map<String, String> headers;
 
     if (email_regis != null) {
-      url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.storePeriod + "?email_regis=$email_regis");
+      url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.storePeriod + "?email_regis=$email_regis");
       headers = generalHeaders;
     } else {
-      url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.storePeriod);
+      url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.storePeriod);
       headers = loginHeaders;
     }
     var request = http.MultipartRequest('POST', url)..headers.addAll(headers);
@@ -178,7 +178,7 @@ class ApiService {
   }
 
   Future<http.Response> updatePeriod(int periodId, String firstPeriod, String lastPeriod, int? periodCycle) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.updatePeriod);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.updatePeriod);
     Map<String, dynamic> body = {
       "period_id": periodId.toString(),
       "first_period": firstPeriod,
@@ -193,19 +193,19 @@ class ApiService {
   }
 
   Future<http.Response> getLogByDate(String logDate) async {
-    var url = Uri.parse("${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.logByDate}?date=$logDate");
+    var url = Uri.parse("${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.logByDate}?date=$logDate");
 
     return await http.get(url, headers: loginHeaders);
   }
 
   Future<http.Response> getLogByTags(String tag) async {
-    var url = Uri.parse("${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.logByTags}?tags=$tag");
+    var url = Uri.parse("${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.logByTags}?tags=$tag");
 
     return await http.get(url, headers: loginHeaders);
   }
 
   Future<http.Response> storeLog(String date, String? sexActivity, String? bleedingFlow, Map<String, dynamic> symptoms, String? vaginalDischarge, Map<String, dynamic> moods, Map<String, dynamic> others, Map<String, dynamic> physicalActivity, String? temperature, String? weight, String? notes) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.storeLog);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.storeLog);
 
     Map<String, dynamic> body = {
       "date": date,
@@ -225,7 +225,7 @@ class ApiService {
   }
 
   Future<http.Response> storeReminder(String id, String title, String description, String dateTime) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.storeReminder);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.storeReminder);
 
     Map<String, dynamic> body = {"id": id, "title": title, "description": description, "datetime": dateTime};
 
@@ -233,7 +233,7 @@ class ApiService {
   }
 
   Future<http.Response> editReminder(String id, String title, String? description, String dateTime) async {
-    var url = Uri.parse('${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.editReminder}/$id');
+    var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.editReminder}/$id');
 
     Map<String, dynamic> body = {
       "title": title,
@@ -245,24 +245,24 @@ class ApiService {
   }
 
   Future<http.Response> deleteReminder(String id) async {
-    var url = Uri.parse('${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.deleteReminder}/$id');
+    var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.deleteReminder}/$id');
     return await http.delete(url, headers: loginHeaders);
   }
 
   Future<http.Response> getAllReminder() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.getAllReminder);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getAllReminder);
 
     return await http.get(url, headers: loginHeaders);
   }
 
   Future<http.Response> getPregnancyIndex() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.getPregnancyIndex);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getPregnancyIndex);
 
     return await http.get(url, headers: loginHeaders);
   }
 
   Future<http.Response> pregnancyBegin(String firstDayLastMenstruation, String? email_regis) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.pregnancyBegin);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.pregnancyBegin);
 
     Map<String, dynamic> body = {
       "hari_pertama_haid_terakhir": firstDayLastMenstruation,
@@ -276,7 +276,7 @@ class ApiService {
   }
 
   Future<http.Response> pregnancyEnded(String pregnancyEndDate, String gender) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.pregnancyEnded);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.pregnancyEnded);
 
     Map<String, dynamic> body = {
       "pregnancy_end": pregnancyEndDate,
@@ -289,19 +289,19 @@ class ApiService {
   }
 
   Future<http.Response> deletePregnancy() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.deletePregnancy);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.deletePregnancy);
 
     return await http.post(url, headers: loginHeaders);
   }
 
   Future<http.Response> getWeightGainIndex() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.getWeightGainIndex);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getWeightGainIndex);
 
     return await http.get(url, headers: loginHeaders);
   }
 
   Future<http.Response> initializeWeightGain(double tinggiBadan, double beratBadan, int isTwin) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.initializeWeightGain);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.initializeWeightGain);
 
     Map<String, dynamic> body = {
       "tinggi_badan": tinggiBadan.toString(),
@@ -313,7 +313,7 @@ class ApiService {
   }
 
   Future<http.Response> weeklyWeightGain(double beratBadan, int mingguKehamilan, String dateRecord) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.weeklyWeightGain);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.weeklyWeightGain);
 
     Map<String, dynamic> body = {
       "berat_badan": beratBadan.toString(),
@@ -325,7 +325,7 @@ class ApiService {
   }
 
   Future<http.Response> deleteWeeklyWeightGain(String dateRecord) async {
-    var url = Uri.parse('${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.deleteWeeklyWeightGain}');
+    var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.deleteWeeklyWeightGain}');
 
     Map<String, dynamic> body = {
       "tanggal_pencatatan": dateRecord,
@@ -335,7 +335,7 @@ class ApiService {
   }
 
   Future<http.Response> storeComment(int? parentId, int articleId, String content) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.storeComment);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.storeComment);
 
     Map<String, dynamic> body = {
       "article_id": articleId.toString(),
@@ -350,7 +350,7 @@ class ApiService {
   }
 
   Future<http.Response> likeComment(int commentId) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.likeComment);
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.likeComment);
 
     Map<String, dynamic> body = {"comment_id": commentId.toString()};
 
@@ -358,7 +358,7 @@ class ApiService {
   }
 
   Future<http.Response> deleteComment(int id) async {
-    var url = Uri.parse('${ApiEndPoints.baseUrl}${ApiEndPoints.authEndPoints.deleteComment}/$id');
+    var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.deleteComment}/$id');
     return await http.delete(url, headers: loginHeaders);
   }
 }

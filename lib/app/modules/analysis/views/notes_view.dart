@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/notes_controller.dart';
@@ -17,8 +19,17 @@ class NotesView extends GetView<NotesController> {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Notes'),
+          title: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              "Notes",
+              style: CustomTextStyle.extraBold(22),
+            ),
+          ),
           centerTitle: true,
+          backgroundColor: AppColors.white,
+          surfaceTintColor: AppColors.white,
+          elevation: 4,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
@@ -81,11 +92,9 @@ class NotesView extends GetView<NotesController> {
                     return ListView.builder(
                       itemCount: controller.specificNotesData.length,
                       itemBuilder: (context, index) {
-                        final MapEntry<String, dynamic> entry = controller
-                            .specificNotesData.entries
-                            .elementAt(index);
+                        final MapEntry<String, dynamic> entry = controller.specificNotesData.entries.elementAt(index);
 
-                        return CustomDateLook(entry: entry);
+                        return CustomDateLook(entry: entry, type: "notes");
                       },
                     );
                   }

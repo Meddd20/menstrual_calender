@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_doughnut_chart.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
@@ -19,8 +20,17 @@ class LogsView extends GetView<LogsController> {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(controller.pageTags()),
+          title: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              controller.pageTags(),
+              style: CustomTextStyle.extraBold(22),
+            ),
+          ),
           centerTitle: true,
+          backgroundColor: AppColors.white,
+          surfaceTintColor: AppColors.white,
+          elevation: 4,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
@@ -78,28 +88,15 @@ class LogsView extends GetView<LogsController> {
                 SizedBox(height: 10),
                 Text(
                   "Total Entries",
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.4),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: CustomTextStyle.medium(15, color: Colors.black.withOpacity(0.6)),
                 ),
                 Text(
                   "${controller.specificMoodsData.length} Entries",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: CustomTextStyle.extraBold(26, height: 1.75),
                 ),
                 Text(
                   "from ${controller.formatDate(controller.selectedDate.value)} up to today",
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.4),
-                    fontSize: 15,
-                    height: 2.0,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
                 ),
                 CustomDougnutChart(
                   dataSource: controller.getSelectedDataSource(),
@@ -123,7 +120,7 @@ class LogsView extends GetView<LogsController> {
                           itemBuilder: (context, index) {
                             final MapEntry<String, dynamic> entry = controller.specificMoodsData.entries.elementAt(index);
 
-                            return CustomDateLook(entry: entry);
+                            return CustomDateLook(entry: entry, type: "logs");
                           },
                         );
                       }

@@ -42,7 +42,7 @@ class Onboarding3View extends GetView<OnboardingController> {
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       "How Long is Your Average Menstrual Cycle?",
-                      style: CustomTextStyle.heading3TextStyle(),
+                      style: CustomTextStyle.extraBold(20),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -51,11 +51,7 @@ class Onboarding3View extends GetView<OnboardingController> {
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       "We'll use this to help predict your next period based on your last one.",
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        height: 1.5,
-                        color: Colors.black.withOpacity(0.6),
-                      ),
+                      style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -69,11 +65,7 @@ class Onboarding3View extends GetView<OnboardingController> {
                         return Center(
                           child: Text(
                             "$day Days",
-                            style: TextStyle(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.black,
-                            ),
+                            style: CustomTextStyle.bold(24),
                           ),
                         );
                       },

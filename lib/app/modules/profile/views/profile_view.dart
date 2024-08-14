@@ -29,8 +29,17 @@ class ProfileView extends GetView<ProfileController> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Profile'),
+          title: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              'Profile',
+              style: CustomTextStyle.extraBold(22),
+            ),
+          ),
           centerTitle: true,
+          backgroundColor: AppColors.white,
+          surfaceTintColor: AppColors.white,
+          elevation: 4,
         ),
         body: FutureBuilder<User?>(
           future: controller.profileUser,
@@ -66,11 +75,7 @@ class ProfileView extends GetView<ProfileController> {
                                   Expanded(
                                     child: Text(
                                       "Register to save your data or log in to access your account",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: CustomTextStyle.bold(14, height: 1.5, color: Colors.white),
                                     ),
                                   ),
                                 ],
@@ -91,20 +96,12 @@ class ProfileView extends GetView<ProfileController> {
                                                 children: [
                                                   Text(
                                                     "Create Account",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w700,
-                                                      fontSize: 22,
-                                                    ),
+                                                    style: CustomTextStyle.bold(22),
                                                   ),
                                                   SizedBox(height: 5),
                                                   Text(
                                                     "Register to save your data or log in to your existing account to access your data",
-                                                    style: TextStyle(
-                                                      color: Colors.black.withOpacity(0.6),
-                                                      fontWeight: FontWeight.w400,
-                                                      fontSize: 16,
-                                                    ),
+                                                    style: CustomTextStyle.medium(16, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(height: 25),
@@ -130,11 +127,7 @@ class ProfileView extends GetView<ProfileController> {
                                                           return SimpleDialog(
                                                             title: Text(
                                                               "Overwrite your existing account data?",
-                                                              style: TextStyle(
-                                                                color: Colors.black,
-                                                                fontWeight: FontWeight.w700,
-                                                                fontSize: 22,
-                                                              ),
+                                                              style: CustomTextStyle.bold(22),
                                                               textAlign: TextAlign.center,
                                                             ),
                                                             contentPadding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
@@ -145,14 +138,11 @@ class ProfileView extends GetView<ProfileController> {
                                                                     padding: const EdgeInsets.all(6.0),
                                                                     child: Text(
                                                                       "Overwriting your data means your existing account data will be overwritten",
-                                                                      style: TextStyle(
-                                                                        color: Colors.black,
-                                                                        fontWeight: FontWeight.w400,
-                                                                        fontSize: 16,
-                                                                      ),
+                                                                      style: CustomTextStyle.medium(15, height: 1.5),
                                                                       textAlign: TextAlign.center,
                                                                     ),
                                                                   ),
+                                                                  SizedBox(height: 10),
                                                                   Row(
                                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                                     children: [
@@ -172,11 +162,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                           ),
                                                                           child: Text(
                                                                             "Keep Data",
-                                                                            style: TextStyle(
-                                                                              fontSize: 15.sp,
-                                                                              color: Colors.black,
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
+                                                                            style: CustomTextStyle.bold(16),
                                                                           ),
                                                                         ),
                                                                       ),
@@ -197,11 +183,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                           ),
                                                                           child: Text(
                                                                             "Overwrite",
-                                                                            style: TextStyle(
-                                                                              fontSize: 15.sp,
-                                                                              color: Colors.white,
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
+                                                                            style: CustomTextStyle.bold(16, color: Colors.white),
                                                                           ),
                                                                         ),
                                                                       ),
@@ -234,7 +216,7 @@ class ProfileView extends GetView<ProfileController> {
                                   ),
                                   child: Text(
                                     "Continue",
-                                    style: CustomTextStyle.buttonTextStyle(color: Colors.black),
+                                    style: CustomTextStyle.bold(16, color: Colors.black),
                                   ),
                                 ),
                               ),
@@ -269,20 +251,12 @@ class ProfileView extends GetView<ProfileController> {
                                                   SizedBox(height: 15.h),
                                                   Text(
                                                     "${snapshot.data?.nama ?? "N/A"}",
-                                                    style: TextStyle(
-                                                      color: Color(0xFF090A0A),
-                                                      fontSize: 24.sp,
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
+                                                    style: CustomTextStyle.bold(24),
                                                   ),
                                                   SizedBox(height: 5.h),
                                                   Text(
                                                     "${snapshot.data?.email ?? "N/A"}",
-                                                    style: TextStyle(
-                                                      color: Color(0xFF090A0A),
-                                                      fontSize: 13.sp,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
+                                                    style: CustomTextStyle.medium(14),
                                                   ),
                                                   SizedBox(height: 15.h),
                                                 ],
@@ -318,11 +292,7 @@ class ProfileView extends GetView<ProfileController> {
                                                 SizedBox(height: 15),
                                                 Text(
                                                   "Usage Preference",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 22,
-                                                  ),
+                                                  style: CustomTextStyle.extraBold(22),
                                                 ),
                                                 SizedBox(height: 20),
                                                 Container(
@@ -343,11 +313,7 @@ class ProfileView extends GetView<ProfileController> {
                                                             return SimpleDialog(
                                                               title: Text(
                                                                 "Are you sure you want to change your goal?",
-                                                                style: TextStyle(
-                                                                  color: Colors.black,
-                                                                  fontWeight: FontWeight.w700,
-                                                                  fontSize: 22,
-                                                                ),
+                                                                style: CustomTextStyle.bold(22),
                                                               ),
                                                               contentPadding: EdgeInsets.all(16.0),
                                                               children: [
@@ -368,7 +334,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                         ),
                                                                         child: Text(
                                                                           "No",
-                                                                          style: CustomTextStyle.buttonTextStyle(),
+                                                                          style: CustomTextStyle.bold(16),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -389,13 +355,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                         ),
                                                                         child: Text(
                                                                           "Yes",
-                                                                          style: TextStyle(
-                                                                            fontSize: 16.sp,
-                                                                            letterSpacing: 0.38,
-                                                                            fontFamily: 'Poppins',
-                                                                            color: Colors.white,
-                                                                            fontWeight: FontWeight.bold,
-                                                                          ),
+                                                                          style: CustomTextStyle.bold(16, color: Colors.white),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -406,10 +366,6 @@ class ProfileView extends GetView<ProfileController> {
                                                           },
                                                         );
                                                       }
-                                                      //   controller
-                                                      //       .setRadioGoalSelect(
-                                                      //           value ?? 0);
-                                                      // }
                                                     },
                                                     activeColor: Colors.white,
                                                     contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
@@ -425,7 +381,7 @@ class ProfileView extends GetView<ProfileController> {
                                                             alignment: Alignment.centerLeft,
                                                             child: Text(
                                                               "Tracking Menstrual Period",
-                                                              style: CustomTextStyle.heading4TextStyle(color: Colors.white),
+                                                              style: CustomTextStyle.extraBold(18, color: Colors.white),
                                                               textAlign: TextAlign.left,
                                                             ),
                                                           ),
@@ -467,11 +423,7 @@ class ProfileView extends GetView<ProfileController> {
                                                             return SimpleDialog(
                                                               title: Text(
                                                                 "Are you sure you want to change your goal?",
-                                                                style: TextStyle(
-                                                                  color: Colors.black,
-                                                                  fontWeight: FontWeight.w700,
-                                                                  fontSize: 22,
-                                                                ),
+                                                                style: CustomTextStyle.bold(22),
                                                               ),
                                                               contentPadding: EdgeInsets.all(16.0),
                                                               children: [
@@ -492,7 +444,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                         ),
                                                                         child: Text(
                                                                           "No",
-                                                                          style: CustomTextStyle.buttonTextStyle(),
+                                                                          style: CustomTextStyle.bold(16),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -513,13 +465,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                         ),
                                                                         child: Text(
                                                                           "Yes",
-                                                                          style: TextStyle(
-                                                                            fontSize: 16.sp,
-                                                                            letterSpacing: 0.38,
-                                                                            fontFamily: 'Poppins',
-                                                                            color: Colors.white,
-                                                                            fontWeight: FontWeight.bold,
-                                                                          ),
+                                                                          style: CustomTextStyle.bold(16, color: Colors.white),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -546,7 +492,7 @@ class ProfileView extends GetView<ProfileController> {
                                                             alignment: Alignment.centerLeft,
                                                             child: Text(
                                                               "Follow Pregnancy",
-                                                              style: CustomTextStyle.heading4TextStyle(color: Colors.white),
+                                                              style: CustomTextStyle.extraBold(18, color: Colors.white),
                                                               textAlign: TextAlign.left,
                                                             ),
                                                           ),
@@ -610,22 +556,11 @@ class ProfileView extends GetView<ProfileController> {
                                             children: [
                                               Text(
                                                 "Usage Preferences",
-                                                style: TextStyle(
-                                                  fontSize: 15.sp,
-                                                  height: 2.0,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.black,
-                                                ),
+                                                style: CustomTextStyle.bold(15, height: 1.75),
                                               ),
                                               Text(
                                                 "${controller.purposeText.value}",
-                                                style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.grey,
-                                                ),
+                                                style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
                                               ),
                                             ],
                                           ),
@@ -658,52 +593,8 @@ class ProfileView extends GetView<ProfileController> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              "Reminders",
-                                              style: TextStyle(
-                                                fontSize: 15.sp,
-                                                height: 2.0,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                          Icon(Iconsax.arrow_right_34)
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 15.h),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Wrap(
-                                children: [
-                                  Container(
-                                    width: Get.width,
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      color: Colors.white,
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(20),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
                                               "Themes",
-                                              style: TextStyle(
-                                                fontSize: 15.sp,
-                                                height: 2.0,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black,
-                                              ),
+                                              style: CustomTextStyle.bold(15, height: 1.75),
                                             ),
                                           ),
                                           Icon(Iconsax.arrow_right_34)
@@ -735,13 +626,7 @@ class ProfileView extends GetView<ProfileController> {
                                           Expanded(
                                             child: Text(
                                               "Secure Access (PIN)",
-                                              style: TextStyle(
-                                                fontSize: 15.sp,
-                                                height: 2.0,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black,
-                                              ),
+                                              style: CustomTextStyle.bold(15, height: 1.75),
                                             ),
                                           ),
                                           Icon(Iconsax.arrow_right_34)
@@ -773,11 +658,7 @@ class ProfileView extends GetView<ProfileController> {
                                                 SizedBox(height: 15.h),
                                                 Text(
                                                   "Change Language",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 22,
-                                                  ),
+                                                  style: CustomTextStyle.extraBold(22),
                                                 ),
                                                 SizedBox(height: 20),
                                                 Container(
@@ -803,11 +684,7 @@ class ProfileView extends GetView<ProfileController> {
                                                           SizedBox(width: 20),
                                                           Text(
                                                             "English",
-                                                            style: TextStyle(
-                                                              color: Colors.black,
-                                                              fontSize: 16.sp,
-                                                              fontWeight: FontWeight.w500,
-                                                            ),
+                                                            style: CustomTextStyle.bold(16),
                                                           ),
                                                         ],
                                                       ),
@@ -846,11 +723,7 @@ class ProfileView extends GetView<ProfileController> {
                                                           SizedBox(width: 20),
                                                           Text(
                                                             "Bahasa Indonesia",
-                                                            style: TextStyle(
-                                                              color: Colors.black,
-                                                              fontSize: 16.sp,
-                                                              fontWeight: FontWeight.w500,
-                                                            ),
+                                                            style: CustomTextStyle.bold(16),
                                                           ),
                                                         ],
                                                       ),
@@ -906,22 +779,11 @@ class ProfileView extends GetView<ProfileController> {
                                             children: [
                                               Text(
                                                 "Language",
-                                                style: TextStyle(
-                                                  fontSize: 15.sp,
-                                                  height: 2.0,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.black,
-                                                ),
+                                                style: CustomTextStyle.bold(15, height: 1.75),
                                               ),
                                               Text(
                                                 "${controller.storageService.getLanguage() == "en" ? "English" : "Bahasa Indonesia"}",
-                                                style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.grey,
-                                                ),
+                                                style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
                                               ),
                                             ],
                                           ),
@@ -957,11 +819,7 @@ class ProfileView extends GetView<ProfileController> {
                                                   SizedBox(height: 15.h),
                                                   Text(
                                                     "Backup Data Preferences",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w700,
-                                                      fontSize: 22,
-                                                    ),
+                                                    style: CustomTextStyle.extraBold(22),
                                                   ),
                                                   SizedBox(height: 20),
                                                   ListTile(
@@ -970,20 +828,12 @@ class ProfileView extends GetView<ProfileController> {
                                                       children: [
                                                         Text(
                                                           "Backup Your Data",
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 16.sp,
-                                                            fontWeight: FontWeight.w600,
-                                                          ),
+                                                          style: CustomTextStyle.bold(16),
                                                         ),
                                                         SizedBox(height: 4.0),
                                                         Text(
                                                           "Ensure your data is backed up to avoid loss and keep it secure.",
-                                                          style: TextStyle(
-                                                            color: Colors.black.withOpacity(0.6),
-                                                            fontSize: 12.sp,
-                                                            fontWeight: FontWeight.w400,
-                                                          ),
+                                                          style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
                                                         ),
                                                       ],
                                                     ),
@@ -1015,11 +865,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                     SizedBox(height: 15),
                                                                     Text(
                                                                       "Remove your data backup?",
-                                                                      style: TextStyle(
-                                                                        color: Colors.black,
-                                                                        fontWeight: FontWeight.w700,
-                                                                        fontSize: 22,
-                                                                      ),
+                                                                      style: CustomTextStyle.bold(22),
                                                                       textAlign: TextAlign.center,
                                                                     ),
                                                                   ],
@@ -1032,11 +878,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                         padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
                                                                         child: Text(
                                                                           "Are you sure you want to remove your data backup?",
-                                                                          style: TextStyle(
-                                                                            color: Colors.black,
-                                                                            fontWeight: FontWeight.w400,
-                                                                            fontSize: 16,
-                                                                          ),
+                                                                          style: CustomTextStyle.medium(15, height: 1.5),
                                                                           textAlign: TextAlign.center,
                                                                         ),
                                                                       ),
@@ -1057,7 +899,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                               ),
                                                                               child: Text(
                                                                                 "Cancel",
-                                                                                style: CustomTextStyle.buttonTextStyle(),
+                                                                                style: CustomTextStyle.bold(16),
                                                                               ),
                                                                             ),
                                                                           ),
@@ -1078,13 +920,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                               ),
                                                                               child: Text(
                                                                                 "Yes",
-                                                                                style: TextStyle(
-                                                                                  fontSize: 16.sp,
-                                                                                  letterSpacing: 0.38,
-                                                                                  fontFamily: 'Poppins',
-                                                                                  color: Colors.white,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
+                                                                                style: CustomTextStyle.bold(16, color: Colors.white),
                                                                               ),
                                                                             ),
                                                                           ),
@@ -1105,105 +941,6 @@ class ProfileView extends GetView<ProfileController> {
                                                       activeColor: AppColors.primary,
                                                     ),
                                                   ),
-                                                  // Container(
-                                                  //   width: Get.width,
-                                                  //   decoration: BoxDecoration(
-                                                  //     color: AppColors.white,
-                                                  //     border: Border.all(
-                                                  //       color: controller.syncPreferences.value == 0 ? AppColors.primary : Colors.grey,
-                                                  //     ),
-                                                  //     borderRadius: BorderRadius.circular(20),
-                                                  //   ),
-                                                  //   child: ListTile(
-                                                  //     contentPadding: EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 5.0),
-                                                  //     title: Align(
-                                                  //       alignment: Alignment.centerLeft,
-                                                  //       child: Text(
-                                                  //         "Primary Device Only",
-                                                  //         style: TextStyle(
-                                                  //           color: Colors.black,
-                                                  //           fontSize: 16.sp,
-                                                  //           fontWeight: FontWeight.w600,
-                                                  //         ),
-                                                  //       ),
-                                                  //     ),
-                                                  //     subtitle: Align(
-                                                  //       alignment: Alignment.centerLeft,
-                                                  //       child: Column(
-                                                  //         children: [
-                                                  //           SizedBox(height: 5),
-                                                  //           Text(
-                                                  //             "This selection specifies that the app will only be utilized on this device as the primary source of data.",
-                                                  //             style: TextStyle(
-                                                  //               color: Colors.black.withOpacity(0.6),
-                                                  //               fontSize: 12.sp,
-                                                  //               fontWeight: FontWeight.w400,
-                                                  //             ),
-                                                  //           ),
-                                                  //         ],
-                                                  //       ),
-                                                  //     ),
-                                                  //     trailing: Radio<int>(
-                                                  //       value: 0,
-                                                  //       groupValue: controller.syncPreferences.value,
-                                                  //       onChanged: (int? value) {
-                                                  //         controller.setSelectedSyncPreferences(value!);
-                                                  //       },
-                                                  //       activeColor: AppColors.primary,
-                                                  //     ),
-                                                  //   ),
-                                                  // ),
-                                                  // SizedBox(height: 15),
-                                                  // Container(
-                                                  //   width: Get.width,
-                                                  //   decoration: BoxDecoration(
-                                                  //     color: AppColors.white,
-                                                  //     border: Border.all(
-                                                  //       color: controller.syncPreferences.value == 1 ? AppColors.primary : Colors.grey,
-                                                  //     ),
-                                                  //     borderRadius: BorderRadius.circular(20),
-                                                  //   ),
-                                                  //   child: ListTile(
-                                                  //     contentPadding: EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 5.0),
-                                                  //     title: Align(
-                                                  //       alignment: Alignment.centerLeft,
-                                                  //       child: Text(
-                                                  //         "Sync Across Devices",
-                                                  //         style: TextStyle(
-                                                  //           color: Colors.black,
-                                                  //           fontSize: 16.sp,
-                                                  //           fontWeight: FontWeight.w600,
-                                                  //         ),
-                                                  //       ),
-                                                  //     ),
-                                                  //     subtitle: Align(
-                                                  //       alignment: Alignment.centerLeft,
-                                                  //       child: Column(
-                                                  //         children: [
-                                                  //           SizedBox(height: 5),
-                                                  //           Text(
-                                                  //             "This selection specifies that the app will sync data across multiple devices.",
-                                                  //             style: TextStyle(
-                                                  //               color: Colors.black.withOpacity(0.6),
-                                                  //               fontSize: 12.sp,
-                                                  //               fontWeight: FontWeight.w400,
-                                                  //             ),
-                                                  //           ),
-                                                  //         ],
-                                                  //       ),
-                                                  //     ),
-                                                  //     trailing: Radio<int>(
-                                                  //       value: 1,
-                                                  //       groupValue: controller.syncPreferences.value,
-                                                  //       onChanged: (int? value) {
-                                                  //         controller.setSelectedSyncPreferences(value!);
-                                                  //       },
-                                                  //       activeColor: AppColors.primary,
-                                                  //     ),
-                                                  //   ),
-                                                  // ),
-                                                  // SizedBox(height: 15),
-                                                  // CustomButton(text: "Change Sync Preferences", onPressed: () => controller.setSyncPreferences())
                                                 ],
                                               ),
                                             )
@@ -1243,22 +980,11 @@ class ProfileView extends GetView<ProfileController> {
                                               children: [
                                                 Text(
                                                   "Backup Data Preferences",
-                                                  style: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    height: 2.0,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.black,
-                                                  ),
+                                                  style: CustomTextStyle.bold(15, height: 1.75),
                                                 ),
                                                 Text(
                                                   "${controller.isDataBackedup.value == true ? "Data Backed Up" : "Data Not Backed Up"}",
-                                                  style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.grey,
-                                                  ),
+                                                  style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
                                                 ),
                                               ],
                                             ),
@@ -1295,13 +1021,7 @@ class ProfileView extends GetView<ProfileController> {
                                           Expanded(
                                             child: Text(
                                               "About this application",
-                                              style: TextStyle(
-                                                fontSize: 15.sp,
-                                                height: 2.0,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black,
-                                              ),
+                                              style: CustomTextStyle.bold(15, height: 1.75),
                                             ),
                                           ),
                                           Icon(Iconsax.arrow_right_34)
@@ -1333,11 +1053,7 @@ class ProfileView extends GetView<ProfileController> {
                                             SizedBox(height: 15),
                                             Text(
                                               "Logging Out?",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 22,
-                                              ),
+                                              style: CustomTextStyle.bold(22),
                                               textAlign: TextAlign.center,
                                             ),
                                           ],
@@ -1350,11 +1066,7 @@ class ProfileView extends GetView<ProfileController> {
                                                 padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
                                                 child: Text(
                                                   "Make sure to backup your data before logging out.",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 16,
-                                                  ),
+                                                  style: CustomTextStyle.medium(15, height: 1.5),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
@@ -1375,7 +1087,7 @@ class ProfileView extends GetView<ProfileController> {
                                                       ),
                                                       child: Text(
                                                         "Cancel",
-                                                        style: CustomTextStyle.buttonTextStyle(),
+                                                        style: CustomTextStyle.bold(16),
                                                       ),
                                                     ),
                                                   ),
@@ -1396,13 +1108,7 @@ class ProfileView extends GetView<ProfileController> {
                                                       ),
                                                       child: Text(
                                                         "Logout",
-                                                        style: TextStyle(
-                                                          fontSize: 16.sp,
-                                                          letterSpacing: 0.38,
-                                                          fontFamily: 'Poppins',
-                                                          color: Colors.white,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
+                                                        style: CustomTextStyle.bold(16, color: Colors.white),
                                                       ),
                                                     ),
                                                   ),
@@ -1430,13 +1136,7 @@ class ProfileView extends GetView<ProfileController> {
                                         child: Center(
                                           child: Text(
                                             "Log Out",
-                                            style: TextStyle(
-                                              fontSize: 15.sp,
-                                              height: 2.0,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.primary,
-                                            ),
+                                            style: CustomTextStyle.extraBold(15, height: 1.75, color: AppColors.primary),
                                           ),
                                         ),
                                       ),
