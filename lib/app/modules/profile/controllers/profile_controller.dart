@@ -153,15 +153,6 @@ class ProfileController extends GetxController {
     update();
   }
 
-  // void setSyncPreferences() {
-  //   if (syncPreferences.value == 0) {
-  //     storageService.storePrimaryDataMechanism();
-  //   } else {
-  //     storageService.storeManyDataMechanism();
-  //   }
-  //   Get.offAllNamed(Routes.NAVIGATION_MENU);
-  // }
-
   Future<void> _handleDataBackup(bool backup) async {
     isDataBackedup.value = backup;
 
@@ -373,27 +364,6 @@ class ProfileController extends GetxController {
 
   RxList<DateTime> tanggalAwalMinggu = <DateTime>[].obs;
   RxList<DateTime> tanggalAkhirMinggu = <DateTime>[].obs;
-
-  // Future<void> fetchPregnancyData() async {
-  //   var result = await pregnancyRepository.getPregnancyIndex();
-  //   currentlyPregnantData.value = result!.data!.currentlyPregnant!.first;
-  //   weeklyData.assignAll(currentlyPregnantData.value.weeklyData!);
-
-  //   DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-
-  //   for (var entry in weeklyData) {
-  //     if (entry.tanggalAwalMinggu != null) {
-  //       DateTime parsedDate = dateFormat.parse(entry.tanggalAwalMinggu!);
-  //       tanggalAwalMinggu.add(parsedDate);
-  //     }
-  //     if (entry.tanggalAkhirMinggu != null) {
-  //       DateTime parsedDate = dateFormat.parse(entry.tanggalAkhirMinggu!);
-  //       tanggalAkhirMinggu.add(parsedDate);
-  //     }
-  //   }
-
-  //   update();
-  // }
 
   Future<void> fetchPregnancyData() async {
     var result = await _pregnancyHistoryService.getCurrentPregnancyData("id");

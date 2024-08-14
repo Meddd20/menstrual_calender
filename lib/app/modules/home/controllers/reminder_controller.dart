@@ -120,22 +120,6 @@ class ReminderController extends GetxController {
     }
   }
 
-  // Future<void> fetchAllReminder() async {
-  //   try {
-  //     Reminder? result = await logRepository.getAllReminder();
-
-  //     if (result != null && result.data != null) {
-  //       reminders.assignAll(result.data!);
-  //     } else {
-  //       print("Error: Unable to fetch articles");
-  //     }
-
-  //     update();
-  //   } catch (e) {
-  //     print("Error fetching articles: $e");
-  //   }
-  // }
-
   Future<void> fetchAllReminder() async {
     List<Reminders>? result = await _logService.getAllReminder();
 

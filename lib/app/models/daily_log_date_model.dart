@@ -1,39 +1,3 @@
-class DailyLogDate {
-  String? status;
-  String? message;
-  DataHarian? data;
-
-  DailyLogDate({this.status, this.message, this.data});
-
-  DailyLogDate.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    message = json['message'];
-    data = json['data'] != null ? DataHarian.fromJson(json['data']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
-  }
-
-  DailyLogDate copyWith({
-    String? status,
-    String? message,
-    DataHarian? data,
-  }) {
-    return DailyLogDate(
-      status: status ?? this.status,
-      message: message ?? this.message,
-      data: data ?? this.data,
-    );
-  }
-}
-
 class DataHarian {
   String? date;
   Moods? moods;

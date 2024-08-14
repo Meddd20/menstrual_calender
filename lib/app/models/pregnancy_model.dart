@@ -1,39 +1,3 @@
-class Pregnancy {
-  String? status;
-  String? message;
-  Data? data;
-
-  Pregnancy({this.status, this.message, this.data});
-
-  Pregnancy.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    message = json['message'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
-  }
-}
-
-class Data {
-  List<PregnancyHistory>? pregnancyHistory;
-  List<CurrentlyPregnant>? currentlyPregnant;
-
-  Data({this.pregnancyHistory, this.currentlyPregnant});
-
-  Data.fromJson(Map<String, dynamic> json) {
-    if (json['pregnancy_history'] != null) {
-      pregnancyHistory = <PregnancyHistory>[];
-      json['pregnancy_history'].forEach((v) {
-        pregnancyHistory!.add(PregnancyHistory.fromJson(v));
-      });
-    }
-    if (json['currently_pregnant'] != null) {
-      currentlyPregnant = <CurrentlyPregnant>[];
-      json['currently_pregnant'].forEach((v) {
-        currentlyPregnant!.add(CurrentlyPregnant.fromJson(v));
-      });
-    }
-  }
-}
-
 class PregnancyHistory {
   int? id;
   int? userId;

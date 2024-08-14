@@ -97,11 +97,6 @@ class ApiService {
     return await http.post(url, headers: loginHeaders);
   }
 
-  Future<http.Response> getProfile() async {
-    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.profile);
-    return await http.get(url, headers: loginHeaders);
-  }
-
   Future<http.Response> editProfile(String nama, String tanggalLahir) async {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.editProfile);
 
@@ -131,18 +126,6 @@ class ApiService {
     var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.getArticle}/$id');
 
     return await http.get(url, headers: generalHeaders);
-  }
-
-  Future<http.Response> getPeriodSummary() async {
-    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.indexPeriodCycle);
-    return await http.get(url, headers: loginHeaders);
-  }
-
-  Future<http.Response> getDateEvent(String selectedDate) async {
-    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.dateEvent);
-    Map<String, String> body = {"date_selected": "${selectedDate}"};
-
-    return await http.post(url, headers: loginHeaders, body: body);
   }
 
   Future<http.Response> storePeriod(List<Map<String, dynamic>> periods, int? periodCycle, String? email_regis) async {
@@ -192,18 +175,6 @@ class ApiService {
     return await http.patch(url, body: body, headers: loginHeaders);
   }
 
-  Future<http.Response> getLogByDate(String logDate) async {
-    var url = Uri.parse("${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.logByDate}?date=$logDate");
-
-    return await http.get(url, headers: loginHeaders);
-  }
-
-  Future<http.Response> getLogByTags(String tag) async {
-    var url = Uri.parse("${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.logByTags}?tags=$tag");
-
-    return await http.get(url, headers: loginHeaders);
-  }
-
   Future<http.Response> storeLog(String date, String? sexActivity, String? bleedingFlow, Map<String, dynamic> symptoms, String? vaginalDischarge, Map<String, dynamic> moods, Map<String, dynamic> others, Map<String, dynamic> physicalActivity, String? temperature, String? weight, String? notes) async {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.storeLog);
 
@@ -249,18 +220,6 @@ class ApiService {
     return await http.delete(url, headers: loginHeaders);
   }
 
-  Future<http.Response> getAllReminder() async {
-    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getAllReminder);
-
-    return await http.get(url, headers: loginHeaders);
-  }
-
-  Future<http.Response> getPregnancyIndex() async {
-    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getPregnancyIndex);
-
-    return await http.get(url, headers: loginHeaders);
-  }
-
   Future<http.Response> pregnancyBegin(String firstDayLastMenstruation, String? email_regis) async {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.pregnancyBegin);
 
@@ -292,12 +251,6 @@ class ApiService {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.deletePregnancy);
 
     return await http.post(url, headers: loginHeaders);
-  }
-
-  Future<http.Response> getWeightGainIndex() async {
-    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getWeightGainIndex);
-
-    return await http.get(url, headers: loginHeaders);
   }
 
   Future<http.Response> initializeWeightGain(double tinggiBadan, double beratBadan, int isTwin) async {

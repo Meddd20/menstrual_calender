@@ -1,23 +1,3 @@
-class DailyLogTags {
-  String status;
-  String message;
-  DailyLogTagsData? data;
-
-  DailyLogTags({
-    required this.status,
-    required this.message,
-    required this.data,
-  });
-
-  factory DailyLogTags.fromJson(Map<String, dynamic> json) {
-    return DailyLogTags(
-      status: json['status'],
-      message: json['message'],
-      data: DailyLogTagsData.fromJson(json['data']),
-    );
-  }
-}
-
 class DailyLogTagsData {
   String tags;
   dynamic logs;

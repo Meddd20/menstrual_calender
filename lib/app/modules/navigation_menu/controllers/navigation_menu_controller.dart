@@ -84,12 +84,6 @@ class NavigationMenuController extends GetxController {
         }
 
         authRepository.checkToken();
-        // if (storageService.getStoreDataMechanism() == "primary" && !storageService.isDataSync()) {
-        //   await _syncDataService.syncData();
-        //   storageService.setHasSyncData(true);
-        // } else {
-        //   await _syncDataService.syncData();
-        // }
       }
     }
   }

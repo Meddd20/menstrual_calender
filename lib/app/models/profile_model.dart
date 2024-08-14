@@ -12,21 +12,6 @@ class Profile {
   }
 }
 
-// class UserData {
-//   Credential? credential;
-//   User? user;
-
-//   UserData({
-//     this.credential,
-//     this.user,
-//   });
-
-//   UserData.fromJson(Map<String, dynamic> json) {
-//     credential = json['credential'] != null ? new Credential.fromJson(json['credential']) : null;
-//     user = json['user'] != null ? new User.fromJson(json['user']) : null;
-//   }
-// }
-
 class Credential {
   int? userId;
   String? token;

@@ -127,20 +127,6 @@ class WeightController extends GetxController {
     return specificWeightData;
   }
 
-  // Future<void> fetchTemperatures() async {
-  //   DailyLogTags? result = await logRepository.getLogsByTags("weight");
-
-  //   if (result != null && result.data != null) {
-  //     RxMap<String, dynamic> logsMap = RxMap<String, dynamic>.from(result.data!.logs);
-  //     weight.assignAll(logsMap);
-  //   } else {
-  //     print("Error: Unable to fetch temperature");
-  //   }
-  //   specifiedDataByDate();
-
-  //   update();
-  // }
-
   Future<void> fetchWeight() async {
     try {
       DailyLogTagsData? result = await _logService.getLogsByTags("weight");

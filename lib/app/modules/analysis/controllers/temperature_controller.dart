@@ -127,21 +127,6 @@ class TemperatureController extends GetxController {
     return specificTemperaturesData;
   }
 
-  // Future<void> fetchTemperatures() async {
-  //   DailyLogTags? result = await logRepository.getLogsByTags("temperature");
-
-  //   if (result != null && result.data != null) {
-  //     RxMap<String, dynamic> logsMap =
-  //         RxMap<String, dynamic>.from(result.data!.logs);
-  //     temperatures.assignAll(logsMap);
-  //   } else {
-  //     print("Error: Unable to fetch temperature");
-  //   }
-  //   specifiedDataByDate();
-
-  //   update();
-  // }
-
   Future<void> fetchTemperatures() async {
     try {
       DailyLogTagsData? result = await _logService.getLogsByTags("temperature");

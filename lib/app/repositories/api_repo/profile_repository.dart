@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_data_model.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/views/unauthorized_error_view.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
@@ -29,27 +28,6 @@ class ProfileRepository {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       _logger.e('[API ERROR] $errorMessage');
       return null;
-    }
-  }
-
-  Future<Profile?> getProfile() async {
-    try {
-      http.Response response = await apiService.getProfile();
-
-      if (response.statusCode == 200) {
-        var decodedJson = json.decode(response.body);
-        var profile = Profile.fromJson(decodedJson);
-        return profile;
-      } else {
-        var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
-        Get.showSnackbar(Ui.ErrorSnackBar(message: errorMessage));
-        _logger.e("Error during get daily log: $errorMessage");
-        return null;
-      }
-    } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: "An error occurred. Please try again later."));
-      _logger.e("Error during get profile: $e");
-      rethrow;
     }
   }
 

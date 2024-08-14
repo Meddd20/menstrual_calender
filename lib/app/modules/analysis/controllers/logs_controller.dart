@@ -203,29 +203,6 @@ class LogsController extends GetxController {
     }
   }
 
-  // Future<void> fetchMoods() async {
-  //   try {
-  //     DailyLogTags? result = await logRepository.getLogsByTags(selectedDataTags.value);
-
-  //     if (result != null && result.data != null) {
-  //       data = result.data!;
-
-  //       moods.value = data.logs;
-  //       percentage30Days.value = data.percentage30Days ?? {};
-  //       percentage3Months.value = data.percentage3Months ?? {};
-  //       percentage6Months.value = data.percentage6Months ?? {};
-  //       percentage1Year.value = data.percentage1Year ?? {};
-  //     } else {
-  //       print("Error: Unable to fetch moods");
-  //     }
-  //     specifiedDataByDate();
-
-  //     update();
-  //   } catch (error) {
-  //     print("Error: $error");
-  //   }
-  // }
-
   Future<void> fetchMoods() async {
     try {
       DailyLogTagsData? result = await _logService.getLogsByTags(selectedDataTags.value);

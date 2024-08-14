@@ -63,8 +63,6 @@ class LoginController extends GetxController {
     User? user = await authRepository.login(emailC.text.trim(), passwordC.text.trim());
 
     if (user == null || user.token == null) {
-      // Tangani kasus di mana login gagal
-      // Misalnya, tampilkan pesan kesalahan atau beri tahu pengguna
       return;
     }
 

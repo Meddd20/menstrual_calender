@@ -228,37 +228,6 @@ class DailyLogController extends GetxController {
     update();
   }
 
-  // Future<void> fetchLog(String logDate) async {
-  //   var dailyLog = await logRepository.getLogsByDate(logDate);
-
-  //   if (dailyLog?.data != null) {
-  //     selectedSexActivity.value = dailyLog!.data!.sexActivity ?? "";
-  //     selectedBleedingFlow.value = dailyLog.data!.bleedingFlow ?? "";
-  //     selectedVaginalDischarge.value = dailyLog.data!.vaginalDischarge ?? "";
-  //     temperature.value = dailyLog.data!.temperature ?? "";
-  //     weights.value = dailyLog.data!.weight ?? "";
-  //     notes.value = dailyLog.data!.notes ?? "";
-
-  //     selectedSymptoms.assignAll(
-  //       dailyLog.data!.symptoms?.toJson().entries.where((entry) => entry.value).map((entry) => entry.key).toList() ?? [],
-  //     );
-
-  //     selectedMoods.assignAll(
-  //       dailyLog.data!.moods?.toJson().entries.where((entry) => entry.value == true).map((entry) => entry.key).toList() ?? [],
-  //     );
-
-  //     selectedOthers.assignAll(
-  //       dailyLog.data!.others?.toJson().entries.where((entry) => entry.value == true).map((entry) => entry.key).toList() ?? [],
-  //     );
-
-  //     selectedPhysicalActivity.assignAll(
-  //       dailyLog.data!.physicalActivity?.toJson().entries.where((entry) => entry.value == true).map((entry) => entry.key).toList() ?? [],
-  //     );
-
-  //     update();
-  //   }
-  // }
-
   Future<DataHarian?> fetchLog(DateTime logDate) async {
     isLoading.value = true;
     var dailyLog = await _logService.getLogsByDate(logDate);

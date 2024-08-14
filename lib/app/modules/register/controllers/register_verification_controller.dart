@@ -67,7 +67,7 @@ class RegisterVerificationController extends GetxController {
       );
 
       if (data["status"] == "success") {
-        if (storageService.getAccountLocalId() == null && storageService.getCredentialToken() == null) {
+        if (storageService.getAccountLocalId() != 0 && storageService.getCredentialToken() == null) {
           storePeriodData();
           Get.offNamed(Routes.LOGIN, arguments: true);
         } else {

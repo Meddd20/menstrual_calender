@@ -72,21 +72,6 @@ class WeightTrackerController extends GetxController {
     super.onClose();
   }
 
-  // void initializeData() async {
-  //   final databaseHelper = DatabaseHelper.instance;
-  //   final weightHistoryRepository = WeightHistoryRepository(databaseHelper);
-  //   final pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-  //   final masterKehamilanRepository = MasterKehamilanRepository(databaseHelper);
-  //   final periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-  //   final localProfileRepository = LocalProfileRepository(databaseHelper);
-  //   _syncDataRepository = SyncDataRepository(databaseHelper);
-  //   _pregnancyHistoryService = PregnancyHistoryService(pregnancyHistoryRepository, masterKehamilanRepository, periodHistoryRepository, localProfileRepository);
-  //   _weightHistoryService = WeightHistoryService(weightHistoryRepository, pregnancyHistoryRepository);
-
-  //   await fetchWeightGainIndex();
-  //   getSelectedWeek(DateTime.now());
-  // }
-
   final Rx<DateTime> _focusedDate = Rx<DateTime>(DateTime.now());
   DateTime get getFocusedDate => _focusedDate.value;
 
@@ -203,15 +188,6 @@ class WeightTrackerController extends GetxController {
     update();
   }
 
-  // Future<void> fetchWeightGainIndex() async {
-  //   var result = await pregnancyRepository.getWeightGainIndex();
-  //   pregnancyWeightGainData.value = result?.data;
-  //   weightGainHistory.assignAll(pregnancyWeightGainData.value!.weightHistory!);
-  //   reccomendWeightGain.assignAll(pregnancyWeightGainData.value!.reccomendWeightGain!);
-  //   fetchPregnancyData();
-  //   update();
-  // }
-
   Future<void> fetchWeightGainIndex() async {
     var result = await _weightHistoryService.getPregnancyWeightGainData();
     pregnancyWeightGainData.value = result;
@@ -224,28 +200,6 @@ class WeightTrackerController extends GetxController {
 
   RxList<DateTime> tanggalAwalMinggu = <DateTime>[].obs;
   RxList<DateTime> tanggalAkhirMinggu = <DateTime>[].obs;
-
-  // Future<void> fetchPregnancyData() async {
-  //   var result = await pregnancyRepository.getPregnancyIndex();
-  //   currentlyPregnantData.value = result!.data!.currentlyPregnant!.first;
-  //   weeklyData.assignAll(currentlyPregnantData.value.weeklyData!);
-
-  //   DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-
-  //   for (var entry in weeklyData) {
-  //     if (entry.tanggalAwalMinggu != null) {
-  //       DateTime parsedDate = dateFormat.parse(entry.tanggalAwalMinggu!);
-  //       tanggalAwalMinggu.add(parsedDate);
-  //     }
-  //     if (entry.tanggalAkhirMinggu != null) {
-  //       DateTime parsedDate = dateFormat.parse(entry.tanggalAkhirMinggu!);
-  //       tanggalAkhirMinggu.add(parsedDate);
-  //     }
-  //   }
-
-  //   update();
-  //   getSelectedWeek(DateTime.now());
-  // }
 
   Future<void> fetchPregnancyData() async {
     var result = await _pregnancyHistoryService.getCurrentPregnancyData("id");

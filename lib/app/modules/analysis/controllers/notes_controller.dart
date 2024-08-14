@@ -100,25 +100,6 @@ class NotesController extends GetxController {
     return specificNotesData;
   }
 
-  // Future<void> fetchNotes() async {
-  //   try {
-  //     DailyLogTags? result = await logRepository.getLogsByTags("notes");
-
-  //     if (result != null && result.data != null) {
-  //       data = result.data!;
-
-  //       notes.value = data.logs;
-  //     } else {
-  //       print("Error: Unable to fetch others");
-  //     }
-  //     specifiedDataByDate();
-
-  //     update();
-  //   } catch (error) {
-  //     print("Error: $error");
-  //   }
-  // }
-
   Future<void> fetchNotes() async {
     try {
       DailyLogTagsData? result = await _logService.getLogsByTags("notes");

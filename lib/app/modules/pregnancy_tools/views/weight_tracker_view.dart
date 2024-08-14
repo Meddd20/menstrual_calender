@@ -893,9 +893,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                             ),
                                                                           );
                                                                         }).then((value) {
-                                                                      Navigator.of(context).popUntil((route) {
-                                                                        return route.settings.name == '/WeightGainView';
-                                                                      });
+                                                                      Get.off(WeightGainTrackerView());
                                                                       controller.resetValue();
                                                                     });
                                                                   else {

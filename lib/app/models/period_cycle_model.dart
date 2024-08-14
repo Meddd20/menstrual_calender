@@ -1,23 +1,3 @@
-class PeriodCycle {
-  PeriodCycle({
-    required this.status,
-    required this.message,
-    required this.data,
-  });
-
-  final String? status;
-  final String? message;
-  final PeriodCycleIndex? data;
-
-  factory PeriodCycle.fromJson(Map<String, dynamic> json) {
-    return PeriodCycle(
-      status: json["status"],
-      message: json["message"],
-      data: json["data"] == null ? null : PeriodCycleIndex.fromJson(json["data"]),
-    );
-  }
-}
-
 class PeriodCycleIndex {
   PeriodCycleIndex(
       {required this.initialYear,

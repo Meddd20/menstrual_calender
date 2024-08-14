@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/baby_weight_heigth_tracker_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/food_list_controller.dart';
-import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/food_list_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/vaccine_list_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/vitamin_list_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/weight_tracker_controller.dart';

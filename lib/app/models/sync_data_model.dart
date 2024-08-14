@@ -5,30 +5,6 @@ import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
 
-class SyncData {
-  String? status;
-  String? message;
-  DataCategoryByTable? data;
-
-  SyncData({this.status, this.message, this.data});
-
-  SyncData.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    message = json['message'];
-    data = json['data'] != null ? new DataCategoryByTable.fromJson(json['data']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
-  }
-}
-
 class DataCategoryByTable {
   User? user;
   List<PeriodHistory>? periodHistory;

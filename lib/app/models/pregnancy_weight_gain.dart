@@ -1,17 +1,3 @@
-class PregnancyWeightGain {
-  String? status;
-  String? message;
-  PregnancyWeightGainData? data;
-
-  PregnancyWeightGain({this.status, this.message, this.data});
-
-  PregnancyWeightGain.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    message = json['message'];
-    data = json['data'] != null ? new PregnancyWeightGainData.fromJson(json['data']) : null;
-  }
-}
-
 class PregnancyWeightGainData {
   int? week;
   double? prepregnancyWeight;
