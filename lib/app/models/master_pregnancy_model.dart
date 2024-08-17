@@ -1,22 +1,24 @@
 class MasterPregnancy {
-  int? id;
-  int? mingguKehamilan;
-  int? beratJanin;
-  double? tinggiBadanJanin;
-  String? ukuranBayiId;
-  String? ukuranBayiEn;
-  String? poinUtamaId;
-  String? poinUtamaEn;
-  String? perkembanganBayiId;
-  String? perkembanganBayiEn;
-  String? perubahanTubuhId;
-  String? perubahanTubuhEn;
-  String? gejalaUmumId;
-  String? gejalaUmumEn;
-  String? tipsMingguanId;
-  String? tipsMingguanEn;
-  String? bayiImgPath;
-  String? ukuranBayiImgPath;
+  final int? id;
+  final int? mingguKehamilan;
+  final int? beratJanin;
+  final double? tinggiBadanJanin;
+  final String? ukuranBayiId;
+  final String? ukuranBayiEn;
+  final String? poinUtamaId;
+  final String? poinUtamaEn;
+  final String? perkembanganBayiId;
+  final String? perkembanganBayiEn;
+  final String? perubahanTubuhId;
+  final String? perubahanTubuhEn;
+  final String? gejalaUmumId;
+  final String? gejalaUmumEn;
+  final String? tipsMingguanId;
+  final String? tipsMingguanEn;
+  final String? bayiImgPath;
+  final String? ukuranBayiImgPath;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   MasterPregnancy({
     this.id,
@@ -37,6 +39,8 @@ class MasterPregnancy {
     this.tipsMingguanEn,
     this.bayiImgPath,
     this.ukuranBayiImgPath,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory MasterPregnancy.fromJson(Map<String, dynamic> json) {
@@ -59,6 +63,8 @@ class MasterPregnancy {
       tipsMingguanEn: json['tips_mingguan_en'] as String?,
       bayiImgPath: json['bayi_img_path'] as String?,
       ukuranBayiImgPath: json['ukuran_bayi_img_path'] as String?,
+      createdAt: json['created_at'] == null ? null : DateTime.parse(json['created_at']),
+      updatedAt: json['updated_at'] == null ? null : DateTime.parse(json['updated_at']),
     );
   }
 
@@ -82,28 +88,32 @@ class MasterPregnancy {
       'tips_mingguan_en': tipsMingguanEn,
       'bayi_img_path': bayiImgPath,
       'ukuran_bayi_img_path': ukuranBayiImgPath,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 
   MasterPregnancy copyWith({
-    required int? id,
-    required int? mingguKehamilan,
-    required int? beratJanin,
-    required double? tinggiBadanJanin,
-    required String? ukuranBayiId,
-    required String? ukuranBayiEn,
-    required String? poinUtamaId,
-    required String? poinUtamaEn,
-    required String? perkembanganBayiId,
-    required String? perkembanganBayiEn,
-    required String? perubahanTubuhId,
-    required String? perubahanTubuhEn,
-    required String? gejalaUmumId,
-    required String? gejalaUmumEn,
-    required String? tipsMingguanId,
-    required String? tipsMingguanEn,
-    required String? bayiImgPath,
-    required String? ukuranBayiImgPath,
+    int? id,
+    int? mingguKehamilan,
+    int? beratJanin,
+    double? tinggiBadanJanin,
+    String? ukuranBayiId,
+    String? ukuranBayiEn,
+    String? poinUtamaId,
+    String? poinUtamaEn,
+    String? perkembanganBayiId,
+    String? perkembanganBayiEn,
+    String? perubahanTubuhId,
+    String? perubahanTubuhEn,
+    String? gejalaUmumId,
+    String? gejalaUmumEn,
+    String? tipsMingguanId,
+    String? tipsMingguanEn,
+    String? bayiImgPath,
+    String? ukuranBayiImgPath,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return MasterPregnancy(
       id: id ?? this.id,
@@ -124,6 +134,8 @@ class MasterPregnancy {
       tipsMingguanEn: tipsMingguanEn ?? this.tipsMingguanEn,
       bayiImgPath: bayiImgPath ?? this.bayiImgPath,
       ukuranBayiImgPath: ukuranBayiImgPath ?? this.ukuranBayiImgPath,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

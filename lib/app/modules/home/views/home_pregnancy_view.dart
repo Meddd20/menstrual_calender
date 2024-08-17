@@ -69,7 +69,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                               roundedCap: (_, __) => true,
                               child: ClipOval(
                                 child: Image.asset(
-                                  'assets/image/fetal_development/${controller.weeklyData[(controller.getPregnancyIndex ?? 0)].bayiImgPath}',
+                                  'assets/image/${controller.weeklyData[(controller.getPregnancyIndex ?? 0)].bayiImgPath}',
                                   fit: BoxFit.contain,
                                 ),
                                 clipBehavior: Clip.antiAlias,

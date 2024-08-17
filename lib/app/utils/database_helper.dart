@@ -41,7 +41,6 @@ class DatabaseHelper {
     await db.execute(_createTableTbMasterGender);
     await db.execute(_createTableTbMasterKehamilan);
     await db.execute(_createTableTbMasterNewmoon);
-    await db.execute(_createTableTbMasterNewmoonPhase);
     await db.execute(_createTableTbRiwayatKehamilan);
     await db.execute(_createTableTbRiwayatMens);
     await db.execute(_createTableSyncLog);
@@ -63,10 +62,6 @@ class DatabaseHelper {
 
     initialTbMasterNewmoon.forEach((item) {
       batch.insert('tb_master_newmoon', item);
-    });
-
-    initialTbMasterNewmoonPhase.forEach((item) {
-      batch.insert('tb_master_newmoon_phase', item);
     });
 
     initialTbMasterFood.forEach((item) {
@@ -168,14 +163,6 @@ class DatabaseHelper {
       lunar_month INTEGER,
       new_moon DATE,
       shio TEXT CHECK(shio IN ('Goat','Monkey','Rooster','Dog','Pig','Mouse','Ox','Tiger','Rabbit','Dragon','Snake','Horse'))
-    )
-  ''';
-
-  static const String _createTableTbMasterNewmoonPhase = '''
-    CREATE TABLE tb_master_newmoon_phase (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      year INTEGER,
-      new_moon DATE
     )
   ''';
 
@@ -614,8 +601,50 @@ List<Map<String, dynamic>> initialTbMasterGender = [
 ];
 
 List<Map<String, dynamic>> initialTbMasterKehamilan = [
-  {"id": "1", "minggu_kehamilan": "1", "berat_janin": null, "tinggi_badan_janin": null, "ukuran_bayi_id": null, "ukuran_bayi_en": null, "poin_utama_id": null, "poin_utama_en": null, "perkembangan_bayi_id": null, "perkembangan_bayi_en": null, "perubahan_tubuh_id": null, "perubahan_tubuh_en": null, "gejala_umum_id": null, "gejala_umum_en": null, "tips_mingguan_id": null, "tips_mingguan_en": null, "bayi_img_path": "week_1.jpg", "ukuran_bayi_img_path": null},
-  {"id": "2", "minggu_kehamilan": "2", "berat_janin": null, "tinggi_badan_janin": null, "ukuran_bayi_id": null, "ukuran_bayi_en": null, "poin_utama_id": null, "poin_utama_en": null, "perkembangan_bayi_id": null, "perkembangan_bayi_en": null, "perubahan_tubuh_id": null, "perubahan_tubuh_en": null, "gejala_umum_id": null, "gejala_umum_en": null, "tips_mingguan_id": null, "tips_mingguan_en": null, "bayi_img_path": "week_2.jpg", "ukuran_bayi_img_path": null},
+  {
+    "id": "1",
+    "minggu_kehamilan": "1",
+    "berat_janin": null,
+    "tinggi_badan_janin": null,
+    "ukuran_bayi_id": null,
+    "ukuran_bayi_en": null,
+    "poin_utama_id": null,
+    "poin_utama_en": null,
+    "perkembangan_bayi_id": null,
+    "perkembangan_bayi_en": null,
+    "perubahan_tubuh_id": null,
+    "perubahan_tubuh_en": null,
+    "gejala_umum_id": null,
+    "gejala_umum_en": null,
+    "tips_mingguan_id": null,
+    "tips_mingguan_en": null,
+    "bayi_img_path": "fetal_development/week_1.jpg",
+    "ukuran_bayi_img_path": null,
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
+  {
+    "id": "2",
+    "minggu_kehamilan": "2",
+    "berat_janin": null,
+    "tinggi_badan_janin": null,
+    "ukuran_bayi_id": null,
+    "ukuran_bayi_en": null,
+    "poin_utama_id": null,
+    "poin_utama_en": null,
+    "perkembangan_bayi_id": null,
+    "perkembangan_bayi_en": null,
+    "perubahan_tubuh_id": null,
+    "perubahan_tubuh_en": null,
+    "gejala_umum_id": null,
+    "gejala_umum_en": null,
+    "tips_mingguan_id": null,
+    "tips_mingguan_en": null,
+    "bayi_img_path": "fetal_development/week_2.jpg",
+    "ukuran_bayi_img_path": null,
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
+  },
   {
     "id": "3",
     "minggu_kehamilan": "3",
@@ -721,8 +750,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li>Drinking alcohol</li>
 </ul>
 <p>Additionally, your provider might suggest limiting caffeine intake. Consult your healthcare provider for the best ways to maintain health and safety during pregnancy.</p>""",
-    "bayi_img_path": "week_3.jpg",
-    "ukuran_bayi_img_path": null
+    "bayi_img_path": "fetal_development/week_3.jpg",
+    "ukuran_bayi_img_path": null,
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "4",
@@ -813,8 +844,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Research the type of healthcare provider</strong> you'd prefer to collaborate with during your pregnancy.</li>
   <li><strong>Commence capturing memories,</strong> whether through a photo album, pregnancy journal, or diary. Consider including images of your growing bump week by week, significant dates such as when you discovered your pregnancy, a letter to your future child, or even predictions about their eye and hair color.</li>
 </ul>""",
-    "bayi_img_path": "week_4.jpg",
-    "ukuran_bayi_img_path": "week_4_poppy_seed.svg"
+    "bayi_img_path": "fetal_development/week_4.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_4_poppy_seed.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "5",
@@ -913,8 +946,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Journaling:</strong> Start a journal to express your emotions and document your pregnancy journey.</li>
   <li><strong>Baby bump photos:</strong> Commence a monthly baby bump photo shoot to capture the progression of your pregnancy. Whether for personal keepsake or sharing on social media, these photos will be cherished memories.</li>
 </ul>""",
-    "bayi_img_path": "week_5.jpg",
-    "ukuran_bayi_img_path": "week_5_sesame_seed.svg"
+    "bayi_img_path": "fetal_development/week_5.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_5_sesame_seed.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "6",
@@ -999,8 +1034,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
         <li>If you’re contemplating taking a pregnancy test at six weeks, be aware that it’s still possible to receive a false negative result, as the pregnancy hormone hCG levels may not be detectable. Confirming your pregnancy with a healthcare provider is the best course of action.</li>
         <li>Consider starting a weekly photo journal or pregnancy scrapbook to document your journey with notes, photos, and keepsakes. It’s a wonderful way to celebrate your pregnancy and create a cherished memento for your baby in the years to come.</li>
     </ul>""",
-    "bayi_img_path": "week_6.jpg",
-    "ukuran_bayi_img_path": "week_6_lentil.svg"
+    "bayi_img_path": "fetal_development/week_6.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_6_lentil.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "7",
@@ -1091,8 +1128,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Manage Symptoms:</strong> Learn effective ways to cope with physical and emotional symptoms. Remember that many symptoms tend to ease up in the second trimester, and your healthcare provider can provide guidance on managing them.</li>
   <li><strong>Start Monthly Bump Photos:</strong> Begin taking monthly photos to document your pregnancy journey. Use the same setup each month and create a keepsake that you'll cherish in the future. You can also share these photos on social media or with loved ones.</li>
 </ul>""",
-    "bayi_img_path": "week_7.jpg",
-    "ukuran_bayi_img_path": "week_7_blueberry.svg"
+    "bayi_img_path": "fetal_development/week_7.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_7_blueberry.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "8",
@@ -1183,8 +1222,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Explore baby names:</strong> Start brainstorming baby names and keep a list of your favorites. Consider adding them to a pregnancy memory book for future reference.</li>
   <li><strong>Connect with other parents:</strong> Join social media groups or community support groups to connect with other expecting parents. Sharing experiences and advice can be valuable during this time.</li>
 </ul>""",
-    "bayi_img_path": "week_8.jpg",
-    "ukuran_bayi_img_path": "week_8_kidney_bean.svg"
+    "bayi_img_path": "fetal_development/week_8.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_8_kidney_bean.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "9",
@@ -1279,8 +1320,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Keep an eye on your <strong>caffeine intake</strong> during pregnancy, limiting it to about 200 mg per day.</li>
   <li>Plan for potential additional expenses related to pregnancy and baby gear. Consider creating a budget and seeking support from family, friends, and other parents.</li>
 </ul>""",
-    "bayi_img_path": "week_9.jpg",
-    "ukuran_bayi_img_path": "week_9_grape.svg"
+    "bayi_img_path": "fetal_development/week_9.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_9_grape.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "10",
@@ -1389,8 +1432,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     </ul>
   </li>
 </ul>""",
-    "bayi_img_path": "week_10.jpg",
-    "ukuran_bayi_img_path": "week_10_kumquat.svg"
+    "bayi_img_path": "fetal_development/week_10.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_10_kumquat.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "11",
@@ -1471,8 +1516,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>While you’re pregnant, you need about 80 to 85 milligrams of vitamin C each day to help your baby’s bones and teeth develop. Add oranges and other citrus fruits, strawberries, tomatoes, and broccoli to your diet to boost your vitamin C intake. If you’re unsure if you’re getting enough vitamin C, check with your healthcare provider.</li>
   <li>Think about where you will give birth. You don’t have to decide right now, but start researching your options and visiting places. Ask your healthcare provider for advice and talk to other moms in your area to get their opinions too.</li>
 </ul>""",
-    "bayi_img_path": "week_11.jpg",
-    "ukuran_bayi_img_path": "week_11_fig.svg"
+    "bayi_img_path": "fetal_development/week_11.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_11_fig.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "12",
@@ -1565,8 +1612,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Plan how you’ll <strong>announce your pregnancy to colleagues</strong>, especially if you’re a working parent. Early second-trimester announcements are common.</li>
   <li>If you have an <strong>ultrasound around this time</strong> revealing a twin pregnancy or more, congratulations! Fraternal and identical twins bring double the joy.</li>
 </ul>""",
-    "bayi_img_path": "week_12.jpg",
-    "ukuran_bayi_img_path": "week_12_lime.svg"
+    "bayi_img_path": "fetal_development/week_12.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_12_lime.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "13",
@@ -1655,8 +1704,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Abdominal exercises:</strong> Be cautious with exercises that involve lying flat on your back, as this position can restrict blood flow due to the weight of your uterus. Consult your healthcare provider for alternatives.</li>
   <li><strong>Pelvic floor exercises:</strong> Strengthening pelvic floor muscles can improve bladder control and provide pelvic organ support. Kegel exercises, which involve squeezing and relaxing pelvic muscles, are beneficial.</li>
 </ul>""",
-    "bayi_img_path": "week_13.jpg",
-    "ukuran_bayi_img_path": "week_13_pea_pod.svg"
+    "bayi_img_path": "fetal_development/week_13.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_13_pea_pod.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "14",
@@ -1741,8 +1792,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Childbirth classes:</strong> Have you considered childbirth classes? Now is an excellent time to explore available options in your area to find the right class for you.</li>
   <li><strong>Twin pregnancy:</strong> If you're expecting twins, you might be curious about how your pregnancy experience differs, including symptoms and weight gain. Seek personalized advice and guidance from your healthcare provider.</li>
 </ul>""",
-    "bayi_img_path": "week_14.jpg",
-    "ukuran_bayi_img_path": "week_14_lemon.svg"
+    "bayi_img_path": "fetal_development/week_14.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_14_lemon.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "15",
@@ -1831,8 +1884,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Sex during pregnancy:</strong> Communicate openly with your partner about your sexual desires and concerns. It's generally safe to have sex during pregnancy, but consult your healthcare provider if you have any questions or concerns.</li>
   <li><strong>Mid-pregnancy ultrasound:</strong> If you're eager to know your baby's gender, the mid-pregnancy ultrasound, usually done between 16 and 20 weeks of pregnancy, is approaching. Take advantage of fun quizzes to guess your baby's gender while you wait.</li>
 </ul>""",
-    "bayi_img_path": "week_15.jpg",
-    "ukuran_bayi_img_path": "week_15_apple.svg"
+    "bayi_img_path": "fetal_development/week_15.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_15_apple.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "16",
@@ -1917,8 +1972,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>The second trimester is an ideal time for a short babymoon. Whether it's a weekend getaway or a longer trip, consult with your healthcare provider before traveling, especially if flying. Take our quiz to discover your ideal babymoon destination!</li>
   <li>If this is your second pregnancy, consider how things might be different this time around. Learn more about the variances in symptoms during a second pregnancy.</li>
 </ul>""",
-    "bayi_img_path": "week_16.jpg",
-    "ukuran_bayi_img_path": "week_16_avocado.svg"
+    "bayi_img_path": "fetal_development/week_16.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_16_avocado.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "17",
@@ -2003,8 +2060,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>If you have spare time, begin researching healthcare providers for your baby. Seek recommendations from other parents or consult a list of providers covered by your insurance. Discuss with your healthcare provider and schedule face-to-face meetings with potential pediatricians.</li>
   <li>Pregnancy can strain relationships, so ensure open communication with your partner. Involve them in pregnancy-related events and seek support if needed. Counseling and support groups are available if you require outside assistance.</li>
 </ul>""",
-    "bayi_img_path": "week_17.jpg",
-    "ukuran_bayi_img_path": "week_17_turnip.svg"
+    "bayi_img_path": "fetal_development/week_17.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_17_turnip.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "18",
@@ -2079,8 +2138,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Handle unsolicited pregnancy advice gracefully:</strong> It's common to receive advice from various sources, but you don't have to follow all suggestions. Respond politely to unwanted advice, acknowledging the input without feeling obligated to implement it. Remember that most people mean well and are simply excited for you.</li>
   <li><strong>Trust your healthcare provider:</strong> In rare cases, mid-pregnancy ultrasounds may reveal placenta-related issues such as placenta accreta or placenta previa. Trust your healthcare provider to guide you and provide appropriate care to address any potential risks associated with these conditions.</li>
 </ul>""",
-    "bayi_img_path": "week_18.jpg",
-    "ukuran_bayi_img_path": "week_18_bellpepper.svg"
+    "bayi_img_path": "fetal_development/week_18.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_18_bellpepper.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "19",
@@ -2161,8 +2222,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Prepare for baby gear:</strong> Take time to research and shop for baby gear, considering recommendations from other parents and product reviews. Remember, you may not need everything advertised as essential during the newborn phase.</li>
   <li><strong>Gender reveal:</strong> If you're interested in finding out your baby's gender, you'll likely have the opportunity during the mid-pregnancy ultrasound exam. Explore the science behind gender determination or try lighthearted gender prediction methods.</li>
 </ul>""",
-    "bayi_img_path": "week_19.jpg",
-    "ukuran_bayi_img_path": "week_19_tomato.svg"
+    "bayi_img_path": "fetal_development/week_19.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_19_tomato.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "20",
@@ -2245,8 +2308,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Start planning the color scheme or theme for your baby's nursery, considering neutral paint colors or themed decorations. Seek inspiration online and involve your partner in the decision-making process.</li>
   <li>Research baby products with reviews from other parents to make informed decisions about cribs, strollers, and car seats.</li>
 </ul>""",
-    "bayi_img_path": "week_20.jpg",
-    "ukuran_bayi_img_path": "week_20_banana.svg"
+    "bayi_img_path": "fetal_development/week_20.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_20_banana.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "21",
@@ -2323,8 +2388,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Use the next few months to prepare for your baby's arrival, as energy levels may decrease in the third trimester. Set up the nursery, compile a list of necessary baby items, and create a baby budget if you haven't already.</li>
   <li>Remaining active throughout pregnancy is beneficial. Consult your healthcare provider for safe exercise recommendations. Walking, prenatal yoga, and swimming are typically suitable options.</li>
 </ul>""",
-    "bayi_img_path": "week_21.jpg",
-    "ukuran_bayi_img_path": "week_21_carrot.svg"
+    "bayi_img_path": "fetal_development/week_21.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_21_carrot.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "22",
@@ -2405,8 +2472,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Discuss with your partner how to inform other children about the new baby and involve them in the pregnancy journey.</li>
   <li>Start planning the baby's nursery and make necessary adjustments to accommodate their needs. If the baby will share a room with a toddler, read up on creating a shared space for both.</li>
 </ul>""",
-    "bayi_img_path": "week_22.jpg",
-    "ukuran_bayi_img_path": "week_22_spaghetti_squash.svg"
+    "bayi_img_path": "fetal_development/week_22.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_22_spaghetti_squash.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "23",
@@ -2495,8 +2564,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Prepare older children:</strong> If you have older children, involve them in the pregnancy journey and address any questions or concerns they may have about the new sibling. For younger children, explain pregnancy changes as they arise and seek guidance from your healthcare provider on how to handle their inquiries.</li>
   <li><strong>Explore baby names:</strong> Use a baby name generator to explore various naming themes and find the perfect name for your baby.</li>
 </ul>""",
-    "bayi_img_path": "week_23.jpg",
-    "ukuran_bayi_img_path": "week_23_mango.svg"
+    "bayi_img_path": "fetal_development/week_23.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_23_mango.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "24",
@@ -2629,8 +2700,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <strong>Strange experiences:</strong> You may notice unusual things during pregnancy, such as vivid dreams or difficulty focusing. Read up on these experiences to understand why they may be happening.
   </li>
 </ul>""",
-    "bayi_img_path": "week_24.jpg",
-    "ukuran_bayi_img_path": "week_24_corn.svg"
+    "bayi_img_path": "fetal_development/week_24.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_24_corn.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "25",
@@ -2709,8 +2782,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li>Consider enrolling in a parenting class to learn about newborn care, including safe sleeping practices to reduce the risk of Sudden Infant Death Syndrome (SIDS).</li>
     <li>If you're planning your baby's nursery, make a list of essentials and consider adding them to your baby shower registry. Take a nursery style quiz for decorating inspiration.</li>
 </ul>""",
-    "bayi_img_path": "week_25.jpg",
-    "ukuran_bayi_img_path": "week_25_rutabaga.svg"
+    "bayi_img_path": "fetal_development/week_25.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_25_rutabaga.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "26",
@@ -2793,8 +2868,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>With your growing bump, you might wonder if sex is safe at 26 weeks pregnant. Generally, if your pregnancy is normal and both of you are comfortable, sex is safe. Consult your healthcare provider for personalized advice, and try different positions if your bump gets in the way.</li>
   <li>Consider taking a trip now, as the second trimester is usually a good time for travel. Check with your healthcare provider before planning any trips.</li>
 </ul>""",
-    "bayi_img_path": "week_26.jpg",
-    "ukuran_bayi_img_path": "week_26_scallion.svg"
+    "bayi_img_path": "fetal_development/week_26.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_26_scallion.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "27",
@@ -2887,8 +2964,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>If your nesting instincts are kicking in, you might want to organize things at home, make a list of repairs, or start baby proofing. Don't overdo it. Make time to rest and ask for help with tasks that might be unsafe for you, like climbing a ladder.</li>
   <li>Consider going on a babymoon before your baby arrives while you still feel comfortable traveling. Check with your healthcare provider before planning a flight.</li>
 </ul>""",
-    "bayi_img_path": "week_27.jpg",
-    "ukuran_bayi_img_path": "week_27_coliflor.svg"
+    "bayi_img_path": "fetal_development/week_27.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_27_coliflor.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "28",
@@ -2973,8 +3052,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>As your belly grows, inquire with your healthcare provider about comfortable sleeping positions and consider purchasing a pregnancy pillow for added support.</li>
   <li>If you feel the urge to nest, indulge it by organizing your home or preparing your baby’s nursery. Just remember to take breaks and conserve your energy for the days ahead.</li>
 </ul>""",
-    "bayi_img_path": "week_28.jpg",
-    "ukuran_bayi_img_path": "week_28_egg_plant.svg"
+    "bayi_img_path": "fetal_development/week_28.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_28_egg_plant.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "29",
@@ -3051,8 +3132,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Birth partner:</strong> Decide who you want to be with you during labor and delivery, whether it's your partner, a friend, or a family member. Discuss your preferences and feelings about labor and delivery with your chosen birth partner well in advance.</li>
   <li><strong>Child care:</strong> Plan ahead for child care arrangements after your baby is born, especially if you and your partner will be returning to work. Research different options, such as child care centers or in-home care, and make arrangements in advance to alleviate stress after your baby arrives.</li>
 </ul>""",
-    "bayi_img_path": "week_29.jpg",
-    "ukuran_bayi_img_path": "week_29_butternut_squash.svg"
+    "bayi_img_path": "fetal_development/week_29.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_29_butternut_squash.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "30",
@@ -3127,8 +3210,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Baby Shower:</strong> Finalize your baby registry details so your baby shower host can send out invitations in time. Ensure you've included all the essentials on your registry checklist.</li>
     <li><strong>Doula:</strong> Consider hiring a doula for labor support. A doula can offer comfort and assistance before, during, and after labor and childbirth.</li>
 </ul>""",
-    "bayi_img_path": "week_30.jpg",
-    "ukuran_bayi_img_path": "week_30_cabage.svg"
+    "bayi_img_path": "fetal_development/week_30.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_30_cabage.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "31",
@@ -3199,8 +3284,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Feeding Plans:</strong> Start thinking about whether you plan to breastfeed or formula feed. Discuss your options with your healthcare provider, attend lactation classes if necessary, and gather information about equipment you may need.</li>
   <li><strong>Natural Childbirth:</strong> Consider preparing for a natural delivery if it aligns with your preferences and your healthcare provider approves. Research alternative pain relief options and discuss your birth plan with your partner or doula.</li>
 </ul>""",
-    "bayi_img_path": "week_31.jpg",
-    "ukuran_bayi_img_path": "week_31_coconut.svg"
+    "bayi_img_path": "fetal_development/week_31.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_31_coconut.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "32",
@@ -3287,8 +3374,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li>Around 32 weeks, your healthcare provider may advise you to monitor fetal movements. One method is doing "kick counts" to track your baby's movements. Choose a time when your baby is usually active, such as after a meal.</li>
   <li>Although you still have some time until full term, the final weeks of pregnancy can be overwhelming. Simplify your preparations by exploring a list of recommended baby products. Diapers will be one of your essential items, so refer to a diaper size and weight chart guide for assistance.</li>
 </ul>""",
-    "bayi_img_path": "week_32.jpg",
-    "ukuran_bayi_img_path": "week_32_jicama.svg"
+    "bayi_img_path": "fetal_development/week_32.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_32_jicama.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "33",
@@ -3421,8 +3510,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
         <strong>Prepare your hospital bag:</strong> Make sure you pack all essentials for yourself, your birth partner, and your baby for your hospital stay. Download a hospital bag checklist to ensure you have everything you need.
     </li>
 </ul>""",
-    "bayi_img_path": "week_33.jpg",
-    "ukuran_bayi_img_path": "week_33_pineapple.svg"
+    "bayi_img_path": "fetal_development/week_33.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_33_pineapple.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "34",
@@ -3595,8 +3686,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Stocking Up Pantry:</strong> Consider stocking your pantry and preparing meals to freeze for postpartum convenience. Online grocery deliveries or assistance from friends and family can also lighten your load after the baby's arrival.</li>
     <li><strong>Comfort Measures During Labor:</strong> Plan comfort measures for labor, such as medical pain relief or non-medical techniques like massage or breathing exercises. Discuss options with your healthcare provider to determine what's best for you.</li>
 </ul>""",
-    "bayi_img_path": "week_34.jpg",
-    "ukuran_bayi_img_path": "week_34_cantalope.svg"
+    "bayi_img_path": "fetal_development/week_34.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_34_cantalope.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "35",
@@ -3689,8 +3782,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Self-Care:</strong> Take some time to focus on yourself and indulge in activities that bring you joy and relaxation. Whether it's spending time alone, going on a date with your partner, or meeting friends, prioritize self-care.</li>
   <li><strong>Choosing a Pediatrician:</strong> Begin the process of finding a pediatrician for your baby if you haven't already. Seek recommendations from your healthcare provider and other parents in your community.</li>
 </ul>""",
-    "bayi_img_path": "week_35.jpg",
-    "ukuran_bayi_img_path": "week_35_honeydew.svg"
+    "bayi_img_path": "fetal_development/week_35.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_35_honeydew.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "36",
@@ -3775,8 +3870,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Track baby movements:</strong> Track your baby's movements daily. Count at least 10 movements in a 2-hour period, often after a meal. If you don't feel 10 movements, try again later or check with your healthcare provider for reassurance.</li>
     <li><strong>Baby's position:</strong> Your healthcare provider will check your baby's position. If your baby seems to be in the breech position, your provider may suggest an ultrasound to confirm. There are still a few weeks for your baby to change positions, but your provider will monitor this closely.</li>
 </ul>""",
-    "bayi_img_path": "week_36.jpg",
-    "ukuran_bayi_img_path": "week_36_roman_lettuce.svg"
+    "bayi_img_path": "fetal_development/week_36.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_36_roman_lettuce.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "37",
@@ -3871,8 +3968,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
   <li><strong>Group B strep test.</strong> Your provider may offer a test to check if you carry GBS bacteria. If positive, your provider will advise on treatment to protect your baby during birth.</li>
   <li><strong>Full-term pregnancy.</strong> Your pregnancy is considered full term at 39 weeks. Your baby still has some developing to do, but you’re only weeks away from meeting your newborn!</li>
 </ul>""",
-    "bayi_img_path": "week_37.jpg",
-    "ukuran_bayi_img_path": "week_37_swiss_chard.svg"
+    "bayi_img_path": "fetal_development/week_37.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_37_swiss_chard.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "38",
@@ -3959,8 +4058,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Researching Breastfeeding:</strong> Consider researching lactation consultants who can help with breastfeeding challenges. Knowing where to find support can make a big difference.</li>
     <li><strong>Preparing for Postpartum:</strong> Take some time to educate yourself about the postpartum period, including recovery, diastasis recti, postpartum hair loss, and other common experiences.</li>
 </ul>""",
-    "bayi_img_path": "week_38.jpg",
-    "ukuran_bayi_img_path": "week_38_leek.svg"
+    "bayi_img_path": "fetal_development/week_38.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_38_leek.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "39",
@@ -4039,8 +4140,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li>Take time to finalize your birth plan, considering your preferences for labor and comfort techniques. However, be prepared to adapt your plan as needed during labor.</li>
     <li>Use this time to complete any last-minute shopping for newborn essentials and familiarize yourself with what to expect after giving birth, including skin-to-skin contact, the Apgar score, postpartum care, and recovery.</li>
 </ul>""",
-    "bayi_img_path": "week_39.jpg",
-    "ukuran_bayi_img_path": "week_39_watermelon.svg"
+    "bayi_img_path": "fetal_development/week_39.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_39_watermelon.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": "40",
@@ -4143,8 +4246,10 @@ List<Map<String, dynamic>> initialTbMasterKehamilan = [
     <li><strong>Support During Labor:</strong> Enlist your birth partner to support you during labor. They can keep you company, time contractions, and offer comfort.</li>
     <li><strong>Prepare for Postpartum:</strong> Take some time to read about what to expect after giving birth, including postpartum recovery, diastasis recti, postpartum hair loss, and signs of postpartum depression.</li>
 </ul>""",
-    "bayi_img_path": "week_40.jpg",
-    "ukuran_bayi_img_path": "week_40_pumpkin.svg"
+    "bayi_img_path": "fetal_development/week_40.jpg",
+    "ukuran_bayi_img_path": "baby_comparison/week_40_pumpkin.svg",
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   }
 ];
 
@@ -4794,159 +4899,6 @@ List<Map<String, dynamic>> initialTbMasterNewmoon = [
   {'id': 643, 'lunar_month': 12, 'new_moon': '2030-12-25', 'shio': 'Dog'}
 ];
 
-List<Map<String, dynamic>> initialTbMasterNewmoonPhase = [
-  {'id': 1, 'year': 2019, 'new_moon': '2019-01-06'},
-  {'id': 2, 'year': 2019, 'new_moon': '2019-02-05'},
-  {'id': 3, 'year': 2019, 'new_moon': '2019-03-06'},
-  {'id': 4, 'year': 2019, 'new_moon': '2019-04-05'},
-  {'id': 5, 'year': 2019, 'new_moon': '2019-05-05'},
-  {'id': 6, 'year': 2019, 'new_moon': '2019-06-03'},
-  {'id': 7, 'year': 2019, 'new_moon': '2019-07-03'},
-  {'id': 8, 'year': 2019, 'new_moon': '2019-08-01'},
-  {'id': 9, 'year': 2019, 'new_moon': '2019-08-30'},
-  {'id': 10, 'year': 2019, 'new_moon': '2019-09-29'},
-  {'id': 11, 'year': 2019, 'new_moon': '2019-10-28'},
-  {'id': 12, 'year': 2019, 'new_moon': '2019-11-26'},
-  {'id': 13, 'year': 2019, 'new_moon': '2019-12-26'},
-  {'id': 14, 'year': 2020, 'new_moon': '2020-01-25'},
-  {'id': 15, 'year': 2020, 'new_moon': '2020-02-23'},
-  {'id': 16, 'year': 2020, 'new_moon': '2020-03-24'},
-  {'id': 17, 'year': 2020, 'new_moon': '2020-04-23'},
-  {'id': 18, 'year': 2020, 'new_moon': '2020-05-23'},
-  {'id': 19, 'year': 2020, 'new_moon': '2020-06-21'},
-  {'id': 20, 'year': 2020, 'new_moon': '2020-07-21'},
-  {'id': 21, 'year': 2020, 'new_moon': '2020-08-19'},
-  {'id': 22, 'year': 2020, 'new_moon': '2020-09-17'},
-  {'id': 23, 'year': 2020, 'new_moon': '2020-10-17'},
-  {'id': 24, 'year': 2020, 'new_moon': '2020-11-15'},
-  {'id': 25, 'year': 2020, 'new_moon': '2020-12-14'},
-  {'id': 26, 'year': 2021, 'new_moon': '2021-01-13'},
-  {'id': 27, 'year': 2021, 'new_moon': '2021-02-12'},
-  {'id': 28, 'year': 2021, 'new_moon': '2021-03-13'},
-  {'id': 29, 'year': 2021, 'new_moon': '2021-04-12'},
-  {'id': 30, 'year': 2021, 'new_moon': '2021-05-12'},
-  {'id': 31, 'year': 2021, 'new_moon': '2021-06-10'},
-  {'id': 32, 'year': 2021, 'new_moon': '2021-07-10'},
-  {'id': 33, 'year': 2021, 'new_moon': '2021-08-08'},
-  {'id': 34, 'year': 2021, 'new_moon': '2021-09-07'},
-  {'id': 35, 'year': 2021, 'new_moon': '2021-10-06'},
-  {'id': 36, 'year': 2021, 'new_moon': '2021-11-05'},
-  {'id': 37, 'year': 2021, 'new_moon': '2021-12-04'},
-  {'id': 38, 'year': 2022, 'new_moon': '2022-01-03'},
-  {'id': 39, 'year': 2022, 'new_moon': '2022-02-01'},
-  {'id': 40, 'year': 2022, 'new_moon': '2022-03-03'},
-  {'id': 41, 'year': 2022, 'new_moon': '2022-04-01'},
-  {'id': 42, 'year': 2022, 'new_moon': '2022-05-01'},
-  {'id': 43, 'year': 2022, 'new_moon': '2022-05-30'},
-  {'id': 44, 'year': 2022, 'new_moon': '2022-06-29'},
-  {'id': 45, 'year': 2022, 'new_moon': '2022-07-29'},
-  {'id': 46, 'year': 2022, 'new_moon': '2022-08-27'},
-  {'id': 47, 'year': 2022, 'new_moon': '2022-09-26'},
-  {'id': 48, 'year': 2022, 'new_moon': '2022-10-25'},
-  {'id': 49, 'year': 2022, 'new_moon': '2022-11-24'},
-  {'id': 50, 'year': 2022, 'new_moon': '2022-12-23'},
-  {'id': 51, 'year': 2023, 'new_moon': '2023-01-22'},
-  {'id': 52, 'year': 2023, 'new_moon': '2023-02-20'},
-  {'id': 53, 'year': 2023, 'new_moon': '2023-03-22'},
-  {'id': 54, 'year': 2023, 'new_moon': '2023-04-20'},
-  {'id': 55, 'year': 2023, 'new_moon': '2023-05-19'},
-  {'id': 56, 'year': 2023, 'new_moon': '2023-06-18'},
-  {'id': 57, 'year': 2023, 'new_moon': '2023-07-18'},
-  {'id': 58, 'year': 2023, 'new_moon': '2023-08-16'},
-  {'id': 59, 'year': 2023, 'new_moon': '2023-09-15'},
-  {'id': 60, 'year': 2023, 'new_moon': '2023-10-15'},
-  {'id': 61, 'year': 2023, 'new_moon': '2023-11-13'},
-  {'id': 62, 'year': 2023, 'new_moon': '2023-12-13'},
-  {'id': 63, 'year': 2024, 'new_moon': '2024-01-11'},
-  {'id': 64, 'year': 2024, 'new_moon': '2024-02-10'},
-  {'id': 65, 'year': 2024, 'new_moon': '2024-03-10'},
-  {'id': 66, 'year': 2024, 'new_moon': '2024-04-09'},
-  {'id': 67, 'year': 2024, 'new_moon': '2024-05-08'},
-  {'id': 68, 'year': 2024, 'new_moon': '2024-06-06'},
-  {'id': 69, 'year': 2024, 'new_moon': '2024-07-06'},
-  {'id': 70, 'year': 2024, 'new_moon': '2024-08-04'},
-  {'id': 71, 'year': 2024, 'new_moon': '2024-09-03'},
-  {'id': 72, 'year': 2024, 'new_moon': '2024-10-03'},
-  {'id': 73, 'year': 2024, 'new_moon': '2024-11-01'},
-  {'id': 74, 'year': 2024, 'new_moon': '2024-12-01'},
-  {'id': 75, 'year': 2024, 'new_moon': '2024-12-31'},
-  {'id': 76, 'year': 2025, 'new_moon': '2024-12-31'},
-  {'id': 77, 'year': 2025, 'new_moon': '2025-01-29'},
-  {'id': 78, 'year': 2025, 'new_moon': '2025-02-28'},
-  {'id': 79, 'year': 2025, 'new_moon': '2025-03-29'},
-  {'id': 80, 'year': 2025, 'new_moon': '2025-04-28'},
-  {'id': 81, 'year': 2025, 'new_moon': '2025-05-27'},
-  {'id': 82, 'year': 2025, 'new_moon': '2025-06-25'},
-  {'id': 83, 'year': 2025, 'new_moon': '2025-07-25'},
-  {'id': 84, 'year': 2025, 'new_moon': '2025-08-23'},
-  {'id': 85, 'year': 2025, 'new_moon': '2025-09-22'},
-  {'id': 86, 'year': 2025, 'new_moon': '2025-10-21'},
-  {'id': 87, 'year': 2025, 'new_moon': '2025-11-20'},
-  {'id': 88, 'year': 2025, 'new_moon': '2025-12-20'},
-  {'id': 89, 'year': 2026, 'new_moon': '2026-01-19'},
-  {'id': 90, 'year': 2026, 'new_moon': '2026-02-17'},
-  {'id': 91, 'year': 2026, 'new_moon': '2026-03-19'},
-  {'id': 92, 'year': 2026, 'new_moon': '2026-04-17'},
-  {'id': 93, 'year': 2026, 'new_moon': '2026-05-17'},
-  {'id': 94, 'year': 2026, 'new_moon': '2026-06-15'},
-  {'id': 95, 'year': 2026, 'new_moon': '2026-07-14'},
-  {'id': 96, 'year': 2026, 'new_moon': '2026-08-13'},
-  {'id': 97, 'year': 2026, 'new_moon': '2026-09-11'},
-  {'id': 98, 'year': 2026, 'new_moon': '2026-10-10'},
-  {'id': 99, 'year': 2026, 'new_moon': '2026-11-09'},
-  {'id': 100, 'year': 2026, 'new_moon': '2026-12-09'},
-  {'id': 101, 'year': 2027, 'new_moon': '2027-01-08'},
-  {'id': 102, 'year': 2027, 'new_moon': '2027-02-06'},
-  {'id': 103, 'year': 2027, 'new_moon': '2027-03-08'},
-  {'id': 104, 'year': 2027, 'new_moon': '2027-04-07'},
-  {'id': 105, 'year': 2027, 'new_moon': '2027-05-06'},
-  {'id': 106, 'year': 2027, 'new_moon': '2027-06-05'},
-  {'id': 107, 'year': 2027, 'new_moon': '2027-07-04'},
-  {'id': 108, 'year': 2027, 'new_moon': '2027-08-02'},
-  {'id': 109, 'year': 2027, 'new_moon': '2027-09-01'},
-  {'id': 110, 'year': 2027, 'new_moon': '2027-09-30'},
-  {'id': 111, 'year': 2027, 'new_moon': '2027-10-29'},
-  {'id': 112, 'year': 2027, 'new_moon': '2027-11-28'},
-  {'id': 113, 'year': 2027, 'new_moon': '2027-12-28'},
-  {'id': 114, 'year': 2028, 'new_moon': '2028-01-26'},
-  {'id': 115, 'year': 2028, 'new_moon': '2028-02-25'},
-  {'id': 116, 'year': 2028, 'new_moon': '2028-03-26'},
-  {'id': 117, 'year': 2028, 'new_moon': '2028-04-25'},
-  {'id': 118, 'year': 2028, 'new_moon': '2028-05-24'},
-  {'id': 119, 'year': 2028, 'new_moon': '2028-06-23'},
-  {'id': 120, 'year': 2028, 'new_moon': '2028-07-22'},
-  {'id': 121, 'year': 2028, 'new_moon': '2028-08-20'},
-  {'id': 122, 'year': 2028, 'new_moon': '2028-09-19'},
-  {'id': 123, 'year': 2028, 'new_moon': '2028-10-18'},
-  {'id': 124, 'year': 2028, 'new_moon': '2028-11-16'},
-  {'id': 125, 'year': 2028, 'new_moon': '2028-12-16'},
-  {'id': 126, 'year': 2029, 'new_moon': '2029-01-15'},
-  {'id': 127, 'year': 2029, 'new_moon': '2029-02-13'},
-  {'id': 128, 'year': 2029, 'new_moon': '2029-03-15'},
-  {'id': 129, 'year': 2029, 'new_moon': '2029-04-14'},
-  {'id': 130, 'year': 2029, 'new_moon': '2029-05-13'},
-  {'id': 131, 'year': 2029, 'new_moon': '2029-06-12'},
-  {'id': 132, 'year': 2029, 'new_moon': '2029-07-11'},
-  {'id': 133, 'year': 2029, 'new_moon': '2029-08-10'},
-  {'id': 134, 'year': 2029, 'new_moon': '2029-09-08'},
-  {'id': 135, 'year': 2029, 'new_moon': '2029-10-08'},
-  {'id': 136, 'year': 2029, 'new_moon': '2029-11-06'},
-  {'id': 137, 'year': 2029, 'new_moon': '2029-12-05'},
-  {'id': 138, 'year': 2030, 'new_moon': '2030-01-04'},
-  {'id': 139, 'year': 2030, 'new_moon': '2030-02-02'},
-  {'id': 140, 'year': 2030, 'new_moon': '2030-03-04'},
-  {'id': 141, 'year': 2030, 'new_moon': '2030-04-03'},
-  {'id': 142, 'year': 2030, 'new_moon': '2030-05-02'},
-  {'id': 143, 'year': 2030, 'new_moon': '2030-06-01'},
-  {'id': 144, 'year': 2030, 'new_moon': '2030-07-01'},
-  {'id': 145, 'year': 2030, 'new_moon': '2030-07-30'},
-  {'id': 146, 'year': 2030, 'new_moon': '2030-08-29'},
-  {'id': 147, 'year': 2030, 'new_moon': '2030-09-27'},
-  {'id': 148, 'year': 2030, 'new_moon': '2030-10-27'},
-  {'id': 149, 'year': 2030, 'new_moon': '2030-11-25'},
-  {'id': 150, 'year': 2030, 'new_moon': '2030-12-25'}
-];
-
 List<Map<String, dynamic>> initialTbMasterFood = [
   {
     "id": 1,
@@ -5205,8 +5157,8 @@ List<Map<String, dynamic>> initialTbMasterVaccines = [
         "Mendapatkan vaksin flu selama musim flu dapat mencegah ibu dari komplikasi medis dan kehamilan yang serius, serta melindungi bayi baru lahir selama awal masa bayi. Vaksin ini aman diberikan kapan saja selama kehamilan. Wanita hamil dan pasca melahirkan lebih rentan terhadap penyakit parah dan komplikasi dari flu karena perubahan pada sistem kekebalan tubuh, jantung, dan paru-paru mereka. Wanita yang sedang hamil atau akan hamil selama musim flu sebaiknya mendapatkan vaksin influenza inaktif (IIV) atau vaksin influenza rekombinan (RIV).",
     "description_en":
         "Getting the flu vaccine during flu season can help prevent serious health and pregnancy-related complications for mothers and protect their newborns in early infancy. This vaccine is safe to take at any stage of pregnancy. Pregnant and postpartum women are at higher risk for severe illness and complications from the flu because of changes in their immune systems, hearts, and lungs. Women who are pregnant or will be pregnant during flu season should get either the inactivated influenza vaccine (IIV) or the recombinant influenza vaccine (RIV).",
-    "created_at": "2024-08-09 15:03:11",
-    "updated_at": "2024-08-09 15:03:14"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 2,
@@ -5216,8 +5168,8 @@ List<Map<String, dynamic>> initialTbMasterVaccines = [
         "Vaksin Tdap, yang melindungi dari tetanus, difteri, dan batuk rejan, disarankan diberikan pada trimester ketiga kehamilan. Vaksin ini membantu melindungi ibu dan bayi baru lahir dari batuk rejan. Vaksin ini juga disarankan bagi siapa saja yang akan berdekatan dengan bayi di bawah satu tahun, seperti kakek-nenek atau pengasuh di daycare. Penyedia layanan kesehatan harus memberikan dosis Tdap selama setiap kehamilan, terlepas dari riwayat vaksinasi sebelumnya. Waktu terbaik untuk mendapatkan vaksin Tdap adalah antara minggu ke-27 dan ke-36 kehamilan, karena waktu ini meningkatkan respons antibodi ibu dan menyalurkan antibodi ini ke bayi. Namun, vaksin ini dapat diberikan kapan saja selama kehamilan. Jika tidak diberikan selama kehamilan, harus diberikan segera setelah melahirkan.",
     "description_en":
         "The Tdap vaccine, which protects against tetanus, diphtheria, and whooping cough, is recommended during the third trimester of pregnancy. It helps protect both the mother and the newborn from whooping cough. This vaccine is also recommended for anyone who will be in close contact with infants under one year old, such as grandparents or daycare workers. Healthcare providers should give a Tdap dose during each pregnancy, regardless of previous vaccinations. The best time to get the Tdap vaccine is between 27 and 36 weeks of pregnancy, as this timing boosts the mother’s antibody response and passes these antibodies to the baby. However, it can be given at any time during pregnancy. If not given during pregnancy, it should be administered right after birth.",
-    "created_at": "2024-08-09 15:05:12",
-    "updated_at": "2024-08-09 15:05:14"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 3,
@@ -5225,8 +5177,8 @@ List<Map<String, dynamic>> initialTbMasterVaccines = [
     "vaccines_en": "COVID-19",
     "description_id": "Wanita hamil yang terinfeksi SARS-CoV-2 memiliki risiko lebih tinggi terkena penyakit COVID-19 yang parah dibandingkan dengan wanita yang tidak hamil. Wanita hamil yang sehat hingga empat kali lebih mungkin membutuhkan perawatan intensif dan dukungan pernapasan daripada wanita yang tidak hamil. Bayi yang lahir dari ibu dengan COVID-19 hingga tujuh kali lebih mungkin lahir prematur dan hingga lima kali lebih mungkin membutuhkan perawatan intensif untuk bayi baru lahir.",
     "description_en": "Pregnant women who get infected with SARS-CoV-2 are at a higher risk of severe COVID-19 compared to non-pregnant women. Healthy pregnant women are up to four times more likely to need intensive care and breathing support than non-pregnant women. Babies born to mothers with COVID-19 are up to seven times more likely to be born prematurely and up to five times more likely to need newborn intensive care.",
-    "created_at": "2024-08-09 15:07:24",
-    "updated_at": "2024-08-09 15:07:26"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 4,
@@ -5234,8 +5186,8 @@ List<Map<String, dynamic>> initialTbMasterVaccines = [
     "vaccines_en": "Additional Vaccines",
     "description_id": "Vaksin Hepatitis A, Hepatitis B, dan pneumokokus mungkin disarankan jika Anda memiliki faktor risiko tertentu atau sedang melanjutkan rangkaian vaksinasi yang dimulai sebelum kehamilan. Konsultasikan dengan dokter Anda untuk menentukan apakah vaksin ini bermanfaat bagi Anda.",
     "description_en": "Hepatitis A, Hepatitis B, and pneumococcal vaccines may be recommended if you have certain risk factors or are in the middle of a vaccination series that started before pregnancy. Talk to your doctor to see if these vaccines are beneficial for you.",
-    "created_at": "2024-08-09 15:08:19",
-    "updated_at": "2024-08-09 15:08:21"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
 ];
 
@@ -5248,8 +5200,8 @@ List<Map<String, dynamic>> initialTbMasterVitamins = [
         "Asam folat sangat penting untuk mencegah cacat tabung saraf pada bayi, seperti spina bifida dan anensefali. Cacat ini berkembang pada awal kehamilan, sering kali sebelum seorang wanita tahu bahwa dia hamil. Itulah mengapa disarankan untuk mulai mengonsumsi asam folat sebelum konsepsi dan melanjutkan hingga trimester pertama. Meskipun asam folat secara alami ditemukan dalam makanan seperti sayuran berdaun hijau, kacang-kacangan, dan kacang polong, suplemen disarankan untuk memastikan asupan yang cukup, terutama selama tahap awal kehamilan.",
     "description_en":
         "Folic acid is vital for preventing neural tube defects in babies, such as spina bifida and anencephaly. These defects develop early in pregnancy, often before a woman knows she’s pregnant. That’s why it’s recommended to start taking folic acid before conception and continue through the first trimester. While folic acid is naturally found in foods like green leafy vegetables, nuts, and beans, supplementation is recommended to ensure adequate intake, especially during the early stages of pregnancy.",
-    "created_at": "2024-08-09 15:13:55",
-    "updated_at": "2024-08-09 15:13:57"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 2,
@@ -5257,8 +5209,8 @@ List<Map<String, dynamic>> initialTbMasterVitamins = [
     "vitamins_en": "Calcium",
     "description_id": "Kalsium sangat penting untuk perkembangan tulang dan gigi bayi. Meskipun beberapa vitamin prenatal mengandung kalsium, suplemen tambahan mungkin diperlukan untuk memenuhi kebutuhan yang meningkat selama kehamilan. Asupan kalsium yang cukup juga mendukung kesehatan tulang ibu selama kehamilan.",
     "description_en": "Calcium is crucial for the development of the baby’s bones and teeth. While some prenatal vitamins contain calcium, additional supplementation may be needed to meet the increased demands of pregnancy. Adequate calcium intake also supports the mother’s bone health during pregnancy.",
-    "created_at": "2024-08-09 15:14:24",
-    "updated_at": "2024-08-09 15:14:26"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 3,
@@ -5266,8 +5218,8 @@ List<Map<String, dynamic>> initialTbMasterVitamins = [
     "vitamins_en": "Iodine",
     "description_id": "Yodium penting untuk menjaga fungsi tiroid yang sehat selama kehamilan. Kekurangan yodium dapat menyebabkan keguguran, lahir mati, atau masalah perkembangan pada bayi, seperti pertumbuhan yang terhambat, disabilitas mental parah, atau ketulian. Penting untuk memastikan asupan yodium yang cukup, baik melalui diet atau suplemen.",
     "description_en": "Iodine is important for maintaining healthy thyroid function during pregnancy. Not getting enough iodine can lead to miscarriage, stillbirth, or developmental issues in the baby, like stunted growth, severe mental disability, or deafness. It’s important to ensure enough iodine intake either through diet or supplementation.",
-    "created_at": "2024-08-09 15:14:28",
-    "updated_at": "2024-08-09 15:14:30"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 4,
@@ -5275,8 +5227,8 @@ List<Map<String, dynamic>> initialTbMasterVitamins = [
     "vitamins_en": "Iron",
     "description_id": "Zat besi diperlukan untuk memproduksi sel darah merah, yang membawa oksigen ke bayi untuk perkembangan yang tepat. Banyak wanita hamil tidak mendapatkan cukup zat besi dari diet mereka untuk memenuhi kebutuhan yang meningkat selama kehamilan, yang mengarah pada anemia defisiensi besi. Suplementasi zat besi selama kehamilan membantu mencegah anemia dan mengurangi risiko kelahiran prematur dan berat lahir rendah.",
     "description_en": "Iron is necessary for producing red blood cells, which carry oxygen to the baby for proper development. Many pregnant women don’t get enough iron from their diet to meet the increased demands of pregnancy, leading to iron deficiency anemia. Iron supplementation during pregnancy helps prevent anemia and reduces the risk of preterm delivery and low birth weight.",
-    "created_at": "2024-08-09 15:16:16",
-    "updated_at": "2024-08-09 15:16:19"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 5,
@@ -5284,8 +5236,8 @@ List<Map<String, dynamic>> initialTbMasterVitamins = [
     "vitamins_en": "Omega-3 Fatty Acids",
     "description_id": "Asam lemak omega-3, termasuk DHA dan EPA, penting untuk perkembangan otak, saraf, dan mata bayi. Meskipun beberapa vitamin prenatal mungkin tidak mengandung asam lemak omega-3, mereka dapat ditemukan dalam makanan seperti ikan berlemak dan kacang-kacangan. Suplementasi mungkin diperlukan jika asupan makanan tidak mencukupi.",
     "description_en": "Omega-3 fatty acids, including DHA and EPA, are essential for the development of the baby’s brain, nerves, and eyes. While some prenatal vitamins may not include omega-3 fatty acids, they can be found in foods like fatty fish and nuts. Supplementation may be necessary if dietary intake is not enough.",
-    "created_at": "2024-08-09 15:16:21",
-    "updated_at": "2024-08-09 15:16:23"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 6,
@@ -5293,8 +5245,8 @@ List<Map<String, dynamic>> initialTbMasterVitamins = [
     "vitamins_en": "Vitamin D",
     "description_id": "Vitamin D penting untuk membangun tulang dan gigi bayi serta menjaga kadar kalsium dan fosfor dalam tubuh. Asupan vitamin D yang cukup selama kehamilan membantu mencegah masalah tulang pada ibu dan bayi. Kekurangan vitamin D telah dikaitkan dengan peningkatan risiko komplikasi kehamilan seperti preeklamsia dan diabetes gestasional.",
     "description_en": "Vitamin D is important for building the baby’s bones and teeth and maintaining calcium and phosphorus levels in the body. Adequate vitamin D intake during pregnancy helps prevent bone-related issues in both the mother and the baby. Deficiency in vitamin D has been linked to a higher risk of pregnancy complications like preeclampsia and gestational diabetes.",
-    "created_at": "2024-08-09 15:16:25",
-    "updated_at": "2024-08-09 15:16:27"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 7,
@@ -5302,8 +5254,8 @@ List<Map<String, dynamic>> initialTbMasterVitamins = [
     "vitamins_en": "Choline",
     "description_id": "Kolin sangat penting untuk perkembangan otak bayi yang sehat. Meskipun tubuh dapat memproduksi sebagian kolin, sebagian besar berasal dari sumber makanan seperti daging dan telur. Wanita hamil harus memastikan asupan kolin yang cukup melalui diet atau suplemen untuk mendukung perkembangan otak bayi.",
     "description_en": "Choline is crucial for healthy brain development in the baby. While the body can produce some choline, most of it comes from food sources like meat and eggs. Pregnant women should ensure enough choline intake through diet or supplements to support the baby’s brain development.",
-    "created_at": "2024-08-09 15:16:29",
-    "updated_at": "2024-08-09 15:16:31"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
   {
     "id": 8,
@@ -5311,7 +5263,7 @@ List<Map<String, dynamic>> initialTbMasterVitamins = [
     "vitamins_en": "Protein",
     "description_id": "Asupan protein perlu ditingkatkan selama kehamilan untuk mendukung kebutuhan ibu dan bayi yang sedang tumbuh. Asupan protein yang cukup membantu pembentukan jaringan baru, termasuk plasenta, yang menyediakan oksigen dan nutrisi untuk bayi. Makanan yang kaya protein harus dimasukkan dalam diet ibu untuk memenuhi kebutuhan protein yang meningkat selama kehamilan.",
     "description_en": "Protein intake needs to increase during pregnancy to support the growing needs of both the mother and the baby. Adequate protein intake helps form new tissue, including the placenta, which provides oxygen and nutrients to the baby. Protein-rich foods should be included in the mother’s diet to meet the increased protein requirements during pregnancy.",
-    "created_at": "2024-08-09 15:16:33",
-    "updated_at": "2024-08-09 15:16:36"
+    "created_at": "2024-08-09 16:44:44",
+    "updated_at": "2024-08-09 16:44:44"
   },
 ];

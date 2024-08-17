@@ -41,7 +41,7 @@ class MasterVitaminsRepository {
     }
   }
 
-  Future<void> addVitamins(MasterVitamin vitamin) async {
+  Future<void> addVitamin(MasterVitamin vitamin) async {
     final db = await _databaseHelper.database;
     try {
       await db.insert("tb_master_vitamins", vitamin.toJson());

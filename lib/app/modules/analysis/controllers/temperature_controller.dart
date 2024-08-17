@@ -129,10 +129,11 @@ class TemperatureController extends GetxController {
 
   Future<void> fetchTemperatures() async {
     try {
-      DailyLogTagsData? result = await _logService.getLogsByTags("temperature");
+      data = await _logService.getLogsByTags("temperature");
+      print(data.tags);
 
-      if (result != null) {
-        Map<String, dynamic> logsMap = result.logs;
+      if (data != null) {
+        Map<String, dynamic> logsMap = data.logs;
 
         logsMap.forEach((date, value) {
           if (value is String) {

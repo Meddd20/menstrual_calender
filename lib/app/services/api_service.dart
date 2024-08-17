@@ -314,4 +314,28 @@ class ApiService {
     var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.deleteComment}/$id');
     return await http.delete(url, headers: loginHeaders);
   }
+
+  Future<http.Response> getMasterDataFood() async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getMasterDataFood);
+
+    return await http.get(url, headers: generalHeaders);
+  }
+
+  Future<http.Response> getMasterDataPregnancy() async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getMasterDataPregnancy);
+
+    return await http.get(url, headers: generalHeaders);
+  }
+
+  Future<http.Response> getMasterDataVaccines() async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getMasterDataVaccines);
+
+    return await http.get(url, headers: generalHeaders);
+  }
+
+  Future<http.Response> getMasterDataVitamins() async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getMasterDataVitamins);
+
+    return await http.get(url, headers: generalHeaders);
+  }
 }

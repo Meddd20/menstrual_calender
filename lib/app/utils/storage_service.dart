@@ -53,23 +53,6 @@ class StorageService {
     return box.read("isBackup");
   }
 
-  // void storePrimaryDataMechanism() {
-  //   box.write("storeDataMechanism", "primary");
-  // }
-
-  // void storeManyDataMechanism() {
-  //   box.write("storeDataMechanism", "many");
-  // }
-
-  // String? getStoreDataMechanism() {
-  //   String? storageMechanism = box.read("storeDataMechanism");
-  //   if (storageMechanism == null) {
-  //     setLanguage("primary");
-  //     return "primary";
-  //   }
-  //   return storageMechanism;
-  // }
-
   void storeIsPregnant(String isPregnant) {
     box.write("isPregnant", isPregnant);
   }
@@ -106,5 +89,77 @@ class StorageService {
 
   void setHasSyncData(bool isSync) {
     box.write("hasSyncData", isSync);
+  }
+
+  void setMajorVersionMasterFoodData(int majorVersion) {
+    box.write("majorVersionFood", majorVersion);
+  }
+
+  void setMinorVersionMasterFoodData(int minorVersion) {
+    box.write("minorVersionFood", minorVersion);
+  }
+
+  int getMajorVersionMasterFoodData() {
+    int majorVersionFood = box.read("majorVersionFood") ?? 1;
+    return majorVersionFood;
+  }
+
+  int getMinorVersionMasterFoodData() {
+    int minorVersionFood = box.read("minorVersionFood") ?? 0;
+    return minorVersionFood;
+  }
+
+  void setMajorVersionMasterKehamilanData(int majorVersion) {
+    box.write("majorVersionKehamilan", majorVersion);
+  }
+
+  void setMinorVersionMasterKehamilanData(int minorVersion) {
+    box.write("minorVersionKehamilan", minorVersion);
+  }
+
+  int getMajorVersionMasterKehamilanData() {
+    int majorVersionKehamilan = box.read("majorVersionKehamilan") ?? 1;
+    return majorVersionKehamilan;
+  }
+
+  int getMinorVersionMasterKehamilanData() {
+    int minorVersionKehamilan = box.read("minorVersionKehamilan") ?? 0;
+    return minorVersionKehamilan;
+  }
+
+  void setMajorVersionMasterVaccineData(int majorVersion) {
+    box.write("majorVersionVaccine", majorVersion);
+  }
+
+  void setMinorVersionMasterVaccineData(int minorVersion) {
+    box.write("minorVersionVaccine", minorVersion);
+  }
+
+  int getMajorVersionMasterVaccineData() {
+    int majorVersionVaccine = box.read("majorVersionVaccine") ?? 1;
+    return majorVersionVaccine;
+  }
+
+  int getMinorVersionMasterVaccineData() {
+    int minorVersionVaccine = box.read("minorVersionVaccine") ?? 0;
+    return minorVersionVaccine;
+  }
+
+  void setMajorVersionMasterVitaminData(int majorVersion) {
+    box.write("majorVersionVitamin", majorVersion);
+  }
+
+  void setMinorVersionMasterVitaminData(int minorVersion) {
+    box.write("minorVersionVitamin", minorVersion);
+  }
+
+  int getMajorVersionMasterVitaminData() {
+    int majorVersionVitamin = box.read("majorVersionVitamin") ?? 1;
+    return majorVersionVitamin;
+  }
+
+  int getMinorVersionMasterVitaminData() {
+    int minorVersionVitamin = box.read("minorVersionVitamin") ?? 0;
+    return minorVersionVitamin;
   }
 }

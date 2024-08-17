@@ -15,7 +15,7 @@ class MasterVitaminsService {
   }
 
   Future<void> addVitamin(MasterVitamin vitamin) async {
-    await _masterVitaminsRepository.addVitamins(vitamin);
+    await _masterVitaminsRepository.addVitamin(vitamin);
   }
 
   Future<void> editVitamin(MasterVitamin vitamin) async {

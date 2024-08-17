@@ -116,7 +116,14 @@ class CurrentlyPregnant {
   int? usiaKehamilan;
   List<WeeklyData>? weeklyData;
 
-  CurrentlyPregnant({this.pregnancyId, this.status, this.hariPertamaHaidTerakhir, this.tanggalPerkiraanLahir, this.usiaKehamilan, this.weeklyData});
+  CurrentlyPregnant({
+    this.pregnancyId,
+    this.status,
+    this.hariPertamaHaidTerakhir,
+    this.tanggalPerkiraanLahir,
+    this.usiaKehamilan,
+    this.weeklyData,
+  });
 
   CurrentlyPregnant.fromJson(Map<String, dynamic> json) {
     pregnancyId = json['pregnancy_id'];

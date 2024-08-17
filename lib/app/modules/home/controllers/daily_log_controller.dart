@@ -388,8 +388,8 @@ class DailyLogController extends GetxController {
       "moods": getUpdatedMoods(),
       "others": getUpdatedOthers(),
       "physicalActivity": getUpdatedPhysicalActivity(),
-      "temperature": getTemperature(),
-      "weight": getWeight(),
+      "temperature": getTemperature().toString(),
+      "weight": getWeight().toString(),
       "notes": getNotes(),
     };
 
@@ -430,7 +430,7 @@ class DailyLogController extends GetxController {
       setSelectedMoods([]);
       setSelectedOthers([]);
       setSelectedPhysicalActivity([]);
-      temperature.value = 0.0;
+      temperature.value = 0;
       weights.value = 0.0;
       notes.value = "";
       isChanged.value = false;

@@ -70,8 +70,7 @@ class Event {
     nextLutealEnd = json['nextLutealEnd'];
     daysUntilNextLuteal = json['daysUntilNextLuteal'];
     chineseGenderPrediction = json['chineseGenderPrediction'] != null ? new ChineseGenderPrediction.fromJson(json['chineseGenderPrediction']) : null;
-    shettlesGenderPrediction:
-    json['shettlesGenderPrediction'] != null ? ShettlesGenderPrediction.fromJson(json['shettlesGenderPrediction']) : null;
+    shettlesGenderPrediction = json['shettlesGenderPrediction'] != null ? ShettlesGenderPrediction.fromJson(json['shettlesGenderPrediction']) : null;
   }
 }
 

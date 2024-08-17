@@ -40,6 +40,7 @@ class MasterKehamilanService {
         tipsMingguanEn: pregnancyData.tipsMingguanEn,
         bayiImgPath: pregnancyData.bayiImgPath,
         ukuranBayiImgPath: pregnancyData.ukuranBayiImgPath,
+        updatedAt: pregnancyData.updatedAt,
       );
       await _masterKehamilanRepository.editPregnancyData(updatedPregnancy);
     } else {

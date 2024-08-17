@@ -3,6 +3,11 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_model.dart';
+import 'package:periodnpregnancycalender/app/models/master_data_version_model.dart';
+import 'package:periodnpregnancycalender/app/models/master_food_model.dart';
+import 'package:periodnpregnancycalender/app/models/master_pregnancy_model.dart';
+import 'package:periodnpregnancycalender/app/models/master_vaccines_model.dart';
+import 'package:periodnpregnancycalender/app/models/master_vitamins_model.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
@@ -11,10 +16,15 @@ import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_data_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/master_data_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_food_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_vaccines_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_vitamins_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
@@ -22,6 +32,10 @@ import 'package:periodnpregnancycalender/app/repositories/local/sync_data_reposi
 import 'package:periodnpregnancycalender/app/repositories/local/weight_history_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
+import 'package:periodnpregnancycalender/app/services/master_food_service.dart';
+import 'package:periodnpregnancycalender/app/services/master_kehamilan_service.dart';
+import 'package:periodnpregnancycalender/app/services/master_vaccines_service.dart';
+import 'package:periodnpregnancycalender/app/services/master_vitamins_service.dart';
 import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/weight_history_service.dart';
@@ -49,10 +63,32 @@ class SyncDataService {
   late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
   late final PeriodRepository periodRepository = PeriodRepository(apiService);
   late final LogRepository logRepository = LogRepository(apiService);
+  late final MasterDataRepository masterDataRepository = MasterDataRepository(apiService);
+
+  late final MasterFoodRepository masterFoodRepository = MasterFoodRepository(databaseHelper);
+  late final MasterDataKehamilanRepository masterDataKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
+  late final MasterVaccinesRepository masterVaccinesRepository = MasterVaccinesRepository(databaseHelper);
+  late final MasterVitaminsRepository masterVitaminsRepository = MasterVitaminsRepository(databaseHelper);
+
+  late final MasterFoodService masterFoodService = MasterFoodService(masterFoodRepository);
+  late final MasterKehamilanService masterKehamilanService = MasterKehamilanService(masterDataKehamilanRepository);
+  late final MasterVaccinesService masterVaccinesService = MasterVaccinesService(masterVaccinesRepository);
+  late final MasterVitaminsService masterVitaminsService = MasterVitaminsService(masterVitaminsRepository);
 
   final Logger _logger = Logger();
 
-  SyncDataService(this._weightHistoryRepository, this._periodHistoryRepository, this._pregnancyHistoryRepository, this._localProfileRepository, this._syncDataRepository, this._localLogRepository, this.periodHistoryService, this.weightHistoryService, this.pregnancyHistoryService, this.logService);
+  SyncDataService(
+    this._weightHistoryRepository,
+    this._periodHistoryRepository,
+    this._pregnancyHistoryRepository,
+    this._localProfileRepository,
+    this._syncDataRepository,
+    this._localLogRepository,
+    this.periodHistoryService,
+    this.weightHistoryService,
+    this.pregnancyHistoryService,
+    this.logService,
+  );
 
   Future<void> syncData() async {
     try {
@@ -69,12 +105,14 @@ class SyncDataService {
       List<PeriodHistory>? periodHistoryFetchFromAPI = dataFetchFromAPI?.periodHistory;
       List<PregnancyHistory>? pregnancyHistoryFetchFromAPI = dataFetchFromAPI?.pregnancyHistory;
       List<WeightHistory>? weightHistoryFetchFromAPI = dataFetchFromAPI?.weightGainHistory;
+      List<MasterDataVersion>? masterDataVersion = dataFetchFromAPI?.masterDataVersion;
 
       await _syncUserData(profile, profileFetchFromAPI, userId);
       await _syncDailyLogData(dailyLog, dailyLogFetchFromAPI, userId);
       await _syncPeriodHistoryData(periodHistory, periodHistoryFetchFromAPI, userId);
       await _syncPregnancyHistoryData(pregnancyHistory, pregnancyHistoryFetchFromAPI, userId);
       await _syncWeightHistoryData(weightHistory, weightHistoryFetchFromAPI, userId);
+      await _syncMasterDataVersion(masterDataVersion);
     } catch (e) {
       _logger.e("Error during sync data: $e");
       throw Exception('Data tidak lengkap');
@@ -394,15 +432,145 @@ class SyncDataService {
     }
   }
 
+  Future<void> _syncMasterDataVersion(List<MasterDataVersion>? masterDataVersion) async {
+    if (masterDataVersion != null) {
+      MasterDataVersion? masterDataFoodVersion = masterDataVersion.firstWhereOrNull((masterData) => masterData.masterTable == "master_food");
+      MasterDataVersion? masterDataKehamilanVersion = masterDataVersion.firstWhereOrNull((masterData) => masterData.masterTable == "master_kehamilan");
+      MasterDataVersion? masterDataVaccineVersion = masterDataVersion.firstWhereOrNull((masterData) => masterData.masterTable == "master_vaccines");
+      MasterDataVersion? masterDataVitaminVersion = masterDataVersion.firstWhereOrNull((masterData) => masterData.masterTable == "master_vitamins");
+
+      int majorVersionFood = storageService.getMajorVersionMasterFoodData();
+      int minorVersionFood = storageService.getMinorVersionMasterFoodData();
+      int majorVersionKehamilan = storageService.getMajorVersionMasterKehamilanData();
+      int minorVersionKehamilan = storageService.getMinorVersionMasterKehamilanData();
+      int majorVersionVaccine = storageService.getMajorVersionMasterVaccineData();
+      int minorVersionVaccine = storageService.getMinorVersionMasterVaccineData();
+      int majorVersionVitamin = storageService.getMajorVersionMasterVitaminData();
+      int minorVersionVitamin = storageService.getMinorVersionMasterVitaminData();
+
+      if (masterDataFoodVersion != null && (masterDataFoodVersion.majorVersion > majorVersionFood || (masterDataFoodVersion.majorVersion == majorVersionFood && masterDataFoodVersion.minorVersion > minorVersionFood))) {
+        List<MasterFood> masterDataFood = await masterFoodService.getAllFood(null);
+        List<MasterFood> masterDataFoodFromAPI = await masterDataRepository.getMasterDataFood();
+
+        masterDataFoodFromAPI.forEach((dataAPI) {
+          var getFoodDataById = masterDataFood.firstWhereOrNull((localData) => localData.id == dataAPI.id);
+
+          if (getFoodDataById != null) {
+            if (dataAPI.updatedAt!.isAfter(getFoodDataById.updatedAt ?? DateTime.now())) {
+              masterFoodService.editFood(dataAPI);
+            }
+          } else {
+            masterFoodService.addFood(dataAPI);
+          }
+        });
+
+        masterDataFood.forEach((localData) {
+          var getFoodDataById = masterDataFoodFromAPI.firstWhereOrNull((dataAPI) => dataAPI.id == localData.id);
+
+          if (getFoodDataById == null) {
+            masterFoodService.deleteFood(localData.id ?? 0);
+          }
+        });
+
+        storageService.setMajorVersionMasterFoodData(masterDataFoodVersion.majorVersion);
+        storageService.setMinorVersionMasterFoodData(masterDataFoodVersion.minorVersion);
+      }
+
+      if (masterDataKehamilanVersion != null && (masterDataKehamilanVersion.majorVersion > majorVersionKehamilan || (masterDataKehamilanVersion.majorVersion == majorVersionKehamilan && masterDataKehamilanVersion.minorVersion > minorVersionKehamilan))) {
+        List<MasterPregnancy> masterDataKehamilan = await masterKehamilanService.getAllPregnancyData();
+        List<MasterPregnancy> masterDataKehamilanFromAPI = await masterDataRepository.getMasterDataKehamilan();
+
+        masterDataKehamilanFromAPI.forEach((dataAPI) {
+          var getKehamilanDataById = masterDataKehamilan.firstWhereOrNull((localData) => localData.id == dataAPI.id);
+
+          if (getKehamilanDataById != null) {
+            if (dataAPI.updatedAt!.isAfter(getKehamilanDataById.updatedAt ?? DateTime.now())) {
+              masterKehamilanService.editPregnancyData(dataAPI);
+            }
+          } else {
+            masterKehamilanService.addPregnancyData(dataAPI);
+          }
+        });
+
+        masterDataKehamilan.forEach((localData) {
+          var getKehamilanDataById = masterDataKehamilanFromAPI.firstWhereOrNull((dataAPI) => dataAPI.id == localData.id);
+
+          if (getKehamilanDataById == null) {
+            masterKehamilanService.deletePregnancyData(localData.id ?? 0);
+          }
+        });
+
+        storageService.setMajorVersionMasterKehamilanData(masterDataKehamilanVersion.majorVersion);
+        storageService.setMinorVersionMasterKehamilanData(masterDataKehamilanVersion.minorVersion);
+      }
+
+      if (masterDataVaccineVersion != null && (masterDataVaccineVersion.majorVersion > majorVersionVaccine || (masterDataVaccineVersion.majorVersion == majorVersionVaccine && masterDataVaccineVersion.minorVersion > minorVersionVaccine))) {
+        List<MasterVaccine> masterDataVaccine = await masterVaccinesService.getAllVaccines();
+        List<MasterVaccine> masterDataVaccineFromAPI = await masterDataRepository.getMasterDataVaccines();
+
+        masterDataVaccineFromAPI.forEach((dataAPI) {
+          var getVaccineDataById = masterDataVaccine.firstWhereOrNull((localData) => localData.id == dataAPI.id);
+
+          if (getVaccineDataById != null) {
+            if (dataAPI.updatedAt!.isAfter(getVaccineDataById.updatedAt ?? DateTime.now())) {
+              masterVaccinesService.editVaccine(dataAPI);
+            }
+          } else {
+            masterVaccinesService.addVaccine(dataAPI);
+          }
+        });
+
+        masterDataVaccine.forEach((localData) {
+          var getVaccineDataById = masterDataVaccineFromAPI.firstWhereOrNull((dataAPI) => dataAPI.id == localData.id);
+
+          if (getVaccineDataById == null) {
+            masterVaccinesService.deleteVaccine(localData.id ?? 0);
+          }
+        });
+
+        storageService.setMajorVersionMasterVaccineData(masterDataVaccineVersion.majorVersion);
+        storageService.setMinorVersionMasterVaccineData(masterDataVaccineVersion.minorVersion);
+      }
+
+      if (masterDataVitaminVersion != null && (masterDataVitaminVersion.majorVersion > majorVersionVitamin || (masterDataVitaminVersion.majorVersion == majorVersionVitamin && masterDataVitaminVersion.minorVersion > minorVersionVitamin))) {
+        List<MasterVitamin> masterDataVitamin = await masterVitaminsService.getAllVitamin();
+        List<MasterVitamin> masterDataVitaminFromAPI = await masterDataRepository.getMasterDataVitamin();
+
+        masterDataVitaminFromAPI.forEach((dataAPI) {
+          var getVitaminDataById = masterDataVitamin.firstWhereOrNull((localData) => localData.id == dataAPI.id);
+
+          if (getVitaminDataById != null) {
+            if (dataAPI.updatedAt!.isAfter(getVitaminDataById.updatedAt ?? DateTime.now())) {
+              masterVitaminsService.editVitamin(dataAPI);
+            }
+          } else {
+            masterVitaminsService.addVitamin(dataAPI);
+          }
+        });
+
+        masterDataVitamin.forEach((localData) {
+          var getVitaminDataById = masterDataVitaminFromAPI.firstWhereOrNull((dataAPI) => dataAPI.id == localData.id);
+
+          if (getVitaminDataById == null) {
+            masterVitaminsService.deleteVitamin(localData.id ?? 0);
+          }
+        });
+
+        storageService.setMajorVersionMasterVitaminData(masterDataVitaminVersion.majorVersion);
+        storageService.setMinorVersionMasterVitaminData(masterDataVitaminVersion.minorVersion);
+      }
+    }
+  }
+
   Future<void> pendingDataChange() async {
     try {
       int userId = storageService.getAccountLocalId();
       List<SyncLog> getAllSyncLogData = await _syncDataRepository.getAllSyncLogData();
       print(getAllSyncLogData.length);
 
-      // for (var synclog in getAllSyncLogData) {
-      //   _syncDataRepository.deleteSyncLogData(synclog.id ?? 0);
-      // }
+      for (var synclog in getAllSyncLogData) {
+        _syncDataRepository.deleteSyncLogData(synclog.id ?? 0);
+      }
 
       if (getAllSyncLogData.isNotEmpty) {
         for (var syncLog in getAllSyncLogData) {

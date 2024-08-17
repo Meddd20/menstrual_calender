@@ -65,70 +65,73 @@ class WeightView extends GetView<WeightController> {
                 width: Get.width,
                 child: Obx(
                   () {
-                    if (controller.weight.isEmpty) {
-                      return Center(child: CircularProgressIndicator());
-                    } else {
-                      List<double> values = controller.weight.entries.map((entry) => double.parse(entry.value)).toList();
-                      double max = values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
-                      double min = values.isNotEmpty ? values.reduce((a, b) => a < b ? a : b) : 0;
-                      return SfCartesianChart(
-                        tooltipBehavior: TooltipBehavior(
-                          enable: true,
-                          builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
-                            final MapEntry<String, dynamic> entry = controller.weight.entries.elementAt(pointIndex);
+                    List<double> values = controller.weight.entries.map((entry) => double.parse(entry.value)).toList();
+                    double max = values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
+                    double min = values.isNotEmpty ? values.reduce((a, b) => a < b ? a : b) : 0;
+                    return SfCartesianChart(
+                      tooltipBehavior: TooltipBehavior(
+                        enable: true,
+                        builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
+                          final MapEntry<String, dynamic> entry = controller.weight.entries.elementAt(pointIndex);
 
-                            return Container(
-                              padding: EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Date: ${entry.key}',
-                                    style: CustomTextStyle.bold(12, color: Colors.white),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    'Temperature: ${entry.value} °C',
-                                    style: CustomTextStyle.bold(12, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                        primaryXAxis: DateTimeAxis(
-                          interval: 1,
-                          initialVisibleMinimum: DateTime.now().subtract(Duration(days: 5)),
-                          initialVisibleMaximum: DateTime.now(),
-                          edgeLabelPlacement: EdgeLabelPlacement.none,
-                          plotOffset: 34,
-                          dateFormat: DateFormat('MMM dd'),
-                          labelIntersectAction: AxisLabelIntersectAction.multipleRows,
-                        ),
-                        primaryYAxis: NumericAxis(
-                          minimum: min - 1,
-                          maximum: max + 0.5,
-                          edgeLabelPlacement: EdgeLabelPlacement.shift,
-                        ),
-                        series: <CartesianSeries>[
-                          LineSeries<MapEntry<String, dynamic>, DateTime>(
-                            dataSource: controller.weight.entries.toList(),
-                            xValueMapper: (MapEntry<String, dynamic> entry, _) => DateTime.parse(entry.key),
-                            yValueMapper: (MapEntry<String, dynamic> entry, _) => double.parse(entry.value),
-                            markerSettings: MarkerSettings(
-                              isVisible: true,
-                              height: 15,
-                              width: 15,
+                          return Container(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Date: ${entry.key}',
+                                  style: CustomTextStyle.bold(12, color: Colors.white),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Temperature: ${entry.value} °C',
+                                  style: CustomTextStyle.bold(12, color: Colors.white),
+                                ),
+                              ],
                             ),
-                            name: "Temperature",
+                          );
+                        },
+                      ),
+                      primaryXAxis: DateTimeAxis(
+                        // interval: 1,
+                        initialVisibleMinimum: DateTime.now().subtract(Duration(days: 5)),
+                        initialVisibleMaximum: DateTime.now(),
+                        autoScrollingDelta: 5,
+                        autoScrollingMode: AutoScrollingMode.end,
+                        autoScrollingDeltaType: DateTimeIntervalType.days,
+                        interval: 01,
+                        intervalType: DateTimeIntervalType.days,
+                        initialZoomPosition: 0.1,
+                        enableAutoIntervalOnZooming: true,
+                        plotOffset: 34,
+                        dateFormat: DateFormat('MMM dd'),
+                        labelIntersectAction: AxisLabelIntersectAction.hide,
+                      ),
+                      primaryYAxis: NumericAxis(
+                        minimum: min - 1,
+                        maximum: max + 0.5,
+                        edgeLabelPlacement: EdgeLabelPlacement.shift,
+                      ),
+                      series: <CartesianSeries>[
+                        LineSeries<MapEntry<String, dynamic>, DateTime>(
+                          dataSource: controller.weight.entries.toList(),
+                          xValueMapper: (MapEntry<String, dynamic> entry, _) => DateTime.parse(entry.key),
+                          yValueMapper: (MapEntry<String, dynamic> entry, _) => double.parse(entry.value),
+                          markerSettings: MarkerSettings(
+                            isVisible: true,
+                            height: 15,
+                            width: 15,
                           ),
-                        ],
-                        zoomPanBehavior: ZoomPanBehavior(
-                          enablePanning: true,
+                          name: "Weight",
                         ),
-                      );
-                    }
+                      ],
+                      enableAxisAnimation: true,
+                      zoomPanBehavior: ZoomPanBehavior(
+                        enablePanning: true,
+                      ),
+                    );
                   },
                 ),
               ),

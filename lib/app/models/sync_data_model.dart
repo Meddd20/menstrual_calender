@@ -1,4 +1,5 @@
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
+import 'package:periodnpregnancycalender/app/models/master_data_version_model.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
@@ -11,8 +12,16 @@ class DataCategoryByTable {
   List<PregnancyHistory>? pregnancyHistory;
   DailyLogss? logHistory;
   List<WeightHistory>? weightGainHistory;
+  List<MasterDataVersion>? masterDataVersion;
 
-  DataCategoryByTable({this.user, this.periodHistory, this.pregnancyHistory, this.logHistory, this.weightGainHistory});
+  DataCategoryByTable({
+    this.user,
+    this.periodHistory,
+    this.pregnancyHistory,
+    this.logHistory,
+    this.weightGainHistory,
+    this.masterDataVersion,
+  });
 
   factory DataCategoryByTable.fromJson(Map<String, dynamic> json) {
     return DataCategoryByTable(
@@ -21,6 +30,7 @@ class DataCategoryByTable {
       pregnancyHistory: json['pregnancy_history'] != null ? List<PregnancyHistory>.from(json['pregnancy_history'].map((x) => PregnancyHistory.fromJson(x))) : null,
       logHistory: json['log_history'] != null ? DailyLogss.fromJson(json['log_history']) : null,
       weightGainHistory: json['weight_gain_history'] != null ? List<WeightHistory>.from(json['weight_gain_history'].map((x) => WeightHistory.fromJson(x))) : null,
+      masterDataVersion: json['master_data_version'] != null ? List<MasterDataVersion>.from(json['master_data_version'].map((x) => MasterDataVersion.fromJson(x))) : null,
     );
   }
 
@@ -40,6 +50,9 @@ class DataCategoryByTable {
     }
     if (this.weightGainHistory != null) {
       data['weight_gain_history'] = this.weightGainHistory!.map((v) => v.toJson()).toList();
+    }
+    if (this.masterDataVersion != null) {
+      data['master_data_version'] = this.masterDataVersion!.map((v) => v.toJson()).toList();
     }
     return data;
   }

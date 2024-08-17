@@ -31,8 +31,8 @@ class LogService {
         moods: Moods.fromJson(moods ?? {}),
         others: Others.fromJson(others ?? {}),
         physicalActivity: PhysicalActivity.fromJson(physicalActivity ?? {}),
-        temperature: temperature,
-        weight: weight,
+        temperature: temperature.toString(),
+        weight: weight.toString(),
         notes: notes,
       );
 
@@ -249,8 +249,10 @@ class LogService {
     dataHarian.forEach((log) {
       String? logDate = log.date;
       if (logDate != null) {
+        dynamic tagValue = log.toJson()[tags];
+
         if (tags == "symptoms" || tags == "moods" || tags == "others" || tags == "physical_activity") {
-          Map<String, dynamic> tagMap = log.toJson()[tags];
+          Map<String, dynamic>? tagMap = log.toJson()[tags];
           if (tagMap != null && tagMap.isNotEmpty) {
             List<String> trueTags = tagMap.entries.where((entry) => entry.value == true).map((entry) => entry.key).toList();
             if (trueTags.isNotEmpty) {
@@ -258,9 +260,14 @@ class LogService {
             }
           }
         } else {
-          dynamic tagValue = log.toJson()[tags];
           if (tagValue != null && tagValue.toString().isNotEmpty) {
-            logs[logDate] = [tagValue.toString()];
+            if (tags == "temperature" || tags == "weight") {
+              if (tagValue != null && double.parse(tagValue) > 1) {
+                logs[logDate] = [tagValue.toString()];
+              }
+            } else {
+              logs[logDate] = [tagValue.toString()];
+            }
           }
         }
       }
