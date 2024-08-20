@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding4_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Onboarding3View extends GetView<OnboardingController> {
   const Onboarding3View({Key? key}) : super(key: key);
@@ -41,7 +42,7 @@ class Onboarding3View extends GetView<OnboardingController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
-                      "How Long is Your Average Menstrual Cycle?",
+                      AppLocalizations.of(context)!.askMenstrualCycle,
                       style: CustomTextStyle.extraBold(20),
                       textAlign: TextAlign.center,
                     ),
@@ -50,7 +51,7 @@ class Onboarding3View extends GetView<OnboardingController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
-                      "We'll use this to help predict your next period based on your last one.",
+                      AppLocalizations.of(context)!.askMenstrualCycleDesc,
                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                       textAlign: TextAlign.center,
                     ),
@@ -64,7 +65,7 @@ class Onboarding3View extends GetView<OnboardingController> {
                         final day = index + 20;
                         return Center(
                           child: Text(
-                            "$day Days",
+                            AppLocalizations.of(context)!.days("$day"),
                             style: CustomTextStyle.bold(24),
                           ),
                         );
@@ -82,7 +83,7 @@ class Onboarding3View extends GetView<OnboardingController> {
               left: 20,
               right: 20,
               child: CustomButton(
-                text: "Next",
+                text: AppLocalizations.of(context)!.next,
                 onPressed: () {
                   Get.to(() => Onboarding4View());
                 },

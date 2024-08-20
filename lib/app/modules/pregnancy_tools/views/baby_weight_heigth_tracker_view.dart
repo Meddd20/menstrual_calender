@@ -6,6 +6,7 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/baby_weight_heigth_tracker_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerController> {
   const BabyWeightHeigthTrackerView({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
       appBar: AppBar(
         title: Obx(
           () => Text(
-            '${controller.selectedDataType.value == "Weight" ? "Fetal Weight Development" : "Fetal Height Development"} ',
+            '${controller.selectedDataType.value == "Weight" ? AppLocalizations.of(context)!.fetalWeightDevelopment : AppLocalizations.of(context)!.fetalHeightDevelopment} ',
             style: CustomTextStyle.extraBold(20),
           ),
         ),
@@ -60,13 +61,13 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
                 tabs: [
                   Tab(
                     child: Text(
-                      'Weight',
+                      AppLocalizations.of(context)!.fetalWeight,
                       style: CustomTextStyle.bold(15),
                     ),
                   ),
                   Tab(
                     child: Text(
-                      'Height',
+                      AppLocalizations.of(context)!.fetalHeight,
                       style: CustomTextStyle.bold(15),
                     ),
                   ),
@@ -84,8 +85,8 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
                     controller.updateTabBar(index);
                   },
                   children: [
-                    _buildChart(controller.babyWeightData),
-                    _buildChart(controller.babyHeightData),
+                    _buildChart(controller.babyWeightData, context),
+                    _buildChart(controller.babyHeightData, context),
                   ],
                 ),
               ),
@@ -96,7 +97,7 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
     );
   }
 
-  Widget _buildChart(RxList<Map<String, dynamic>> data) {
+  Widget _buildChart(RxList<Map<String, dynamic>> data, context) {
     if (data.isEmpty) {
       return Center(child: CircularProgressIndicator());
     }
@@ -107,7 +108,7 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
             primaryYAxis: NumericAxis(
               labelStyle: CustomTextStyle.regular(10),
               title: AxisTitle(
-                text: "${controller.selectedDataType.value == "Weight" ? "Fetal Weight (gram)" : "Fetal Height (milimeter)"} ",
+                text: "${controller.selectedDataType.value == "Weight" ? AppLocalizations.of(context)!.weightUnit : AppLocalizations.of(context)!.heightUnit}",
                 textStyle: CustomTextStyle.bold(12),
                 alignment: ChartAlignment.center,
               ),
@@ -116,7 +117,7 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
             primaryXAxis: CategoryAxis(
               labelStyle: CustomTextStyle.regular(10),
               title: AxisTitle(
-                text: 'Week Pregnancy',
+                text: AppLocalizations.of(context)!.weekPregnancy,
                 textStyle: CustomTextStyle.bold(12),
               ),
               interval: 1,
@@ -134,7 +135,7 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
               lineType: TrackballLineType.vertical,
               tooltipSettings: InteractiveTooltip(
                 enable: true,
-                format: '${controller.selectedDataType.value == "Weight" ? "#Week point.x \n  point.y gram" : "#Week point.x \n  point.y milimeter"}',
+                format: '${controller.selectedDataType.value == "Weight" ? "#${AppLocalizations.of(context)!.week} point.x \n  point.y gram" : "#${AppLocalizations.of(context)!.week} point.x \n  point.y milimeter"}',
               ),
               activationMode: ActivationMode.singleTap,
               tooltipAlignment: ChartAlignment.center,

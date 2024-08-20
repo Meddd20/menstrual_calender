@@ -149,7 +149,7 @@ class RegisterController extends GetxController {
           }
           await syncAddedPeriod(periods, lamaSiklus);
         } else {
-          String formattedDate = formatDate(onboardingController.lastPeriodDate.value);
+          String formattedDate = formatDate(onboardingController.lastPeriodDate.value!);
           await _pregnancyHistoryService.beginPregnancy(DateTime.parse(formattedDate), null);
           await _syncPregnancyBegin(formattedDate);
         }

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_textformfield.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/controllers/detail_profile_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DetailProfileView extends GetView<DetailprofileController> {
   const DetailProfileView({Key? key}) : super(key: key);
@@ -17,8 +19,17 @@ class DetailProfileView extends GetView<DetailprofileController> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Profile Settings'),
+          title: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              AppLocalizations.of(context)!.profile,
+              style: CustomTextStyle.extraBold(22),
+            ),
+          ),
           centerTitle: true,
+          backgroundColor: AppColors.white,
+          surfaceTintColor: AppColors.white,
+          elevation: 4,
         ),
         body: Padding(
           padding: EdgeInsets.fromLTRB(10.w, 40.h, 10.w, 15.h),
@@ -27,14 +38,23 @@ class DetailProfileView extends GetView<DetailprofileController> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: 100.h,
-                  decoration: BoxDecoration(shape: BoxShape.circle),
-                  child: Image.asset("assets/icon/globe.png"),
+                  height: 85.h,
+                  width: 85.h,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color.fromARGB(255, 203, 203, 203),
+                  ),
+                  child: Center(
+                    child: Text(
+                      controller.getInitials(controller.originalNama),
+                      style: CustomTextStyle.extraBold(26, color: AppColors.black.withOpacity(0.6)),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 25.h),
                 CustomTextFormField(
                   controller: controller.namaC,
-                  labelText: "Nama",
+                  labelText: AppLocalizations.of(context)!.username,
                   keyboardType: TextInputType.name,
                   onChanged: (text) {
                     if (controller.namaC.text != controller.originalNama) {
@@ -46,7 +66,7 @@ class DetailProfileView extends GetView<DetailprofileController> {
                 SizedBox(height: 15.h),
                 CustomTextFormField(
                   controller: controller.emailC,
-                  labelText: "Email",
+                  labelText: AppLocalizations.of(context)!.email,
                   readOnly: true,
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -77,7 +97,7 @@ class DetailProfileView extends GetView<DetailprofileController> {
                                     ),
                                     SizedBox(height: 15),
                                     CustomButton(
-                                      text: "Save",
+                                      text: AppLocalizations.of(context)!.save,
                                       onPressed: () {
                                         controller.setEditedBirthday();
                                         Get.back();
@@ -96,9 +116,10 @@ class DetailProfileView extends GetView<DetailprofileController> {
                     child: AbsorbPointer(
                       child: CustomTextFormField(
                         controller: controller.birthdayC,
-                        labelText: "Date of Birth",
+                        labelText: AppLocalizations.of(context)!.dateOfBirth,
                         readOnly: true,
                         keyboardType: TextInputType.datetime,
+                        suffixIcon: Icon(Icons.calendar_month),
                       ),
                     ),
                   ),
@@ -106,7 +127,7 @@ class DetailProfileView extends GetView<DetailprofileController> {
                 SizedBox(height: 20.h),
                 Obx(
                   () => CustomButton(
-                    text: "Edit Profile",
+                    text: AppLocalizations.of(context)!.editProfile,
                     onPressed: () {
                       if (controller.isChanged.value) {
                         controller.updateProfile(context);

@@ -9,6 +9,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/reminder_controller.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReminderView extends GetView<ReminderController> {
   const ReminderView({Key? key}) : super(key: key);
@@ -66,7 +67,7 @@ class ReminderView extends GetView<ReminderController> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                "Add New Reminder",
+                                                AppLocalizations.of(context)!.addNewReminder,
                                                 style: CustomTextStyle.extraBold(20),
                                               ),
                                               IconButton(
@@ -86,7 +87,7 @@ class ReminderView extends GetView<ReminderController> {
                                           Container(
                                             width: Get.width,
                                             child: Text(
-                                              "Adjust the start and end dates for precise and up-to-date reminder information.",
+                                              AppLocalizations.of(context)!.adjustDates,
                                               style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                               softWrap: true,
                                             ),
@@ -111,7 +112,7 @@ class ReminderView extends GetView<ReminderController> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Time",
+                                        AppLocalizations.of(context)!.time,
                                         style: CustomTextStyle.semiBold(18),
                                       ),
                                       GestureDetector(
@@ -132,7 +133,7 @@ class ReminderView extends GetView<ReminderController> {
                                             child: Center(
                                               child: Obx(
                                                 () => Text(
-                                                  controller.formattedSelectedTime ?? "Select Time",
+                                                  controller.formattedSelectedTime ?? AppLocalizations.of(context)!.selectTime,
                                                   style: CustomTextStyle.medium(14, height: 1.5),
                                                 ),
                                               ),
@@ -147,7 +148,7 @@ class ReminderView extends GetView<ReminderController> {
                                 TextFormField(
                                   onChanged: (text) => controller.updateReminderTitle(text),
                                   decoration: InputDecoration(
-                                    hintText: 'Enter reminder title',
+                                    hintText: AppLocalizations.of(context)!.enterReminderTitle,
                                     border: OutlineInputBorder(
                                       borderSide: const BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(12),
@@ -160,7 +161,7 @@ class ReminderView extends GetView<ReminderController> {
                                 TextFormField(
                                   onChanged: (text) => controller.updateReminderDescription(text),
                                   decoration: InputDecoration(
-                                    hintText: 'Enter reminder description',
+                                    hintText: AppLocalizations.of(context)!.enterReminderDescription,
                                     border: OutlineInputBorder(
                                       borderSide: const BorderSide(color: Colors.black),
                                       borderRadius: BorderRadius.circular(12),
@@ -171,7 +172,10 @@ class ReminderView extends GetView<ReminderController> {
                                   maxLines: 2,
                                 ),
                                 SizedBox(height: 20.h),
-                                CustomButton(text: "Add Reminder", onPressed: () => controller.checkReminder(context)),
+                                CustomButton(
+                                  text: AppLocalizations.of(context)!.addReminder,
+                                  onPressed: () => controller.checkReminder(context),
+                                ),
                               ],
                             ),
                           ),
@@ -189,7 +193,7 @@ class ReminderView extends GetView<ReminderController> {
                 builder: (context) {
                   return SimpleDialog(
                     title: Text(
-                      "Permission Required",
+                      AppLocalizations.of(context)!.permissionRequired,
                       style: CustomTextStyle.bold(22),
                       textAlign: TextAlign.center,
                     ),
@@ -200,14 +204,14 @@ class ReminderView extends GetView<ReminderController> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 8.0),
                             child: Text(
-                              "Notification permission is required to use this feature. Please enable it in the app settings.",
+                              AppLocalizations.of(context)!.notificationPermissionRequired,
                               style: CustomTextStyle.medium(15, height: 1.5),
                               textAlign: TextAlign.center,
                             ),
                           ),
                           SizedBox(height: 15),
                           CustomButton(
-                            text: "Open Settings",
+                            text: AppLocalizations.of(context)!.openSettings,
                             onPressed: () {
                               Navigator.of(context).pop();
                               openAppSettings();
@@ -215,7 +219,7 @@ class ReminderView extends GetView<ReminderController> {
                           ),
                           SizedBox(height: 5),
                           CustomButton(
-                            text: "Cancel",
+                            text: AppLocalizations.of(context)!.cancel,
                             textColor: AppColors.black,
                             backgroundColor: AppColors.transparent,
                             onPressed: () => Get.back(closeOverlays: true),
@@ -230,8 +234,8 @@ class ReminderView extends GetView<ReminderController> {
               bool isGranted = await controller.localNotificationService.requestNotificationPermission();
               if (!isGranted) {
                 Get.snackbar(
-                  "Permission Denied",
-                  "Please allow the app to send notifications to use this feature.",
+                  AppLocalizations.of(context)!.permissionDenied,
+                  AppLocalizations.of(context)!.allowNotifications,
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.red,
                   colorText: Colors.white,
@@ -246,7 +250,7 @@ class ReminderView extends GetView<ReminderController> {
               title: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Text(
-                  'Reminder',
+                  AppLocalizations.of(context)!.reminder,
                   style: CustomTextStyle.extraBold(22),
                 ),
               ),
@@ -261,7 +265,7 @@ class ReminderView extends GetView<ReminderController> {
                 child: Column(
                   children: [
                     Text(
-                      'Set custom alerts for your pregnancy milestones and appointments, so you never miss an important event.',
+                      AppLocalizations.of(context)!.customAlerts,
                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                     ),
                     SizedBox(height: 20),
@@ -384,7 +388,7 @@ class ReminderView extends GetView<ReminderController> {
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
                                                                 Text(
-                                                                  "Edit Reminder",
+                                                                  AppLocalizations.of(context)!.editReminder,
                                                                   style: CustomTextStyle.bold(20),
                                                                 ),
                                                                 IconButton(
@@ -403,7 +407,7 @@ class ReminderView extends GetView<ReminderController> {
                                                             Container(
                                                               width: Get.width,
                                                               child: Text(
-                                                                "Adjust the start and end dates for precise and up-to-date reminder information.",
+                                                                AppLocalizations.of(context)!.adjustDates,
                                                                 style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5), height: 1.5),
                                                                 softWrap: true,
                                                               ),
@@ -428,7 +432,7 @@ class ReminderView extends GetView<ReminderController> {
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Text(
-                                                          "Time",
+                                                          AppLocalizations.of(context)!.time,
                                                           style: CustomTextStyle.semiBold(18),
                                                         ),
                                                         GestureDetector(
@@ -452,7 +456,7 @@ class ReminderView extends GetView<ReminderController> {
                                                                       ? '${controller.timeSelected.value!.hour}:${controller.timeSelected.value!.minute.toString().padLeft(2, '0')}'
                                                                       : reminder.datetime != null
                                                                           ? DateFormat('HH:mm').format(DateTime.parse(reminder.datetime ?? TimeOfDay.now().toString()))
-                                                                          : "Select Time",
+                                                                          : AppLocalizations.of(context)!.selectTime,
                                                                   style: CustomTextStyle.bold(15),
                                                                 ),
                                                               ),
@@ -467,7 +471,7 @@ class ReminderView extends GetView<ReminderController> {
                                                     initialValue: reminder.title,
                                                     onChanged: (text) => controller.updateReminderTitle(text),
                                                     decoration: InputDecoration(
-                                                      hintText: 'Enter reminder title',
+                                                      hintText: AppLocalizations.of(context)!.enterReminderTitle,
                                                       border: OutlineInputBorder(
                                                         borderSide: const BorderSide(color: Colors.black),
                                                         borderRadius: BorderRadius.circular(12),
@@ -480,7 +484,7 @@ class ReminderView extends GetView<ReminderController> {
                                                     initialValue: reminder.description,
                                                     onChanged: (text) => controller.updateReminderDescription(text),
                                                     decoration: InputDecoration(
-                                                      hintText: 'Enter reminder description',
+                                                      hintText: AppLocalizations.of(context)!.enterReminderDescription,
                                                       border: OutlineInputBorder(
                                                         borderSide: const BorderSide(color: Colors.black),
                                                         borderRadius: BorderRadius.circular(12),
@@ -491,7 +495,7 @@ class ReminderView extends GetView<ReminderController> {
                                                   ),
                                                   SizedBox(height: 20.h),
                                                   CustomButton(
-                                                    text: "Update Reminder",
+                                                    text: AppLocalizations.of(context)!.updateReminder,
                                                     onPressed: () {
                                                       controller.editReminder(reminder.id ?? "", reminder.title ?? "", reminder.description ?? "", reminder.datetime ?? "", context);
                                                     },

@@ -9,6 +9,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dar
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/temperature_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TemperatureView extends GetView<TemperatureController> {
   const TemperatureView({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class TemperatureView extends GetView<TemperatureController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              "Temperature",
+              AppLocalizations.of(context)!.temperature,
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -81,12 +82,12 @@ class TemperatureView extends GetView<TemperatureController> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  'Date: ${entry.key}',
+                                  AppLocalizations.of(context)!.date("${entry.key}"),
                                   style: CustomTextStyle.bold(12, color: Colors.white),
                                 ),
                                 SizedBox(height: 5),
                                 Text(
-                                  'Temperature: ${entry.value} °C',
+                                  AppLocalizations.of(context)!.temperatureCelcius("${entry.value}"),
                                   style: CustomTextStyle.bold(12, color: Colors.white),
                                 ),
                               ],
@@ -152,10 +153,10 @@ class TemperatureView extends GetView<TemperatureController> {
                     controller.updateTabBar(index);
                   },
                   children: [
-                    _buildChart(),
-                    _buildChart(),
-                    _buildChart(),
-                    _buildChart(),
+                    _buildChart(context),
+                    _buildChart(context),
+                    _buildChart(context),
+                    _buildChart(context),
                   ],
                 ),
               ),
@@ -166,11 +167,17 @@ class TemperatureView extends GetView<TemperatureController> {
     );
   }
 
-  Widget _buildChart() {
+  Widget _buildChart(context) {
     return Obx(
       () {
-        if (controller.data == null) {
-          return Center(child: CircularProgressIndicator());
+        if (controller.specificTemperaturesData.entries.length == 0) {
+          return Center(
+            child: Text(
+              AppLocalizations.of(context)!.notFoundDesc,
+              style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
+              textAlign: TextAlign.center,
+            ),
+          );
         } else {
           return Padding(
             padding: const EdgeInsets.all(8.0),

@@ -15,6 +15,7 @@ import 'package:periodnpregnancycalender/app/services/log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DailyLogController extends GetxController {
   final apiService = ApiService();
@@ -71,13 +72,203 @@ class DailyLogController extends GetxController {
     super.onClose();
   }
 
-  List<String> sexActivity = ["Didn't have sex", "Unprotected sex", "Protected sex"];
-  List<String> vaginalDischarge = ["No discharge", "Creamy", "Spotting", "Eggwhite", "Sticky", "Watery", "Unusual"];
-  List<String> bleedingFlow = ["Light", "Medium", "Heavy"];
-  List<String> symptoms = ["Abdominal cramps", "Acne", "Backache", "Bloating", "Body aches", "Chills", "Constipation", "Cramps", "Cravings", "Diarrhea", "Dizziness", "Fatigue", "Feel good", "Gas", "Headache", "Hot flashes", "Insomnia", "Low back pain", "Nausea", "Nipple changes", "PMS", "Spotting", "Swelling", "Tender breasts"];
-  List<String> moods = ["Angry", "Anxious", "Apathetic", "Calm", "Confused", "Cranky", "Depressed", "Emotional", "Energetic", "Excited", "Feeling guilty", "Frisky", "Frustrated", "Happy", "Irritated", "Low energy", "Mood swings", "Obsessive thoughts", "Sad", "Sensitive", "Sleepy", "Tired", "Unfocused", "Very self-critical"];
-  List<String> others = ["Travel", "Stress", "Disease or Injury", "Alcohol"];
-  List<String> physicalActivity = ["Didn't exercise", "Yoga", "Gym", "Aerobics & Dancing", "Swimming", "Team sports", "Running", "Cycling", "Walking"];
+  List<String> sexActivity = [
+    "Didn't have sex",
+    "Unprotected sex",
+    "Protected sex",
+  ];
+  List<String> vaginalDischarge = [
+    "No discharge",
+    "Creamy",
+    "Spotting",
+    "Eggwhite",
+    "Sticky",
+    "Watery",
+    "Unusual",
+  ];
+  List<String> bleedingFlow = [
+    "Light",
+    "Medium",
+    "Heavy",
+  ];
+  List<String> symptoms = [
+    "Abdominal cramps",
+    "Acne",
+    "Backache",
+    "Bloating",
+    "Body aches",
+    "Chills",
+    "Constipation",
+    "Cramps",
+    "Cravings",
+    "Diarrhea",
+    "Dizziness",
+    "Fatigue",
+    "Feel good",
+    "Gas",
+    "Headache",
+    "Hot flashes",
+    "Insomnia",
+    "Low back pain",
+    "Nausea",
+    "Nipple changes",
+    "PMS",
+    "Spotting",
+    "Swelling",
+    "Tender breasts",
+  ];
+  List<String> moods = [
+    "Angry",
+    "Anxious",
+    "Apathetic",
+    "Calm",
+    "Confused",
+    "Cranky",
+    "Depressed",
+    "Emotional",
+    "Energetic",
+    "Excited",
+    "Feeling guilty",
+    "Frisky",
+    "Frustrated",
+    "Happy",
+    "Irritated",
+    "Low energy",
+    "Mood swings",
+    "Obsessive thoughts",
+    "Sad",
+    "Sensitive",
+    "Sleepy",
+    "Tired",
+    "Unfocused",
+    "Very self-critical",
+  ];
+  List<String> others = [
+    "Travel",
+    "Stress",
+    "Disease or Injury",
+    "Alcohol",
+  ];
+  List<String> physicalActivity = [
+    "Didn't exercise",
+    "Yoga",
+    "Gym",
+    "Aerobics & Dancing",
+    "Swimming",
+    "Team sports",
+    "Running",
+    "Cycling",
+    "Walking",
+  ];
+
+  Map<String, String> sexActivityTranslations(context) {
+    return {
+      "Didn't have sex": AppLocalizations.of(context)!.didntHaveSex,
+      "Unprotected sex": AppLocalizations.of(context)!.unprotectedSex,
+      "Protected sex": AppLocalizations.of(context)!.protectedSex,
+    };
+  }
+
+  Map<String, String> vaginalDischargeTranslations(context) {
+    return {
+      "No discharge": AppLocalizations.of(context)!.noDischarge,
+      "Creamy": AppLocalizations.of(context)!.creamyDischarge,
+      "Spotting": AppLocalizations.of(context)!.spottingDischarge,
+      "Eggwhite": AppLocalizations.of(context)!.eggwhiteDischarge,
+      "Sticky": AppLocalizations.of(context)!.stickyDischarge,
+      "Watery": AppLocalizations.of(context)!.wateryDischarge,
+      "Unusual": AppLocalizations.of(context)!.unusualDischarge,
+    };
+  }
+
+  Map<String, String> bleedingFlowTranslations(context) {
+    return {
+      "Light": AppLocalizations.of(context)!.lightBleedingFlow,
+      "Medium": AppLocalizations.of(context)!.mediumBleedingFlow,
+      "Heavy": AppLocalizations.of(context)!.heavyBleedingFlow,
+    };
+  }
+
+  Map<String, String> symptomsTranslations(context) {
+    return {
+      "Abdominal cramps": AppLocalizations.of(context)!.abdominalCramps,
+      "Acne": AppLocalizations.of(context)!.acne,
+      "Backache": AppLocalizations.of(context)!.backache,
+      "Bloating": AppLocalizations.of(context)!.bloating,
+      "Body aches": AppLocalizations.of(context)!.bodyAches,
+      "Chills": AppLocalizations.of(context)!.chills,
+      "Constipation": AppLocalizations.of(context)!.constipation,
+      "Cramps": AppLocalizations.of(context)!.cramps,
+      "Cravings": AppLocalizations.of(context)!.cravings,
+      "Diarrhea": AppLocalizations.of(context)!.diarrhea,
+      "Dizziness": AppLocalizations.of(context)!.dizziness,
+      "Fatigue": AppLocalizations.of(context)!.fatigue,
+      "Feel good": AppLocalizations.of(context)!.feelGood,
+      "Gas": AppLocalizations.of(context)!.gas,
+      "Headache": AppLocalizations.of(context)!.headache,
+      "Hot flashes": AppLocalizations.of(context)!.hotFlashes,
+      "Insomnia": AppLocalizations.of(context)!.insomnia,
+      "Low back pain": AppLocalizations.of(context)!.lowBackPain,
+      "Nausea": AppLocalizations.of(context)!.nausea,
+      "Nipple changes": AppLocalizations.of(context)!.nippleChanges,
+      "PMS": AppLocalizations.of(context)!.pms,
+      "Spotting": AppLocalizations.of(context)!.spotting,
+      "Swelling": AppLocalizations.of(context)!.swelling,
+      "Tender breasts": AppLocalizations.of(context)!.tenderBreasts,
+    };
+  }
+
+  Map<String, String> moodsTranslations(context) {
+    return {
+      "Angry": AppLocalizations.of(context)!.angry,
+      "Anxious": AppLocalizations.of(context)!.anxious,
+      "Apathetic": AppLocalizations.of(context)!.apathetic,
+      "Calm": AppLocalizations.of(context)!.calm,
+      "Confused": AppLocalizations.of(context)!.confused,
+      "Cranky": AppLocalizations.of(context)!.cranky,
+      "Depressed": AppLocalizations.of(context)!.depressed,
+      "Emotional": AppLocalizations.of(context)!.emotional,
+      "Energetic": AppLocalizations.of(context)!.energetic,
+      "Excited": AppLocalizations.of(context)!.excited,
+      "Feeling guilty": AppLocalizations.of(context)!.feelingGuilty,
+      "Frisky": AppLocalizations.of(context)!.frisky,
+      "Frustrated": AppLocalizations.of(context)!.frustrated,
+      "Happy": AppLocalizations.of(context)!.happy,
+      "Irritated": AppLocalizations.of(context)!.irritated,
+      "Low energy": AppLocalizations.of(context)!.lowEnergy,
+      "Mood swings": AppLocalizations.of(context)!.moodSwings,
+      "Obsessive thoughts": AppLocalizations.of(context)!.obsessiveThoughts,
+      "Sad": AppLocalizations.of(context)!.sad,
+      "Sensitive": AppLocalizations.of(context)!.sensitive,
+      "Sleepy": AppLocalizations.of(context)!.sleepy,
+      "Tired": AppLocalizations.of(context)!.tired,
+      "Unfocused": AppLocalizations.of(context)!.unfocused,
+      "Very self-critical": AppLocalizations.of(context)!.verySelfCritical,
+    };
+  }
+
+  Map<String, String> othersTranslations(context) {
+    return {
+      "Travel": AppLocalizations.of(context)!.travel,
+      "Stress": AppLocalizations.of(context)!.stress,
+      "Disease or Injury": AppLocalizations.of(context)!.diseaseOrInjury,
+      "Alcohol": AppLocalizations.of(context)!.alcohol,
+    };
+  }
+
+  Map<String, String> physicalActivityTranslations(context) {
+    return {
+      "Didn't exercise": AppLocalizations.of(context)!.didntExercise,
+      "Yoga": AppLocalizations.of(context)!.yoga,
+      "Gym": AppLocalizations.of(context)!.gym,
+      "Aerobics & Dancing": AppLocalizations.of(context)!.aerobicsAndDancing,
+      "Swimming": AppLocalizations.of(context)!.swimming,
+      "Team sports": AppLocalizations.of(context)!.teamSports,
+      "Running": AppLocalizations.of(context)!.running,
+      "Cycling": AppLocalizations.of(context)!.cycling,
+      "Walking": AppLocalizations.of(context)!.walking,
+    };
+  }
 
   DateTime get selectedDate => _selectedDate.value;
   void setSelectedDate(DateTime selectedDate) {

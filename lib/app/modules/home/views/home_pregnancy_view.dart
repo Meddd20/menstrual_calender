@@ -12,6 +12,7 @@ import 'package:periodnpregnancycalender/app/modules/home/controllers/home_pregn
 import 'package:periodnpregnancycalender/app/modules/home/views/detail_pregnancy_view.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePregnancyView extends GetView<HomePregnancyController> {
   const HomePregnancyView({Key? key}) : super(key: key);
@@ -29,7 +30,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
               title: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Text(
-                  'Pregnancy Mode',
+                  AppLocalizations.of(context)!.pregnancyMode,
                   style: CustomTextStyle.extraBold(22),
                 ),
               ),
@@ -90,7 +91,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                       iconData: Icons.arrow_back_ios_new,
                                       iconSize: 20,
                                       iconColor: Color(0xFF878686),
-                                      containerColor: Color(0xFFD4D2D2),
+                                      containerColor: Color(0xFFECECEC),
                                       containerSize: 15.dg,
                                     ),
                                   ),
@@ -99,7 +100,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                   },
                                 ),
                                 Text(
-                                  "${(controller.getPregnancyIndex ?? 0) + 1} Weeks Pregnant",
+                                  AppLocalizations.of(context)!.weeksPregnant("${(controller.getPregnancyIndex ?? 0) + 1}"),
                                   style: CustomTextStyle.extraBold(24, height: 1.5),
                                 ),
                                 GestureDetector(
@@ -113,7 +114,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                       iconData: Icons.arrow_forward_ios_outlined,
                                       iconSize: 20,
                                       iconColor: Color(0xFF878686),
-                                      containerColor: Color(0xFFD4D2D2),
+                                      containerColor: Color(0xFFECECEC),
                                       containerSize: 15.dg,
                                     ),
                                   ),
@@ -141,6 +142,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                   children: [
                                     Expanded(
                                       child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           StepProgressIndicator(
                                             totalSteps: 12,
@@ -155,10 +157,13 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Text(
-                                                "Due date",
-                                                textAlign: TextAlign.center,
-                                                style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                              Expanded(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.dueDate,
+                                                  textAlign: TextAlign.center,
+                                                  style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                                  maxLines: 2,
+                                                ),
                                               ),
                                               const SizedBox(width: 5),
                                               GestureDetector(
@@ -295,7 +300,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                                       height: 20,
                                                                     ),
                                                                     CustomButton(
-                                                                      text: "Send",
+                                                                      text: AppLocalizations.of(context)!.send,
                                                                       onPressed: () {
                                                                         controller.editPregnancyStartDate();
                                                                       },
@@ -339,9 +344,10 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                           ),
                                           SizedBox(height: 10),
                                           Text(
-                                            "Trimester",
+                                            AppLocalizations.of(context)!.trimester,
                                             textAlign: TextAlign.center,
                                             style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                            maxLines: 2,
                                           ),
                                           Text(
                                             "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].trimester ?? ""}",
@@ -366,9 +372,10 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                           ),
                                           SizedBox(height: 10),
                                           Text(
-                                            "Due date",
+                                            AppLocalizations.of(context)!.weekDue,
                                             textAlign: TextAlign.center,
                                             style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                            maxLines: 2,
                                           ),
                                           Text(
                                             "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].mingguSisa ?? ""}W",
@@ -403,7 +410,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "Baby is as big as",
+                                                  AppLocalizations.of(context)!.babySize,
                                                   textAlign: TextAlign.center,
                                                   style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                                 ),
@@ -418,7 +425,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                             ),
                                           ),
                                           SvgPicture.asset(
-                                            'assets/image/baby_comparison/${controller.weeklyData[(controller.getPregnancyIndex ?? 0)].ukuranBayiImgPath}',
+                                            'assets/image/${controller.weeklyData[(controller.getPregnancyIndex ?? 0)].ukuranBayiImgPath}',
                                             width: 80,
                                             fit: BoxFit.cover,
                                             // height: 100,
@@ -443,7 +450,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                       ),
                                                     ),
                                                     TextSpan(
-                                                      text: " Ideal weight",
+                                                      text: AppLocalizations.of(context)!.idealWeight,
                                                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                                     ),
                                                   ],
@@ -477,7 +484,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                       ),
                                                     ),
                                                     TextSpan(
-                                                      text: " Ideal height",
+                                                      text: AppLocalizations.of(context)!.idealHeight,
                                                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                                     ),
                                                   ],
@@ -503,13 +510,13 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                 Row(
                                   children: [
                                     WeeklyInfo(
-                                      title: "This Week's Highlight",
+                                      title: AppLocalizations.of(context)!.thisWeeksHighlight,
                                       imagePath: 'assets/icon/sticky-note.png',
                                       onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: "Highlight"), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].poinUtama),
                                     ),
                                     SizedBox(width: 10),
                                     WeeklyInfo(
-                                      title: "Body Changes This Week",
+                                      title: AppLocalizations.of(context)!.bodyChangesThisWeek,
                                       imagePath: 'assets/icon/pregnant.png',
                                       onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: "Body Changes"), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].perubahanTubuh),
                                     ),
@@ -519,13 +526,13 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                 Row(
                                   children: [
                                     WeeklyInfo(
-                                      title: "Your Baby This Week",
+                                      title: AppLocalizations.of(context)!.yourBabyThisWeek,
                                       imagePath: 'assets/icon/pregnancy.png',
                                       onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: "Your Baby Development"), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].perkembanganBayi),
                                     ),
                                     SizedBox(width: 10),
                                     WeeklyInfo(
-                                      title: "Symptoms You Might Feel",
+                                      title: AppLocalizations.of(context)!.symptomsYouMightFeel,
                                       imagePath: 'assets/icon/morning-sickness.png',
                                       onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: "Symptoms"), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].gejalaUmum),
                                     ),
@@ -535,7 +542,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                 Row(
                                   children: [
                                     WeeklyInfo(
-                                      title: "Things To Consider",
+                                      title: AppLocalizations.of(context)!.thingsToConsider,
                                       imagePath: 'assets/icon/list.png',
                                       onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: "Things to Consider"), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].tipsMingguan),
                                     ),

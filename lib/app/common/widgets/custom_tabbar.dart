@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
+import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class CustomTabBar extends StatelessWidget {
   final Function(int) onTap;
@@ -30,25 +31,25 @@ class CustomTabBar extends StatelessWidget {
         tabs: [
           Tab(
             child: Text(
-              '30 Days',
+              '30 ${StorageService().getLanguage() == "en" ? "Days" : "Hari"}',
               style: CustomTextStyle.bold(12),
             ),
           ),
           Tab(
             child: Text(
-              '3 Months',
+              '3 ${StorageService().getLanguage() == "en" ? "Months" : "Bulan"}',
               style: CustomTextStyle.bold(12),
             ),
           ),
           Tab(
             child: Text(
-              '6 Months',
+              '6 ${StorageService().getLanguage() == "en" ? "Months" : "Bulan"}',
               style: CustomTextStyle.bold(12),
             ),
           ),
           Tab(
             child: Text(
-              '1 Year',
+              '1 ${StorageService().getLanguage() == "en" ? "Year" : "Tahun"}',
               style: CustomTextStyle.bold(12),
             ),
           ),

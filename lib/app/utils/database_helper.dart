@@ -153,7 +153,9 @@ class DatabaseHelper {
       tips_mingguan_id TEXT,
       tips_mingguan_en TEXT,
       bayi_img_path TEXT,
-      ukuran_bayi_img_path TEXT
+      ukuran_bayi_img_path TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   ''';
 

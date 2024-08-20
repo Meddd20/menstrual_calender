@@ -7,6 +7,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Onboarding5View extends GetView<OnboardingController> {
   const Onboarding5View({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class Onboarding5View extends GetView<OnboardingController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      "Enter Your Previous Period Dates",
+                      AppLocalizations.of(context)!.askPreviousPeriodCycle,
                       style: CustomTextStyle.extraBold(20),
                       textAlign: TextAlign.center,
                     ),
@@ -49,7 +50,7 @@ class Onboarding5View extends GetView<OnboardingController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      "Choose the start date or range of your previous period(s) to help us predict your next cycle accurately.",
+                      AppLocalizations.of(context)!.askPreviousPeriodCycleDesc,
                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                       textAlign: TextAlign.center,
                     ),
@@ -104,7 +105,7 @@ class Onboarding5View extends GetView<OnboardingController> {
               left: 20,
               right: 20,
               child: CustomButton(
-                text: "Next",
+                text: AppLocalizations.of(context)!.next,
                 onPressed: () {
                   controller.validateLastPeriod();
                 },

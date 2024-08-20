@@ -37,11 +37,10 @@ class LoginController extends GetxController {
 
     emailC = TextEditingController();
     passwordC = TextEditingController();
-    final arguments = Get.arguments as Map<String, dynamic>;
-    overrideExistingData.value = arguments['arg1'] as bool? ?? false;
-
-    emailC.text = "mbirajabiraja@gmail.com";
-    passwordC.text = "admin1234";
+    final arguments = Get.arguments;
+    if (arguments != null && arguments is Map<String, dynamic> && arguments.isNotEmpty) {
+      overrideExistingData.value = arguments['arg1'] as bool? ?? false;
+    }
     super.onInit();
   }
 

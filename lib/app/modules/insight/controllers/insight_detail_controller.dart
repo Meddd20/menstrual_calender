@@ -8,6 +8,7 @@ import 'package:periodnpregnancycalender/app/models/detail_article_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/article_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InsightDetailController extends GetxController {
   final ApiService apiService = ApiService();
@@ -28,7 +29,6 @@ class InsightDetailController extends GetxController {
   RxList<Comment> comment = <Comment>[].obs;
   RxMap<int, bool> showRepliesMap = RxMap<int, bool>();
   FocusNode focusNode = FocusNode();
-  
 
   final StreamController<String> _actionController = StreamController<String>();
 
@@ -205,5 +205,19 @@ class InsightDetailController extends GetxController {
     } else {
       return '${date.day}-${date.month}-${date.year}';
     }
+  }
+
+  Map<String, String> getTagTranslations(BuildContext context) {
+    return {
+      "Premenstrual Syndrome (PMS)": AppLocalizations.of(context)!.premenstrualSyndrome,
+      "Pregnancy": AppLocalizations.of(context)!.pregnancy,
+      "Ovulation": AppLocalizations.of(context)!.ovulation,
+      "Menstruation": AppLocalizations.of(context)!.menstruation,
+      "Trying to conceive": AppLocalizations.of(context)!.tryingToConceive,
+      "Fertility": AppLocalizations.of(context)!.fertility,
+      "Sex": AppLocalizations.of(context)!.sex,
+      "Perimenopause": AppLocalizations.of(context)!.perimenopause,
+      "Birth Control": AppLocalizations.of(context)!.birthControl,
+    };
   }
 }

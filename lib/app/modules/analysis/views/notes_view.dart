@@ -7,6 +7,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/notes_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NotesView extends GetView<NotesController> {
   const NotesView({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class NotesView extends GetView<NotesController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              "Notes",
+              AppLocalizations.of(context)!.notes,
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -60,10 +61,10 @@ class NotesView extends GetView<NotesController> {
                     controller.updateTabBar(index);
                   },
                   children: [
-                    _buildChart(),
-                    _buildChart(),
-                    _buildChart(),
-                    _buildChart(),
+                    _buildChart(context),
+                    _buildChart(context),
+                    _buildChart(context),
+                    _buildChart(context),
                   ],
                 ),
               ),
@@ -74,36 +75,38 @@ class NotesView extends GetView<NotesController> {
     );
   }
 
-  Widget _buildChart() {
-    if (controller.data == null) {
-      return Center(child: CircularProgressIndicator());
-    } else {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                height: Get.height,
-                child: Obx(() {
-                  if (controller.specificNotesData.isEmpty) {
-                    return Center(child: Text("No data available"));
-                  } else {
-                    return ListView.builder(
-                      itemCount: controller.specificNotesData.length,
-                      itemBuilder: (context, index) {
-                        final MapEntry<String, dynamic> entry = controller.specificNotesData.entries.elementAt(index);
+  Widget _buildChart(context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              height: Get.height,
+              child: Obx(() {
+                if (controller.specificNotesData.isEmpty) {
+                  return Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.notFoundDesc,
+                      style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                } else {
+                  return ListView.builder(
+                    itemCount: controller.specificNotesData.length,
+                    itemBuilder: (context, index) {
+                      final MapEntry<String, dynamic> entry = controller.specificNotesData.entries.elementAt(index);
 
-                        return CustomDateLook(entry: entry, type: "notes");
-                      },
-                    );
-                  }
-                }),
-              ),
+                      return CustomDateLook(entry: entry, type: "notes");
+                    },
+                  );
+                }
+              }),
             ),
-          ],
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -131,27 +131,20 @@ class WeightController extends GetxController {
     try {
       DailyLogTagsData? result = await _logService.getLogsByTags("weight");
 
-      if (result != null) {
-        Map<String, dynamic> logsMap = result.logs;
+      Map<String, dynamic> logsMap = result.logs;
 
-        logsMap.forEach((date, value) {
-          if (value is String) {
-            weight[date] = value;
-          } else if (value is List<String>) {
-            weight[date] = value.join(", ");
-          }
-        });
-
-        print(weight);
-      } else {
-        print("Error: Unable to fetch temperature");
-      }
+      logsMap.forEach((date, value) {
+        if (value is String) {
+          weight[date] = value;
+        } else if (value is List<String>) {
+          weight[date] = value.join(", ");
+        }
+      });
+      specifiedDataByDate();
+      update();
     } catch (e) {
       print("Error fetching temperatures: $e");
     }
-
-    specifiedDataByDate();
-    update();
   }
 
   String formatDate(DateTime date) {

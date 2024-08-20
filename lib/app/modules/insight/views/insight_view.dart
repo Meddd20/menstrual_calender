@@ -6,6 +6,7 @@ import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
 import '../controllers/insight_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InsightView extends GetView<InsightController> {
   const InsightView({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class InsightView extends GetView<InsightController> {
                 title: Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Text(
-                    'Insight',
+                    AppLocalizations.of(context)!.insight,
                     style: CustomTextStyle.extraBold(22),
                   ),
                 ),
@@ -50,25 +51,25 @@ class InsightView extends GetView<InsightController> {
                             scrollDirection: Axis.horizontal,
                             child: Wrap(
                               spacing: 10.0,
-                              children: controller.filterTags
-                                  .map(
-                                    (tag) => ChoiceChip(
-                                      label: Text(tag),
-                                      selected: controller.getSelectedTag() == tag,
-                                      onSelected: (bool isSelected) {
-                                        print("Tag selected: $tag, isSelected: $isSelected");
-                                        if (isSelected) {
-                                          controller.setSelectedTag(tag);
-                                        } else {
-                                          controller.setSelectedTag("");
-                                        }
-                                      },
-                                      labelStyle: CustomTextStyle.semiBold(14, color: controller.getSelectedTag() == tag ? AppColors.white : AppColors.black),
-                                      backgroundColor: AppColors.transparent,
-                                      selectedColor: AppColors.contrast,
-                                    ),
-                                  )
-                                  .toList(),
+                              children: controller.filterTags.map(
+                                (tag) {
+                                  final tagTranslations = controller.getTagTranslations(context);
+                                  return ChoiceChip(
+                                    label: Text(tagTranslations[tag] ?? tag),
+                                    selected: controller.getSelectedTag() == tag,
+                                    onSelected: (bool isSelected) {
+                                      if (isSelected) {
+                                        controller.setSelectedTag(tag);
+                                      } else {
+                                        controller.setSelectedTag("");
+                                      }
+                                    },
+                                    labelStyle: CustomTextStyle.semiBold(14, color: controller.getSelectedTag() == tag ? AppColors.white : AppColors.black),
+                                    backgroundColor: AppColors.transparent,
+                                    selectedColor: AppColors.contrast,
+                                  );
+                                },
+                              ).toList(),
                             ),
                           ),
                         ),
@@ -81,14 +82,39 @@ class InsightView extends GetView<InsightController> {
                 () {
                   if (controller.isLoading.value) {
                     return SliverToBoxAdapter(
-                      child: Center(
-                        child: CircularProgressIndicator(),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(20.w, Get.width / 2, 20.w, 0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
                     );
                   } else if (controller.articles.isEmpty) {
                     return SliverToBoxAdapter(
-                      child: Center(
-                        child: Text('No data available'),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(20.w, 100.h, 20.w, 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/image/no-data.png',
+                              width: 200.w,
+                              height: 200.h,
+                            ),
+                            SizedBox(height: 20),
+                            Text(
+                              AppLocalizations.of(context)!.notFound,
+                              style: CustomTextStyle.extraBold(20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              AppLocalizations.of(context)!.notFoundDesc,
+                              style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   } else {
@@ -133,14 +159,14 @@ class InsightView extends GetView<InsightController> {
                                         ),
                                         SizedBox(height: 10.h),
                                         Text(
-                                          article.titleInd ?? "",
+                                          controller.storageService.getLanguage() == "en" ? article.titleEng ?? "" : article.titleInd ?? "",
                                           style: CustomTextStyle.extraBold(18, height: 1.5),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         SizedBox(height: 5.h),
                                         Text(
-                                          article.contentInd ?? "",
+                                          controller.storageService.getLanguage() == "en" ? article.contentEng ?? "" : article.contentInd ?? "",
                                           style: CustomTextStyle.regular(14, height: 1.5),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -159,7 +185,7 @@ class InsightView extends GetView<InsightController> {
                                               padding: const EdgeInsets.symmetric(horizontal: 12),
                                               child: Center(
                                                 child: Text(
-                                                  article.tags ?? "",
+                                                  controller.getTagTranslations(context)[article.tags] ?? article.tags ?? "",
                                                   style: CustomTextStyle.bold(12),
                                                 ),
                                               ),

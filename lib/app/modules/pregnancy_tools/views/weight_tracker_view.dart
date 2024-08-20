@@ -11,6 +11,7 @@ import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/init_weight_gain_tracker_view.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WeightTrackerView extends GetView<WeightTrackerController> {
   const WeightTrackerView({Key? key}) : super(key: key);
@@ -22,8 +23,6 @@ class WeightTrackerView extends GetView<WeightTrackerController> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text("Error: ${snapshot.error}"));
         } else {
           return (controller.weightGainHistory.length < 1) ? InitWeightGainTrackerView() : WeightGainTrackerView();
         }
@@ -44,7 +43,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              'Weight Gain Tracker',
+              AppLocalizations.of(context)!.weightGainTracker,
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -60,10 +59,10 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
           ),
         ),
         floatingActionButton: FloatingActionButton.extended(
-          label: Text("Add"),
+          label: Text(AppLocalizations.of(context)!.add),
           icon: Icon(Icons.add),
           elevation: 0.0,
-          tooltip: "Add new weight gain data",
+          tooltip: AppLocalizations.of(context)!.addNewWeightGain,
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           onPressed: () {
@@ -80,7 +79,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                         child: Column(
                           children: [
                             Text(
-                              "Add New Weight",
+                              AppLocalizations.of(context)!.addNewWeight,
                               style: CustomTextStyle.extraBold(20, height: 1.5),
                             ),
                             SizedBox(height: 20),
@@ -220,7 +219,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Selected Date",
+                                    AppLocalizations.of(context)!.selectedDate,
                                     style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
                                   ),
                                   Text(
@@ -236,11 +235,11 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Pregnancy Week",
+                                    AppLocalizations.of(context)!.pregnancyWeek,
                                     style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
                                   ),
                                   Text(
-                                    "Week ${controller.selectedWeek}",
+                                    "${AppLocalizations.of(context)!.week} ${controller.selectedWeek}",
                                     style: CustomTextStyle.bold(16),
                                   ),
                                 ],
@@ -291,7 +290,10 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                               ],
                             ),
                             SizedBox(height: 10),
-                            CustomButton(text: "Save", onPressed: () => controller.weeklyWeightGain(context)),
+                            CustomButton(
+                              text: AppLocalizations.of(context)!.save,
+                              onPressed: () => controller.weeklyWeightGain(context),
+                            ),
                           ],
                         ),
                       ),
@@ -322,9 +324,9 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                           child: SfCartesianChart(
                             onTrackballPositionChanging: (trackballArgs) {
                               if (trackballArgs.chartPointInfo.seriesIndex == 0) {
-                                trackballArgs.chartPointInfo.label = 'Recommend Weight \n Week ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].week} \n  ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightLower} - ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightUpper} kg';
+                                trackballArgs.chartPointInfo.label = '${AppLocalizations.of(context)!.recommendWeek} \n ${AppLocalizations.of(context)!.week} ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].week} \n  ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightLower} - ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightUpper} kg';
                               } else {
-                                trackballArgs.chartPointInfo.label = 'Week ${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].mingguKehamilan} \n ${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].beratBadan} kg';
+                                trackballArgs.chartPointInfo.label = '${AppLocalizations.of(context)!.week} ${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].mingguKehamilan} \n ${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].beratBadan} kg';
                               }
                             },
                             trackballBehavior: TrackballBehavior(
@@ -340,7 +342,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                               minimum: 0,
                               maximum: 40,
                               title: AxisTitle(
-                                text: 'Weeks of Pregnancy',
+                                text: AppLocalizations.of(context)!.weeksOfPregnancy,
                                 textStyle: CustomTextStyle.bold(12),
                               ),
                               majorTickLines: MajorTickLines(size: 0),
@@ -361,14 +363,14 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                               maximum: controller.reccomendWeightGain.isNotEmpty ? controller.reccomendWeightGain.map((data) => data.recommendWeightUpper!).reduce((value, element) => value > element ? value : element) + 1 : 0,
                               labelStyle: CustomTextStyle.medium(10),
                               title: AxisTitle(
-                                text: 'Weight Gain (kg)',
+                                text: AppLocalizations.of(context)!.weightGainUnit,
                                 textStyle: CustomTextStyle.bold(12),
                               ),
                             ),
                             series: [
                               RangeAreaSeries<RecommendWeightGain, int>(
                                 dataSource: controller.reccomendWeightGain,
-                                name: 'Recommended Weight Gain Range',
+                                name: AppLocalizations.of(context)!.recommendedWeightGainRange,
                                 xValueMapper: (RecommendWeightGain data, _) => data.week!,
                                 highValueMapper: (RecommendWeightGain data, _) => data.recommendWeightUpper!,
                                 lowValueMapper: (RecommendWeightGain data, _) => data.recommendWeightLower!,
@@ -377,7 +379,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                               ),
                               LineSeries<WeightHistory, int>(
                                 dataSource: controller.weightGainHistory,
-                                name: 'Actual Weight Gain',
+                                name: AppLocalizations.of(context)!.actualWeightGain,
                                 xValueMapper: (WeightHistory data, _) => data.mingguKehamilan!,
                                 yValueMapper: (WeightHistory data, _) => data.beratBadan!,
                                 markerSettings: MarkerSettings(
@@ -409,7 +411,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                       style: CustomTextStyle.extraBold(18, height: 1.5),
                                     ),
                                     Text(
-                                      "Starting",
+                                      AppLocalizations.of(context)!.starting,
                                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                       textAlign: TextAlign.center,
                                     ),
@@ -422,7 +424,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                       style: CustomTextStyle.extraBold(18, height: 1.5),
                                     ),
                                     Text(
-                                      "Current",
+                                      AppLocalizations.of(context)!.current,
                                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                       textAlign: TextAlign.center,
                                     ),
@@ -435,7 +437,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                       style: CustomTextStyle.extraBold(18, height: 1.5),
                                     ),
                                     Text(
-                                      "Total Gain",
+                                      AppLocalizations.of(context)!.totalGain,
                                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                       textAlign: TextAlign.center,
                                     ),
@@ -457,7 +459,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Text(
-                                  "Reccomended Weight Gain",
+                                  AppLocalizations.of(context)!.recommendedWeightGain,
                                   style: CustomTextStyle.extraBold(18, height: 1.5),
                                 ),
                                 SizedBox(height: 10),
@@ -471,7 +473,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                           style: CustomTextStyle.extraBold(18, height: 1.5),
                                         ),
                                         Text(
-                                          "Current Week \n(Week ${controller.getPregnancyWeightGainData?.week ?? 0})",
+                                          "${AppLocalizations.of(context)!.currentWeek} \n(${AppLocalizations.of(context)!.week} ${controller.getPregnancyWeightGainData?.week ?? 0})",
                                           style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                           textAlign: TextAlign.center,
                                         ),
@@ -484,7 +486,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                           style: CustomTextStyle.extraBold(18, height: 1.5),
                                         ),
                                         Text(
-                                          "Next Week \n(Week ${(controller.getPregnancyWeightGainData?.week ?? 0) + 1})",
+                                          "${AppLocalizations.of(context)!.nextWeek} \n(${AppLocalizations.of(context)!.week} ${(controller.getPregnancyWeightGainData?.week ?? 0) + 1})",
                                           style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                           textAlign: TextAlign.center,
                                         ),
@@ -500,7 +502,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                         Container(
                           padding: EdgeInsets.only(left: 12.0),
                           child: Text(
-                            "Previous Record",
+                            AppLocalizations.of(context)!.previousRecord,
                             style: CustomTextStyle.extraBold(20, height: 1.5),
                           ),
                         ),
@@ -520,7 +522,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                   child: Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Text(
-                                      "Weight",
+                                      AppLocalizations.of(context)!.weight,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -531,7 +533,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                   child: Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Text(
-                                      "Date",
+                                      AppLocalizations.of(context)!.dates,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -542,19 +544,19 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                   child: Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Text(
-                                      "Week",
+                                      AppLocalizations.of(context)!.week,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
                               ),
                               DataColumn(
-                                label: Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
+                                label: Expanded(
+                                  child: Center(
                                     child: Text(
-                                      "Gain",
+                                      AppLocalizations.of(context)!.gain,
                                       textAlign: TextAlign.center,
+                                      maxLines: 2,
                                     ),
                                   ),
                                 ),
@@ -681,7 +683,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                               child: Column(
                                                                                 children: [
                                                                                   Text(
-                                                                                    "Edit Weight",
+                                                                                    AppLocalizations.of(context)!.editWeight,
                                                                                     style: CustomTextStyle.extraBold(20, height: 1.5),
                                                                                   ),
                                                                                   SizedBox(height: 20),
@@ -816,7 +818,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                       children: [
                                                                                         Text(
-                                                                                          "Selected Date",
+                                                                                          AppLocalizations.of(context)!.selectedDate,
                                                                                           style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
                                                                                         ),
                                                                                         Text(
@@ -832,7 +834,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                           children: [
                                                                                             Text(
-                                                                                              "Pregnancy Week",
+                                                                                              AppLocalizations.of(context)!.pregnancyWeek,
                                                                                               style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
                                                                                             ),
                                                                                             Text(
@@ -887,7 +889,10 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                                     ],
                                                                                   ),
                                                                                   SizedBox(height: 10),
-                                                                                  CustomButton(text: "Save", onPressed: () => controller.weeklyWeightGain(context)),
+                                                                                  CustomButton(
+                                                                                    text: AppLocalizations.of(context)!.save,
+                                                                                    onPressed: () => controller.weeklyWeightGain(context),
+                                                                                  ),
                                                                                 ],
                                                                               ),
                                                                             ),
@@ -910,7 +915,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                       children: [
                                                                         Text(
-                                                                          "Edit Weight Data",
+                                                                          AppLocalizations.of(context)!.editWeightData,
                                                                           style: CustomTextStyle.bold(14),
                                                                         ),
                                                                         Icon(Icons.edit)
@@ -937,7 +942,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                         children: [
                                                                           Text(
-                                                                            "Delete Weight Data",
+                                                                            AppLocalizations.of(context)!.deleteWeightData,
                                                                             style: CustomTextStyle.bold(14),
                                                                           ),
                                                                           Icon(Icons.delete),

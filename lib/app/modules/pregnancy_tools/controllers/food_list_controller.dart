@@ -5,6 +5,7 @@ import 'package:periodnpregnancycalender/app/repositories/local/master_food_repo
 import 'package:periodnpregnancycalender/app/services/master_food_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FoodListController extends GetxController {
   final TextEditingController searchController = TextEditingController();
@@ -35,7 +36,7 @@ class FoodListController extends GetxController {
 
   Future<void> getAllFoodList(String? foodSafety) async {
     List<MasterFood> fetchedFoodList = await _masterFoodService.getAllFood(foodSafety);
-    foodList.assignAll(fetchedFoodList); // Update the food list
+    foodList.assignAll(fetchedFoodList);
     filteredFoodList.assignAll(fetchedFoodList);
   }
 
@@ -44,6 +45,14 @@ class FoodListController extends GetxController {
     "Caution",
     "Safe",
   ];
+
+  Map<String, String> getFilterTag(BuildContext context) {
+    return {
+      "Unsafe": AppLocalizations.of(context)!.unsafe,
+      "Caution": AppLocalizations.of(context)!.caution,
+      "Safe": AppLocalizations.of(context)!.safe,
+    };
+  }
 
   var selectedTag = "".obs;
   String getSelectedTag() => selectedTag.value;

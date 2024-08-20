@@ -6,6 +6,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_textformfield.dart';
 import 'package:periodnpregnancycalender/app/modules/login/controllers/forget_password_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ForgetPasswordView extends GetView<ForgetPasswordController> {
   const ForgetPasswordView({Key? key}) : super(key: key);
@@ -45,7 +46,7 @@ class ForgetPasswordView extends GetView<ForgetPasswordController> {
                       Container(
                         width: Get.width,
                         child: Text(
-                          "Forgot your password?",
+                          AppLocalizations.of(context)!.forgetPasswordHeader,
                           style: CustomTextStyle.extraBold(24),
                           textAlign: TextAlign.left,
                         ),
@@ -54,14 +55,14 @@ class ForgetPasswordView extends GetView<ForgetPasswordController> {
                       Container(
                         width: Get.width,
                         child: Text(
-                          "Don’t worry! It happens. Please enter the email associated with your account.",
+                          AppLocalizations.of(context)!.forgetPasswordDesc,
                           style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                       ),
                       SizedBox(height: 30.h),
                       CustomTextFormField(
                         controller: controller.forgetEmailC,
-                        labelText: "Email Address",
+                        labelText: AppLocalizations.of(context)!.email,
                         validator: (value) {
                           return controller.validateForgetEmail(value!);
                         },
@@ -69,7 +70,7 @@ class ForgetPasswordView extends GetView<ForgetPasswordController> {
                       ),
                       SizedBox(height: 25.h),
                       CustomButton(
-                        text: "Send code",
+                        text: AppLocalizations.of(context)!.sendCode,
                         onPressed: () {
                           controller.checkEmailForgetPassword();
                         },

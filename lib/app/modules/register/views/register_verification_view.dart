@@ -6,6 +6,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_pinput.dart';
 import 'package:periodnpregnancycalender/app/modules/register/controllers/register_verification_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterVerificationView extends GetView<RegisterVerificationController> {
   const RegisterVerificationView({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                     Container(
                       width: Get.width,
                       child: Text(
-                        "Verification Code",
+                        AppLocalizations.of(context)!.verificationHeader,
                         style: CustomTextStyle.extraBold(24),
                         textAlign: TextAlign.left,
                       ),
@@ -43,9 +44,17 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                     Obx(
                       () => Container(
                         width: Get.width,
-                        child: Text(
-                          "Please enter verification code send to ${controller.userEmail}",
-                          style: CustomTextStyle.medium(16, height: 1.5),
+                        child: Text.rich(
+                          TextSpan(
+                            text: AppLocalizations.of(context)!.verificationDesc,
+                            style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                            children: [
+                              TextSpan(
+                                text: "${controller.userEmail}",
+                                style: CustomTextStyle.extraBold(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -57,7 +66,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                     ),
                     SizedBox(height: 25.h),
                     CustomButton(
-                      text: "Send Code",
+                      text: AppLocalizations.of(context)!.sendCode,
                       onPressed: () {
                         controller.codeVerification();
                       },
@@ -67,7 +76,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Didn’t receive any code?  ",
+                          AppLocalizations.of(context)!.codeNotReceived,
                           style: CustomTextStyle.medium(16, height: 1.5),
                         ),
                         GestureDetector(
@@ -78,7 +87,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                             }
                           },
                           child: Text(
-                            "Resend OTP  ",
+                            AppLocalizations.of(context)!.resendOTP,
                             style: CustomTextStyle.bold(16, color: AppColors.contrast),
                           ),
                         ),

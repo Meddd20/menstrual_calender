@@ -14,6 +14,7 @@ import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/pregn
 import '../controllers/analysis_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AnalysisView extends GetView {
   const AnalysisView({super.key});
@@ -36,7 +37,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              'Period Analysis',
+              AppLocalizations.of(context)!.periodAnalysis,
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -75,14 +76,14 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "My Cycle",
+                                  AppLocalizations.of(context)!.myCycle,
                                   style: CustomTextStyle.extraBold(18),
                                 ),
                                 Row(
                                   children: [
                                     Text(
-                                      "See more",
-                                      style: CustomTextStyle.bold(15, color: Colors.black.withOpacity(0.6)),
+                                      AppLocalizations.of(context)!.seeMore,
+                                      style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.6)),
                                     ),
                                     Icon(Icons.keyboard_arrow_right)
                                   ],
@@ -90,7 +91,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                               ],
                             ),
                             Text(
-                              "${homeController.data?.actualPeriod.length} cycle history logged",
+                              AppLocalizations.of(context)!.periodCycleLogged("${homeController.data?.actualPeriod.length}"),
                               style: CustomTextStyle.medium(14, height: 2.0, color: Colors.black.withOpacity(0.6)),
                             ),
                             SizedBox(height: 5),
@@ -118,8 +119,10 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "Average Cycle Length",
+                                              AppLocalizations.of(context)!.averageCycleLength,
                                               style: CustomTextStyle.extraBold(15, color: AppColors.primary),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                             SizedBox(height: 5),
                                             RichText(
@@ -130,7 +133,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                                     style: CustomTextStyle.extraBold(23),
                                                   ),
                                                   TextSpan(
-                                                    text: " days",
+                                                    text: AppLocalizations.of(context)!.daysPrefix,
                                                     style: CustomTextStyle.semiBold(14),
                                                   ),
                                                 ],
@@ -162,8 +165,10 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "Average Period Length",
+                                              AppLocalizations.of(context)!.averagePeriodLength,
                                               style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                             SizedBox(height: 5),
                                             RichText(
@@ -174,7 +179,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                                     style: CustomTextStyle.extraBold(23),
                                                   ),
                                                   TextSpan(
-                                                    text: " days",
+                                                    text: AppLocalizations.of(context)!.daysPrefix,
                                                     style: CustomTextStyle.semiBold(14),
                                                   ),
                                                 ],
@@ -215,57 +220,57 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                             children: [
                               CustomCircularCard(
                                 iconPath: 'assets/icon/bleed.png',
-                                text: "Bleeding Flow",
+                                text: AppLocalizations.of(context)!.bleedingFlow,
                                 onTap: () => Get.to(() => LogsView(), arguments: "bleeding_flow"),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/sex.png',
-                                text: "Sex Activity",
+                                text: AppLocalizations.of(context)!.sexActivity,
                                 onTap: () => Get.to(() => LogsView(), arguments: "sex_activity"),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/acne.png',
-                                text: "Symptoms",
+                                text: AppLocalizations.of(context)!.symptoms,
                                 onTap: () => Get.to(() => LogsView(), arguments: "symptoms"),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/raining.png',
-                                text: "Vaginal Discharge",
+                                text: AppLocalizations.of(context)!.vaginalDischarge,
                                 onTap: () => Get.to(() => LogsView(), arguments: "vaginal_discharge"),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/mood-changes.png',
-                                text: "Moods",
+                                text: AppLocalizations.of(context)!.moods,
                                 onTap: () => Get.to(() => LogsView(), arguments: "moods"),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/passport.png',
-                                text: "Others",
+                                text: AppLocalizations.of(context)!.others,
                                 onTap: () => Get.to(() => LogsView(), arguments: "others"),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/yoga.png',
-                                text: "Physical Activity",
+                                text: AppLocalizations.of(context)!.physicalActivity,
                                 onTap: () => Get.to(() => LogsView(), arguments: "physical_activity"),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/temperature.png',
-                                text: "Temperature",
+                                text: AppLocalizations.of(context)!.temperature,
                                 onTap: () => Get.to(() => TemperatureView()),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/weighing-machine.png',
-                                text: "Weight",
+                                text: AppLocalizations.of(context)!.weight,
                                 onTap: () => Get.to(() => WeightView()),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/alarm.png',
-                                text: "Reminder",
+                                text: AppLocalizations.of(context)!.reminder,
                                 onTap: () => Get.to(() => ReminderView()),
                               ),
                               CustomCircularCard(
                                 iconPath: 'assets/icon/notes.png',
-                                text: "Notes",
+                                text: AppLocalizations.of(context)!.notes,
                                 onTap: () => Get.to(() => NotesView()),
                               ),
                             ],

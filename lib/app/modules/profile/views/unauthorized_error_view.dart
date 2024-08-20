@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/controllers/profile_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UnauthorizedErrorView extends GetView<ProfileController> {
   const UnauthorizedErrorView({super.key});
@@ -26,23 +27,21 @@ class UnauthorizedErrorView extends GetView<ProfileController> {
               ),
               SizedBox(height: 30),
               Text(
-                "Account Activity Detected",
+                AppLocalizations.of(context)!.accountActivityDetected,
                 style: CustomTextStyle.extraBold(24, height: 1.75),
                 textAlign: TextAlign.center,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
                 child: Text(
-                  "We detected a login on another device. Please sign in again to secure your account.",
+                  AppLocalizations.of(context)!.accountActivityDetectedDesc,
                   style: CustomTextStyle.medium(16, height: 1.75, color: Colors.black.withOpacity(0.6)),
                   textAlign: TextAlign.center,
                 ),
               ),
               SizedBox(height: 15),
               ElevatedButton(
-                onPressed: () {
-                  controller.performLogout();
-                },
+                onPressed: () => controller.performLogout(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   elevation: 0,
@@ -53,7 +52,7 @@ class UnauthorizedErrorView extends GetView<ProfileController> {
                   minimumSize: Size(Get.width / 2, 50.h),
                 ),
                 child: Text(
-                  "Logout",
+                  AppLocalizations.of(context)!.logout,
                   style: CustomTextStyle.bold(16, color: Colors.white),
                 ),
               ),

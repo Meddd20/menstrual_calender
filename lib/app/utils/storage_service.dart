@@ -162,4 +162,22 @@ class StorageService {
     int minorVersionVitamin = box.read("minorVersionVitamin") ?? 0;
     return minorVersionVitamin;
   }
+
+  void setPin(bool pinSecure) {
+    box.write("pinSecure", pinSecure);
+  }
+
+  bool isPinSecure() {
+    bool pinSecure = box.read("pinSecure") ?? false;
+    return pinSecure;
+  }
+
+  void currentPin(String pin) {
+    box.write("pin", pin);
+  }
+
+  String getCurrentPin() {
+    String? pin = box.read("pin");
+    return pin ?? "";
+  }
 }

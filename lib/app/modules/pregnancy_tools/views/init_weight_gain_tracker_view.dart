@@ -7,6 +7,7 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/weight_tracker_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
   final String? isTwin;
@@ -26,19 +27,19 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
           child: Column(
             children: [
               Text(
-                "Pregnancy Weight Gain Tracker",
+                AppLocalizations.of(context)!.pregnancyWeightGainTracker,
                 style: CustomTextStyle.extraBold(24, height: 1.5),
                 textAlign: TextAlign.left,
               ),
               SizedBox(height: 10),
               Text(
-                "The pregnancy weight gain tracker monitors and records a pregnant woman's weight throughout her pregnancy using BMI to categorize weight status.",
+                AppLocalizations.of(context)!.pregnancyWeightGainTrackerDesc,
                 style: CustomTextStyle.medium(14, height: 1.75, color: Colors.black.withOpacity(0.6)),
                 textAlign: TextAlign.left,
               ),
               SizedBox(height: 40),
               Text(
-                "Enter your height and pre-pregnancy weight",
+                AppLocalizations.of(context)!.countBMI,
                 style: CustomTextStyle.extraBold(18, height: 1.5),
                 textAlign: TextAlign.left,
               ),
@@ -49,7 +50,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                     child: Column(
                       children: [
                         Text(
-                          "Pre-pregnancy weight",
+                          AppLocalizations.of(context)!.prePregnancyWeight,
                           style: CustomTextStyle.bold(14, height: 1.5),
                           textAlign: TextAlign.center,
                         ),
@@ -67,7 +68,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                       child: Column(
                                         children: [
                                           Text(
-                                            "Add Pre-Pregnancy Weight",
+                                            AppLocalizations.of(context)!.addPrePregnancyWeight,
                                             style: CustomTextStyle.bold(20, height: 1.5),
                                           ),
                                           SizedBox(height: 20),
@@ -123,7 +124,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                     Padding(
                                       padding: const EdgeInsets.all(16.0),
                                       child: CustomButton(
-                                        text: "Add",
+                                        text: AppLocalizations.of(context)!.add,
                                         onPressed: () {
                                           controller.updateWeight();
                                           Get.back();
@@ -150,7 +151,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                               child: Obx(() {
                                 final weight = controller.getWeight();
                                 return Text(
-                                  (weight != 0.0) ? "$weight Kg" : "Weight",
+                                  (weight != 0.0) ? "$weight Kg" : AppLocalizations.of(context)!.weight,
                                   style: CustomTextStyle.bold(16, height: 1.75, color: (weight != 0.0) ? Colors.black : Colors.black.withOpacity(0.6)),
                                 );
                               }),
@@ -165,7 +166,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                     child: Column(
                       children: [
                         Text(
-                          "Your height",
+                          AppLocalizations.of(context)!.yourHeight,
                           style: CustomTextStyle.bold(14, height: 1.5),
                           textAlign: TextAlign.center,
                         ),
@@ -183,7 +184,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                "Add Height",
+                                                AppLocalizations.of(context)!.addHeight,
                                                 style: CustomTextStyle.bold(20, height: 1.5),
                                               ),
                                               SizedBox(height: 20),
@@ -237,7 +238,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                     Padding(
                                       padding: const EdgeInsets.all(16.0),
                                       child: CustomButton(
-                                        text: "Add",
+                                        text: AppLocalizations.of(context)!.add,
                                         onPressed: () {
                                           controller.updateHeight();
                                           Get.back();
@@ -264,7 +265,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                               child: Obx(() {
                                 final height = controller.getHeight();
                                 return Text(
-                                  (height != 0.0) ? "$height cm" : "Height",
+                                  (height != 0.0) ? "$height cm" : AppLocalizations.of(context)!.height,
                                   style: CustomTextStyle.bold(16, height: 1.75, color: (height != 0.0) ? Colors.black : Colors.black.withOpacity(0.6)),
                                 );
                               }),
@@ -281,7 +282,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Pregnant with twin baby?",
+                    AppLocalizations.of(context)!.twinBaby,
                     style: CustomTextStyle.bold(14, height: 1.5),
                     textAlign: TextAlign.center,
                   ),
@@ -297,7 +298,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
               ),
               SizedBox(height: 50.h),
               CustomButton(
-                text: "Send",
+                text: AppLocalizations.of(context)!.send,
                 onPressed: () {
                   controller.initializeWeightGain(context);
                 },

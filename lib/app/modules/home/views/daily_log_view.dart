@@ -14,6 +14,7 @@ import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/daily_log_controller.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DailyLogView extends GetView<DailyLogController> {
   final HomeMenstruationController homeController;
@@ -317,7 +318,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                       Container(
                                         width: Get.width,
                                         child: Text(
-                                          "Sex Activity",
+                                          AppLocalizations.of(context)!.sexActivity,
                                           style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
@@ -328,21 +329,20 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Wrap(
                                             alignment: WrapAlignment.start,
                                             spacing: 8.0,
-                                            children: controller.sexActivity
-                                                .map(
-                                                  (activity) => CustomChoiceChip(
-                                                    label: activity,
-                                                    isSelected: controller.getSelectedSexActivity() == activity,
-                                                    onSelected: () {
-                                                      if (controller.getSelectedSexActivity() == activity) {
-                                                        controller.setSelectedSexActivity("");
-                                                      } else {
-                                                        controller.setSelectedSexActivity(activity);
-                                                      }
-                                                    },
-                                                  ),
-                                                )
-                                                .toList(),
+                                            children: controller.sexActivity.map((activity) {
+                                              final sexActivityTranslations = controller.sexActivityTranslations(context);
+                                              return CustomChoiceChip(
+                                                label: sexActivityTranslations[activity] ?? activity,
+                                                isSelected: controller.getSelectedSexActivity() == activity,
+                                                onSelected: () {
+                                                  if (controller.getSelectedSexActivity() == activity) {
+                                                    controller.setSelectedSexActivity("");
+                                                  } else {
+                                                    controller.setSelectedSexActivity(activity);
+                                                  }
+                                                },
+                                              );
+                                            }).toList(),
                                           ),
                                         ),
                                       ),
@@ -369,7 +369,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                           Container(
                                             width: Get.width,
                                             child: Text(
-                                              "Bleeding Flow",
+                                              AppLocalizations.of(context)!.bleedingFlow,
                                               style: CustomTextStyle.bold(20, height: 1.5),
                                             ),
                                           ),
@@ -380,21 +380,22 @@ class DailyLogView extends GetView<DailyLogController> {
                                               child: Wrap(
                                                 alignment: WrapAlignment.start,
                                                 spacing: 8.0,
-                                                children: controller.bleedingFlow
-                                                    .map(
-                                                      (bleedingFlow) => CustomChoiceChip(
-                                                        label: bleedingFlow,
-                                                        isSelected: controller.getSelectedBleedingFlow() == bleedingFlow,
-                                                        onSelected: () {
-                                                          if (controller.getSelectedBleedingFlow() == bleedingFlow) {
-                                                            controller.setSelectedBleedingFlow("");
-                                                          } else {
-                                                            controller.setSelectedBleedingFlow(bleedingFlow);
-                                                          }
-                                                        },
-                                                      ),
-                                                    )
-                                                    .toList(),
+                                                children: controller.bleedingFlow.map(
+                                                  (bleedingFlow) {
+                                                    final vaginalDischargeTranslations = controller.bleedingFlowTranslations(context);
+                                                    return CustomChoiceChip(
+                                                      label: vaginalDischargeTranslations[bleedingFlow] ?? bleedingFlow,
+                                                      isSelected: controller.getSelectedBleedingFlow() == bleedingFlow,
+                                                      onSelected: () {
+                                                        if (controller.getSelectedBleedingFlow() == bleedingFlow) {
+                                                          controller.setSelectedBleedingFlow("");
+                                                        } else {
+                                                          controller.setSelectedBleedingFlow(bleedingFlow);
+                                                        }
+                                                      },
+                                                    );
+                                                  },
+                                                ).toList(),
                                               ),
                                             ),
                                           ),
@@ -419,7 +420,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                       Container(
                                         width: Get.width,
                                         child: Text(
-                                          "Symptoms",
+                                          AppLocalizations.of(context)!.symptoms,
                                           style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
@@ -430,26 +431,27 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Wrap(
                                             alignment: WrapAlignment.start,
                                             spacing: 8.0,
-                                            children: controller.symptoms
-                                                .map(
-                                                  (symptoms) => CustomFilterChip(
-                                                    label: symptoms,
-                                                    isSelected: controller.getSelectedSymptoms().contains(symptoms),
-                                                    onSelected: (bool isSelected) {
-                                                      List<String> selectedSymptoms = List.from(controller.getSelectedSymptoms());
+                                            children: controller.symptoms.map(
+                                              (symptoms) {
+                                                final symptomsTranslations = controller.symptomsTranslations(context);
+                                                return CustomFilterChip(
+                                                  label: symptomsTranslations[symptoms] ?? symptoms,
+                                                  isSelected: controller.getSelectedSymptoms().contains(symptoms),
+                                                  onSelected: (bool isSelected) {
+                                                    List<String> selectedSymptoms = List.from(controller.getSelectedSymptoms());
 
-                                                      if (selectedSymptoms.contains(symptoms)) {
-                                                        selectedSymptoms.remove(symptoms);
-                                                      } else {
-                                                        selectedSymptoms.add(symptoms);
-                                                      }
+                                                    if (selectedSymptoms.contains(symptoms)) {
+                                                      selectedSymptoms.remove(symptoms);
+                                                    } else {
+                                                      selectedSymptoms.add(symptoms);
+                                                    }
 
-                                                      controller.setSelectedSymptoms(selectedSymptoms);
-                                                      controller.update();
-                                                    },
-                                                  ),
-                                                )
-                                                .toList(),
+                                                    controller.setSelectedSymptoms(selectedSymptoms);
+                                                    controller.update();
+                                                  },
+                                                );
+                                              },
+                                            ).toList(),
                                           ),
                                         ),
                                       ),
@@ -473,7 +475,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                       Container(
                                         width: Get.width,
                                         child: Text(
-                                          "Vaginal Discharge",
+                                          AppLocalizations.of(context)!.vaginalDischarge,
                                           style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
@@ -484,21 +486,22 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Wrap(
                                             alignment: WrapAlignment.start,
                                             spacing: 8.0,
-                                            children: controller.vaginalDischarge
-                                                .map(
-                                                  (vaginalDischarge) => CustomChoiceChip(
-                                                    label: vaginalDischarge,
-                                                    isSelected: controller.getSelectedVaginalDischarge() == vaginalDischarge,
-                                                    onSelected: () {
-                                                      if (controller.getSelectedVaginalDischarge() == vaginalDischarge) {
-                                                        controller.setSelectedVaginalDischarge("");
-                                                      } else {
-                                                        controller.setSelectedVaginalDischarge(vaginalDischarge);
-                                                      }
-                                                    },
-                                                  ),
-                                                )
-                                                .toList(),
+                                            children: controller.vaginalDischarge.map(
+                                              (vaginalDischarge) {
+                                                final vaginalDischargeTranslations = controller.vaginalDischargeTranslations(context);
+                                                return CustomChoiceChip(
+                                                  label: vaginalDischargeTranslations[vaginalDischarge] ?? vaginalDischarge,
+                                                  isSelected: controller.getSelectedVaginalDischarge() == vaginalDischarge,
+                                                  onSelected: () {
+                                                    if (controller.getSelectedVaginalDischarge() == vaginalDischarge) {
+                                                      controller.setSelectedVaginalDischarge("");
+                                                    } else {
+                                                      controller.setSelectedVaginalDischarge(vaginalDischarge);
+                                                    }
+                                                  },
+                                                );
+                                              },
+                                            ).toList(),
                                           ),
                                         ),
                                       ),
@@ -521,7 +524,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                       Container(
                                         width: Get.width,
                                         child: Text(
-                                          "Moods",
+                                          AppLocalizations.of(context)!.moods,
                                           style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
@@ -532,26 +535,27 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Wrap(
                                             alignment: WrapAlignment.start,
                                             spacing: 8.0,
-                                            children: controller.moods
-                                                .map(
-                                                  (moods) => CustomFilterChip(
-                                                    label: moods,
-                                                    isSelected: controller.getSelectedMoods().contains(moods),
-                                                    onSelected: (bool isSelected) {
-                                                      List<String> selectedMoods = List.from(controller.getSelectedMoods());
+                                            children: controller.moods.map(
+                                              (moods) {
+                                                final moodsTranslations = controller.moodsTranslations(context);
+                                                return CustomFilterChip(
+                                                  label: moodsTranslations[moods] ?? moods,
+                                                  isSelected: controller.getSelectedMoods().contains(moods),
+                                                  onSelected: (bool isSelected) {
+                                                    List<String> selectedMoods = List.from(controller.getSelectedMoods());
 
-                                                      if (selectedMoods.contains(moods)) {
-                                                        selectedMoods.remove(moods);
-                                                      } else {
-                                                        selectedMoods.add(moods);
-                                                      }
+                                                    if (selectedMoods.contains(moods)) {
+                                                      selectedMoods.remove(moods);
+                                                    } else {
+                                                      selectedMoods.add(moods);
+                                                    }
 
-                                                      controller.setSelectedMoods(selectedMoods);
-                                                      controller.update();
-                                                    },
-                                                  ),
-                                                )
-                                                .toList(),
+                                                    controller.setSelectedMoods(selectedMoods);
+                                                    controller.update();
+                                                  },
+                                                );
+                                              },
+                                            ).toList(),
                                           ),
                                         ),
                                       ),
@@ -574,7 +578,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                       Container(
                                         width: Get.width,
                                         child: Text(
-                                          "Others",
+                                          AppLocalizations.of(context)!.others,
                                           style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
@@ -585,26 +589,27 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Wrap(
                                             alignment: WrapAlignment.start,
                                             spacing: 8.0,
-                                            children: controller.others
-                                                .map(
-                                                  (others) => CustomFilterChip(
-                                                    label: others,
-                                                    isSelected: controller.getSelectedOthers().contains(others),
-                                                    onSelected: (bool isSelected) {
-                                                      List<String> selectedOthers = List.from(controller.getSelectedOthers());
+                                            children: controller.others.map(
+                                              (others) {
+                                                final othersTranslations = controller.othersTranslations(context);
+                                                return CustomFilterChip(
+                                                  label: othersTranslations[others] ?? others,
+                                                  isSelected: controller.getSelectedOthers().contains(others),
+                                                  onSelected: (bool isSelected) {
+                                                    List<String> selectedOthers = List.from(controller.getSelectedOthers());
 
-                                                      if (selectedOthers.contains(others)) {
-                                                        selectedOthers.remove(others);
-                                                      } else {
-                                                        selectedOthers.add(others);
-                                                      }
+                                                    if (selectedOthers.contains(others)) {
+                                                      selectedOthers.remove(others);
+                                                    } else {
+                                                      selectedOthers.add(others);
+                                                    }
 
-                                                      controller.setSelectedOthers(selectedOthers);
-                                                      controller.update();
-                                                    },
-                                                  ),
-                                                )
-                                                .toList(),
+                                                    controller.setSelectedOthers(selectedOthers);
+                                                    controller.update();
+                                                  },
+                                                );
+                                              },
+                                            ).toList(),
                                           ),
                                         ),
                                       ),
@@ -627,7 +632,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                       Container(
                                         width: Get.width,
                                         child: Text(
-                                          "Physical Activity",
+                                          AppLocalizations.of(context)!.physicalActivity,
                                           style: CustomTextStyle.bold(20, height: 1.5),
                                         ),
                                       ),
@@ -638,26 +643,27 @@ class DailyLogView extends GetView<DailyLogController> {
                                           child: Wrap(
                                             alignment: WrapAlignment.start,
                                             spacing: 8.0,
-                                            children: controller.physicalActivity
-                                                .map(
-                                                  (physicalActivity) => CustomFilterChip(
-                                                    label: physicalActivity,
-                                                    isSelected: controller.getSelectedPhysicalActivity().contains(physicalActivity),
-                                                    onSelected: (bool isSelected) {
-                                                      List<String> selectedPhysicalActivity = List.from(controller.getSelectedPhysicalActivity());
+                                            children: controller.physicalActivity.map(
+                                              (physicalActivity) {
+                                                final physicalActivityTranslations = controller.physicalActivityTranslations(context);
+                                                return CustomFilterChip(
+                                                  label: physicalActivityTranslations[physicalActivity] ?? physicalActivity,
+                                                  isSelected: controller.getSelectedPhysicalActivity().contains(physicalActivity),
+                                                  onSelected: (bool isSelected) {
+                                                    List<String> selectedPhysicalActivity = List.from(controller.getSelectedPhysicalActivity());
 
-                                                      if (selectedPhysicalActivity.contains(physicalActivity)) {
-                                                        selectedPhysicalActivity.remove(physicalActivity);
-                                                      } else {
-                                                        selectedPhysicalActivity.add(physicalActivity);
-                                                      }
+                                                    if (selectedPhysicalActivity.contains(physicalActivity)) {
+                                                      selectedPhysicalActivity.remove(physicalActivity);
+                                                    } else {
+                                                      selectedPhysicalActivity.add(physicalActivity);
+                                                    }
 
-                                                      controller.setSelectedPhysicalActivity(selectedPhysicalActivity);
-                                                      controller.update();
-                                                    },
-                                                  ),
-                                                )
-                                                .toList(),
+                                                    controller.setSelectedPhysicalActivity(selectedPhysicalActivity);
+                                                    controller.update();
+                                                  },
+                                                );
+                                              },
+                                            ).toList(),
                                           ),
                                         ),
                                       ),
@@ -690,7 +696,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                     ),
                                                     SizedBox(height: 10.h),
                                                     Text(
-                                                      "Basal Temperature",
+                                                      AppLocalizations.of(context)!.basalTemperature,
                                                       style: CustomTextStyle.bold(20, height: 1.5),
                                                     ),
                                                     SizedBox(height: 10.h),
@@ -743,7 +749,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                     ),
                                                     SizedBox(height: 30.h),
                                                     CustomButton(
-                                                      text: "Save Temperature",
+                                                      text: AppLocalizations.of(context)!.saveTemperature,
                                                       onPressed: () {
                                                         controller.updateTemperature();
                                                         Navigator.pop(context, true);
@@ -786,7 +792,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
                                                               Text(
-                                                                "Temperature",
+                                                                AppLocalizations.of(context)!.temperature,
                                                                 style: CustomTextStyle.bold(20, height: 1.75),
                                                               ),
                                                               Text.rich(
@@ -804,7 +810,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             ],
                                                           )
                                                         : Text(
-                                                            "Temperature",
+                                                            AppLocalizations.of(context)!.temperature,
                                                             style: CustomTextStyle.bold(18, height: 1.5),
                                                           );
                                                   }),
@@ -845,7 +851,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                       ),
                                                       SizedBox(height: 10.h),
                                                       Text(
-                                                        "My Weight",
+                                                        AppLocalizations.of(context)!.myWeight,
                                                         style: CustomTextStyle.bold(20, height: 1.5),
                                                       ),
                                                       SizedBox(height: 10.h),
@@ -898,7 +904,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                       ),
                                                       SizedBox(height: 30.h),
                                                       CustomButton(
-                                                        text: "Save Weight",
+                                                        text: AppLocalizations.of(context)!.saveWeight,
                                                         onPressed: () {
                                                           controller.updateWeight();
                                                           Navigator.pop(context, true);
@@ -942,7 +948,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
                                                               Text(
-                                                                "Weight",
+                                                                AppLocalizations.of(context)!.weight,
                                                                 style: CustomTextStyle.bold(20, height: 1.75),
                                                               ),
                                                               Text.rich(
@@ -960,7 +966,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                             ],
                                                           )
                                                         : Text(
-                                                            "Weight",
+                                                            AppLocalizations.of(context)!.weight,
                                                             style: CustomTextStyle.bold(18, height: 1.5),
                                                           );
                                                   }),
@@ -995,7 +1001,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 ),
                                                 SizedBox(height: 10.h),
                                                 Text(
-                                                  "Daily Notes",
+                                                  AppLocalizations.of(context)!.dailyNotes,
                                                   style: CustomTextStyle.bold(20, height: 1.5),
                                                 ),
                                                 SizedBox(height: 20.h),
@@ -1013,7 +1019,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 ),
                                                 SizedBox(height: 25.h),
                                                 CustomButton(
-                                                  text: "Save notes",
+                                                  text: AppLocalizations.of(context)!.saveNotes,
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
@@ -1048,7 +1054,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "Daily Notes",
+                                                    AppLocalizations.of(context)!.dailyNotes,
                                                     style: CustomTextStyle.bold(18, height: 1.75),
                                                   ),
                                                   Obx(
@@ -1096,7 +1102,7 @@ class DailyLogView extends GetView<DailyLogController> {
                         color: Colors.white,
                         padding: EdgeInsets.all(16.0),
                         child: CustomButton(
-                          text: "Add Daily Log",
+                          text: AppLocalizations.of(context)!.addDailyLog,
                           onPressed: () {
                             controller.saveLog();
                           },

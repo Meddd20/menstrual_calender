@@ -5,6 +5,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_textformfield.dart';
 import 'package:periodnpregnancycalender/app/modules/login/controllers/reset_password_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ResetPasswordView extends GetView<ResetPasswordController> {
   const ResetPasswordView({Key? key}) : super(key: key);
@@ -35,7 +36,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                       Container(
                         width: Get.width,
                         child: Text(
-                          "Enter Your New Password",
+                          AppLocalizations.of(context)!.changePasswordHeader,
                           style: CustomTextStyle.extraBold(24),
                           textAlign: TextAlign.left,
                         ),
@@ -44,7 +45,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                       Container(
                         width: Get.width,
                         child: Text(
-                          "Please enter your new password. Make it secure and easy to remember.",
+                          AppLocalizations.of(context)!.changePasswordDesc,
                           style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                       ),
@@ -52,7 +53,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                       Obx(
                         () => CustomTextFormField(
                           controller: controller.newPasswordC,
-                          labelText: "New Password",
+                          labelText: AppLocalizations.of(context)!.newPassword,
                           obscureText: controller.isHidden.value,
                           suffixIcon: IconButton(
                             onPressed: () => controller.isHidden.toggle(),
@@ -66,7 +67,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                       SizedBox(height: 15.h),
                       CustomTextFormField(
                         controller: controller.newPasswordConfirmationC,
-                        labelText: "Confirmation New Password",
+                        labelText: AppLocalizations.of(context)!.passwordConfirmation,
                         obscureText: true,
                         validator: (value) {
                           return controller.NewPasswordValidation(value!);
@@ -74,7 +75,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                       ),
                       SizedBox(height: 25.h),
                       CustomButton(
-                        text: "Confirm your new password",
+                        text: AppLocalizations.of(context)!.confirmNewPassword,
                         onPressed: () {
                           controller.checkNewPassword();
                         },

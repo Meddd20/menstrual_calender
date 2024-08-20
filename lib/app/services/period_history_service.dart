@@ -10,6 +10,7 @@ import 'package:periodnpregnancycalender/app/repositories/local/period_history_r
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PeriodHistoryService {
   final PeriodHistoryRepository _periodHistoryRepository;
@@ -556,8 +557,8 @@ class PeriodHistoryService {
         }
 
         if (specifiedDate.isAfter(periodStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(periodEnd.add(Duration(days: 1)))) {
-          event = 'Menstruation Phase';
-          pregnancyChances = "Low";
+          event = storageService.getLanguage() == "en" ? "Menstruation Phase" : "Masa Menstruasi";
+          pregnancyChances = storageService.getLanguage() == "en" ? "Low" : "Rendah";
           currentDataIsActual = periodHistory.isActual ?? '';
           eventId = periodHistory.id ?? 0;
 
@@ -590,8 +591,14 @@ class PeriodHistoryService {
         }
 
         if (specifiedDate.isAfter(fertileStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(fertileEnd.add(Duration(days: 1)))) {
-          event = specifiedDate.isAtSameMomentAs(ovulation) ? 'Ovulation' : 'Fertile Phase';
-          pregnancyChances = "High";
+          event = specifiedDate.isAtSameMomentAs(ovulation)
+              ? storageService.getLanguage() == "en"
+                  ? "Ovulation"
+                  : "Ovulasi"
+              : storageService.getLanguage() == "en"
+                  ? "Fertile Phase"
+                  : "Masa Subur";
+          pregnancyChances = storageService.getLanguage() == "en" ? "High" : "Tinggi";
           currentDataIsActual = periodHistory.isActual ?? '';
           eventId = periodHistory.id ?? 0;
 
@@ -629,8 +636,8 @@ class PeriodHistoryService {
         }
 
         if ((specifiedDate.isAfter(follicularStart) && specifiedDate.isBefore(follicularEnd)) || specifiedDate.isAtSameMomentAs(follicularStart) || specifiedDate.isAtSameMomentAs(follicularEnd)) {
-          event = 'Follicular Phase';
-          pregnancyChances = "Low";
+          event = storageService.getLanguage() == "en" ? "Follicular Phase" : "Fase Folikuler";
+          pregnancyChances = storageService.getLanguage() == "en" ? "Low" : "Rendah";
           currentDataIsActual = periodHistory.isActual ?? '';
           eventId = periodHistory.id ?? 0;
 
@@ -664,8 +671,8 @@ class PeriodHistoryService {
         }
 
         if (specifiedDate.isAfter(lutealStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(lutealEnd.add(Duration(days: 1)))) {
-          event = 'Luteal Phase';
-          pregnancyChances = "Low";
+          event = storageService.getLanguage() == "en" ? "Luteal Phase" : "Fase Luteal";
+          pregnancyChances = storageService.getLanguage() == "en" ? "Low" : "Rendah";
           currentDataIsActual = periodHistory.isActual ?? '';
           eventId = periodHistory.id ?? 0;
 

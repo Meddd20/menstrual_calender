@@ -8,6 +8,7 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/insight/controllers/insight_detail_controller.dart';
 import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InsightDetailView extends GetView<InsightDetailController> {
   const InsightDetailView({Key? key}) : super(key: key);
@@ -68,7 +69,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                 style: CustomTextStyle.medium(15, height: 1.75),
                                               ),
                                               TextSpan(
-                                                text: "${controller.data?.tags ?? ""}",
+                                                text: controller.getTagTranslations(context)[controller.data?.tags],
                                                 style: CustomTextStyle.semiBold(15, color: Colors.blue, height: 1.75),
                                               ),
                                             ],
@@ -97,7 +98,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                         SizedBox(height: 10.h),
                                         if (controller.data?.source != "") ...[
                                           Text(
-                                            "References",
+                                            AppLocalizations.of(context)!.references,
                                             textAlign: TextAlign.left,
                                             style: CustomTextStyle.extraBold(20, height: 1.75),
                                           ),
@@ -109,7 +110,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                         ],
                                         SizedBox(height: 10.h),
                                         Text(
-                                          "Comments (${controller.comment.length})",
+                                          AppLocalizations.of(context)!.comments("(${controller.comment.length})"),
                                           textAlign: TextAlign.left,
                                           style: CustomTextStyle.extraBold(20, height: 1.75),
                                         ),
@@ -166,7 +167,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                             children: [
                                                                               Text(
-                                                                                "Delete comment",
+                                                                                AppLocalizations.of(context)!.deleteComment,
                                                                                 style: CustomTextStyle.bold(14),
                                                                               ),
                                                                               Icon(Icons.delete)
@@ -225,7 +226,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                                     controller.focusNode.requestFocus();
                                                                   },
                                                                   child: Text(
-                                                                    "Reply",
+                                                                    AppLocalizations.of(context)!.reply,
                                                                     style: CustomTextStyle.extraBold(14, height: 1.5, color: AppColors.black.withOpacity(0.5)),
                                                                   ),
                                                                 ),
@@ -284,7 +285,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                                   ),
                                                                 ),
                                                                 TextSpan(
-                                                                  text: controller.isRepliesVisible(index) ? '  Hide replies' : '  View ${comment.children?.length} replies',
+                                                                  text: controller.isRepliesVisible(index) ? AppLocalizations.of(context)!.hideReplies : AppLocalizations.of(context)!.viewReplies("${comment.children?.length}"),
                                                                   style: CustomTextStyle.medium(14, height: 1.5, color: AppColors.black.withOpacity(0.5)),
                                                                 ),
                                                               ],
@@ -340,7 +341,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                           children: [
                                                                                             Text(
-                                                                                              "Delete comment",
+                                                                                              AppLocalizations.of(context)!.deleteComment,
                                                                                               style: CustomTextStyle.bold(14),
                                                                                             ),
                                                                                             Icon(Icons.delete)
@@ -411,7 +412,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                                                                   controller.focusNode.requestFocus();
                                                                                 },
                                                                                 child: Text(
-                                                                                  "Reply",
+                                                                                  AppLocalizations.of(context)!.reply,
                                                                                   style: CustomTextStyle.extraBold(14, height: 1.5, color: AppColors.black.withOpacity(0.5)),
                                                                                 ),
                                                                               ),
@@ -489,7 +490,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Replying to ${controller.getCommentUsername()}\'s comment",
+                                  AppLocalizations.of(context)!.replyToComment("${controller.getCommentUsername()}"),
                                   style: CustomTextStyle.semiBold(14, height: 1.5, color: AppColors.black.withOpacity(0.5)),
                                 ),
                                 IconButton(
@@ -518,7 +519,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                           },
                           focusNode: controller.focusNode,
                           decoration: InputDecoration(
-                            hintText: 'Leave your thoughts...',
+                            hintText: AppLocalizations.of(context)!.leaveYourThoughts,
                             border: OutlineInputBorder(
                               borderSide: const BorderSide(color: Colors.black),
                               borderRadius: BorderRadius.circular(12),

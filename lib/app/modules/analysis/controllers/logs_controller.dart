@@ -8,6 +8,7 @@ import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LogsController extends GetxController {
   final ApiService apiService = ApiService();
@@ -52,7 +53,6 @@ class LogsController extends GetxController {
     specifiedDataByDate();
 
     selectedDataTags = RxString(Get.arguments as String);
-    pageTags();
     fetchMoods();
     super.onInit();
   }
@@ -183,23 +183,23 @@ class LogsController extends GetxController {
     return specificMoodsData;
   }
 
-  String pageTags() {
+  String pageTags(context) {
     if (selectedDataTags == "bleeding_flow") {
-      return "Bleeding Flow";
+      return AppLocalizations.of(context)!.bleedingFlow;
     } else if (selectedDataTags == "sex_activity") {
-      return "Sex Activity";
+      return AppLocalizations.of(context)!.sexActivity;
     } else if (selectedDataTags == "symptoms") {
-      return "Symptoms";
+      return AppLocalizations.of(context)!.symptoms;
     } else if (selectedDataTags == "vaginal_discharge") {
-      return "Vaginal Discharge";
+      return AppLocalizations.of(context)!.vaginalDischarge;
     } else if (selectedDataTags == "moods") {
-      return "Moods";
+      return AppLocalizations.of(context)!.moods;
     } else if (selectedDataTags == "others") {
-      return "Others";
+      return AppLocalizations.of(context)!.others;
     } else if (selectedDataTags == "physical_activity") {
-      return "Physical Activity";
+      return AppLocalizations.of(context)!.physicalActivity;
     } else {
-      return "Bleeding Flow";
+      return AppLocalizations.of(context)!.bleedingFlow;
     }
   }
 
@@ -207,17 +207,12 @@ class LogsController extends GetxController {
     try {
       DailyLogTagsData? result = await _logService.getLogsByTags(selectedDataTags.value);
 
-      if (result != null) {
-        moods.value = result.logs;
-        percentage30Days.value = result.percentage30Days ?? {};
-        percentage3Months.value = result.percentage3Months ?? {};
-        percentage6Months.value = result.percentage6Months ?? {};
-        percentage1Year.value = result.percentage1Year ?? {};
-      } else {
-        print("Error: Unable to fetch moods");
-      }
+      moods.value = result.logs;
+      percentage30Days.value = result.percentage30Days ?? {};
+      percentage3Months.value = result.percentage3Months ?? {};
+      percentage6Months.value = result.percentage6Months ?? {};
+      percentage1Year.value = result.percentage1Year ?? {};
       specifiedDataByDate();
-
       update();
     } catch (error) {
       print("Error: $error");

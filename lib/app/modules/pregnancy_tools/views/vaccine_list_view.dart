@@ -6,6 +6,7 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/vaccine_list_controller.dart';
 import 'package:readmore/readmore.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class VaccineListView extends GetView<VaccineListController> {
   const VaccineListView({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class VaccineListView extends GetView<VaccineListController> {
             title: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Text(
-                'Pregnancy Vaccine Guide',
+                AppLocalizations.of(context)!.pregnancyVaccineGuide,
                 style: CustomTextStyle.extraBold(22),
               ),
             ),
@@ -34,7 +35,7 @@ class VaccineListView extends GetView<VaccineListController> {
               child: Column(
                 children: [
                   Text(
-                    'Shows recommended vaccines for pregnant women, including their benefits and timing for optimal protection.',
+                    AppLocalizations.of(context)!.pregnancyVaccineGuideDesc,
                     style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                   ),
                   SizedBox(height: 20),
@@ -53,7 +54,13 @@ class VaccineListView extends GetView<VaccineListController> {
                 );
               } else if (!snapshot.hasData) {
                 return SliverToBoxAdapter(
-                  child: Center(child: Text('No data available')),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.notFoundDesc,
+                      style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 );
               } else {
                 return SliverPadding(
@@ -84,8 +91,8 @@ class VaccineListView extends GetView<VaccineListController> {
                                       trimLines: 4,
                                       colorClickableText: Colors.blue,
                                       trimMode: TrimMode.Line,
-                                      trimCollapsedText: '...Read more',
-                                      trimExpandedText: ' Show less',
+                                      trimCollapsedText: AppLocalizations.of(context)!.readMore,
+                                      trimExpandedText: AppLocalizations.of(context)!.showLess,
                                       moreStyle: CustomTextStyle.bold(14, height: 1.75, color: Colors.blue),
                                       lessStyle: CustomTextStyle.bold(14, height: 1.75, color: Colors.blue),
                                       style: CustomTextStyle.regular(14, height: 1.75),

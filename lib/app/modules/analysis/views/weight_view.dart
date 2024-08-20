@@ -9,6 +9,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dar
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/weight_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WeightView extends GetView<WeightController> {
   const WeightView({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class WeightView extends GetView<WeightController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              "Weight",
+              AppLocalizations.of(context)!.weight,
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -45,18 +46,18 @@ class WeightView extends GetView<WeightController> {
             children: [
               SizedBox(height: 10),
               Text(
-                "Total Entries",
+                AppLocalizations.of(context)!.totalEntries,
                 style: CustomTextStyle.medium(15, color: Colors.black.withOpacity(0.6)),
               ),
               Obx(
                 () => Text(
-                  "${controller.specificWeightData.entries.length} Entries",
+                  AppLocalizations.of(context)!.totalEntriesData("${controller.specificWeightData.entries.length}"),
                   style: CustomTextStyle.extraBold(26, height: 1.75),
                 ),
               ),
               Obx(
                 () => Text(
-                  "from ${controller.formatDate(controller.selectedDate.value)} up to today",
+                  AppLocalizations.of(context)!.entriesFromDate("${controller.formatDate(controller.selectedDate.value)}"),
                   style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
                 ),
               ),
@@ -81,12 +82,12 @@ class WeightView extends GetView<WeightController> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  'Date: ${entry.key}',
+                                  AppLocalizations.of(context)!.date("${entry.key}"),
                                   style: CustomTextStyle.bold(12, color: Colors.white),
                                 ),
                                 SizedBox(height: 5),
                                 Text(
-                                  'Temperature: ${entry.value} °C',
+                                  AppLocalizations.of(context)!.weightKilogram("${entry.value}"),
                                   style: CustomTextStyle.bold(12, color: Colors.white),
                                 ),
                               ],
@@ -154,10 +155,10 @@ class WeightView extends GetView<WeightController> {
                     controller.updateTabBar(index);
                   },
                   children: [
-                    _buildChart(),
-                    _buildChart(),
-                    _buildChart(),
-                    _buildChart(),
+                    _buildChart(context),
+                    _buildChart(context),
+                    _buildChart(context),
+                    _buildChart(context),
                   ],
                 ),
               ),
@@ -168,11 +169,17 @@ class WeightView extends GetView<WeightController> {
     );
   }
 
-  Widget _buildChart() {
+  Widget _buildChart(context) {
     return Obx(
       () {
-        if (controller.data == null) {
-          return Center(child: CircularProgressIndicator());
+        if (controller.specificWeightData.entries.length == 0) {
+          return Center(
+            child: Text(
+              AppLocalizations.of(context)!.notFoundDesc,
+              style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
+              textAlign: TextAlign.center,
+            ),
+          );
         } else {
           return Padding(
             padding: const EdgeInsets.all(8.0),

@@ -5,6 +5,7 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_loading_indicator.dart';
 import '../controllers/navigation_menu_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NavigationMenuView extends GetView<NavigationMenuController> {
   NavigationMenuView({Key? key}) : super(key: key);
@@ -31,19 +32,19 @@ class NavigationMenuView extends GetView<NavigationMenuController> {
                 destinations: [
                   NavigationDestination(
                     icon: Icon(Iconsax.home),
-                    label: "Home",
+                    label: AppLocalizations.of(context)!.home,
                   ),
                   NavigationDestination(
-                    icon: Icon(Iconsax.chart_1),
-                    label: "Analysis",
+                    icon: Icon(Iconsax.category),
+                    label: AppLocalizations.of(context)!.analysis,
                   ),
                   NavigationDestination(
                     icon: Icon(Iconsax.messages),
-                    label: "Insight",
+                    label: AppLocalizations.of(context)!.insight,
                   ),
                   NavigationDestination(
                     icon: Icon(Iconsax.user),
-                    label: "Profile",
+                    label: AppLocalizations.of(context)!.profile,
                   ),
                 ],
               ),

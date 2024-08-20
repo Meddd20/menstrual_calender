@@ -122,4 +122,16 @@ class DetailprofileController extends GetxController {
 
     await _syncDataRepository.addSyncLogData(syncLog);
   }
+
+  String getInitials(String username) {
+    List<String> nameParts = username.split(" ");
+
+    if (nameParts.length > 1) {
+      return nameParts[0][0].toLowerCase() + nameParts[1][0].toLowerCase();
+    } else if (nameParts.isNotEmpty) {
+      return username.substring(0, 2).toLowerCase();
+    }
+
+    return "";
+  }
 }

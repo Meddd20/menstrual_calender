@@ -8,6 +8,7 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/modules/login/views/forget_password_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({Key? key}) : super(key: key);
@@ -48,7 +49,7 @@ class LoginView extends GetView<LoginController> {
                       Container(
                         width: Get.width,
                         child: Text(
-                          "Welcome Back!",
+                          AppLocalizations.of(context)!.loginHeader,
                           style: CustomTextStyle.extraBold(24),
                           textAlign: TextAlign.left,
                         ),
@@ -57,14 +58,14 @@ class LoginView extends GetView<LoginController> {
                       Container(
                         width: Get.width,
                         child: Text(
-                          "Glad to see you again!",
+                          AppLocalizations.of(context)!.loginDesc,
                           style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                       ),
                       SizedBox(height: 30.h),
                       CustomTextFormField(
                         controller: controller.emailC,
-                        labelText: "Email Address",
+                        labelText: AppLocalizations.of(context)!.email,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           return controller.validateEmail(value!);
@@ -75,7 +76,7 @@ class LoginView extends GetView<LoginController> {
                       Obx(
                         () => CustomTextFormField(
                           controller: controller.passwordC,
-                          labelText: "Password",
+                          labelText: AppLocalizations.of(context)!.password,
                           obscureText: controller.isHidden.value,
                           suffixIcon: IconButton(
                             onPressed: () => controller.isHidden.toggle(),
@@ -96,15 +97,14 @@ class LoginView extends GetView<LoginController> {
                               Get.to(ForgetPasswordView());
                             },
                             child: Text(
-                              "Forgot Password?",
+                              AppLocalizations.of(context)!.forgotPassword,
                               style: CustomTextStyle.semiBold(14, color: Colors.black.withOpacity(0.6)),
                             ),
                           ),
                         ),
                       ),
-                      // SizedBox(height: 5.h),
                       CustomButton(
-                        text: "Login",
+                        text: AppLocalizations.of(context)!.login,
                         onPressed: () async {
                           controller.checkLogin();
                         },
@@ -114,14 +114,14 @@ class LoginView extends GetView<LoginController> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Have an account?",
+                            AppLocalizations.of(context)!.didntHaveAccount,
                             style: CustomTextStyle.semiBold(15),
                           ),
                           SizedBox(width: 10),
                           GestureDetector(
                             onTap: () => Get.offAllNamed(Routes.ONBOARDING),
                             child: Text(
-                              "Register Now",
+                              AppLocalizations.of(context)!.registerNow,
                               style: CustomTextStyle.bold(16, color: AppColors.contrast),
                             ),
                           ),

@@ -3,20 +3,22 @@ import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/modules/login/views/login_view.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:periodnpregnancycalender/app/modules/pin/views/pin_view.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/views/change_purpose_view.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/views/detail_profile_view.dart';
 import 'package:periodnpregnancycalender/app/modules/register/views/register_view.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-import 'package:periodnpregnancycalender/app/services/firebase_notification_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import '../controllers/profile_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({Key? key}) : super(key: key);
@@ -32,7 +34,7 @@ class ProfileView extends GetView<ProfileController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              'Profile',
+              AppLocalizations.of(context)!.profile,
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -40,6 +42,7 @@ class ProfileView extends GetView<ProfileController> {
           backgroundColor: AppColors.white,
           surfaceTintColor: AppColors.white,
           elevation: 4,
+          automaticallyImplyLeading: false,
         ),
         body: FutureBuilder<User?>(
           future: controller.profileUser,
@@ -74,7 +77,7 @@ class ProfileView extends GetView<ProfileController> {
                                   SizedBox(width: 20),
                                   Expanded(
                                     child: Text(
-                                      "Register to save your data or log in to access your account",
+                                      AppLocalizations.of(context)!.askRegisterAccount,
                                       style: CustomTextStyle.bold(14, height: 1.5, color: Colors.white),
                                     ),
                                   ),
@@ -95,18 +98,18 @@ class ProfileView extends GetView<ProfileController> {
                                               Column(
                                                 children: [
                                                   Text(
-                                                    "Create Account",
+                                                    AppLocalizations.of(context)!.createNewAccount,
                                                     style: CustomTextStyle.bold(22),
                                                   ),
                                                   SizedBox(height: 5),
                                                   Text(
-                                                    "Register to save your data or log in to your existing account to access your data",
+                                                    AppLocalizations.of(context)!.askRegisterAccountDesc,
                                                     style: CustomTextStyle.medium(16, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(height: 25),
                                                   CustomButton(
-                                                    text: "Create New Account",
+                                                    text: AppLocalizations.of(context)!.createNewAccount,
                                                     backgroundColor: Color(0xFFE6E5E5),
                                                     prefixIcon: 'assets/icon/register.png',
                                                     textColor: AppColors.black.withOpacity(0.8),
@@ -116,7 +119,7 @@ class ProfileView extends GetView<ProfileController> {
                                                   ),
                                                   SizedBox(height: 15),
                                                   CustomButton(
-                                                    text: "Login To Existing Account",
+                                                    text: AppLocalizations.of(context)!.loginToExistingAccount,
                                                     backgroundColor: Color(0xFFE6E5E5),
                                                     prefixIcon: 'assets/icon/login.png',
                                                     textColor: AppColors.black.withOpacity(0.8),
@@ -126,7 +129,7 @@ class ProfileView extends GetView<ProfileController> {
                                                         builder: (context) {
                                                           return SimpleDialog(
                                                             title: Text(
-                                                              "Overwrite your existing account data?",
+                                                              AppLocalizations.of(context)!.overwriteAccountData,
                                                               style: CustomTextStyle.bold(22),
                                                               textAlign: TextAlign.center,
                                                             ),
@@ -137,7 +140,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                   Padding(
                                                                     padding: const EdgeInsets.all(6.0),
                                                                     child: Text(
-                                                                      "Overwriting your data means your existing account data will be overwritten",
+                                                                      AppLocalizations.of(context)!.overwriteAccountDataConfirm,
                                                                       style: CustomTextStyle.medium(15, height: 1.5),
                                                                       textAlign: TextAlign.center,
                                                                     ),
@@ -161,7 +164,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                             minimumSize: Size(Get.width, 45.h),
                                                                           ),
                                                                           child: Text(
-                                                                            "Keep Data",
+                                                                            AppLocalizations.of(context)!.keepData,
                                                                             style: CustomTextStyle.bold(16),
                                                                           ),
                                                                         ),
@@ -182,7 +185,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                             minimumSize: Size(Get.width, 45.h),
                                                                           ),
                                                                           child: Text(
-                                                                            "Overwrite",
+                                                                            AppLocalizations.of(context)!.overwrite,
                                                                             style: CustomTextStyle.bold(16, color: Colors.white),
                                                                           ),
                                                                         ),
@@ -215,7 +218,7 @@ class ProfileView extends GetView<ProfileController> {
                                     minimumSize: Size(Get.width / 3, 40.h),
                                   ),
                                   child: Text(
-                                    "Continue",
+                                    AppLocalizations.of(context)!.continues,
                                     style: CustomTextStyle.bold(16, color: Colors.black),
                                   ),
                                 ),
@@ -291,7 +294,7 @@ class ProfileView extends GetView<ProfileController> {
                                                 ),
                                                 SizedBox(height: 15),
                                                 Text(
-                                                  "Usage Preference",
+                                                  AppLocalizations.of(context)!.usagePreference,
                                                   style: CustomTextStyle.extraBold(22),
                                                 ),
                                                 SizedBox(height: 20),
@@ -312,7 +315,7 @@ class ProfileView extends GetView<ProfileController> {
                                                           builder: (context) {
                                                             return SimpleDialog(
                                                               title: Text(
-                                                                "Are you sure you want to change your goal?",
+                                                                AppLocalizations.of(context)!.changeGoalConfirm,
                                                                 style: CustomTextStyle.bold(22),
                                                               ),
                                                               contentPadding: EdgeInsets.all(16.0),
@@ -333,7 +336,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                           minimumSize: Size(Get.width, 45.h),
                                                                         ),
                                                                         child: Text(
-                                                                          "No",
+                                                                          AppLocalizations.of(context)!.no,
                                                                           style: CustomTextStyle.bold(16),
                                                                         ),
                                                                       ),
@@ -354,7 +357,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                           minimumSize: Size(Get.width, 45.h),
                                                                         ),
                                                                         child: Text(
-                                                                          "Yes",
+                                                                          AppLocalizations.of(context)!.yes,
                                                                           style: CustomTextStyle.bold(16, color: Colors.white),
                                                                         ),
                                                                       ),
@@ -375,19 +378,17 @@ class ProfileView extends GetView<ProfileController> {
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: [
                                                         Expanded(
-                                                          flex: 2,
                                                           child: Container(
                                                             padding: EdgeInsets.only(left: 8),
                                                             alignment: Alignment.centerLeft,
                                                             child: Text(
-                                                              "Tracking Menstrual Period",
+                                                              AppLocalizations.of(context)!.trackPeriodGoal,
                                                               style: CustomTextStyle.extraBold(18, color: Colors.white),
                                                               textAlign: TextAlign.left,
                                                             ),
                                                           ),
                                                         ),
                                                         Expanded(
-                                                          flex: 3,
                                                           child: Container(
                                                             height: 120.h,
                                                             alignment: Alignment.centerRight,
@@ -422,7 +423,7 @@ class ProfileView extends GetView<ProfileController> {
                                                           builder: (context) {
                                                             return SimpleDialog(
                                                               title: Text(
-                                                                "Are you sure you want to change your goal?",
+                                                                AppLocalizations.of(context)!.changeGoalConfirm,
                                                                 style: CustomTextStyle.bold(22),
                                                               ),
                                                               contentPadding: EdgeInsets.all(16.0),
@@ -443,7 +444,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                           minimumSize: Size(Get.width, 45.h),
                                                                         ),
                                                                         child: Text(
-                                                                          "No",
+                                                                          AppLocalizations.of(context)!.no,
                                                                           style: CustomTextStyle.bold(16),
                                                                         ),
                                                                       ),
@@ -464,7 +465,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                           minimumSize: Size(Get.width, 45.h),
                                                                         ),
                                                                         child: Text(
-                                                                          "Yes",
+                                                                          AppLocalizations.of(context)!.yes,
                                                                           style: CustomTextStyle.bold(16, color: Colors.white),
                                                                         ),
                                                                       ),
@@ -491,7 +492,7 @@ class ProfileView extends GetView<ProfileController> {
                                                             padding: EdgeInsets.only(left: 8),
                                                             alignment: Alignment.centerLeft,
                                                             child: Text(
-                                                              "Follow Pregnancy",
+                                                              AppLocalizations.of(context)!.pregnancyGoal,
                                                               style: CustomTextStyle.extraBold(18, color: Colors.white),
                                                               textAlign: TextAlign.left,
                                                             ),
@@ -555,11 +556,11 @@ class ProfileView extends GetView<ProfileController> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Usage Preferences",
+                                                AppLocalizations.of(context)!.usagePreference,
                                                 style: CustomTextStyle.bold(15, height: 1.75),
                                               ),
                                               Text(
-                                                "${controller.purposeText.value}",
+                                                controller.storageService.getIsPregnant() == "0" ? AppLocalizations.of(context)!.trackPeriodGoal : AppLocalizations.of(context)!.pregnancyGoal,
                                                 style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
                                               ),
                                             ],
@@ -575,39 +576,66 @@ class ProfileView extends GetView<ProfileController> {
                             ),
                             SizedBox(height: 15.h),
                             GestureDetector(
-                              onTap: () {},
-                              child: Wrap(
-                                children: [
-                                  Container(
-                                    width: Get.width,
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      color: Colors.white,
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(20),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (BuildContext context) {
+                                    return Padding(
+                                      padding: EdgeInsets.fromLTRB(10.w, 35.h, 10.w, 20.h),
+                                      child: Wrap(
                                         children: [
-                                          Expanded(
-                                            child: Text(
-                                              "Themes",
-                                              style: CustomTextStyle.bold(15, height: 1.75),
+                                          Obx(
+                                            () => Column(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/image/lock.png',
+                                                  width: 55,
+                                                  height: 55,
+                                                ),
+                                                SizedBox(height: 15.h),
+                                                Text(
+                                                  AppLocalizations.of(context)!.secureAccess,
+                                                  style: CustomTextStyle.extraBold(22),
+                                                ),
+                                                SizedBox(height: 20),
+                                                ListTile(
+                                                  title: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        AppLocalizations.of(context)!.securePinHeader,
+                                                        style: CustomTextStyle.bold(16),
+                                                      ),
+                                                      SizedBox(height: 4.0),
+                                                      Text(
+                                                        AppLocalizations.of(context)!.securePinDescription,
+                                                        style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  trailing: Switch(
+                                                    onChanged: (bool value) async {
+                                                      if (value == false) {
+                                                        controller.storageService.currentPin('');
+                                                        controller.setPinSecure(value);
+                                                      } else {
+                                                        Get.to(() => PinView(mode: PinMode.setup));
+                                                      }
+                                                    },
+                                                    value: controller.setPin.value,
+                                                    activeColor: AppColors.primary,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                          Icon(Iconsax.arrow_right_34)
+                                          )
                                         ],
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 15.h),
-                            GestureDetector(
-                              onTap: () {},
+                                    );
+                                  },
+                                );
+                              },
                               child: Wrap(
                                 children: [
                                   Container(
@@ -623,9 +651,19 @@ class ProfileView extends GetView<ProfileController> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
+                                          Container(
+                                            width: 24,
+                                            child: Image.asset(
+                                              'assets/icon/locks.png',
+                                              width: 24,
+                                              height: 24,
+                                              color: Colors.black.withOpacity(0.6),
+                                            ),
+                                          ),
+                                          SizedBox(width: 20),
                                           Expanded(
                                             child: Text(
-                                              "Secure Access (PIN)",
+                                              AppLocalizations.of(context)!.secureAccess,
                                               style: CustomTextStyle.bold(15, height: 1.75),
                                             ),
                                           ),
@@ -657,7 +695,7 @@ class ProfileView extends GetView<ProfileController> {
                                                 ),
                                                 SizedBox(height: 15.h),
                                                 Text(
-                                                  "Change Language",
+                                                  AppLocalizations.of(context)!.changeLanguage,
                                                   style: CustomTextStyle.extraBold(22),
                                                 ),
                                                 SizedBox(height: 20),
@@ -778,7 +816,7 @@ class ProfileView extends GetView<ProfileController> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Language",
+                                                AppLocalizations.of(context)!.language,
                                                 style: CustomTextStyle.bold(15, height: 1.75),
                                               ),
                                               Text(
@@ -818,7 +856,7 @@ class ProfileView extends GetView<ProfileController> {
                                                   ),
                                                   SizedBox(height: 15.h),
                                                   Text(
-                                                    "Backup Data Preferences",
+                                                    AppLocalizations.of(context)!.backupDataPreferences,
                                                     style: CustomTextStyle.extraBold(22),
                                                   ),
                                                   SizedBox(height: 20),
@@ -827,12 +865,12 @@ class ProfileView extends GetView<ProfileController> {
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
-                                                          "Backup Your Data",
+                                                          AppLocalizations.of(context)!.backupData,
                                                           style: CustomTextStyle.bold(16),
                                                         ),
                                                         SizedBox(height: 4.0),
                                                         Text(
-                                                          "Ensure your data is backed up to avoid loss and keep it secure.",
+                                                          AppLocalizations.of(context)!.backupDataDesc,
                                                           style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
                                                         ),
                                                       ],
@@ -844,7 +882,7 @@ class ProfileView extends GetView<ProfileController> {
                                                           WidgetsBinding.instance.addPostFrameCallback((_) async {
                                                             Get.back();
                                                             await Future.delayed(Duration(milliseconds: 500));
-                                                            Get.showSnackbar(Ui.ErrorSnackBar(message: "No internet connection, please try again"));
+                                                            Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.noInternetConnection));
                                                           });
                                                           return;
                                                         }
@@ -864,7 +902,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                     ),
                                                                     SizedBox(height: 15),
                                                                     Text(
-                                                                      "Remove your data backup?",
+                                                                      AppLocalizations.of(context)!.removeDataBackup,
                                                                       style: CustomTextStyle.bold(22),
                                                                       textAlign: TextAlign.center,
                                                                     ),
@@ -877,7 +915,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                       Padding(
                                                                         padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
                                                                         child: Text(
-                                                                          "Are you sure you want to remove your data backup?",
+                                                                          AppLocalizations.of(context)!.removeDataBackupConfirm,
                                                                           style: CustomTextStyle.medium(15, height: 1.5),
                                                                           textAlign: TextAlign.center,
                                                                         ),
@@ -898,7 +936,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                                 minimumSize: Size(Get.width, 45.h),
                                                                               ),
                                                                               child: Text(
-                                                                                "Cancel",
+                                                                                AppLocalizations.of(context)!.cancel,
                                                                                 style: CustomTextStyle.bold(16),
                                                                               ),
                                                                             ),
@@ -919,7 +957,7 @@ class ProfileView extends GetView<ProfileController> {
                                                                                 minimumSize: Size(Get.width, 45.h),
                                                                               ),
                                                                               child: Text(
-                                                                                "Yes",
+                                                                                AppLocalizations.of(context)!.yes,
                                                                                 style: CustomTextStyle.bold(16, color: Colors.white),
                                                                               ),
                                                                             ),
@@ -979,11 +1017,11 @@ class ProfileView extends GetView<ProfileController> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "Backup Data Preferences",
+                                                  AppLocalizations.of(context)!.backupDataPreferences,
                                                   style: CustomTextStyle.bold(15, height: 1.75),
                                                 ),
                                                 Text(
-                                                  "${controller.isDataBackedup.value == true ? "Data Backed Up" : "Data Not Backed Up"}",
+                                                  "${controller.isDataBackedup.value == true ? AppLocalizations.of(context)!.dataBackedUp : AppLocalizations.of(context)!.dataNotBackedUp}",
                                                   style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
                                                 ),
                                               ],
@@ -1001,7 +1039,59 @@ class ProfileView extends GetView<ProfileController> {
                             SizedBox(height: 15.h),
                             GestureDetector(
                               onTap: () {
-                                FirebaseNotificationService().storeFcmToken(controller.storageService.getAccountId()!);
+                                final List<String> infoList = controller.aboutAppInfo(context);
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Obx(
+                                      () => SimpleDialog(
+                                        title: Text(
+                                          AppLocalizations.of(context)!.aboutApp,
+                                          style: CustomTextStyle.bold(22),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        contentPadding: EdgeInsets.all(20.0),
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Text(
+                                                infoList[controller.aboutAppIndex.value],
+                                                style: CustomTextStyle.medium(16, height: 1.5),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 15),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            children: [
+                                              GestureDetector(
+                                                child: CustomCircularIcon(
+                                                  iconData: Icons.arrow_back_ios_new,
+                                                  iconSize: 20,
+                                                  iconColor: Color(0xFF878686),
+                                                  containerColor: Color(0xFFECECEC),
+                                                  containerSize: 15.dg,
+                                                ),
+                                                onTap: () => controller.aboutAppIndexBackward(),
+                                              ),
+                                              GestureDetector(
+                                                child: CustomCircularIcon(
+                                                  iconData: Icons.arrow_forward_ios_outlined,
+                                                  iconSize: 20,
+                                                  iconColor: Color(0xFF878686),
+                                                  containerColor: Color(0xFFECECEC),
+                                                  containerSize: 15.dg,
+                                                ),
+                                                onTap: () => controller.aboutAppIndexForward(),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
                               },
                               child: Wrap(
                                 children: [
@@ -1018,9 +1108,19 @@ class ProfileView extends GetView<ProfileController> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
+                                          Container(
+                                            width: 24,
+                                            child: Image.asset(
+                                              'assets/icon/about.png',
+                                              width: 24,
+                                              height: 24,
+                                              color: Colors.black.withOpacity(0.6),
+                                            ),
+                                          ),
+                                          SizedBox(width: 20),
                                           Expanded(
                                             child: Text(
-                                              "About this application",
+                                              AppLocalizations.of(context)!.aboutApp,
                                               style: CustomTextStyle.bold(15, height: 1.75),
                                             ),
                                           ),
@@ -1052,7 +1152,7 @@ class ProfileView extends GetView<ProfileController> {
                                             ),
                                             SizedBox(height: 15),
                                             Text(
-                                              "Logging Out?",
+                                              AppLocalizations.of(context)!.logoutConfirm,
                                               style: CustomTextStyle.bold(22),
                                               textAlign: TextAlign.center,
                                             ),
@@ -1065,7 +1165,7 @@ class ProfileView extends GetView<ProfileController> {
                                               Padding(
                                                 padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
                                                 child: Text(
-                                                  "Make sure to backup your data before logging out.",
+                                                  AppLocalizations.of(context)!.logoutConfirmDesc,
                                                   style: CustomTextStyle.medium(15, height: 1.5),
                                                   textAlign: TextAlign.center,
                                                 ),
@@ -1086,7 +1186,7 @@ class ProfileView extends GetView<ProfileController> {
                                                         minimumSize: Size(Get.width, 45.h),
                                                       ),
                                                       child: Text(
-                                                        "Cancel",
+                                                        AppLocalizations.of(context)!.cancel,
                                                         style: CustomTextStyle.bold(16),
                                                       ),
                                                     ),
@@ -1107,7 +1207,7 @@ class ProfileView extends GetView<ProfileController> {
                                                         minimumSize: Size(Get.width, 45.h),
                                                       ),
                                                       child: Text(
-                                                        "Logout",
+                                                        AppLocalizations.of(context)!.logout,
                                                         style: CustomTextStyle.bold(16, color: Colors.white),
                                                       ),
                                                     ),
@@ -1135,7 +1235,7 @@ class ProfileView extends GetView<ProfileController> {
                                         padding: EdgeInsets.all(20),
                                         child: Center(
                                           child: Text(
-                                            "Log Out",
+                                            AppLocalizations.of(context)!.logout,
                                             style: CustomTextStyle.extraBold(15, height: 1.75, color: AppColors.primary),
                                           ),
                                         ),

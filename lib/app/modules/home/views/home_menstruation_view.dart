@@ -19,6 +19,7 @@ import 'package:periodnpregnancycalender/app/modules/home/views/shettles_pred_de
 import 'package:table_calendar/table_calendar.dart';
 
 import '../controllers/home_menstruation_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeMenstruationView extends GetView<HomeMenstruationController> {
   const HomeMenstruationView({Key? key}) : super(key: key);
@@ -35,7 +36,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                 title: Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Text(
-                    'Menstruation Mode',
+                    AppLocalizations.of(context)!.menstruationMode,
                     style: CustomTextStyle.extraBold(22),
                   ),
                 ),
@@ -69,8 +70,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                 firstDay: DateTime.utc(2010, 10, 16),
                                 lastDay: DateTime.utc(2030, 3, 14),
                                 availableCalendarFormats: {
-                                  CalendarFormat.month: 'Month',
-                                  CalendarFormat.week: 'Week',
+                                  CalendarFormat.month: AppLocalizations.of(context)!.month,
+                                  CalendarFormat.week: AppLocalizations.of(context)!.week,
                                 },
                                 calendarFormat: controller.getFormat,
                                 onFormatChanged: (newFormat) {
@@ -353,7 +354,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                   ),
                                   SizedBox(height: 35.h),
                                   Text(
-                                    "Current cycle",
+                                    AppLocalizations.of(context)!.currentCycle,
                                     style: CustomTextStyle.medium(14, height: 1.5),
                                   ),
                                   SizedBox(height: 15.h),
@@ -376,7 +377,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                 ),
                                               ),
                                               TextSpan(
-                                                text: ' day of the cycle',
+                                                text: AppLocalizations.of(context)!.dayOfTheCycle,
                                                 style: CustomTextStyle.medium(20),
                                               ),
                                             ],
@@ -386,7 +387,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                   SizedBox(height: 20.h),
                                   Obx(
                                     () => Text(
-                                      "${controller.eventDatas.value.pregnancyChances} chances of getting pregnant",
+                                      AppLocalizations.of(context)!.pregnancyChances("${controller.eventDatas.value.pregnancyChances}"),
                                       style: CustomTextStyle.bold(16, height: 1.75),
                                     ),
                                   ),
@@ -404,8 +405,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     () => CustomCardPrediction(
                                       containerColor: Color(0xFFFFD7DF),
                                       primaryColor: AppColors.primary,
-                                      daysLeft: '${controller.eventDatas.value.daysUntilNextMenstruation} Days Left',
-                                      predictionType: 'Period',
+                                      daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextMenstruation}'),
+                                      predictionType: AppLocalizations.of(context)!.period,
                                       datePrediction: "${controller.formatDate(controller.eventDatas.value.nextMenstruationStart)} - ${controller.formatDate(controller.eventDatas.value.nextMenstruationEnd)}",
                                       iconPath: 'assets/icon/blood.png',
                                     ),
@@ -415,8 +416,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     () => CustomCardPrediction(
                                       containerColor: Color(0xFFFFE69E),
                                       primaryColor: Color(0xFFFD9414),
-                                      daysLeft: '${controller.eventDatas.value.daysUntilNextFertile} Days Left',
-                                      predictionType: 'Fertile days',
+                                      daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextFertile}'),
+                                      predictionType: AppLocalizations.of(context)!.fertileDays,
                                       datePrediction: '${controller.formatDate(controller.eventDatas.value.nextFertileStart)} - ${controller.formatDate(controller.eventDatas.value.nextFertileEnd)}',
                                       iconPath: 'assets/icon/sunflower.png',
                                     ),
@@ -431,8 +432,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     () => CustomCardPrediction(
                                       containerColor: Color(0x7FA5F9FF),
                                       primaryColor: Color.fromARGB(255, 64, 176, 184),
-                                      daysLeft: '${controller.eventDatas.value.daysUntilNextOvulation} Days Left',
-                                      predictionType: 'Ovulation',
+                                      daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextOvulation}'),
+                                      predictionType: AppLocalizations.of(context)!.ovulation,
                                       datePrediction: '${controller.formatDate(controller.eventDatas.value.nextOvulation)}',
                                       iconPath: 'assets/icon/ovulation.png',
                                     ),
@@ -442,8 +443,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     () => CustomCardPrediction(
                                       containerColor: Color(0xFFC6FCE5),
                                       primaryColor: Color.fromARGB(255, 111, 200, 161),
-                                      daysLeft: '${controller.eventDatas.value.daysUntilNextLuteal} Days Left',
-                                      predictionType: 'Safe days',
+                                      daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextLuteal}'),
+                                      predictionType: AppLocalizations.of(context)!.safeDays,
                                       datePrediction: '${controller.formatDate(controller.eventDatas.value.nextLutealStart)} - ${controller.formatDate(controller.eventDatas.value.nextLutealEnd)}',
                                       iconPath: 'assets/icon/shield.png',
                                     ),
@@ -472,15 +473,15 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "My Cycle",
+                                        AppLocalizations.of(context)!.myCycle,
                                         style: CustomTextStyle.extraBold(18),
                                       ),
                                       GestureDetector(
                                         child: Row(
                                           children: [
                                             Text(
-                                              "See more",
-                                              style: CustomTextStyle.bold(15, color: Colors.black.withOpacity(0.6)),
+                                              AppLocalizations.of(context)!.seeMore,
+                                              style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.6)),
                                             ),
                                             Icon(Icons.keyboard_arrow_right)
                                           ],
@@ -492,7 +493,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                     ],
                                   ),
                                   Text(
-                                    "${controller.data?.actualPeriod.length} cycle history logged",
+                                    AppLocalizations.of(context)!.periodCycleLogged("${controller.data?.actualPeriod.length}"),
                                     style: CustomTextStyle.medium(14, height: 2.0, color: Colors.black.withOpacity(0.6)),
                                   ),
                                   SizedBox(height: 5),
@@ -520,8 +521,10 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
-                                                    "Average Cycle Length",
+                                                    AppLocalizations.of(context)!.averageCycleLength,
                                                     style: CustomTextStyle.extraBold(15, color: AppColors.primary),
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
                                                   ),
                                                   SizedBox(height: 5),
                                                   RichText(
@@ -532,7 +535,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                           style: CustomTextStyle.extraBold(23),
                                                         ),
                                                         TextSpan(
-                                                          text: " days",
+                                                          text: AppLocalizations.of(context)!.daysPrefix,
                                                           style: CustomTextStyle.semiBold(14),
                                                         ),
                                                       ],
@@ -564,8 +567,10 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
-                                                    "Average Period Length",
+                                                    AppLocalizations.of(context)!.averagePeriodLength,
                                                     style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
                                                   ),
                                                   SizedBox(height: 10),
                                                   RichText(
@@ -576,7 +581,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                           style: CustomTextStyle.extraBold(23),
                                                         ),
                                                         TextSpan(
-                                                          text: " days",
+                                                          text: AppLocalizations.of(context)!.daysPrefix,
                                                           style: CustomTextStyle.semiBold(14),
                                                         ),
                                                       ],
@@ -618,17 +623,17 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                             children: [
                                               SizedBox(height: 140),
                                               Text(
-                                                "Manage Your Period Events",
+                                                AppLocalizations.of(context)!.manageYourPeriodEvents,
                                                 style: CustomTextStyle.extraBold(16, height: 1.5),
                                               ),
                                               SizedBox(height: 5),
                                               Text(
-                                                "Track your period cycle and other related events",
+                                                AppLocalizations.of(context)!.trackYourPeriodCycle,
                                                 style: CustomTextStyle.medium(13, height: 1.5),
                                               ),
                                               SizedBox(height: 10),
                                               CustomButton(
-                                                text: "Reminder",
+                                                text: AppLocalizations.of(context)!.reminder,
                                                 textColor: Colors.black,
                                                 backgroundColor: AppColors.white,
                                                 onPressed: () => Get.to(() => ReminderView()),
@@ -667,17 +672,17 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                             children: [
                                               SizedBox(height: 140),
                                               Text(
-                                                "Remark your body changes",
+                                                AppLocalizations.of(context)!.remarkYourBodyChanges,
                                                 style: CustomTextStyle.extraBold(16, height: 1.5),
                                               ),
                                               SizedBox(height: 5),
                                               Text(
-                                                "Log your body changes in every cycle",
+                                                AppLocalizations.of(context)!.logYourBodyChanges,
                                                 style: CustomTextStyle.medium(13, height: 1.5),
                                               ),
                                               SizedBox(height: 32),
                                               CustomButton(
-                                                text: "Daily Log",
+                                                text: AppLocalizations.of(context)!.dailyLog,
                                                 textColor: Colors.black,
                                                 backgroundColor: AppColors.white,
                                                 onPressed: () => Get.to(() => DailyLogView()),
@@ -725,7 +730,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               ),
                                               SizedBox(height: 10),
                                               Text(
-                                                "${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? 'Girl' : 'Boy'}",
+                                                "${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? AppLocalizations.of(context)!.girl : AppLocalizations.of(context)!.boy}",
                                                 style: CustomTextStyle.bold(18, height: 1.5),
                                               )
                                             ],
@@ -738,7 +743,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                 Container(
                                                   width: Get.width,
                                                   child: Text(
-                                                    "Chinese gender calendar",
+                                                    AppLocalizations.of(context)!.chineseGenderCalendar,
                                                     style: CustomTextStyle.extraBold(16, height: 1.75, color: AppColors.black.withOpacity(0.4)),
                                                     textAlign: TextAlign.right,
                                                   ),
@@ -746,7 +751,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                 Container(
                                                   width: Get.width,
                                                   child: Text(
-                                                    "Did you know?",
+                                                    AppLocalizations.of(context)!.didYouKnow,
                                                     style: CustomTextStyle.extraBold(26, height: 1.75),
                                                     textAlign: TextAlign.right,
                                                   ),
@@ -763,14 +768,16 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                     style: CustomTextStyle.medium(15, height: 1.5),
                                                     children: [
                                                       TextSpan(
-                                                        text: "According to the ",
+                                                        text: AppLocalizations.of(context)!.accordingTo,
+                                                        style: CustomTextStyle.medium(15, height: 1.5),
                                                       ),
                                                       TextSpan(
-                                                        text: "ancient Chinese gender chart",
+                                                        text: AppLocalizations.of(context)!.ancientChineseGenderChart,
                                                         style: CustomTextStyle.extraBold(16, height: 1.5),
                                                       ),
                                                       TextSpan(
-                                                        text: ", if you were to conceive today, based on your age and the month of the current month of the conception, it predicts the gender of your future child as ",
+                                                        text: AppLocalizations.of(context)!.genderPrediction,
+                                                        style: CustomTextStyle.medium(15, height: 1.5),
                                                       ),
                                                     ],
                                                   ),
@@ -778,7 +785,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                 ),
                                                 SizedBox(height: 15),
                                                 CustomButton(
-                                                  text: "Learn more",
+                                                  text: AppLocalizations.of(context)!.learnMore,
                                                   textColor: AppColors.white,
                                                   backgroundColor: AppColors.primary,
                                                   onPressed: () => Get.to(() => ChinesePredDetailView(), arguments: controller.eventDatas.value.chineseGenderPrediction),
@@ -812,19 +819,13 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "The Shettles Method",
+                                            AppLocalizations.of(context)!.theShettlesMethod,
                                             style: CustomTextStyle.extraBold(16, height: 1.75, color: AppColors.black.withOpacity(0.4)),
                                             textAlign: TextAlign.left,
                                           ),
                                           Text(
-                                            "Increase Gender Prediction Probability",
-                                            style: TextStyle(
-                                              fontSize: 22.sp,
-                                              height: 1.5,
-                                              fontFamily: 'Poppins',
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            AppLocalizations.of(context)!.increaseGenderPredictionProbability,
+                                            style: CustomTextStyle.extraBold(22, height: 1.5),
                                             textAlign: TextAlign.left,
                                           ),
                                           SizedBox(height: 5),
@@ -839,40 +840,19 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                               TextSpan(
                                                 children: [
                                                   TextSpan(
-                                                    text: 'Aim for intercourse on ovulation day and the next 2-3 days ',
-                                                    style: TextStyle(
-                                                      fontSize: 14.sp,
-                                                      height: 1.5,
-                                                      fontFamily: 'Poppins',
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
+                                                    text: AppLocalizations.of(context)!.aimForIntercourse,
+                                                    style: CustomTextStyle.medium(15, height: 1.5),
                                                   ),
                                                   TextSpan(
-                                                    text: 'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate.toString())} to likely conceive a male',
-                                                    style: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
+                                                    text: AppLocalizations.of(context)!.likelyConceiveMale('${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate.toString())}', '${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate.toString())}'),
+                                                    style: CustomTextStyle.extraBold(16, height: 1.5),
                                                   ),
                                                   TextSpan(
-                                                    text: ', and have intercourse from the end of menstruation until three days before ovulation, avoiding sex 2-3 days before ovulation ',
-                                                    style: TextStyle(
-                                                      fontSize: 14.sp,
-                                                      height: 1.5,
-                                                      fontFamily: 'Poppins',
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
+                                                    text: AppLocalizations.of(context)!.likelyConceiveFemale,
                                                   ),
                                                   TextSpan(
-                                                    text: 'from ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate.toString())} until ${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate.toString())} to likely conceive a female.',
-                                                    style: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
+                                                    text: AppLocalizations.of(context)!.femalePrediction('${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate.toString())}', '${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate.toString())}'),
+                                                    style: CustomTextStyle.extraBold(16, height: 1.5),
                                                   ),
                                                 ],
                                               ),
@@ -880,7 +860,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                           }),
                                           SizedBox(height: 15),
                                           CustomButton(
-                                            text: "Learn more",
+                                            text: AppLocalizations.of(context)!.learnMore,
                                             textColor: AppColors.white,
                                             backgroundColor: AppColors.primary,
                                             onPressed: () => Get.to(() => ShettlesPredDetailView(), arguments: controller.eventDatas.value.shettlesGenderPrediction),
@@ -914,7 +894,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
           children: [
             SpeedDialChild(
               child: Icon(Iconsax.add),
-              label: "Add Period",
+              label: AppLocalizations.of(context)!.addPeriod,
               shape: CircleBorder(side: BorderSide(color: Colors.white)),
               onTap: () {
                 showModalBottomSheet(
@@ -928,8 +908,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                               controller.cancelEdit();
                               Get.back(closeOverlays: true);
                             },
-                            title: "Add Period Cycle",
-                            buttonCaption: "Add Period",
+                            title: AppLocalizations.of(context)!.addPeriodCycle,
+                            buttonCaption: AppLocalizations.of(context)!.addPeriod,
                             startDate: Obx(
                               () => Text(
                                 "${DateFormat('yyyy-MM-dd').format(controller.startDate.value ?? DateTime.now())}",
@@ -973,7 +953,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
             ),
             SpeedDialChild(
               child: Icon(Iconsax.edit),
-              label: "Edit Period",
+              label: AppLocalizations.of(context)!.editPeriod,
               shape: CircleBorder(side: BorderSide(color: Colors.white)),
               onTap: () {
                 Get.off(() => PeriodCycleView());
@@ -981,7 +961,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
             ),
             SpeedDialChild(
               child: Icon(Iconsax.note),
-              label: "Daily Log",
+              label: AppLocalizations.of(context)!.dailyLog,
               shape: CircleBorder(side: BorderSide(color: Colors.white)),
               onTap: () {
                 Get.to(() => DailyLogView());
@@ -989,7 +969,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
             ),
             SpeedDialChild(
               child: Icon(Iconsax.clock),
-              label: "Reminder",
+              label: AppLocalizations.of(context)!.reminder,
               shape: CircleBorder(side: BorderSide(color: Colors.white)),
               onTap: () {
                 Get.to(() => ReminderView());

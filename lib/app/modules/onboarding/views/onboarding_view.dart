@@ -2,10 +2,12 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
+import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import '../controllers/onboarding_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding1_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
   const OnboardingView({Key? key}) : super(key: key);
@@ -24,7 +26,72 @@ class OnboardingView extends GetView<OnboardingController> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 20.h),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Wrap(
+                      children: [
+                        Wrap(
+                          children: [
+                            Container(
+                              width: Get.width / 2.1,
+                              child: DropdownButtonFormField<Locale>(
+                                value: Get.locale,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: Locale('id'),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('Bahasa Indonesia'),
+                                        Image.asset(
+                                          'assets/icon/indonesia.png',
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: Locale('en'),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('English'),
+                                        Image.asset(
+                                          'assets/icon/english.png',
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
+                                  ),
+                                ),
+                                onChanged: (Locale? newLocale) {
+                                  if (newLocale != null) {
+                                    Get.updateLocale(newLocale);
+                                    StorageService().setLanguage(newLocale.languageCode);
+                                  }
+                                },
+                                icon: SizedBox.shrink(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // SizedBox(height: 20.h),
                   Container(
                     width: Get.width,
                     height: 300.h,
@@ -32,13 +99,13 @@ class OnboardingView extends GetView<OnboardingController> {
                   ),
                   SizedBox(height: 30.h),
                   Text(
-                    "Welcome to Our Menstrual and Pregnancy Calendar!",
+                    AppLocalizations.of(context)!.welcomeMsg,
                     style: CustomTextStyle.bold(22, height: 1.5),
                     textAlign: TextAlign.left,
                   ),
                   SizedBox(height: 15.h),
                   Text(
-                    "Easily track your menstrual cycle and pregnancy journey. Receive personalized insights and reminders to support your unique experience.",
+                    AppLocalizations.of(context)!.welcomeMsgDesc,
                     style: CustomTextStyle.medium(14, height: 2.0),
                     textAlign: TextAlign.left,
                   ),
@@ -52,7 +119,7 @@ class OnboardingView extends GetView<OnboardingController> {
               child: Column(
                 children: [
                   CustomButton(
-                    text: "I Have an Account",
+                    text: AppLocalizations.of(context)!.haveAccount,
                     backgroundColor: Colors.transparent,
                     textColor: Colors.black,
                     onPressed: () {
@@ -61,7 +128,7 @@ class OnboardingView extends GetView<OnboardingController> {
                   ),
                   SizedBox(height: 8.h),
                   CustomButton(
-                    text: "Get Started",
+                    text: AppLocalizations.of(context)!.getStarted,
                     onPressed: () {
                       Get.to(() => Onboarding1View());
                     },

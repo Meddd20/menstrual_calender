@@ -8,6 +8,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon
 import 'package:periodnpregnancycalender/app/common/widgets/custom_cupertino_picker.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding5_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Onboarding4View extends GetView<OnboardingController> {
   const Onboarding4View({Key? key}) : super(key: key);
@@ -41,7 +42,7 @@ class Onboarding4View extends GetView<OnboardingController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      "How Long Does Your Period Usually Last?",
+                      AppLocalizations.of(context)!.askPeriodLast,
                       style: CustomTextStyle.extraBold(20),
                       textAlign: TextAlign.center,
                     ),
@@ -50,7 +51,7 @@ class Onboarding4View extends GetView<OnboardingController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      "Knowing this helps us predict your next period more accurately.",
+                      AppLocalizations.of(context)!.askPeriodLastDesc,
                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                       textAlign: TextAlign.center,
                     ),
@@ -64,7 +65,7 @@ class Onboarding4View extends GetView<OnboardingController> {
                         final day = index + 1;
                         return Center(
                           child: Text(
-                            "$day days",
+                            AppLocalizations.of(context)!.days("$day"),
                             style: CustomTextStyle.bold(24),
                           ),
                         );
@@ -72,7 +73,6 @@ class Onboarding4View extends GetView<OnboardingController> {
                     ),
                     onSelectedItemChanged: (index) {
                       controller.periodLast.value = index + 1;
-                      print(controller.periodLast.value);
                     },
                   ),
                 ],
@@ -83,7 +83,7 @@ class Onboarding4View extends GetView<OnboardingController> {
               left: 20,
               right: 20,
               child: CustomButton(
-                text: "Next",
+                text: AppLocalizations.of(context)!.next,
                 onPressed: () {
                   Get.to(() => Onboarding5View());
                 },

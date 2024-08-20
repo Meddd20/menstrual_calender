@@ -6,6 +6,7 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/vitamin_list_controller.dart';
 import 'package:readmore/readmore.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class VitaminListView extends GetView<VitaminListController> {
   const VitaminListView({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class VitaminListView extends GetView<VitaminListController> {
             title: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Text(
-                'Pregnancy Vitamins',
+                AppLocalizations.of(context)!.pregnancyVitaminGuide,
                 style: CustomTextStyle.extraBold(22),
               ),
             ),
@@ -34,7 +35,7 @@ class VitaminListView extends GetView<VitaminListController> {
               child: Column(
                 children: [
                   Text(
-                    'Essential vitamins for pregnant women, including benefits and sources, to support maternal and fetal health.',
+                    AppLocalizations.of(context)!.pregnancyVaccineGuide,
                     style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                   ),
                   SizedBox(height: 20),
@@ -51,7 +52,13 @@ class VitaminListView extends GetView<VitaminListController> {
                 );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return SliverToBoxAdapter(
-                  child: Center(child: Text('No data available')),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.notFoundDesc,
+                      style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 );
               } else {
                 return SliverPadding(
@@ -80,8 +87,8 @@ class VitaminListView extends GetView<VitaminListController> {
                                   trimLines: 4,
                                   colorClickableText: Colors.blue,
                                   trimMode: TrimMode.Line,
-                                  trimCollapsedText: '...Read more',
-                                  trimExpandedText: ' Show less',
+                                  trimCollapsedText: AppLocalizations.of(context)!.readMore,
+                                  trimExpandedText: AppLocalizations.of(context)!.showLess,
                                   moreStyle: CustomTextStyle.bold(14, height: 1.75, color: Colors.blue),
                                   lessStyle: CustomTextStyle.bold(14, height: 1.75, color: Colors.blue),
                                   style: CustomTextStyle.regular(14, height: 1.75),

@@ -6,6 +6,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_pinput.dart';
 import 'package:periodnpregnancycalender/app/modules/login/controllers/code_verification_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CodeVerificationView extends GetView<CodeVerificationController> {
   const CodeVerificationView({Key? key}) : super(key: key);
@@ -33,7 +34,7 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                     Container(
                       width: Get.width,
                       child: Text(
-                        "Verification Code",
+                        AppLocalizations.of(context)!.verificationHeader,
                         style: CustomTextStyle.extraBold(24),
                         textAlign: TextAlign.left,
                       ),
@@ -44,7 +45,7 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                         width: Get.width,
                         child: Text.rich(
                           TextSpan(
-                            text: "Please enter the verification code sent to ",
+                            text: AppLocalizations.of(context)!.verificationDesc,
                             style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                             children: [
                               TextSpan(
@@ -64,7 +65,7 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                     ),
                     SizedBox(height: 25.h),
                     CustomButton(
-                      text: "Send Code",
+                      text: AppLocalizations.of(context)!.sendCode,
                       onPressed: () {
                         controller.forgetPassword();
                       },
@@ -73,7 +74,10 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Didn’t receive any code?  ", style: CustomTextStyle.medium(15)),
+                        Text(
+                          AppLocalizations.of(context)!.codeNotReceived,
+                          style: CustomTextStyle.medium(15),
+                        ),
                         GestureDetector(
                           onTap: () async {
                             if (controller.countdown.value == 0) {
@@ -82,7 +86,7 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                             }
                           },
                           child: Text(
-                            "Resend OTP  ",
+                            AppLocalizations.of(context)!.resendOTP,
                             style: CustomTextStyle.bold(16, color: AppColors.contrast),
                           ),
                         ),

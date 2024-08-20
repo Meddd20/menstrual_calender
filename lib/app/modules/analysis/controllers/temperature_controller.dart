@@ -130,29 +130,21 @@ class TemperatureController extends GetxController {
   Future<void> fetchTemperatures() async {
     try {
       data = await _logService.getLogsByTags("temperature");
-      print(data.tags);
 
-      if (data != null) {
-        Map<String, dynamic> logsMap = data.logs;
+      Map<String, dynamic> logsMap = data.logs;
 
-        logsMap.forEach((date, value) {
-          if (value is String) {
-            temperatures[date] = value;
-          } else if (value is List<String>) {
-            temperatures[date] = value.join(", ");
-          }
-        });
-
-        print(temperatures);
-      } else {
-        print("Error: Unable to fetch temperature");
-      }
+      logsMap.forEach((date, value) {
+        if (value is String) {
+          temperatures[date] = value;
+        } else if (value is List<String>) {
+          temperatures[date] = value.join(", ");
+        }
+      });
+      specifiedDataByDate();
+      update();
     } catch (e) {
       print("Error fetching temperatures: $e");
     }
-
-    specifiedDataByDate();
-    update();
   }
 
   String formatDate(DateTime date) {

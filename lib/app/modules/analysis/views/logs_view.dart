@@ -8,6 +8,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dar
 import 'package:periodnpregnancycalender/app/common/widgets/custom_doughnut_chart.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/logs_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LogsView extends GetView<LogsController> {
   const LogsView({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class LogsView extends GetView<LogsController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              controller.pageTags(),
+              controller.pageTags(context),
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -61,10 +62,10 @@ class LogsView extends GetView<LogsController> {
                     controller.updateTabBar(index);
                   },
                   children: [
-                    _buildChart(),
-                    _buildChart(),
-                    _buildChart(),
-                    _buildChart(),
+                    _buildChart(context),
+                    _buildChart(context),
+                    _buildChart(context),
+                    _buildChart(context),
                   ],
                 ),
               ),
@@ -75,62 +76,64 @@ class LogsView extends GetView<LogsController> {
     );
   }
 
-  Widget _buildChart() {
+  Widget _buildChart(context) {
     return Obx(
       () {
-        if (controller.data == null) {
-          return Center(child: CircularProgressIndicator());
-        } else {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                SizedBox(height: 10),
-                Text(
-                  "Total Entries",
-                  style: CustomTextStyle.medium(15, color: Colors.black.withOpacity(0.6)),
-                ),
-                Text(
-                  "${controller.specificMoodsData.length} Entries",
-                  style: CustomTextStyle.extraBold(26, height: 1.75),
-                ),
-                Text(
-                  "from ${controller.formatDate(controller.selectedDate.value)} up to today",
-                  style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
-                ),
-                CustomDougnutChart(
-                  dataSource: controller.getSelectedDataSource(),
-                  pointColorMapper: (dynamic point, int index) {
-                    if (point is MapEntry<String, dynamic>) {
-                      return colorPalette[index % colorPalette.length];
-                    }
-                    return Colors.transparent;
-                  },
-                  colorPalette: colorPalette,
-                ),
-                Expanded(
-                  child: Container(
-                    height: Get.height,
-                    child: Obx(() {
-                      if (controller.specificMoodsData.isEmpty) {
-                        return Center(child: Text("No data available"));
-                      } else {
-                        return ListView.builder(
-                          itemCount: controller.specificMoodsData.length,
-                          itemBuilder: (context, index) {
-                            final MapEntry<String, dynamic> entry = controller.specificMoodsData.entries.elementAt(index);
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              Text(
+                AppLocalizations.of(context)!.totalEntries,
+                style: CustomTextStyle.medium(15, color: Colors.black.withOpacity(0.6)),
+              ),
+              Text(
+                AppLocalizations.of(context)!.totalEntriesData("${controller.specificMoodsData.length}"),
+                style: CustomTextStyle.extraBold(26, height: 1.75),
+              ),
+              Text(
+                AppLocalizations.of(context)!.entriesFromDate("${controller.formatDate(controller.selectedDate.value)}"),
+                style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
+              ),
+              CustomDougnutChart(
+                dataSource: controller.getSelectedDataSource(),
+                pointColorMapper: (dynamic point, int index) {
+                  if (point is MapEntry<String, dynamic>) {
+                    return colorPalette[index % colorPalette.length];
+                  }
+                  return Colors.transparent;
+                },
+                colorPalette: colorPalette,
+              ),
+              Expanded(
+                child: Container(
+                  height: Get.height,
+                  child: Obx(() {
+                    if (controller.specificMoodsData.isEmpty) {
+                      return Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.notFoundDesc,
+                          style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    } else {
+                      return ListView.builder(
+                        itemCount: controller.specificMoodsData.length,
+                        itemBuilder: (context, index) {
+                          final MapEntry<String, dynamic> entry = controller.specificMoodsData.entries.elementAt(index);
 
-                            return CustomDateLook(entry: entry, type: "logs");
-                          },
-                        );
-                      }
-                    }),
-                  ),
+                          return CustomDateLook(entry: entry, type: "logs");
+                        },
+                      );
+                    }
+                  }),
                 ),
-              ],
-            ),
-          );
-        }
+              ),
+            ],
+          ),
+        );
       },
     );
   }

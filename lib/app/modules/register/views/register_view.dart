@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BackupDataView extends GetView<RegisterController> {
   const BackupDataView({super.key});
@@ -40,7 +41,7 @@ class BackupDataView extends GetView<RegisterController> {
                   ),
                   SizedBox(height: 20.h),
                   Text(
-                    "Keep your health data safe",
+                    AppLocalizations.of(context)!.askRegisterAccount,
                     style: CustomTextStyle.bold(22),
                     textAlign: TextAlign.center,
                   ),
@@ -48,7 +49,7 @@ class BackupDataView extends GetView<RegisterController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
-                      "Create an account to securely back up your health data and access it from any device.",
+                      AppLocalizations.of(context)!.askRegisterAccountDesc,
                       style: CustomTextStyle.medium(15, height: 1.75, color: Colors.black.withOpacity(0.6)),
                       textAlign: TextAlign.center,
                     ),
@@ -63,7 +64,7 @@ class BackupDataView extends GetView<RegisterController> {
               child: Column(
                 children: [
                   CustomButton(
-                    text: "I'll Register Later",
+                    text: AppLocalizations.of(context)!.registerLater,
                     backgroundColor: Colors.transparent,
                     textColor: Colors.black,
                     onPressed: () {
@@ -72,7 +73,7 @@ class BackupDataView extends GetView<RegisterController> {
                   ),
                   SizedBox(height: 8.h),
                   CustomButton(
-                    text: "Register Now",
+                    text: AppLocalizations.of(context)!.registerNow,
                     onPressed: () {
                       Get.toNamed(Routes.REGISTER);
                     },
@@ -127,7 +128,7 @@ class RegisterView extends GetView<RegisterController> {
                       Container(
                         width: Get.width,
                         child: Text(
-                          "Create Account",
+                          AppLocalizations.of(context)!.registerHeader,
                           style: CustomTextStyle.extraBold(24),
                           textAlign: TextAlign.left,
                         ),
@@ -136,14 +137,14 @@ class RegisterView extends GetView<RegisterController> {
                       Container(
                         width: Get.width,
                         child: Text(
-                          "Register to securely store your data",
+                          AppLocalizations.of(context)!.registerDesc,
                           style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.8), height: 1.75),
                         ),
                       ),
                       SizedBox(height: 20.h),
                       CustomTextFormField(
                         controller: controller.usernameC,
-                        labelText: "Username",
+                        labelText: AppLocalizations.of(context)!.username,
                         keyboardType: TextInputType.name,
                         validator: (value) {
                           return controller.validateUsername(value!);
@@ -153,7 +154,7 @@ class RegisterView extends GetView<RegisterController> {
                       SizedBox(height: 15.h),
                       CustomTextFormField(
                         controller: controller.emailC,
-                        labelText: "Email Address",
+                        labelText: AppLocalizations.of(context)!.email,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           return controller.validateEmail(value!);
@@ -164,7 +165,7 @@ class RegisterView extends GetView<RegisterController> {
                       Obx(
                         () => CustomTextFormField(
                           controller: controller.passwordC,
-                          labelText: "Password",
+                          labelText: AppLocalizations.of(context)!.password,
                           obscureText: controller.isHidden.value,
                           suffixIcon: IconButton(
                             onPressed: () => controller.isHidden.toggle(),
@@ -179,7 +180,7 @@ class RegisterView extends GetView<RegisterController> {
                       SizedBox(height: 15.h),
                       CustomTextFormField(
                         controller: controller.passwordValidateC,
-                        labelText: "Confirm Password",
+                        labelText: AppLocalizations.of(context)!.confirmPassword,
                         obscureText: true,
                         validator: (value) {
                           return controller.validatePasswordConfirmation(value!);
@@ -188,7 +189,7 @@ class RegisterView extends GetView<RegisterController> {
                       ),
                       SizedBox(height: 20.h),
                       CustomButton(
-                        text: "Register",
+                        text: AppLocalizations.of(context)!.register,
                         onPressed: () {
                           controller.checkRegister();
                         },
@@ -204,7 +205,7 @@ class RegisterView extends GetView<RegisterController> {
                               ),
                               SizedBox(width: 5),
                               Text(
-                                "Or",
+                                AppLocalizations.of(context)!.or,
                                 style: CustomTextStyle.semiBold(16),
                               ),
                               SizedBox(width: 5),
@@ -219,14 +220,14 @@ class RegisterView extends GetView<RegisterController> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Have an account?",
+                              AppLocalizations.of(context)!.haveAccount,
                               style: CustomTextStyle.medium(15),
                             ),
                             SizedBox(width: 10),
                             GestureDetector(
                               onTap: () => Get.toNamed(Routes.LOGIN),
                               child: Text(
-                                "Login Now",
+                                AppLocalizations.of(context)!.loginNow,
                                 style: CustomTextStyle.extraBold(16, color: AppColors.contrast),
                               ),
                             ),

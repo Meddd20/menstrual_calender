@@ -104,13 +104,8 @@ class NotesController extends GetxController {
     try {
       DailyLogTagsData? result = await _logService.getLogsByTags("notes");
 
-      if (result != null) {
-        notes.value = result.logs;
-      } else {
-        print("Error: Unable to fetch others");
-      }
+      notes.value = result.logs;
       specifiedDataByDate();
-
       update();
     } catch (error) {
       print("Error: $error");

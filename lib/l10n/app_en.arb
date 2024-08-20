@@ -1,0 +1,576 @@
+{
+    "welcomeMsg": "Welcome to Menstrual and Pregnancy Calendar!",
+    "welcomeMsgDesc": "Easily track your menstrual cycle and pregnancy journey. Receive personalized insights and reminders to support your unique experience.",
+    "haveAccount": "I Have an Account",
+    "getStarted": "Get Started",
+
+    "askBirthday": "When's your birthday?",
+    "askBirthdayDesc": "Providing your birthday helps us offer you a more personalized experience.",
+
+    "askGoal": "Tracking my period",
+    "askGoalDesc": "Pick the goal that best fits you. All features are available for you to explore!",
+    "trackPeriodGoal": "Tracking my period",
+    "pregnancyGoal": "Follow my pregnancy",
+
+    "askMenstrualCycle": "How Long is Your Average Menstrual Cycle?",
+    "askMenstrualCycleDesc": "We'll use this to help predict your next period based on your last one.",
+
+    "askPeriodLast": "How Long Does Your Period Usually Last?",
+    "askPeriodLastDesc": "Knowing this helps us predict your next period more accurately.",
+
+    "askPreviousPeriodCycle": "Enter Your Previous Period Dates",
+    "askPreviousPeriodCycleDesc": "Choose the start date or range of your previous period(s) to help us predict your next cycle accurately.",
+
+    "askFirstDayLastPeriod": "Enter the First Day of Your Last Period",
+    "askFirstDayLastPeriodDesc": "Help us calculate your pregnancy week by entering the first day of your last period.",
+
+    "askRegisterAccount": "Keep your health data safe",
+    "askRegisterAccountDesc": "Create an account to securely back up your health data and access it from any device.",
+    "registerLater": "I'll Register Later",
+    "registerNow": "Register Now",
+    "registerHeader": "Create Account",
+    "registerDesc": "Register to securely store your data",
+    "register": "Register",
+    "or": "Or",
+    "haveAccount": "Have an account?",
+    "loginNow": "Login Now",
+
+    "verificationHeader": "Verification Code",
+    "verificationDesc": "Please enter verification code send to ",
+    "sendCode": "Send Code",
+    "codeNotReceived": "Didn’t receive any code?  ",
+    "resendOTP": "Resend OTP  ",
+
+    "loginHeader": "Welcome Back!",
+    "loginDesc": "Glad to see you again!",
+    "forgotPassword": "Forgot Password?",
+    "login": "Login",
+    "didntHaveAccount": "Didn't have an account?",
+    "registerNow": "Register Now",
+
+    "forgetPasswordHeader": "Forgot your password?",
+    "forgetPasswordDesc": "Don’t worry! It happens. Please enter the email associated with your account.",
+
+    "changePasswordHeader": "Enter Your New Password",
+    "changePasswordDesc": "Please enter your new password. Make it secure and easy to remember.",
+    "newPassword": "New Password",
+    "passwordConfirmation": "Confirmation New Password",
+    "confirmNewPassword": "Confirm your new password",
+
+    "premenstrualSyndrome": "Premenstrual Syndrome (PMS)",
+    "pregnancy": "Pregnancy",
+    "ovulation": "Ovulation",
+    "menstruation": "Menstruation",
+    "tryingToConceive": "Trying to conceive",
+    "fertility": "Fertility",
+    "sex": "Sex",
+    "perimenopause": "Perimenopause",
+    "birthControl": "Birth Control",
+
+    "references": "References",
+    "comments": "Comments {totalComments}",
+    "@comments" : {
+        "placeholders": {
+            "totalComments": {
+                "type": "String"
+            }
+        }
+    },
+    "deleteComment": "Delete comment",
+    "reply": "Reply",
+    "replyToComment": "Replying to {username}'s comment",
+    "@replyToComment" : {
+        "placeholders": {
+            "username": {
+                "type": "String"
+            }
+        }
+    },
+    "leaveYourThoughts": "Leave your thoughts...",
+    "hideReplies": "  Hide replies",
+    "viewReplies": "  View {totalReplies} replies",
+    "@viewReplies" : {
+        "placeholders": {
+            "totalReplies": {
+                "type": "String"
+            }
+        }
+    },
+
+    "periodAnalysis": "Perod Analysis",
+    "myCycle": "My Cycle",
+    "seeMore": "See more",
+    "periodCycleLogged": "{totalPeriodCycle} cycle history logged",
+    "@periodCycleLogged" : {
+        "placeholders": {
+            "totalPeriodCycle": {
+                "type": "String"
+            }
+        }
+    },
+    "averageCycleLength": "Average Cycle Length",
+    "averagePeriodLength": "Average Period Length",
+    "daysPrefix": " days",
+    "bleedingFlow": "Bleeding Flow",
+    "sexActivity": "Sex Activity",
+    "symptoms": "Symptoms",
+    "vaginalDischarge": "Vaginal Discharge",
+    "moods": "Moods",
+    "others": "Others",
+    "physicalActivity": "Physical Activity",
+    "temperature": "Temperature",
+    "weight": "Weight",
+    "reminder": "Reminder",
+    "notes": "Notes",
+
+    "shettlesPredictionMethod": "The Shettles Prediction Method",
+    "shettlesPredictionMethod1": "Based on the Shettles Method",
+    "shettlesPredictionMethod2": "Aim for intercourse on ovulation day and the next 2-3 days ",
+    "shettlesPredictionMethod3": "from {boyStartDate} until {boyEndDate} to likely conceive a male",
+    "@shettlesPredictionMethod3" : {
+        "placeholders": {
+            "boyStartDate": {
+                "type": "String"
+            },
+            "boyEndDate": {
+                "type": "String"
+            }
+        }
+    },
+    "shettlesPredictionMethod4": ", and have intercourse from the end of menstruation until three days before ovulation, avoiding sex 2-3 days before ovulation ",
+    "shettlesPredictionMethod5": "from {girlStartDate} until {girlEndDate} to likely conceive a female.",
+    "@shettlesPredictionMethod5" : {
+        "placeholders": {
+            "girlStartDate": {
+                "type": "String"
+            },
+            "girlEndDate": {
+                "type": "String"
+            }
+        }
+    },
+    "shettlesPredictionMethod6": "What is The Shettles Method?",
+    "shettlesPredictionMethod7": "In the 1960s, Dr. Landrum Shettles began studying sperm to understand how they influence the sex of a fetus. He suggested that sperm differ based on whether they carry an X or Y chromosome. The Shettles method is based on the idea that these differences between male (Y) and female (X) sperm can be used to influence the sex of the fetus.\n\nThis method recommends specific times for intercourse, preferred sexual positions, and adjustments to the pH of bodily fluids to favor either X or Y sperm reaching the egg first, thereby theoretically determining the sex of the fetus.\n\nDr. Shettles identified key differences between male and female sperm. Male sperm, which carry Y chromosomes, are small with rounded heads, swim faster, and thrive in the alkaline conditions near the cervix. Female sperm, which carry X chromosomes, are larger with oval-shaped heads, swim slower, and survive longer in the acidic conditions of the vagina.\n\nDr. Shettles claimed these differences influenced how quickly sperm could reach the egg and their ability to survive in the vaginal environment. He noted that cervical secretions become more alkaline closer to ovulation, making timing of intercourse critical depending on the desired sex of the fetus.",
+    "shettlesPredictionMethod8": "How the method suggests conceiving a female?",
+    "shettlesPredictionMethod9": "According to the Shettles method, the following factors are recommended to conceive a female fetus:",
+    "shettlesPredictionMethod10": "• Sexual Position: Engage in face-to-face intercourse with shallow penetration. This allows sperm to pass through the acidic environment of the vagina, which is believed to favor female sperm.\n• Timing of Intercourse: Have sexual intercourse between the end of menstruation and three days before ovulation, then abstain from intercourse 2–3 days before ovulation.\n• Timing of Female Orgasm: Since the secretions from female orgasm are alkaline, Dr. Shettles recommended that the female should avoid orgasming until after the male has ejaculated.\n• Douching: Use a douche made from 2 tablespoons of white vinegar mixed with 1 quart of water to create a more acidic environment.",
+    "shettlesPredictionMethod11": "Douching and Safety",
+    "shettlesPredictionMethod12": "It's important to note that vaginal douching is not considered safe. The Office on Women’s Health highlights that douching can cause various health issues and may be linked to difficulties in getting pregnant, ectopic pregnancies, and preterm labor.\n\nDouching can also increase the risk of vaginal infections, such as yeast infections and bacterial vaginosis. Furthermore, if a person has a vaginal infection, douching can push bacteria into the uterus, ovaries, and fallopian tubes, potentially leading to pelvic inflammatory disease.",
+    "shettlesPredictionMethod13": "How the Method Suggests Conceiving a Male?",
+    "shettlesPredictionMethod14": "According to the Shettles method, the following factors are recommended to conceive a male fetus:",
+    "shettlesPredictionMethod15": "• Sexual Position: Engage in rear-entry intercourse to achieve deep penetration, depositing sperm closer to the cervix.\n• Timing of Intercourse: Refrain from sexual intercourse from the beginning of the menstrual cycle until the day of ovulation. Have intercourse on the day of ovulation and the following three days.\n• Timing of Female Orgasm: The female should orgasm before the male ejaculates to increase alkaline secretions favorable to male sperm.\n• Douching: Use a douche made from 2 tablespoons of baking soda mixed with 1 quart of water to create an alkaline environment.",
+    "shettlesPredictionMethod16": "Does It Really Work?",
+    "shettlesPredictionMethod17": "Dr. Shettles claimed that his methodology had an 80% success rate among his patients, but he acknowledged that the method does not guarantee the desired outcome.\n\nBlogger Genevieve Howland of Mama Natural reports that the Shettles method helped her conceive a girl with her second pregnancy by timing intercourse three days before ovulation, which resulted in a girl. She also notes that having intercourse on the day of ovulation with her first pregnancy resulted in a boy.\n\nHowever, not all researchers agree with Shettles' claims. A 1991 review of studies found no support for the idea that timing intercourse affects the sex of the baby. This review noted that fewer male babies were conceived during peak ovulation, with more male babies conceived three to four days before or two to three days after ovulation.\n\nA 2001 study refuted Shettles' assertion that X- and Y-containing sperm have different shapes, directly contradicting his research. Additionally, a 1995 study indicated that having sex two to three days after ovulation does not necessarily lead to pregnancy.\n\nThe science remains unclear. Currently, the only guaranteed method to select a baby's sex is through preimplantation genetic diagnosis (PGD), a procedure sometimes used in conjunction with in vitro fertilization (IVF).\n\nA 2016 study indicates that there is no evidence to support the idea that the timing or pattern of intercourse influences the sex of the fetus. Similarly, a 2020 study found that there are no significant differences between male and female sperm that would impact their behavior in a way that supports the Shettles method.",
+
+    "chineseGenderPredction": "Chinese Gender Predictions",
+    "chineseGenderPredction1": "Your baby gender is predicted to be..",
+    "girl": "girl",
+    "boy": "boy",
+    "mothersAge": "Mother's Age",
+    "mothersLunarAge": "Mother's Lunar Age",
+    "mothersBirthdayAge": "Mother's Birthday in Western Date",
+    "mothersBirthdayLunarAge": "Mother's Birthday in Lunar Date",
+    "babyConceivedDate": "Baby Conceived in Western Date",
+    "babyConceivedLunarDate": "Baby Conceived in Lunar Date",
+    "chineseGenderPredction2": "What is Chinese Gender Predictor Chart?",
+    "chineseGenderPredction3": "To use it, you first have to find the mother's lunar age at conception, which is different from her age in the Western calendar. Then, you locate the month of conception on the chart. By intersecting these two points, the chart suggests the baby's gender.\n\nHowever, its accuracy is a matter of debate. Some view its effectiveness as rooted more in cultural belief than empirical evidence. Nevertheless, many expectant parents worldwide still enjoy using it, adding a touch of mystery to the excitement of awaiting their baby's arrival.\n\nThe widely believed story is that the Chinese Gender Calendar Chart was made during the Qing Dynasty (1644-1911 A.D.). It's said to be inspired by the ancient text \"Book of Changes,\" which talks about the Five Elements (Metal, Water, Wood, Fire, and Earth), Yin and Yang, and the Eight Trigrams. Legend has it that the imperial family of the Qing Dynasty used this chart to choose the gender of their children. It was a closely guarded secret within the palace and wasn't shared with the public.\n\nThe Chinese Gender Predictor Chart has two popular stories about its origins. One tale claims it was created during the Qing Dynasty and used by the imperial family to choose the gender of their children. It was kept secret until the end of the dynasty when it was taken during the Boxer Rebellion and ended up in England and Austria before being published in Taiwan in 1972. Another story suggests it was found buried in a royal tomb over 700 years ago near Beijing.\n\nDespite these interesting stories, there's no scientific proof that the chart works. It's more of a cultural tradition, used for fun rather than as a reliable way to predict a baby's gender.\n\nAfter reviewing over 38,000 delivery records at Massachusetts General Hospital from 1995 to 2008, it was found that the claimed accuracy of the Chinese birth calendar in predicting infant gender (93-99%) is greatly exaggerated. Both the Gregorian and Chinese lunar calendars only accurately predicted gender about 50% of the time, no better accuracy than a coin toss. Similarly, a study led by Dr. Eduardo Villamor from the University of Michigan, examining 2.8 million Swedish births from 1973 to 2006, concluded that the Chinese lunar calendar method is no better than guessing and lacks scientific validity, despite claims of high accuracy on some websites.",
+
+    "totalEntries": "Total Entries",
+    "totalEntriesData": "{totalEntries} Entries",
+    "@totalEntriesData" : {
+        "placeholders": {
+            "totalEntries": {
+                "type": "String"
+            }
+        }
+    },
+    "entriesFromDate": "from {dateFromNow} up to today",
+    "@entriesFromDate" : {
+        "placeholders": {
+            "dateFromNow": {
+                "type": "String"
+            }
+        }
+    },
+    "date": "Date: {dataDate}",
+    "@date" : {
+        "placeholders": {
+            "dataDate": {
+                "type": "String"
+            }
+        }
+    },
+    "temperatureCelcius": "Temperature: {temperature} °C",
+    "@temperatureCelcius" : {
+        "placeholders": {
+            "temperature": {
+                "type": "String"
+            }
+        }
+    },
+    "weightKilogram": "Weight: {weight} Kg",
+    "@weightKilogram" : {
+        "placeholders": {
+            "weight": {
+                "type": "String"
+            }
+        }
+    },
+
+    "periodCycle": "Period Cycle",
+    "periodDuration": "Period Duration",
+    "addPeriodCycle": "Add Period Cycle",
+    "addPeriod": "Add Period",
+    "durationValue": "Duration:",
+    "actualPeriod": "Actual Periods",
+    "predictionPeriod": "Prediction Periods",
+    "editPeriodCycle": "Edit Period Cycle",
+    "editPeriod": "Edit Period",
+
+    "accountActivityDetected": "Account Activity Detected",
+    "accountActivityDetectedDesc": "We detected a login on another device. Please sign in again to secure your account.",
+    "logout": "Logout",
+
+    "askRegisterAccount": "Register to save your data or log in to access your account",
+    "askRegisterAccountDesc": "Register to save your data or log in to your existing account to access your data",
+    "createNewAccount": "Create New Account",
+    "loginToExistingAccount": "Login To Existing Account",
+    "overwriteAccountData": "Overwrite your existing account data?",
+    "overwriteAccountDataConfirm": "Overwriting your data means your existing account data will be overwritten",
+    "keepData": "Keep Data",
+    "overwrite": "Overwrite",
+    "continues": "Continue",
+    "usagePreference": "Usage Preference",
+    "changeGoalConfirm": "Are you sure you want to change your goal?",
+    "no": "No",
+    "yes": "Yes",
+    "secureAccess": "Secure Access (PIN)",
+    "changeLanguage": "Change Language",
+    "language": "Language",
+    "backupDataPreferences": "Backup Data Preferences",
+    "backupData": "Backup Your Data",
+    "backupDataDesc": "Ensure your data is backed up to avoid loss and keep it secure.",
+    "noInternetConnection": "No internet connection, please try again",
+    "removeDataBackup": "Remove your data backup?",
+    "removeDataBackupConfirm": "Are you sure you want to remove your data backup?",
+    "cancel": "Cancel",
+    "dataBackedUp": "Data Backed Up",
+    "dataNotBackedUp": "Data Not Backed Up",
+    "aboutApp": "About This Application",
+    "logoutConfirm": "Logging Out?",
+    "logoutConfirmDesc": "Make sure to backup your data before logging out.",
+
+    "save": "Save",
+    "dateOfBirth": "Date of Birth",
+    "editProfile": "Edit Profile",
+
+    "changePurpose": "Change Purpose",
+    "useLastPeriod": "Use last period cycle data?",
+    "selectedDate": "Selected Date",
+    "startPregnancy": "Start Pregnancy",
+    "blessedWithBaby": "Blessed with a baby?",
+    "babyGirl": "Yes, it's a Girl",
+    "babyBoy": "Yes, it's a Boy",
+    "deletePregnancy": "Delete Pregnancy",
+    "deletePregnancyConfirm": "Are you sure you want to delete your current pregnancy?",
+    "endPregnancy": "End Pregnancy",
+
+    "fetalWeightDevelopment": "Fetal Weight Development",
+    "fetalHeightDevelopment": "Fetal Height Development",
+    "fetalWeight": "Fetal Weight",
+    "fetalHeight": "Fetal Height",
+    "weightUnit": "Fetal Weight (gram)",
+    "heightUnit": "Fetal Height (milimeter)",
+    "weekPregnancy": "Week Pregnancy",
+    "week": "Week",
+
+    "pregnancyFoodGuide": "Pregnancy Food Guide",
+    "searchFood": "Search food...",
+    "readMore": "Read more",
+    "showLess": " Show less",
+    "unsafe": "Unsafe",
+    "caution": "Caution",
+    "safe": "Safe",
+
+    "fetalDevelopment": "Fetal Development",
+    "weightGainTracker": "Weight Gain Tracker",
+    "reminder": "Reminder",
+    "vaccine": "Vaccine",
+    "vitamins": "Vitamins",
+    "food": "Food",
+    "pregnancyTools": "Pregnancy Tools",
+
+    "pregnancyVaccineGuide": "Pregnancy Vaccine Guide",
+    "pregnancyVaccineGuideDesc": "Shows recommended vaccines for pregnant women, including their benefits and timing for optimal protection.",
+    "pregnancyVitaminGuide": "Pregnancy Vitamins Guide",
+    "pregnancyVitaminGuideDesc": "Essential vitamins for pregnant women, including benefits and sources, to support maternal and fetal health.",
+
+    "pregnancyWeightGainTracker": "Pregnancy Weight Gain Tracker",
+    "pregnancyWeightGainTrackerDesc": "The pregnancy weight gain tracker monitors and records a pregnant woman's weight throughout her pregnancy using BMI to categorize weight status.",
+    "countBMI": "Enter your height and pre-pregnancy weight",
+    "prePregnancyWeight": "Pre-pregnancy weight",
+    "addPrePregnancyWeight": "Add Pre-Pregnancy Weight",
+    "add": "Add",
+    "yourHeight": "Your height",
+    "addHeight": "Add Height",
+    "height": "Height",
+    "twinBaby": "Pregnant with twin baby?",
+    "send": "Send",
+
+    "addNewWeightGain": "Add new weight gain data",
+    "addNewWeight": "Add New Weight",
+    "save": "Save",
+    "recommendWeek": "Recommend Weight",
+    "weeksOfPregnancy": "Weeks of Pregnancy",
+    "weightGainUnit": "Weight Gain (kg)",
+    "recommendedWeightGainRange": "Recommended Weight Gain Range",
+    "actualWeightGain": "Actual Weight Gain",
+    "starting": "Starting",
+    "current": "Current",
+    "totalGain": "Total Gain",
+    "recommendedWeightGain": "Recommended Weight Gain",
+    "currentWeek": "Current Week",
+    "nextWeek": "Next Week",
+    "previousRecord": "Previous Record",
+    "dates": "Date",
+    "gain": "Gain",
+    "editWeight": "Edit Weight",
+    "pregnancyWeek": "Pregnancy Week",
+    "editWeightData": "Edit Weight Data",
+    "deleteWeightData": "Delete Weight Data",
+
+    "didntHaveSex": "Didn't have sex",
+    "unprotectedSex": "Unprotected sex",
+    "protectedSex": "Protected sex",
+    
+    "noDischarge": "No discharge",
+    "creamyDischarge": "Creamy",
+    "spottingDischarge": "Spotting",
+    "eggwhiteDischarge": "Eggwhite",
+    "stickyDischarge": "Sticky",
+    "wateryDischarge": "Watery",
+    "unusualDischarge": "Unusual",
+    
+    "lightBleedingFlow": "Ringan",
+    "mediumBleedingFlow": "Sedang",
+    "heavyBleedingFlow": "Berat",
+
+    "abdominalCramps": "Abdominal cramps",
+    "acne": "Acne",
+    "backache": "Backache",
+    "bloating": "Bloating",
+    "bodyAches": "Body aches",
+    "chills": "Chills",
+    "constipation": "Constipation",
+    "cramps": "Cramps",
+    "cravings": "Cravings",
+    "diarrhea": "Diarrhea",
+    "dizziness": "Dizziness",
+    "fatigue": "Fatigue",
+    "feelGood": "Feel good",
+    "gas": "Gas",
+    "headache": "Headache",
+    "hotFlashes": "Hot flashes",
+    "insomnia": "Insomnia",
+    "lowBackPain": "Low back pain",
+    "nausea": "Nausea",
+    "nippleChanges": "Nipple changes",
+    "pms": "PMS",
+    "spotting": "Spotting",
+    "swelling": "Swelling",
+    "tenderBreasts": "Tender breasts",
+
+    "angry": "Angry",
+    "anxious": "Anxious",
+    "apathetic": "Apathetic",
+    "calm": "Calm",
+    "confused": "Confused",
+    "cranky": "Cranky",
+    "depressed": "Depressed",
+    "emotional": "Emotional",
+    "energetic": "Energetic",
+    "excited": "Excited",
+    "feelingGuilty": "Feeling guilty",
+    "frisky": "Frisky",
+    "frustrated": "Frustrated",
+    "happy": "Happy",
+    "irritated": "Irritated",
+    "lowEnergy": "Low energy",
+    "moodSwings": "Mood swings",
+    "obsessiveThoughts": "Obsessive thoughts",
+    "sad": "Sad",
+    "sensitive": "Sensitive",
+    "sleepy": "Sleepy",
+    "tired": "Tired",
+    "unfocused": "Unfocused",
+    "verySelfCritical": "Very self-critical",
+
+    "travel": "Travel",
+    "stress": "Stress",
+    "diseaseOrInjury": "Disease or Injury",
+    "alcohol": "Alcohol",
+
+    "didntExercise": "Didn't exercise",
+    "yoga": "Yoga",
+    "gym": "Gym",
+    "aerobicsAndDancing": "Aerobics & Dancing",
+    "swimming": "Swimming",
+    "teamSports": "Team sports",
+    "running": "Running",
+    "cycling": "Cycling",
+    "walking": "Walking",
+
+    "basalTemperature": "Basal Temperature",
+    "saveTemperature": "Save Temperature",
+    "myWeight": "My Weight",
+    "saveWeight": "Save Weight",
+    "dailyNotes": "Daily Notes",
+    "saveNotes": "Save notes",
+    "addDailyLog": "Add Daily Log",
+
+    "addNewReminder": "Add New Reminder",
+    "adjustDates": "Adjust the start and end dates for precise and up-to-date reminder information.",
+    "time": "Time",
+    "selectTime": "Select Time",
+    "enterReminderTitle": "Enter reminder title",
+    "enterReminderDescription": "Enter reminder description",
+    "addReminder": "Add Reminder",
+    "permissionRequired": "Permission Required",
+    "notificationPermissionRequired": "Notification permission is required to use this feature. Please enable it in the app settings.",
+    "openSettings": "Open Settings",
+    "permissionDenied": "Permission Denied",
+    "allowNotifications": "Please allow the app to send notifications to use this feature.",
+    "customAlerts": "Set custom alerts for your pregnancy milestones and appointments, so you never miss an important event.",
+    "editReminder": "Edit Reminder",
+    "updateReminder": "Update Reminder",
+
+    "pregnancyMode": "Pregnancy Mode",
+    "weeksPregnant": "{weeks} Weeks Pregnant",
+    "@weeksPregnant" : {
+        "placeholders": {
+            "weeks": {
+                "type": "String"
+            }
+        }
+    },
+    "dueDate": "Due date",
+    "weekDue": "Weeks left",
+    "trimester": "Trimester",
+    "babySize": "Baby is as big as",
+    "idealWeight": " Ideal weight",
+    "idealHeight": " Ideal height",
+    "thisWeeksHighlight": "This Week's Highlight",
+    "bodyChangesThisWeek": "Body Changes This Week",
+    "yourBabyThisWeek": "Your Baby This Week",
+    "symptomsYouMightFeel": "Symptoms You Might Feel",
+    "thingsToConsider": "Things To Consider",
+
+    "menstruationMode": "Menstruation Mode",
+    "month": "Month",
+    "week": "Week",
+    "currentCycle": "Current cycle",
+    "dayOfTheCycle": " day of the cycle",
+    "pregnancyChances": "{pregnancyChance} chances of getting pregnant",
+    "@pregnancyChances" : {
+        "placeholders": {
+            "pregnancyChance": {
+                "type": "String"
+            }
+        }
+    },
+    "daysLeft": "{daysLeft} Days Left",
+    "@daysLeft" : {
+        "placeholders": {
+            "daysLeft": {
+                "type": "String"
+            }
+        }
+    },
+    "period": "Period",
+    "fertileDays": "Fertile days",
+    "ovulation": "Ovulation",
+    "safeDays": "Safe days",
+    "manageYourPeriodEvents": "Manage Your Period Events",
+    "trackYourPeriodCycle": "Track your period cycle and other related events",
+    "remarkYourBodyChanges": "Remark your body changes",
+    "logYourBodyChanges": "Log your body changes in every cycle",
+    "dailyLog": "Daily Log",
+    "chineseGenderCalendar": "Chinese gender calendar",
+    "didYouKnow": "Did you know?",
+    "accordingTo": "According to the ",
+    "ancientChineseGenderChart": "ancient Chinese gender chart",
+    "genderPrediction": ", if you were to conceive today, based on your age and the month of the current month of the conception, it predicts the gender of your future child as ",
+    "learnMore": "Learn more",
+    "theShettlesMethod": "The Shettles Method",
+    "increaseGenderPredictionProbability": "Increase Gender Prediction Probability",
+    "aimForIntercourse": "Aim for intercourse on ovulation day and the next 2-3 days ",
+    "likelyConceiveMale": "from {boyStartDate} until {boyEndDate} to likely conceive a male",
+    "@likelyConceiveMale" : {
+        "placeholders": {
+            "boyStartDate": {
+                "type": "String"
+            },
+            "boyEndDate": {
+                "type": "String"
+            }
+        }
+    },
+    "likelyConceiveFemale": ", and have intercourse from the end of menstruation until three days before ovulation, avoiding sex 2-3 days before ovulation ",
+    "femalePrediction": "from {girlStartDate} until {girlEndDate} to likely conceive a female.",
+     "@femalePrediction" : {
+        "placeholders": {
+            "girlStartDate": {
+                "type": "String"
+            },
+            "girlEndDate": {
+                "type": "String"
+            }
+        }
+    },
+
+    "menstruationPhase": "Menstruation Phase",
+    "ovulation": "Ovulation",
+    "fertilePhase": "Fertile Phase",
+    "follicularPhase": "Follicular Phase",
+    "lutealPhase": "Luteal Phase",
+    "low": "Low",
+    "high": "High",
+
+    "notFound": "Result Not Found",
+    "notFoundDesc": "Oops... it looks like there's no information available yet.",
+
+    "home": "Home",
+    "analysis": "Analysis",
+    "tools": "tools",
+    "insight": "Insight",
+    "profile": "Profile",
+
+    "username": "Username",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "days": "{day} Days",
+    "@days" : {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "next": "Next",
+
+    "aboutAppInfo": "This Menstrual and Pregnancy Calendar application was developed by Medhiko Biraja as part of a final project for the Information Technology program at the Faculty of Engineering, Udayana University.",
+    "creditToFlaticon": "The icons used in this application were sourced from Flaticon. The icons can be found at www.flaticon.com.",
+    "creditToBabyCenter": "The baby size comparison images used in this application were sourced from BabyCenter. The images can be found at www.babycenter.com.",
+    "creditToWhatToExpect": "The fetal images used for each week of pregnancy in this application were sourced from What to Expect. The images can be found at www.whattoexpect.com/pregnancy/week-by-week/.",
+
+    "securePinHeader": "Secure Your App with a PIN",
+    "securePinDescription": "Protect your personal data and ensure that only you can access the app.",
+    "setPinCode": "Set Your PIN",
+    "setPinCodeDescription": "Enter your PIN code below",
+    "confirmPinCode": "Confirm Your PIN code",
+    "confirmPinCodeDescription": "Enter your PIN code again",
+    "enterPin": "Enter your PIN code",
+    "enterPinDesc": "Enter your PIN code to continue",
+    "errorPinCode": "Your PIN don't match. Please try again!"
+}

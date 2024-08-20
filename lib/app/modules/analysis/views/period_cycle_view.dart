@@ -9,6 +9,7 @@ import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/period_cycle_controller.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PeriodCycleView extends GetView<PeriodCycleController> {
   final int initialIndex;
@@ -21,7 +22,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
         title: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Text(
-            "Period Cycle",
+            AppLocalizations.of(context)!.periodCycle,
             style: CustomTextStyle.extraBold(22),
           ),
         ),
@@ -31,13 +32,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
         elevation: 4,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            print({'initialIndex': initialIndex});
-            Get.offAllNamed(
-              Routes.NAVIGATION_MENU,
-              arguments: {'initialIndex': initialIndex},
-            );
-          },
+          onPressed: () => Get.offAllNamed(Routes.NAVIGATION_MENU),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -47,7 +42,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
         ),
         backgroundColor: AppColors.primary,
         shape: CircleBorder(),
-        tooltip: 'Add Period Cycle',
+        tooltip: AppLocalizations.of(context)!.addPeriodCycle,
         onPressed: () {
           showModalBottomSheet(
               context: context,
@@ -62,8 +57,8 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             controller.cancelEdit();
                             Get.back();
                           },
-                          title: "Add Period Cycle",
-                          buttonCaption: "Add Period",
+                          title: AppLocalizations.of(context)!.addPeriodCycle,
+                          buttonCaption: AppLocalizations.of(context)!.addPeriod,
                           startDate: Obx(
                             () => Text(
                               "${DateFormat('yyyy-MM-dd').format(controller.startDate.value ?? DateTime.now())}",
@@ -125,7 +120,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                       SfCartesianChart(
                         tooltipBehavior: TooltipBehavior(
                           enable: true,
-                          format: 'point.x\nDuration: point.y days',
+                          format: "point.x\n ${AppLocalizations.of(context)!.durationValue} point.y days",
                         ),
                         enableSideBySideSeriesPlacement: false,
                         primaryXAxis: CategoryAxis(
@@ -139,14 +134,14 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             dataSource: periodHistoryList?.periodChart ?? [],
                             xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}').add(Duration(days: data.periodCycle!)))}',
                             yValueMapper: (PeriodChart data, _) => data.periodDuration?.toDouble() ?? 0.0,
-                            name: 'Period Duration',
+                            name: AppLocalizations.of(context)!.periodDuration,
                             color: AppColors.primary,
                           ),
                           StackedColumnSeries<PeriodChart, String>(
                             dataSource: periodHistoryList?.periodChart ?? [],
                             xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}').add(Duration(days: data.periodCycle!)))}',
                             yValueMapper: (PeriodChart data, _) => (data.periodCycle?.toDouble() ?? 0.0),
-                            name: 'Period Cycle',
+                            name: AppLocalizations.of(context)!.periodCycle,
                             color: AppColors.highlight,
                           ),
                         ],
@@ -163,8 +158,8 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                   unselectedLabelColor: Colors.grey,
                   labelStyle: CustomTextStyle.bold(15),
                   tabs: [
-                    Tab(text: "Actual Periods"),
-                    Tab(text: "Prediction Periods"),
+                    Tab(text: AppLocalizations.of(context)!.actualPeriod),
+                    Tab(text: AppLocalizations.of(context)!.predictionPeriod),
                   ],
                 ),
               ),
@@ -197,12 +192,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                   return Wrap(
                                     children: [
                                       AddPeriodBottomSheetWidget(
+                                        
                                         closeModalBottomSheet: () {
                                           controller.cancelEdit();
                                           Get.back();
                                         },
-                                        title: "Edit Period Cycle",
-                                        buttonCaption: "Edit Period",
+                                        title: AppLocalizations.of(context)!.editPeriodCycle,
+                                        buttonCaption: AppLocalizations.of(context)!.editPeriod,
                                         startDate: Obx(
                                           () => Text(
                                             "${DateFormat('yyyy-MM-dd').format(controller.startDate.value!)}",
@@ -256,13 +252,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                     value: actualPeriodHistory?.durasiHaid?.toDouble() ?? 0.0,
                                     max: max,
                                     backgroundLabel: Text(
-                                      "${(actualPeriodHistory?.lamaSiklus == null || actualPeriodHistory?.lamaSiklus == 0) ? max.toInt() : actualPeriodHistory?.lamaSiklus} days",
+                                      "${(actualPeriodHistory?.lamaSiklus == null || actualPeriodHistory?.lamaSiklus == 0) ? max.toInt() : actualPeriodHistory?.lamaSiklus} ${AppLocalizations.of(context)!.daysPrefix}",
                                       style: CustomTextStyle.semiBold(15, height: 1.5),
                                     ),
                                     backgroundLabelAlign: Alignment.centerRight,
                                     backgroundLabelPadding: EdgeInsets.only(right: 10.0),
                                     foregroundLabel: Text(
-                                      "${actualPeriodHistory?.durasiHaid ?? 0} days",
+                                      "${actualPeriodHistory?.durasiHaid ?? 0} ${AppLocalizations.of(context)!.daysPrefix}",
                                       style: CustomTextStyle.semiBold(15, height: 1.5),
                                     ),
                                     foregroundLabelAlign: Alignment.centerLeft,
@@ -303,13 +299,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                   value: periodHistory?.durasiHaid?.toDouble() ?? 0.0,
                                   max: periodHistory?.lamaSiklus?.toDouble() ?? 0.0,
                                   backgroundLabel: Text(
-                                    "${periodHistory?.lamaSiklus ?? 0} days",
+                                    "${periodHistory?.lamaSiklus ?? 0} ${AppLocalizations.of(context)!.daysPrefix}",
                                     style: CustomTextStyle.semiBold(15, height: 1.5),
                                   ),
                                   backgroundLabelAlign: Alignment.centerRight,
                                   backgroundLabelPadding: EdgeInsets.only(right: 10.0),
                                   foregroundLabel: Text(
-                                    "${periodHistory?.durasiHaid ?? 0} days",
+                                    "${periodHistory?.durasiHaid ?? 0} ${AppLocalizations.of(context)!.daysPrefix}",
                                     style: CustomTextStyle.semiBold(15, height: 1.5),
                                   ),
                                   foregroundLabelAlign: Alignment.centerLeft,

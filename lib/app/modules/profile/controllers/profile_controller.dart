@@ -31,6 +31,7 @@ import 'package:periodnpregnancycalender/app/services/weight_history_service.dar
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileController extends GetxController {
   final ApiService apiService = ApiService();
@@ -51,6 +52,8 @@ class ProfileController extends GetxController {
   Rx<int?> selectedLanguage = Rx<int>(0);
   Rx<int?> syncPreferences = Rx<int>(0);
   Rx<bool?> isDataBackedup = Rx<bool>(false);
+  RxBool setPin = false.obs;
+  RxInt aboutAppIndex = 0.obs;
 
   late final Future<User?> profileUser;
 
@@ -109,6 +112,7 @@ class ProfileController extends GetxController {
     selectedLanguage.value = storageService.getLanguage() == "en" ? 0 : 1;
     // syncPreferences.value = storageService.getStoreDataMechanism() == "primary" ? 0 : 1;
     isDataBackedup.value = storageService.getIsBackup();
+    setPin.value = storageService.isPinSecure();
     super.onInit();
   }
 
@@ -142,8 +146,10 @@ class ProfileController extends GetxController {
   void setLanguage() {
     if (selectedLanguage.value == 0) {
       storageService.setLanguage("en");
+      Get.updateLocale(Locale("en"));
     } else {
       storageService.setLanguage("id");
+      Get.updateLocale(Locale("id"));
     }
     Get.offAllNamed(Routes.NAVIGATION_MENU);
   }
@@ -328,6 +334,7 @@ class ProfileController extends GetxController {
       storageService.deleteCredentialToken();
       storageService.deleteIsPregnant();
       storageService.setHasSyncData(false);
+      storageService.setPin(false);
       LocalNotificationService().cancelAllNotifications();
       // storageService.storePrimaryDataMechanism();
       storageService.deleteAccountLocalId();
@@ -386,8 +393,34 @@ class ProfileController extends GetxController {
     update();
   }
 
+  List<String> aboutAppInfo(BuildContext context) {
+    return [
+      AppLocalizations.of(context)!.aboutAppInfo,
+      AppLocalizations.of(context)!.creditToFlaticon,
+      AppLocalizations.of(context)!.creditToBabyCenter,
+      AppLocalizations.of(context)!.creditToWhatToExpect,
+    ];
+  }
+
+  void aboutAppIndexBackward() {
+    if (aboutAppIndex.value > 0) {
+      aboutAppIndex.value--;
+    }
+  }
+
+  void aboutAppIndexForward() {
+    if (aboutAppIndex.value < aboutAppInfo(Get.context!).length - 1) {
+      aboutAppIndex.value++;
+    }
+  }
+
   void resetValuePregnancy() {
     gender.value = "";
     setSelectedDate(DateTime.now());
+  }
+
+  void setPinSecure(bool isPinSecure) {
+    setPin.value = isPinSecure;
+    storageService.setPin(isPinSecure);
   }
 }

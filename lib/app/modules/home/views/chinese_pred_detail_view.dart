@@ -7,6 +7,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/models/date_event_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChinesePredDetailView extends GetView {
   const ChinesePredDetailView({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class ChinesePredDetailView extends GetView {
         title: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Text(
-            "Chinese Gender Predictions",
+            AppLocalizations.of(context)!.chineseGenderPredction,
             style: CustomTextStyle.extraBold(22),
           ),
         ),
@@ -41,7 +42,7 @@ class ChinesePredDetailView extends GetView {
                 children: [
                   SizedBox(height: 30),
                   Text(
-                    "Your baby gender is predicted to be..",
+                    AppLocalizations.of(context)!.chineseGenderPredction1,
                     style: CustomTextStyle.extraBold(24, height: 1.5),
                     textAlign: TextAlign.center,
                   ),
@@ -62,7 +63,7 @@ class ChinesePredDetailView extends GetView {
                   SizedBox(height: 10),
                   Center(
                     child: Text(
-                      "${argument.genderPrediction == 'f' ? 'Girl' : 'Boy'}",
+                      "${argument.genderPrediction == 'f' ? "${AppLocalizations.of(context)!.girl}" : "${AppLocalizations.of(context)!.boy}"}",
                       style: CustomTextStyle.extraBold(30),
                     ),
                   ),
@@ -78,7 +79,7 @@ class ChinesePredDetailView extends GetView {
                             width: 150,
                             child: Center(
                               child: Text(
-                                "Mother's Age",
+                                AppLocalizations.of(context)!.mothersAge,
                                 style: CustomTextStyle.medium(15, height: 1.5),
                                 textAlign: TextAlign.center,
                               ),
@@ -97,7 +98,7 @@ class ChinesePredDetailView extends GetView {
                             width: 150,
                             child: Center(
                               child: Text(
-                                "Mother's Lunar Age",
+                                AppLocalizations.of(context)!.mothersLunarAge,
                                 style: CustomTextStyle.medium(15, height: 1.5),
                                 textAlign: TextAlign.center,
                               ),
@@ -122,7 +123,7 @@ class ChinesePredDetailView extends GetView {
                           Container(
                             width: 150,
                             child: Text(
-                              "Mother's Birthday in Western Date",
+                              AppLocalizations.of(context)!.mothersBirthdayAge,
                               style: CustomTextStyle.medium(15, height: 1.5),
                               textAlign: TextAlign.center,
                             ),
@@ -140,7 +141,7 @@ class ChinesePredDetailView extends GetView {
                           Container(
                             width: 150,
                             child: Text(
-                              "Mother's Birthday in Lunar Date",
+                              AppLocalizations.of(context)!.mothersBirthdayLunarAge,
                               style: CustomTextStyle.medium(15, height: 1.5),
                               textAlign: TextAlign.center,
                             ),
@@ -165,7 +166,7 @@ class ChinesePredDetailView extends GetView {
                           Container(
                             width: 150,
                             child: Text(
-                              "Baby Conceived in Western Date",
+                              AppLocalizations.of(context)!.babyConceivedDate,
                               style: CustomTextStyle.medium(15, height: 1.5),
                               textAlign: TextAlign.center,
                             ),
@@ -183,7 +184,7 @@ class ChinesePredDetailView extends GetView {
                           Container(
                             width: 150,
                             child: Text(
-                              "Baby Conceived in Lunar Date",
+                              AppLocalizations.of(context)!.babyConceivedLunarDate,
                               style: CustomTextStyle.medium(15, height: 1.5),
                               textAlign: TextAlign.center,
                             ),
@@ -201,18 +202,18 @@ class ChinesePredDetailView extends GetView {
                   Divider(),
                   SizedBox(height: 25),
                   Text(
-                    "What is Chinese Gender Predictor Chart?",
+                    AppLocalizations.of(context)!.chineseGenderPredction2,
                     style: CustomTextStyle.extraBold(24),
                   ),
                   SizedBox(height: 15),
                   Text(
-                    "To use it, you first have to find the mother's lunar age at conception, which is different from her age in the Western calendar. Then, you locate the month of conception on the chart. By intersecting these two points, the chart suggests the baby's gender.\n\nHowever, its accuracy is a matter of debate. Some view its effectiveness as rooted more in cultural belief than empirical evidence. Nevertheless, many expectant parents worldwide still enjoy using it, adding a touch of mystery to the excitement of awaiting their baby's arrival.\n\nThe widely believed story is that the Chinese Gender Calendar Chart was made during the Qing Dynasty (1644-1911 A.D.). It's said to be inspired by the ancient text \"Book of Changes,\" which talks about the Five Elements (Metal, Water, Wood, Fire, and Earth), Yin and Yang, and the Eight Trigrams. Legend has it that the imperial family of the Qing Dynasty used this chart to choose the gender of their children. It was a closely guarded secret within the palace and wasn't shared with the public.\n\nThe Chinese Gender Predictor Chart has two popular stories about its origins. One tale claims it was created during the Qing Dynasty and used by the imperial family to choose the gender of their children. It was kept secret until the end of the dynasty when it was taken during the Boxer Rebellion and ended up in England and Austria before being published in Taiwan in 1972. Another story suggests it was found buried in a royal tomb over 700 years ago near Beijing.\n\nDespite these interesting stories, there's no scientific proof that the chart works. It's more of a cultural tradition, used for fun rather than as a reliable way to predict a baby's gender.\n\nAfter reviewing over 38,000 delivery records at Massachusetts General Hospital from 1995 to 2008, it was found that the claimed accuracy of the Chinese birth calendar in predicting infant gender (93-99%) is greatly exaggerated. Both the Gregorian and Chinese lunar calendars only accurately predicted gender about 50% of the time, no better accuracy than a coin toss. Similarly, a study led by Dr. Eduardo Villamor from the University of Michigan, examining 2.8 million Swedish births from 1973 to 2006, concluded that the Chinese lunar calendar method is no better than guessing and lacks scientific validity, despite claims of high accuracy on some websites.",
+                    AppLocalizations.of(context)!.chineseGenderPredction3,
                     style: CustomTextStyle.regular(16, height: 1.75),
                   ),
                   SizedBox(height: 15),
                   ExpansionTile(
                     title: Text(
-                      "References",
+                      AppLocalizations.of(context)!.references,
                       style: CustomTextStyle.bold(20),
                     ),
                     children: [

@@ -12,18 +12,19 @@ import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/vitam
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_tracker_view.dart';
 
 import '../controllers/pregnancy_tools_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PregnancyToolsView extends GetView<PregnancyToolsController> {
   const PregnancyToolsView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final List<Map<String, String>> tools = [
-      {'name': 'Fetal Development', 'icon': 'assets/icon/fetal.png'},
-      {'name': 'Weight Gain Tracker', 'icon': 'assets/icon/weight-tracker.png'},
-      {'name': 'Reminder', 'icon': 'assets/icon/alarm.png'},
-      {'name': 'Vaccine', 'icon': 'assets/icon/vaccine.png'},
-      {'name': 'Vitamins', 'icon': 'assets/icon/vitamin.png'},
-      {'name': 'Food', 'icon': 'assets/icon/nutrition.png'},
+      {'name': AppLocalizations.of(context)!.fetalDevelopment, 'icon': 'assets/icon/fetal.png'},
+      {'name': AppLocalizations.of(context)!.weightGainTracker, 'icon': 'assets/icon/weight-tracker.png'},
+      {'name': AppLocalizations.of(context)!.reminder, 'icon': 'assets/icon/alarm.png'},
+      {'name': AppLocalizations.of(context)!.vaccine, 'icon': 'assets/icon/vaccine.png'},
+      {'name': AppLocalizations.of(context)!.vitamins, 'icon': 'assets/icon/vitamin.png'},
+      {'name': AppLocalizations.of(context)!.food, 'icon': 'assets/icon/nutrition.png'},
     ];
     return SafeArea(
       child: Scaffold(
@@ -31,7 +32,7 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              'Pregnancy Tools',
+              AppLocalizations.of(context)!.pregnancyTools,
               style: CustomTextStyle.extraBold(22),
             ),
           ),

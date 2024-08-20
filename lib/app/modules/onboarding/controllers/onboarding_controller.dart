@@ -1,17 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding2_view.dart';
 import 'package:periodnpregnancycalender/app/modules/register/views/register_view.dart';
+import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class OnboardingController extends GetxController {
+  final StorageService storageService = StorageService();
   List<Map<String, dynamic>> periods = [];
   var purposes = 0.obs;
   Rx<DateTime?> birthday = Rx<DateTime?>(null);
   var menstruationCycle = 28.obs;
   var periodLast = 7.obs;
-  var lastPeriodDate = DateTime.now().obs;
   var datePickerController = DateRangePickerController().obs;
+  Rx<DateTime?> lastPeriodDate = Rx<DateTime?>(null);
+  Rx<int?> selectedLanguage = Rx<int>(0);
 
   @override
   void onInit() {
@@ -27,6 +31,16 @@ class OnboardingController extends GetxController {
   @override
   void onClose() {
     super.onClose();
+  }
+
+  void setLanguage() {
+    if (selectedLanguage.value == 0) {
+      storageService.setLanguage("en");
+      Get.updateLocale(Locale("en"));
+    } else {
+      storageService.setLanguage("id");
+      Get.updateLocale(Locale("id"));
+    }
   }
 
   void onSelectionChanged(DateRangePickerSelectionChangedArgs args) {

@@ -10,6 +10,7 @@ import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menst
 import 'package:periodnpregnancycalender/app/modules/profile/controllers/profile_controller.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChangePurposeView extends GetView<ProfileController> {
   const ChangePurposeView({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class ChangePurposeView extends GetView<ProfileController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              'Change Purpose',
+              AppLocalizations.of(context)!.changePurpose,
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -165,7 +166,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Use last period cycle data?",
+                                AppLocalizations.of(context)!.useLastPeriod,
                                 style: CustomTextStyle.medium(15),
                                 textAlign: TextAlign.center,
                               ),
@@ -196,7 +197,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Selected Date",
+                                AppLocalizations.of(context)!.selectedDate,
                                 style: CustomTextStyle.medium(15),
                               ),
                               Text(
@@ -216,7 +217,10 @@ class ChangePurposeView extends GetView<ProfileController> {
                   bottom: 15,
                   child: Column(
                     children: [
-                      CustomButton(text: "Start Pregnancy", onPressed: () => controller.startPregnancy()),
+                      CustomButton(
+                        text: AppLocalizations.of(context)!.startPregnancy,
+                        onPressed: () => controller.startPregnancy(),
+                      ),
                     ],
                   ),
                 )
@@ -235,7 +239,7 @@ class ChangePurposeView extends GetView<ProfileController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              'Change Purpose',
+              AppLocalizations.of(context)!.changePurpose,
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -387,7 +391,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Selected Date",
+                                AppLocalizations.of(context)!.selectedDate,
                                 style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                               ),
                               Text(
@@ -399,7 +403,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                         ),
                         SizedBox(height: 15.h),
                         Text(
-                          "Blessed with a baby?",
+                          AppLocalizations.of(context)!.blessedWithBaby,
                           style: CustomTextStyle.extraBold(18, height: 1.5),
                         ),
                         SizedBox(height: 10.h),
@@ -414,7 +418,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                       Container(
                                         width: Get.width * 0.15,
                                         child: Text(
-                                          "Yes, it's a Girl",
+                                          AppLocalizations.of(context)!.babyGirl,
                                           style: CustomTextStyle.bold(14, height: 1.5),
                                         ),
                                       ),
@@ -446,7 +450,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                       Container(
                                         width: Get.width * 0.15,
                                         child: Text(
-                                          "Yes, it's a Boy",
+                                          AppLocalizations.of(context)!.babyBoy,
                                           style: CustomTextStyle.bold(14, height: 1.5),
                                         ),
                                       ),
@@ -481,7 +485,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                     child: Column(
                       children: [
                         CustomButton(
-                          text: "Delete Pregnancy",
+                          text: AppLocalizations.of(context)!.deletePregnancy,
                           textColor: AppColors.black,
                           backgroundColor: AppColors.transparent,
                           onPressed: () {
@@ -490,7 +494,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                               builder: (context) {
                                 return SimpleDialog(
                                   title: Text(
-                                    "Are you sure you want to delete your current pregnancy?",
+                                    AppLocalizations.of(context)!.deletePregnancyConfirm,
                                     style: CustomTextStyle.bold(22),
                                   ),
                                   contentPadding: EdgeInsets.all(16.0),
@@ -511,7 +515,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                               minimumSize: Size(Get.width, 45.h),
                                             ),
                                             child: Text(
-                                              "No",
+                                              AppLocalizations.of(context)!.no,
                                               style: CustomTextStyle.bold(16),
                                             ),
                                           ),
@@ -532,7 +536,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                               minimumSize: Size(Get.width, 45.h),
                                             ),
                                             child: Text(
-                                              "Yes",
+                                              AppLocalizations.of(context)!.yes,
                                               style: CustomTextStyle.bold(16, color: Colors.white),
                                             ),
                                           ),
@@ -548,7 +552,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                         SizedBox(height: 5.h),
                         Obx(
                           () => CustomButton(
-                            text: "End Pregnancy",
+                            text: AppLocalizations.of(context)!.endPregnancy,
                             onPressed: () {
                               (controller.gender.value == "") ? null : controller.endPregnancy();
                             },

@@ -7,6 +7,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding3_view.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding6_view.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Onboarding2View extends GetView<OnboardingController> {
   const Onboarding2View({Key? key}) : super(key: key);
@@ -38,102 +39,90 @@ class Onboarding2View extends GetView<OnboardingController> {
                 ),
                 SizedBox(height: 25.h),
                 Text(
-                  "What’s your current goal?",
+                  AppLocalizations.of(context)!.askGoal,
                   style: CustomTextStyle.extraBold(20),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 10.h),
                 Text(
-                  "Pick the goal that best fits you. All features are available for you to explore!",
+                  AppLocalizations.of(context)!.askGoalDesc,
                   style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 32.h),
-                ElevatedButton(
-                  onPressed: () {
+                GestureDetector(
+                  onTap: () {
                     controller.purposes.value = 0;
                     Get.to(() => Onboarding3View());
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    padding: EdgeInsets.zero,
-                  ),
-                  child: Container(
-                    width: Get.width,
-                    height: 120.h,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 50.h,
-                          width: 128.w,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 22),
-                            child: Text(
-                              "Tracking my period",
-                              style: CustomTextStyle.extraBold(20, color: Colors.white),
-                              textAlign: TextAlign.left,
-                            ),
+                  child: Wrap(
+                    children: [
+                      Container(
+                        width: Get.width,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  AppLocalizations.of(context)!.trackPeriodGoal,
+                                  style: CustomTextStyle.extraBold(20, color: Colors.white),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Expanded(
+                                child: Image.asset(
+                                  "assets/a0ffb3b8a7b12e87a13bac8ea30839d9.png",
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Container(
-                          width: 178.w,
-                          height: 119.h,
-                          child: Image.asset(
-                            "assets/a0ffb3b8a7b12e87a13bac8ea30839d9.png",
-                          ),
-                        )
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 18.h),
-                ElevatedButton(
-                  onPressed: () {
+                GestureDetector(
+                  onTap: () {
                     controller.purposes.value = 1;
                     Get.to(() => Onboarding6View());
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    padding: EdgeInsets.zero,
-                  ),
-                  child: Container(
-                    width: Get.width,
-                    height: 120.h,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 50.h,
-                          width: 128.w,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 22),
-                            child: Text(
-                              "Follow my pregnancy",
-                              style: CustomTextStyle.extraBold(20, color: Colors.white),
-                              textAlign: TextAlign.left,
-                            ),
+                  child: Wrap(
+                    children: [
+                      Container(
+                        width: Get.width,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  AppLocalizations.of(context)!.pregnancyGoal,
+                                  style: CustomTextStyle.extraBold(20, color: Colors.white),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Expanded(
+                                child: Image.asset(
+                                  "assets/582f6eee055d99f5cec860e1df879f99.png",
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Container(
-                          width: 178.w,
-                          height: 119.h,
-                          child: Image.asset(
-                            "assets/582f6eee055d99f5cec860e1df879f99.png",
-                          ),
-                        )
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                )
+                ),
               ],
             ),
           ),

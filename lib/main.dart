@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
+import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:periodnpregnancycalender/l10n/l10n.dart';
 import 'package:periodnpregnancycalender/app/services/firebase_notification_service.dart';
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
@@ -9,6 +11,7 @@ import 'app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,9 +29,15 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print("is pin secured? ${StorageService().isPinSecure()}");
     final box = GetStorage();
     final isAuth = box.read('isAuth') ?? false;
-    final initialRoute = isAuth ? Routes.NAVIGATION_MENU : Routes.ONBOARDING;
+    final initialRoute = isAuth == false
+        ? Routes.ONBOARDING
+        : StorageService().isPinSecure()
+            ? Routes.PIN
+            : Routes.NAVIGATION_MENU;
+
     return ScreenUtilInit(
       builder: (_, child) {
         return GetMaterialApp(
@@ -40,6 +49,9 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           initialRoute: initialRoute,
           getPages: AppPages.routes,
+          supportedLocales: L10n.all,
+          locale: Locale('id'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
         );
       },
       designSize: const Size(360, 800),

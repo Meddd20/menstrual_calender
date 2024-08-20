@@ -9,6 +9,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_date
 import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/register/views/register_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Onboarding6View extends GetView<OnboardingController> {
   const Onboarding6View({Key? key}) : super(key: key);
@@ -43,7 +44,7 @@ class Onboarding6View extends GetView<OnboardingController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      "Enter the First Day of Your Last Period",
+                      AppLocalizations.of(context)!.askFirstDayLastPeriod,
                       style: CustomTextStyle.extraBold(20),
                       textAlign: TextAlign.center,
                     ),
@@ -52,14 +53,14 @@ class Onboarding6View extends GetView<OnboardingController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      "Help us calculate your pregnancy week by entering the first day of your last period.",
+                      AppLocalizations.of(context)!.askFirstDayLastPeriodDesc,
                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   SizedBox(height: 32.h),
                   CustomCalendarDatePicker(
-                    value: [controller.lastPeriodDate.value as DateTime?],
+                    value: [controller.lastPeriodDate.value],
                     onValueChanged: (dates) {
                       controller.lastPeriodDate.value = dates.isNotEmpty ? dates[0] ?? DateTime.now() : DateTime.now();
                       controller.update();
@@ -76,7 +77,7 @@ class Onboarding6View extends GetView<OnboardingController> {
               left: 20,
               right: 20,
               child: CustomButton(
-                text: "Next",
+                text: AppLocalizations.of(context)!.next,
                 onPressed: () {
                   Get.to(() => BackupDataView());
                 },

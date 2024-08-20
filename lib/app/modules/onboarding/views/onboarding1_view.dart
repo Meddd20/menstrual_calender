@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Onboarding1View extends GetView<OnboardingController> {
   const Onboarding1View({Key? key}) : super(key: key);
@@ -44,13 +45,13 @@ class Onboarding1View extends GetView<OnboardingController> {
                     ),
                     SizedBox(height: 25.h),
                     Text(
-                      "When's your birthday?",
+                      AppLocalizations.of(context)!.askBirthday,
                       style: CustomTextStyle.extraBold(20),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 10.h),
                     Text(
-                      "Providing your birthday helps us offer you a more personalized experience.",
+                      AppLocalizations.of(context)!.askBirthdayDesc,
                       style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                       textAlign: TextAlign.center,
                     ),
@@ -75,7 +76,7 @@ class Onboarding1View extends GetView<OnboardingController> {
               left: 20,
               right: 20,
               child: CustomButton(
-                text: "Next",
+                text: AppLocalizations.of(context)!.next,
                 onPressed: () {
                   controller.validateBirthday();
                 },
