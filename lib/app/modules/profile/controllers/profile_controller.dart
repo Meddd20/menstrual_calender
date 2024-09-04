@@ -6,15 +6,11 @@ import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/weight_history_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
@@ -22,12 +18,9 @@ import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_reposito
 import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
-import 'package:periodnpregnancycalender/app/services/log_service.dart';
-import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/profile_service.dart';
 import 'package:periodnpregnancycalender/app/services/sync_data_service.dart';
-import 'package:periodnpregnancycalender/app/services/weight_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
@@ -69,14 +62,6 @@ class ProfileController extends GetxController {
     final PregnancyHistoryRepository pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
     final MasterDataKehamilanRepository masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
     final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-    final weightHistoryRepository = WeightHistoryRepository(databaseHelper);
-    final localLogRepository = LocalLogRepository(databaseHelper);
-    final masterNewmoonRepository = MasterNewmoonRepository(databaseHelper);
-    final masterGenderRepository = MasterGenderRepository(databaseHelper);
-    final periodHistoryService = PeriodHistoryService(periodHistoryRepository, localProfileRepository, masterNewmoonRepository, masterGenderRepository);
-    final pregnancyHistoryService = PregnancyHistoryService(pregnancyHistoryRepository, masterKehamilanRepository, periodHistoryRepository, localProfileRepository);
-    final weightHistoryService = WeightHistoryService(weightHistoryRepository, pregnancyHistoryRepository);
-    final logService = LogService(localLogRepository);
 
     syncDataRepository = SyncDataRepository(databaseHelper);
     profileService = ProfileService(localProfileRepository);
@@ -87,18 +72,7 @@ class ProfileController extends GetxController {
       localProfileRepository,
     );
 
-    syncDataService = SyncDataService(
-      weightHistoryRepository,
-      periodHistoryRepository,
-      pregnancyHistoryRepository,
-      localProfileRepository,
-      syncDataRepository,
-      localLogRepository,
-      periodHistoryService,
-      weightHistoryService,
-      pregnancyHistoryService,
-      logService,
-    );
+    syncDataService = SyncDataService();
     profileUser = fetchProfile();
     usePurpose();
 
@@ -336,7 +310,6 @@ class ProfileController extends GetxController {
       storageService.setHasSyncData(false);
       storageService.setPin(false);
       LocalNotificationService().cancelAllNotifications();
-      // storageService.storePrimaryDataMechanism();
       storageService.deleteAccountLocalId();
       // await profileService.deleteProfile();
       await profileService.deletePendingDataChanges();
@@ -373,7 +346,7 @@ class ProfileController extends GetxController {
   RxList<DateTime> tanggalAkhirMinggu = <DateTime>[].obs;
 
   Future<void> fetchPregnancyData() async {
-    var result = await _pregnancyHistoryService.getCurrentPregnancyData("id");
+    var result = await _pregnancyHistoryService.getCurrentPregnancyData(storageService.getLanguage());
     currentlyPregnantData.value = result!;
     weeklyData.assignAll(currentlyPregnantData.value.weeklyData!);
 

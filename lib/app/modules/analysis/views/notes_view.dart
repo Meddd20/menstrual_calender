@@ -42,17 +42,18 @@ class NotesView extends GetView<NotesController> {
           padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
           child: Column(
             children: [
-              CustomTabBar(
-                controller: controller.tabController,
-                onTap: (index) {
-                  _pageController.animateToPage(
-                    index,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.ease,
-                  );
-                  controller.updateTabBar(index);
-                },
-              ),
+              if (controller.selectedDataTags != "pregnancy_notes")
+                CustomTabBar(
+                  controller: controller.tabController,
+                  onTap: (index) {
+                    _pageController.animateToPage(
+                      index,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease,
+                    );
+                    controller.updateTabBar(index);
+                  },
+                ),
               Expanded(
                 child: PageView(
                   controller: _pageController,

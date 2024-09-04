@@ -24,7 +24,7 @@ class LogsView extends GetView<LogsController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              controller.pageTags(context),
+              controller.selectedDataTags != "pregnancy_symptoms" ? controller.pageTags(context) : "Pregnancy Symptoms",
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -43,17 +43,18 @@ class LogsView extends GetView<LogsController> {
           padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
           child: Column(
             children: [
-              CustomTabBar(
-                controller: controller.tabController,
-                onTap: (index) {
-                  _pageController.animateToPage(
-                    index,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.ease,
-                  );
-                  controller.updateTabBar(index);
-                },
-              ),
+              if (controller.selectedDataTags != "pregnancy_symptoms")
+                CustomTabBar(
+                  controller: controller.tabController,
+                  onTap: (index) {
+                    _pageController.animateToPage(
+                      index,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease,
+                    );
+                    controller.updateTabBar(index);
+                  },
+                ),
               Expanded(
                 child: PageView(
                   controller: _pageController,
@@ -89,11 +90,11 @@ class LogsView extends GetView<LogsController> {
                 style: CustomTextStyle.medium(15, color: Colors.black.withOpacity(0.6)),
               ),
               Text(
-                AppLocalizations.of(context)!.totalEntriesData("${controller.specificMoodsData.length}"),
+                AppLocalizations.of(context)!.totalEntriesData("${controller.specificLogsData.length}"),
                 style: CustomTextStyle.extraBold(26, height: 1.75),
               ),
               Text(
-                AppLocalizations.of(context)!.entriesFromDate("${controller.formatDate(controller.selectedDate.value)}"),
+                controller.selectedDataTags != "pregnancy_symptoms" ? AppLocalizations.of(context)!.entriesFromDate("${controller.formatDate(controller.selectedDate.value)}") : "dari hari pertama kehamilan",
                 style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
               ),
               CustomDougnutChart(
@@ -110,7 +111,7 @@ class LogsView extends GetView<LogsController> {
                 child: Container(
                   height: Get.height,
                   child: Obx(() {
-                    if (controller.specificMoodsData.isEmpty) {
+                    if (controller.specificLogsData.isEmpty) {
                       return Center(
                         child: Text(
                           AppLocalizations.of(context)!.notFoundDesc,
@@ -120,9 +121,9 @@ class LogsView extends GetView<LogsController> {
                       );
                     } else {
                       return ListView.builder(
-                        itemCount: controller.specificMoodsData.length,
+                        itemCount: controller.specificLogsData.length,
                         itemBuilder: (context, index) {
-                          final MapEntry<String, dynamic> entry = controller.specificMoodsData.entries.elementAt(index);
+                          final MapEntry<String, dynamic> entry = controller.specificLogsData.entries.elementAt(index);
 
                           return CustomDateLook(entry: entry, type: "logs");
                         },

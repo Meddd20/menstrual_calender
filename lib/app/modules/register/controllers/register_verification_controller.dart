@@ -84,7 +84,6 @@ class RegisterVerificationController extends GetxController {
               await _localProfileRepository.updateProfile(updatedProfile);
               localProfile = updatedProfile;
             }
-
             storageService.storeCredentialToken(user.token!);
             storageService.storeIsAuth(true);
             storageService.storeAccountId(user.id!);

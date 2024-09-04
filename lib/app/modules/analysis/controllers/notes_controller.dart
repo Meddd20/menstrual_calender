@@ -3,8 +3,11 @@ import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_log_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
+import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
@@ -17,14 +20,18 @@ class NotesController extends GetxController {
   RxString selectedDataType = 'percentage30Days'.obs;
   RxMap<String, dynamic> specificNotesData = RxMap<String, dynamic>();
   late final LogService _logService;
+  late RxString selectedDataTags;
+  late final PregnancyLogService _pregnancyLogService;
 
   @override
   void onInit() {
     tabController = TabController(length: 4, vsync: MyTickerProvider());
     final databaseHelper = DatabaseHelper.instance;
     final localLogRepository = LocalLogRepository(databaseHelper);
+    final pregnancyLogRepository = PregnancyLogRepository(databaseHelper);
+    final pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
     _logService = LogService(localLogRepository);
-    fetchNotes();
+    _pregnancyLogService = PregnancyLogService(pregnancyLogRepository, pregnancyHistoryRepository);
     data = DailyLogTagsData(
       tags: '',
       logs: {},
@@ -33,8 +40,13 @@ class NotesController extends GetxController {
       percentage6Months: null,
       percentage1Year: null,
     );
+
     notes = RxMap<String, dynamic>();
-    selectedDataType = 'percentage30Days'.obs;
+    selectedDataTags = (Get.arguments != null ? RxString(Get.arguments as String) : RxString(""));
+    if (selectedDataTags == "pregnancy_notes") {
+      selectedDataType.value = "";
+    }
+    fetchNotes();
     specifiedDataByDate();
     super.onInit();
   }
@@ -79,18 +91,28 @@ class NotesController extends GetxController {
 
     List<MapEntry<String, dynamic>> filteredData = notes.entries.where((entry) {
       DateTime entryDate = DateTime.parse(entry.key);
+
+      bool dateInRange;
       switch (selectedDataType.value) {
         case 'percentage30Days':
-          return entryDate.isAfter(now.subtract(Duration(days: 31))) && entryDate.isBefore(now);
+          dateInRange = entryDate.isAfter(now.subtract(Duration(days: 31))) && entryDate.isBefore(now);
+          break;
         case 'percentage3Months':
-          return entryDate.isAfter(now.subtract(Duration(days: 91))) && entryDate.isBefore(now);
+          dateInRange = entryDate.isAfter(now.subtract(Duration(days: 91))) && entryDate.isBefore(now);
+          break;
         case 'percentage6Months':
-          return entryDate.isAfter(now.subtract(Duration(days: 181))) && entryDate.isBefore(now);
+          dateInRange = entryDate.isAfter(now.subtract(Duration(days: 181))) && entryDate.isBefore(now);
+          break;
         case 'percentage1Year':
-          return entryDate.isAfter(now.subtract(Duration(days: 366))) && entryDate.isBefore(now);
+          dateInRange = entryDate.isAfter(now.subtract(Duration(days: 366))) && entryDate.isBefore(now);
+          break;
         default:
-          return false;
+          dateInRange = true;
       }
+
+      bool hasData = entry.value.isNotEmpty;
+
+      return dateInRange && hasData;
     }).toList();
 
     for (var entry in filteredData) {
@@ -102,7 +124,12 @@ class NotesController extends GetxController {
 
   Future<void> fetchNotes() async {
     try {
-      DailyLogTagsData? result = await _logService.getLogsByTags("notes");
+      DailyLogTagsData? result;
+      if (selectedDataTags == "pregnancy_notes") {
+        result = await _pregnancyLogService.getPregnancyLogByTags("notes");
+      } else {
+        result = await _logService.getLogsByTags("notes");
+      }
 
       notes.value = result.logs;
       specifiedDataByDate();

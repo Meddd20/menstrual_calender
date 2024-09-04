@@ -47,6 +47,7 @@ class DatabaseHelper {
     await db.execute(_createTableTbMasterFood);
     await db.execute(_createTableTbMasterVaccines);
     await db.execute(_createTableTbMasterVitamins);
+    await db.execute(_createTableTbDataHarianKehamilan);
   }
 
   Future<void> _seedData(Database db) async {
@@ -257,6 +258,20 @@ class DatabaseHelper {
       vitamins_en TEXT,
       description_id TEXT,
       description_en TEXT,
+      created_at DATE,
+      updated_at DATE
+    )
+  ''';
+
+  static const String _createTableTbDataHarianKehamilan = '''
+    CREATE TABLE tb_data_harian_kehamilan (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      riwayat_kehamilan_id INTEGER, 
+      data_harian TEXT,
+      tekanan_darah TEXT,
+      timer_kontraksi TEXT,
+      gerakan_bayi TEXT,
       created_at DATE,
       updated_at DATE
     )

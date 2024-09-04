@@ -6,7 +6,11 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/baby_weight_heigth_tracker_view.dart';
+import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/babykicks_view.dart';
+import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/blood_pressure_view.dart';
+import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/contraction_timer_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/food_list_view.dart';
+import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/pregnancy_log_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/vaccine_list_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/vitamin_list_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_tracker_view.dart';
@@ -19,9 +23,13 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, String>> tools = [
-      {'name': AppLocalizations.of(context)!.fetalDevelopment, 'icon': 'assets/icon/fetal.png'},
+      {'name': 'Pregnancy Log', 'icon': 'assets/icon/maternity.png'},
       {'name': AppLocalizations.of(context)!.weightGainTracker, 'icon': 'assets/icon/weight-tracker.png'},
+      {'name': 'Contraction Timer', 'icon': 'assets/icon/stopwatch.png'},
+      {'name': 'Blood Pressure', 'icon': 'assets/icon/blood-pressure.png'},
+      {'name': 'Baby Kicks', 'icon': 'assets/icon/baby-kick.png'},
       {'name': AppLocalizations.of(context)!.reminder, 'icon': 'assets/icon/alarm.png'},
+      {'name': AppLocalizations.of(context)!.fetalDevelopment, 'icon': 'assets/icon/fetal.png'},
       {'name': AppLocalizations.of(context)!.vaccine, 'icon': 'assets/icon/vaccine.png'},
       {'name': AppLocalizations.of(context)!.vitamins, 'icon': 'assets/icon/vitamin.png'},
       {'name': AppLocalizations.of(context)!.food, 'icon': 'assets/icon/nutrition.png'},
@@ -52,21 +60,33 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
                 onTap: () {
                   switch (index) {
                     case 0:
-                      Get.to(() => BabyWeightHeigthTrackerView());
+                      Get.to(() => PregnancyLogView());
                       break;
                     case 1:
                       Get.to(() => WeightTrackerView());
                       break;
                     case 2:
-                      Get.to(() => ReminderView());
+                      Get.to(() => ContractionTimerView());
                       break;
                     case 3:
-                      Get.to(() => VaccineListView());
+                      Get.to(() => BloodPressureView());
                       break;
                     case 4:
-                      Get.to(() => VitaminListView());
+                      Get.to(() => BabykicksView());
                       break;
                     case 5:
+                      Get.to(() => ReminderView());
+                      break;
+                    case 6:
+                      Get.to(() => BabyWeightHeigthTrackerView());
+                      break;
+                    case 7:
+                      Get.to(() => VaccineListView());
+                      break;
+                    case 8:
+                      Get.to(() => VitaminListView());
+                      break;
+                    case 9:
                       Get.to(() => FoodListView());
                       break;
                   }

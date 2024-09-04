@@ -81,13 +81,13 @@ class VaccineListView extends GetView<VaccineListController> {
                                     vertical: 25,
                                   ),
                                   title: Text(
-                                    controller.storageService == "id" ? vaccine.vaccinesId! : vaccine.vaccinesEn!,
+                                    controller.storageService.getLanguage() == "id" ? vaccine.vaccinesId! : vaccine.vaccinesEn!,
                                     style: CustomTextStyle.bold(16, height: 1.5),
                                   ),
                                   subtitle: Container(
                                     padding: EdgeInsets.only(top: 10),
                                     child: ReadMoreText(
-                                      controller.storageService == "id" ? vaccine.descriptionId! : vaccine.descriptionEn!,
+                                      controller.storageService.getLanguage() == "id" ? vaccine.descriptionId! : vaccine.descriptionEn!,
                                       trimLines: 4,
                                       colorClickableText: Colors.blue,
                                       trimMode: TrimMode.Line,

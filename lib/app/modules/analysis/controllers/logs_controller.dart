@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_log_repository.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
+import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LogsController extends GetxController {
-  final ApiService apiService = ApiService();
   final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  late final LogRepository logRepository = LogRepository(apiService);
   late DailyLogTagsData data;
-  RxMap<String, dynamic> moods = RxMap<String, dynamic>();
+  RxMap<String, dynamic> logs = RxMap<String, dynamic>();
   Rx<dynamic> percentage30Days = Rx<dynamic>(null);
   Rx<dynamic> percentage3Months = Rx<dynamic>(null);
   Rx<dynamic> percentage6Months = Rx<dynamic>(null);
   Rx<dynamic> percentage1Year = Rx<dynamic>(null);
   RxString selectedDataType = 'percentage30Days'.obs;
-  RxMap<String, dynamic> specificMoodsData = RxMap<String, dynamic>();
+  RxMap<String, dynamic> specificLogsData = RxMap<String, dynamic>();
   Rx<DateTime> selectedDate = DateTime.now().obs;
   late TabController tabController;
   late RxString selectedDataTags;
   late final LogService _logService;
+  late final PregnancyLogService _pregnancyLogService;
 
   @override
   void onInit() {
@@ -33,7 +33,13 @@ class LogsController extends GetxController {
 
     final databaseHelper = DatabaseHelper.instance;
     final localLogRepository = LocalLogRepository(databaseHelper);
+    final pregnancyLogRepository = PregnancyLogRepository(databaseHelper);
+    final pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
     _logService = LogService(localLogRepository);
+    _pregnancyLogService = PregnancyLogService(
+      pregnancyLogRepository,
+      pregnancyHistoryRepository,
+    );
 
     data = DailyLogTagsData(
       tags: '',
@@ -43,17 +49,19 @@ class LogsController extends GetxController {
       percentage6Months: null,
       percentage1Year: null,
     );
-    moods = RxMap<String, dynamic>();
+    logs = RxMap<String, dynamic>();
     percentage30Days = Rx<dynamic>(null);
     percentage3Months = Rx<dynamic>(null);
     percentage6Months = Rx<dynamic>(null);
     percentage1Year = Rx<dynamic>(null);
-    selectedDataType = 'percentage30Days'.obs;
+    selectedDataTags = RxString(Get.arguments as String);
+    if (selectedDataTags == "pregnancy_symptoms") {
+      selectedDataType.value = "";
+    }
     _updateSelectedDate();
     specifiedDataByDate();
 
-    selectedDataTags = RxString(Get.arguments as String);
-    fetchMoods();
+    fetchLogs();
     super.onInit();
   }
 
@@ -158,9 +166,9 @@ class LogsController extends GetxController {
 
   Map<String, dynamic> specifiedDataByDate() {
     DateTime now = DateTime.now();
-    specificMoodsData.clear();
+    specificLogsData.clear();
 
-    List<MapEntry<String, dynamic>> filteredData = moods.entries.where((entry) {
+    List<MapEntry<String, dynamic>> filteredData = logs.entries.where((entry) {
       DateTime entryDate = DateTime.parse(entry.key);
       switch (selectedDataType.value) {
         case 'percentage30Days':
@@ -172,15 +180,15 @@ class LogsController extends GetxController {
         case 'percentage1Year':
           return entryDate.isAfter(now.subtract(Duration(days: 366))) && entryDate.isBefore(now);
         default:
-          return false;
+          return true;
       }
     }).toList();
 
     for (var entry in filteredData) {
-      specificMoodsData[entry.key] = entry.value;
+      specificLogsData[entry.key] = entry.value;
     }
 
-    return specificMoodsData;
+    return specificLogsData;
   }
 
   String pageTags(context) {
@@ -192,7 +200,7 @@ class LogsController extends GetxController {
       return AppLocalizations.of(context)!.symptoms;
     } else if (selectedDataTags == "vaginal_discharge") {
       return AppLocalizations.of(context)!.vaginalDischarge;
-    } else if (selectedDataTags == "moods") {
+    } else if (selectedDataTags == "logs") {
       return AppLocalizations.of(context)!.moods;
     } else if (selectedDataTags == "others") {
       return AppLocalizations.of(context)!.others;
@@ -203,11 +211,16 @@ class LogsController extends GetxController {
     }
   }
 
-  Future<void> fetchMoods() async {
+  Future<void> fetchLogs() async {
     try {
-      DailyLogTagsData? result = await _logService.getLogsByTags(selectedDataTags.value);
+      DailyLogTagsData? result;
+      if (selectedDataTags == "pregnancy_symptoms") {
+        result = await _pregnancyLogService.getPregnancyLogByTags("pregnancySymptoms");
+      } else {
+        result = await _logService.getLogsByTags(selectedDataTags.value);
+      }
 
-      moods.value = result.logs;
+      logs.value = result.logs;
       percentage30Days.value = result.percentage30Days ?? {};
       percentage3Months.value = result.percentage3Months ?? {};
       percentage6Months.value = result.percentage6Months ?? {};

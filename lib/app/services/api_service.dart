@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
@@ -11,7 +12,7 @@ class ApiService {
   late Map<String, String> loginHeaders = {};
 
   Map<String, String> generalHeaders = {
-    "token": "yghMCYkYmtX6YcHdw8lyL2WpQh1IVCiEBIuqOt3r2XTKZNgnuRzYA1XxteNN",
+    "token": dotenv.env["API_TOKEN"] ?? "",
     "Accept": "application/json",
   };
 
@@ -22,7 +23,7 @@ class ApiService {
   void _initializeAuthHeaders() {
     if (storageService.getCredentialToken() != null) {
       loginHeaders = {
-        "token": "yghMCYkYmtX6YcHdw8lyL2WpQh1IVCiEBIuqOt3r2XTKZNgnuRzYA1XxteNN",
+        "token": dotenv.env["API_TOKEN"] ?? "",
         "Accept": "application/json",
         "user_id": storageService.getCredentialToken() ?? "",
       };
@@ -47,6 +48,7 @@ class ApiService {
   Future<http.Response> login(String email, String password) async {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.login);
     Map<String, String> body = {"email": email, "password": password};
+    print(generalHeaders);
 
     return await http.post(url, body: body, headers: generalHeaders);
   }
@@ -337,5 +339,109 @@ class ApiService {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getMasterDataVitamins);
 
     return await http.get(url, headers: generalHeaders);
+  }
+
+  Future<http.Response> storePregnancyLog(String date, Map<String, dynamic> pregnancySymptoms, String? temperature, String? notes) async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.addPregnancyLog);
+
+    Map<String, dynamic> body = {
+      "date": date,
+      "pregnancy_symptoms": jsonEncode(pregnancySymptoms),
+      "temperature": temperature,
+      "notes": notes,
+    };
+
+    return await http.patch(url, body: body, headers: loginHeaders);
+  }
+
+  Future<http.Response> deletePregnancyLog(String date) async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.deletePregnancyLog);
+
+    Map<String, dynamic> body = {
+      "date": date,
+    };
+
+    return await http.delete(url, body: body, headers: loginHeaders);
+  }
+
+  Future<http.Response> addBloodPressure(String id, String tekananSistolik, String tekananDiastolik, String detakJantung, String datetime) async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.addBloodPressure);
+
+    Map<String, dynamic> body = {
+      "id": id,
+      "tekanan_sistolik": tekananSistolik,
+      "tekanan_diastolik": tekananDiastolik,
+      "detak_jantung": detakJantung,
+      "datetime": datetime,
+    };
+
+    return await http.post(url, body: body, headers: loginHeaders);
+  }
+
+  Future<http.Response> editBloodPressure(String id, String tekananSistolik, String tekananDiastolik, String detakJantung, String datetime) async {
+    var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.editBloodPressure}/$id');
+
+    Map<String, dynamic> body = {
+      "tekanan_sistolik": tekananSistolik,
+      "tekanan_diastolik": tekananDiastolik,
+      "detak_jantung": detakJantung,
+      "datetime": datetime,
+    };
+
+    return await http.patch(url, body: body, headers: loginHeaders);
+  }
+
+  Future<http.Response> deleteBloodPressure(String id) async {
+    var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.deleteBloodPressure}/$id');
+
+    return await http.delete(url, headers: loginHeaders);
+  }
+
+  Future<http.Response> addContractionTimer(String id, String startDate, String duration) async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.addContractionTimer);
+
+    Map<String, dynamic> body = {
+      "id": id,
+      "waktu_mulai": startDate,
+      "durasi": duration,
+    };
+
+    return await http.post(url, body: body, headers: loginHeaders);
+  }
+
+  Future<http.Response> deleteContractionTimer(String id) async {
+    var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.deleteContractionTimer}/$id');
+
+    return await http.delete(url, headers: loginHeaders);
+  }
+
+  Future<http.Response> addKickCounter(String id, String datetime) async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.addKickCounter);
+
+    Map<String, dynamic> body = {
+      "id": id,
+      "datetime": datetime,
+    };
+
+    return await http.post(url, body: body, headers: loginHeaders);
+  }
+
+  Future<http.Response> addKickCounterData(String id, String startDate, String endDate, String totalKicks) async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.addKickCounterData);
+
+    Map<String, dynamic> body = {
+      "id": id,
+      "waktu_mulai": startDate,
+      "waktu_selesai": endDate,
+      "jumlah_gerakan": totalKicks,
+    };
+
+    return await http.post(url, body: body, headers: loginHeaders);
+  }
+
+  Future<http.Response> deleteKickCounter(String id) async {
+    var url = Uri.parse('${ApiEndPoints.apiUrl}${ApiEndPoints.authEndPoints.deleteKickCounter}/$id');
+
+    return await http.delete(url, headers: loginHeaders);
   }
 }

@@ -61,6 +61,7 @@ class LocalProfileRepository {
         await txn.delete("tb_data_harian");
         await txn.delete("tb_riwayat_kehamilan");
         await txn.delete("tb_riwayat_mens");
+        await txn.delete("tb_data_harian_kehamilan");
       } catch (e) {
         _logger.e("Error during delete profile: $e");
         rethrow;

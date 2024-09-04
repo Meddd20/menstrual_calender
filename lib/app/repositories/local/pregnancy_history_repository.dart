@@ -67,13 +67,27 @@ class PregnancyHistoryRepository {
     }
   }
 
-  Future<void> deletePregnancy(int userId) async {
+  Future<void> deleteCurrentPregnancy(int userId) async {
     final db = await _databaseHelper.database;
     try {
       await db.delete(
         "tb_riwayat_kehamilan",
         where: 'status = ? AND user_id = ?',
         whereArgs: ["Hamil", userId],
+      );
+    } catch (e) {
+      _logger.e("Error during delete pregnancy: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> deletePregnancy(int id) async {
+    final db = await _databaseHelper.database;
+    try {
+      await db.delete(
+        "tb_riwayat_kehamilan",
+        where: 'id = ?',
+        whereArgs: [id],
       );
     } catch (e) {
       _logger.e("Error during delete pregnancy: $e");

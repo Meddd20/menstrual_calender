@@ -9,6 +9,7 @@ import 'package:periodnpregnancycalender/app/models/master_pregnancy_model.dart'
 import 'package:periodnpregnancycalender/app/models/master_vaccines_model.dart';
 import 'package:periodnpregnancycalender/app/models/master_vitamins_model.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
+import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
@@ -18,15 +19,19 @@ import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/master_data_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_food_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_vaccines_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_vitamins_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/weight_history_repository.dart';
@@ -38,57 +43,49 @@ import 'package:periodnpregnancycalender/app/services/master_vaccines_service.da
 import 'package:periodnpregnancycalender/app/services/master_vitamins_service.dart';
 import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
+import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
 import 'package:periodnpregnancycalender/app/services/weight_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class SyncDataService {
-  final PeriodHistoryRepository _periodHistoryRepository;
-  final PregnancyHistoryRepository _pregnancyHistoryRepository;
-  final WeightHistoryRepository _weightHistoryRepository;
-  final LocalProfileRepository _localProfileRepository;
-  final SyncDataRepository _syncDataRepository;
-  final LocalLogRepository _localLogRepository;
-
-  final PeriodHistoryService periodHistoryService;
-  final PregnancyHistoryService pregnancyHistoryService;
-  final WeightHistoryService weightHistoryService;
-  final LogService logService;
+  final StorageService storageService = StorageService();
+  final Logger _logger = Logger();
 
   final ApiService apiService = ApiService();
-  final StorageService storageService = StorageService();
-  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
   late final ProfileRepository profileRepository = ProfileRepository(apiService);
   late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
   late final PeriodRepository periodRepository = PeriodRepository(apiService);
   late final LogRepository logRepository = LogRepository(apiService);
   late final MasterDataRepository masterDataRepository = MasterDataRepository(apiService);
+  late final PregnancyLogAPIRepository pregnancyLogAPIRepository = PregnancyLogAPIRepository(apiService);
 
+  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
+  late final PeriodHistoryRepository _periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
+  late final PregnancyHistoryRepository _pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
+  late final WeightHistoryRepository _weightHistoryRepository = WeightHistoryRepository(databaseHelper);
+  late final LocalProfileRepository _localProfileRepository = LocalProfileRepository(databaseHelper);
+  late final SyncDataRepository _syncDataRepository = SyncDataRepository(databaseHelper);
+  late final LocalLogRepository _localLogRepository = LocalLogRepository(databaseHelper);
+  late final MasterNewmoonRepository _masterNewmoonRepository = MasterNewmoonRepository(databaseHelper);
+  late final MasterGenderRepository _masterGenderRepository = MasterGenderRepository(databaseHelper);
+  late final MasterDataKehamilanRepository _masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
   late final MasterFoodRepository masterFoodRepository = MasterFoodRepository(databaseHelper);
   late final MasterDataKehamilanRepository masterDataKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
   late final MasterVaccinesRepository masterVaccinesRepository = MasterVaccinesRepository(databaseHelper);
   late final MasterVitaminsRepository masterVitaminsRepository = MasterVitaminsRepository(databaseHelper);
+  late final PregnancyLogRepository pregnancyLogRepository = PregnancyLogRepository(databaseHelper);
 
+  late final PeriodHistoryService periodHistoryService = PeriodHistoryService(_periodHistoryRepository, _localProfileRepository, _masterNewmoonRepository, _masterGenderRepository);
+  late final PregnancyHistoryService pregnancyHistoryService = PregnancyHistoryService(_pregnancyHistoryRepository, _masterKehamilanRepository, _periodHistoryRepository, _localProfileRepository);
+  late final WeightHistoryService weightHistoryService = WeightHistoryService(_weightHistoryRepository, _pregnancyHistoryRepository);
+  late final LogService logService = LogService(_localLogRepository);
   late final MasterFoodService masterFoodService = MasterFoodService(masterFoodRepository);
   late final MasterKehamilanService masterKehamilanService = MasterKehamilanService(masterDataKehamilanRepository);
   late final MasterVaccinesService masterVaccinesService = MasterVaccinesService(masterVaccinesRepository);
   late final MasterVitaminsService masterVitaminsService = MasterVitaminsService(masterVitaminsRepository);
-
-  final Logger _logger = Logger();
-
-  SyncDataService(
-    this._weightHistoryRepository,
-    this._periodHistoryRepository,
-    this._pregnancyHistoryRepository,
-    this._localProfileRepository,
-    this._syncDataRepository,
-    this._localLogRepository,
-    this.periodHistoryService,
-    this.weightHistoryService,
-    this.pregnancyHistoryService,
-    this.logService,
-  );
+  late final PregnancyLogService pregnancyLogService = PregnancyLogService(pregnancyLogRepository, _pregnancyHistoryRepository);
 
   Future<void> syncData() async {
     try {
@@ -98,19 +95,22 @@ class SyncDataService {
       List<PeriodHistory>? periodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
       List<PregnancyHistory>? pregnancyHistory = await _pregnancyHistoryRepository.getAllPregnancyHistory(userId);
       List<WeightHistory>? weightHistory = await _weightHistoryRepository.getWeightHistory(userId);
+      List<PregnancyDailyLog>? pregnancyDailyLog = await pregnancyLogRepository.getAllPregnancyDailyLog(userId);
 
       DataCategoryByTable? dataFetchFromAPI = await profileRepository.fetchSyncDataFromApi();
       User? profileFetchFromAPI = dataFetchFromAPI?.user;
       DailyLogss? dailyLogFetchFromAPI = dataFetchFromAPI?.logHistory;
       List<PeriodHistory>? periodHistoryFetchFromAPI = dataFetchFromAPI?.periodHistory;
-      List<PregnancyHistory>? pregnancyHistoryFetchFromAPI = dataFetchFromAPI?.pregnancyHistory;
+      PregnancyHistory? pregnancyHistoryFetchFromAPI = dataFetchFromAPI?.pregnancyHistory;
       List<WeightHistory>? weightHistoryFetchFromAPI = dataFetchFromAPI?.weightGainHistory;
       List<MasterDataVersion>? masterDataVersion = dataFetchFromAPI?.masterDataVersion;
+      PregnancyDailyLog? pregnancyDailyLogFetchFromAPI = dataFetchFromAPI?.pregnancyDailyLog;
 
       await _syncUserData(profile, profileFetchFromAPI, userId);
       await _syncDailyLogData(dailyLog, dailyLogFetchFromAPI, userId);
       await _syncPeriodHistoryData(periodHistory, periodHistoryFetchFromAPI, userId);
       await _syncPregnancyHistoryData(pregnancyHistory, pregnancyHistoryFetchFromAPI, userId);
+      await _syncPregnancyDailyLogData(pregnancyDailyLog, pregnancyDailyLogFetchFromAPI, userId);
       await _syncWeightHistoryData(weightHistory, weightHistoryFetchFromAPI, userId);
       await _syncMasterDataVersion(masterDataVersion);
     } catch (e) {
@@ -121,18 +121,14 @@ class SyncDataService {
 
   Future<void> _syncUserData(User? profile, User? profileFetchFromAPI, int userId) async {
     if (profileFetchFromAPI != null && profile != null) {
-      print(profileFetchFromAPI.toJson());
       if (profileFetchFromAPI.nama != profile.nama || profileFetchFromAPI.tanggalLahir != profile.tanggalLahir || profileFetchFromAPI.isPregnant != profile.isPregnant || profileFetchFromAPI.email != profile.email) {
-        print("truess");
         User syncUserProfile = User(
           nama: profileFetchFromAPI.nama,
           email: profileFetchFromAPI.email,
           tanggalLahir: profileFetchFromAPI.tanggalLahir,
           isPregnant: profileFetchFromAPI.isPregnant,
         );
-        print("${syncUserProfile.toJson()}");
         await _localProfileRepository.updateProfile(syncUserProfile);
-        // await _syncDataRepository.fetchNewlySyncUserData(syncUserProfile);
       }
     }
   }
@@ -262,7 +258,6 @@ class SyncDataService {
         for (var periodHistory in isActualPeriodHistoryFromAPI) {
           try {
             if (periodHistory.id != null && periodHistory.haidAwal != null && periodHistory.haidAkhir != null) {
-              print(periodHistory.toJson());
               await periodHistoryService.addPeriod(
                 periodHistory.id,
                 periodHistory.haidAwal!,
@@ -321,62 +316,43 @@ class SyncDataService {
     }
   }
 
-  Future<void> _syncPregnancyHistoryData(List<PregnancyHistory>? pregnancyHistory, List<PregnancyHistory>? pregnancyHistoryFetchFromAPI, int userId) async {
+  Future<void> _syncPregnancyHistoryData(List<PregnancyHistory>? pregnancyHistory, PregnancyHistory? pregnancyHistoryFetchFromAPI, int userId) async {
     if (pregnancyHistoryFetchFromAPI != null) {
       if (pregnancyHistory == null || pregnancyHistory.isEmpty) {
         await _syncDataRepository.fetchNewlySyncPregnancyHistoryData(pregnancyHistoryFetchFromAPI, userId);
       } else {
-        List<int> notFoundInLocal = [];
+        bool foundMatch = false;
 
-        for (var i = 0; i < pregnancyHistoryFetchFromAPI.length; i++) {
-          bool foundMatch = false;
-
-          for (var j = 0; j < pregnancyHistory.length; j++) {
-            if (pregnancyHistory[j].status == pregnancyHistoryFetchFromAPI[i].status &&
-                pregnancyHistory[j].hariPertamaHaidTerakhir == pregnancyHistoryFetchFromAPI[i].hariPertamaHaidTerakhir &&
-                pregnancyHistory[j].kehamilanAkhir == pregnancyHistoryFetchFromAPI[i].kehamilanAkhir &&
-                pregnancyHistory[j].tinggiBadan == pregnancyHistoryFetchFromAPI[i].tinggiBadan &&
-                pregnancyHistory[j].beratPrakehamilan == pregnancyHistoryFetchFromAPI[i].beratPrakehamilan &&
-                pregnancyHistory[j].gender == pregnancyHistoryFetchFromAPI[i].gender &&
-                pregnancyHistory[j].isTwin == pregnancyHistoryFetchFromAPI[i].isTwin) {
-              foundMatch = true;
-              break;
-            }
-          }
-
-          if (!foundMatch) {
-            notFoundInLocal.add(i);
+        for (var localPregnancyData in pregnancyHistory) {
+          if (localPregnancyData.status == pregnancyHistoryFetchFromAPI.status &&
+              localPregnancyData.hariPertamaHaidTerakhir == pregnancyHistoryFetchFromAPI.hariPertamaHaidTerakhir &&
+              localPregnancyData.kehamilanAkhir == pregnancyHistoryFetchFromAPI.kehamilanAkhir &&
+              localPregnancyData.tinggiBadan == pregnancyHistoryFetchFromAPI.tinggiBadan &&
+              localPregnancyData.beratPrakehamilan == pregnancyHistoryFetchFromAPI.beratPrakehamilan &&
+              localPregnancyData.gender == pregnancyHistoryFetchFromAPI.gender &&
+              localPregnancyData.isTwin == pregnancyHistoryFetchFromAPI.isTwin) {
+            foundMatch = true;
           }
         }
 
-        for (var j = 0; j < pregnancyHistory.length; j++) {
-          bool foundInApi = false;
-
-          for (var i = 0; i < pregnancyHistoryFetchFromAPI.length; i++) {
-            if (pregnancyHistory[j].status == pregnancyHistoryFetchFromAPI[i].status &&
-                pregnancyHistory[j].hariPertamaHaidTerakhir == pregnancyHistoryFetchFromAPI[i].hariPertamaHaidTerakhir &&
-                pregnancyHistory[j].kehamilanAkhir == pregnancyHistoryFetchFromAPI[i].kehamilanAkhir &&
-                pregnancyHistory[j].tinggiBadan == pregnancyHistoryFetchFromAPI[i].tinggiBadan &&
-                pregnancyHistory[j].beratPrakehamilan == pregnancyHistoryFetchFromAPI[i].beratPrakehamilan &&
-                pregnancyHistory[j].gender == pregnancyHistoryFetchFromAPI[i].gender &&
-                pregnancyHistory[j].isTwin == pregnancyHistoryFetchFromAPI[i].isTwin) {
-              foundInApi = true;
-              break;
-            }
-          }
-
-          if (!foundInApi) {
-            await _pregnancyHistoryRepository.deletePregnancy(userId);
-          }
-        }
-
-        for (var index in notFoundInLocal) {
-          PregnancyHistory addPregnancyData = pregnancyHistoryFetchFromAPI[index];
+        if (!foundMatch) {
           await _pregnancyHistoryRepository.addPregnancyData(
-            addPregnancyData,
+            pregnancyHistoryFetchFromAPI,
             userId,
-            remoteId: addPregnancyData.id,
+            remoteId: pregnancyHistoryFetchFromAPI.id,
           );
+        }
+
+        for (var localPregnancyData in pregnancyHistory) {
+          if (localPregnancyData.status != pregnancyHistoryFetchFromAPI.status &&
+              localPregnancyData.hariPertamaHaidTerakhir != pregnancyHistoryFetchFromAPI.hariPertamaHaidTerakhir &&
+              localPregnancyData.kehamilanAkhir != pregnancyHistoryFetchFromAPI.kehamilanAkhir &&
+              localPregnancyData.tinggiBadan != pregnancyHistoryFetchFromAPI.tinggiBadan &&
+              localPregnancyData.beratPrakehamilan != pregnancyHistoryFetchFromAPI.beratPrakehamilan &&
+              localPregnancyData.gender != pregnancyHistoryFetchFromAPI.gender &&
+              localPregnancyData.isTwin != pregnancyHistoryFetchFromAPI.isTwin) {
+            await _pregnancyHistoryRepository.deletePregnancy(localPregnancyData.id!);
+          }
         }
       }
     }
@@ -562,15 +538,176 @@ class SyncDataService {
     }
   }
 
+  Future<void> _syncPregnancyDailyLogData(List<PregnancyDailyLog>? pregnancyDailyLog, PregnancyDailyLog? fetchedPregnancyDailyLog, int userId) async {
+    if (fetchedPregnancyDailyLog == null) {
+      for (var localLog in pregnancyDailyLog ?? []) {
+        await pregnancyLogRepository.deletePregnancyDailyLog(localLog.id!);
+      }
+      return;
+    }
+
+    List<DataHarianKehamilan>? fetchedDataHarianKehamilan = fetchedPregnancyDailyLog.dataHarianKehamilan;
+    List<BloodPressure>? fetchedTekananDarah = fetchedPregnancyDailyLog.tekananDarah;
+    List<ContractionTimer>? fetchedTimerKontraksi = fetchedPregnancyDailyLog.timerKontraksi;
+    List<BabyKicks>? fetchedGerakanBayi = fetchedPregnancyDailyLog.gerakanBayi;
+
+    PregnancyHistory? currentPregnancy = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+    if (currentPregnancy == null) return;
+
+    if (pregnancyDailyLog != null && pregnancyDailyLog.isNotEmpty) {
+      for (var localLog in pregnancyDailyLog) {
+        if (localLog.riwayatKehamilanId != currentPregnancy.id) {
+          await pregnancyLogRepository.deletePregnancyDailyLog(localLog.id!);
+        }
+      }
+
+      List<PregnancyDailyLog>? newLocalPregnancyLogs = await pregnancyLogRepository.getAllPregnancyDailyLog(userId);
+      PregnancyDailyLog? newLocalPregnancyLog = newLocalPregnancyLogs?.firstWhereOrNull((log) => log.riwayatKehamilanId == currentPregnancy.id);
+      if (newLocalPregnancyLog == null) return;
+
+      List<DataHarianKehamilan>? localDataHarianKehamilan = newLocalPregnancyLog.dataHarianKehamilan;
+      List<BloodPressure>? localTekananDarah = newLocalPregnancyLog.tekananDarah;
+      List<ContractionTimer>? localTimerKontraksi = newLocalPregnancyLog.timerKontraksi;
+      List<BabyKicks>? localGerakanBayi = newLocalPregnancyLog.gerakanBayi;
+
+      if (fetchedDataHarianKehamilan != null) {
+        if (localDataHarianKehamilan != null) {
+          for (var localDataHarian in localDataHarianKehamilan) {
+            bool found = fetchedDataHarianKehamilan.any((data) => data.date == localDataHarian.date);
+            if (!found) {
+              await pregnancyLogService.deletePregnancyDailyLog(localDataHarian.date);
+            }
+          }
+
+          for (var fetchedData in fetchedDataHarianKehamilan) {
+            await pregnancyLogService.upsertPregnancyDailyLog(
+              DateTime.parse(fetchedData.date),
+              fetchedData.pregnancySymptoms?.toJson(),
+              double.tryParse(fetchedData.temperature ?? ""),
+              fetchedData.notes,
+            );
+          }
+        } else {
+          for (var fetchedData in fetchedDataHarianKehamilan) {
+            await pregnancyLogService.upsertPregnancyDailyLog(
+              DateTime.parse(fetchedData.date),
+              fetchedData.pregnancySymptoms?.toJson(),
+              double.tryParse(fetchedData.temperature ?? ""),
+              fetchedData.notes,
+            );
+          }
+        }
+      } else {
+        PregnancyDailyLog updateLocalLog = newLocalPregnancyLog.copyWith(dataHarianKehamilan: [], updatedAt: DateTime.now().toString());
+        await pregnancyLogRepository.upsertPregnancyDailyLog(updateLocalLog);
+      }
+
+      if (fetchedTekananDarah != null) {
+        if (localTekananDarah != null) {
+          for (var localData in localTekananDarah) {
+            bool found = fetchedTekananDarah.any((data) => data.id == localData.id && data.systolicPressure == localData.systolicPressure && data.diastolicPressure == localData.diastolicPressure && data.heartRate == localData.heartRate && data.datetime == localData.datetime);
+            if (!found) {
+              await pregnancyLogService.deleteBloodPressure(localData.id!);
+            }
+          }
+
+          for (var fetchedData in fetchedTekananDarah) {
+            await pregnancyLogService.addBloodPressure(fetchedData);
+          }
+        } else {
+          for (var fetchedData in fetchedTekananDarah) {
+            await pregnancyLogService.addBloodPressure(fetchedData);
+          }
+        }
+      } else {
+        PregnancyDailyLog updateLocalLog = newLocalPregnancyLog.copyWith(tekananDarah: [], updatedAt: DateTime.now().toString());
+        await pregnancyLogRepository.upsertPregnancyDailyLog(updateLocalLog);
+      }
+
+      if (fetchedTimerKontraksi != null) {
+        if (localTimerKontraksi != null) {
+          for (var localData in localTimerKontraksi) {
+            bool found = fetchedTimerKontraksi.any((data) => data.id == localData.id && data.timeStart == localData.timeStart && data.duration == localData.duration && data.interval == localData.interval);
+            if (!found) {
+              await pregnancyLogService.deleteContractionTimer(localData.id!);
+            }
+          }
+
+          for (var fetchedData in fetchedTimerKontraksi) {
+            await pregnancyLogService.addContractionTimer(fetchedData.id!, fetchedData.timeStart, fetchedData.duration);
+          }
+        } else {
+          for (var fetchedData in fetchedTimerKontraksi) {
+            await pregnancyLogService.addContractionTimer(fetchedData.id!, fetchedData.timeStart, fetchedData.duration);
+          }
+        }
+      } else {
+        PregnancyDailyLog updateLocalLog = newLocalPregnancyLog.copyWith(timerKontraksi: [], updatedAt: DateTime.now().toString());
+        await pregnancyLogRepository.upsertPregnancyDailyLog(updateLocalLog);
+      }
+
+      if (fetchedGerakanBayi != null) {
+        if (localGerakanBayi != null) {
+          for (var localData in localGerakanBayi) {
+            bool found = fetchedGerakanBayi.any((data) => data.id == localData.id && data.datetimeStart == localData.datetimeStart && data.datetimeEnd == localData.datetimeEnd && data.totalKicks == localData.totalKicks);
+            if (!found) {
+              await pregnancyLogService.deleteKicksCounter(localData.id!);
+            }
+          }
+
+          for (var fetchedData in fetchedGerakanBayi) {
+            await pregnancyLogService.addKickData(fetchedData);
+          }
+        } else {
+          for (var fetchedData in fetchedGerakanBayi) {
+            await pregnancyLogService.addKickData(fetchedData);
+          }
+        }
+      } else {
+        PregnancyDailyLog updateLocalLog = newLocalPregnancyLog.copyWith(timerKontraksi: [], updatedAt: DateTime.now().toString());
+        await pregnancyLogRepository.upsertPregnancyDailyLog(updateLocalLog);
+      }
+    } else {
+      if (fetchedDataHarianKehamilan != null) {
+        for (var fetchedData in fetchedDataHarianKehamilan) {
+          await pregnancyLogService.upsertPregnancyDailyLog(
+            DateTime.parse(fetchedData.date),
+            fetchedData.pregnancySymptoms?.toJson() ?? {},
+            double.tryParse(fetchedData.temperature ?? ""),
+            fetchedData.notes,
+          );
+        }
+      }
+
+      if (fetchedTekananDarah != null) {
+        for (var fetchedData in fetchedTekananDarah) {
+          await pregnancyLogService.addBloodPressure(fetchedData);
+        }
+      }
+
+      if (fetchedTimerKontraksi != null) {
+        for (var fetchedData in fetchedTimerKontraksi) {
+          await pregnancyLogService.addContractionTimer(fetchedData.id!, fetchedData.timeStart, fetchedData.duration);
+        }
+      }
+
+      if (fetchedGerakanBayi != null) {
+        for (var fetchedData in fetchedGerakanBayi) {
+          await pregnancyLogService.addKickData(fetchedData);
+        }
+      }
+    }
+  }
+
   Future<void> pendingDataChange() async {
     try {
       int userId = storageService.getAccountLocalId();
       List<SyncLog> getAllSyncLogData = await _syncDataRepository.getAllSyncLogData();
-      print(getAllSyncLogData.length);
+      print("Pending Data: ${getAllSyncLogData.length}");
 
-      for (var synclog in getAllSyncLogData) {
-        _syncDataRepository.deleteSyncLogData(synclog.id ?? 0);
-      }
+      // for (var synclog in getAllSyncLogData) {
+      //   _syncDataRepository.deleteSyncLogData(synclog.id ?? 0);
+      // }
 
       if (getAllSyncLogData.isNotEmpty) {
         for (var syncLog in getAllSyncLogData) {
@@ -721,6 +858,84 @@ class SyncDataService {
                   }
                   break;
 
+                case "tb_data_harian_kehamilan":
+                  if (syncLog.operation == "upsertPregnancyDailyLog") {
+                    await pregnancyLogAPIRepository.storePregnancyLog(
+                      DateTime.parse(data['date']),
+                      data['pregnancySymptoms'],
+                      double.tryParse(data['temperature']),
+                      data['notes'],
+                    );
+                    success = true;
+                  }
+
+                  if (syncLog.operation == "deletePregnancyDailyLog") {
+                    await pregnancyLogAPIRepository.deletePregnancyLog(
+                      DateTime.parse(data['date']),
+                    );
+                    success = true;
+                  }
+
+                  if (syncLog.operation == "addContractionTimer") {
+                    await pregnancyLogAPIRepository.addContractionTimer(
+                      data['id'],
+                      DateTime.parse(data['startDate']),
+                      data['duration'],
+                    );
+                    success = true;
+                  }
+
+                  if (syncLog.operation == "deleteContractionTimer") {
+                    await pregnancyLogAPIRepository.deleteContractionTimer(
+                      data['id'],
+                    );
+                    success = true;
+                  }
+
+                  if (syncLog.operation == "addBloodPressure") {
+                    await pregnancyLogAPIRepository.addBloodPressure(
+                      data['id'],
+                      data['tekananSistolik'],
+                      data['tekananDiastolik'],
+                      data['detakJantung'],
+                      DateTime.parse(data['datetime']),
+                    );
+                    success = true;
+                  }
+
+                  if (syncLog.operation == "editBloodPressure") {
+                    await pregnancyLogAPIRepository.editBloodPressure(
+                      data['id'],
+                      data['tekananSistolik'],
+                      data['tekananDiastolik'],
+                      data['detakJantung'],
+                      DateTime.parse(data['datetime']),
+                    );
+                    success = true;
+                  }
+
+                  if (syncLog.operation == "deleteBloodPressure") {
+                    await pregnancyLogAPIRepository.deleteBloodPressure(
+                      data['id'],
+                    );
+                    success = true;
+                  }
+
+                  if (syncLog.operation == "addKickCounter") {
+                    await pregnancyLogAPIRepository.addKickCounter(
+                      data['id'],
+                      DateTime.parse(data['datetime']),
+                    );
+                    success = true;
+                  }
+
+                  if (syncLog.operation == "deleteKickCounter") {
+                    await pregnancyLogAPIRepository.deleteKickCounter(
+                      data['id'],
+                    );
+                    success = true;
+                  }
+
                 default:
                   _logger.e("Error during sync data: table not found");
                   break;
@@ -749,6 +964,7 @@ class SyncDataService {
       int userId = storageService.getAccountLocalId();
       User? profile = await _localProfileRepository.getProfile();
       DailyLog? dailyLog = await _localLogRepository.getDailyLog(userId);
+      List<PregnancyDailyLog>? pregnancyDailyLog = await pregnancyLogRepository.getAllPregnancyDailyLog(userId);
       List<PeriodHistory>? periodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
       List<PeriodHistory>? isActualPeriodHistory = periodHistory.where((period) => period.isActual == "1").toList();
       List<PregnancyHistory>? pregnancyHistory = await _pregnancyHistoryRepository.getAllPregnancyHistory(userId);
@@ -814,14 +1030,14 @@ class SyncDataService {
         for (var pregnancy in pregnancyHistory) {
           if (pregnancy.kehamilanAkhir != null) {
             var pregnancyBegin = await pregnancyRepository.pregnancyBegin(pregnancy.hariPertamaHaidTerakhir!, null);
-            if (pregnancyBegin != null) {
+            if (pregnancyBegin.isNotEmpty) {
               PregnancyHistory editPregnancyId = pregnancy.copyWith(remoteId: pregnancyBegin["data"]["user_id"]);
               await _pregnancyHistoryRepository.editPregnancy(editPregnancyId);
             }
             await pregnancyRepository.pregnancyEnded(pregnancy.kehamilanAkhir!, pregnancy.gender!);
           } else {
             var pregnancyBegin = await pregnancyRepository.pregnancyBegin(pregnancy.hariPertamaHaidTerakhir!, null);
-            if (pregnancyBegin != null) {
+            if (pregnancyBegin.isNotEmpty) {
               PregnancyHistory editPregnancyId = pregnancy.copyWith(remoteId: pregnancyBegin["data"]["user_id"]);
               await _pregnancyHistoryRepository.editPregnancy(editPregnancyId);
             }
@@ -836,6 +1052,60 @@ class SyncDataService {
                   await pregnancyRepository.weeklyWeightGain(weight.beratBadan!, weight.mingguKehamilan!, weight.tanggalPencatatan!);
                 }
               }
+            }
+          }
+        }
+      }
+
+      if (pregnancyDailyLog != null) {
+        for (var pregnancyLog in pregnancyDailyLog) {
+          List<DataHarianKehamilan>? localDataHarianKehamilan = pregnancyLog.dataHarianKehamilan;
+          List<BloodPressure>? localTekananDarah = pregnancyLog.tekananDarah;
+          List<ContractionTimer>? localTimerKontraksi = pregnancyLog.timerKontraksi;
+          List<BabyKicks>? localGerakanBayi = pregnancyLog.gerakanBayi;
+
+          if (localDataHarianKehamilan != null) {
+            for (var dataHarianKehamilan in localDataHarianKehamilan) {
+              print(dataHarianKehamilan.pregnancySymptoms?.toJson());
+              await pregnancyLogAPIRepository.storePregnancyLog(
+                DateTime.parse(dataHarianKehamilan.date),
+                dataHarianKehamilan.pregnancySymptoms?.toJson() ?? {},
+                double.tryParse(dataHarianKehamilan.temperature ?? ""),
+                dataHarianKehamilan.notes ?? "",
+              );
+            }
+          }
+
+          if (localTekananDarah != null) {
+            for (var tekananDarah in localTekananDarah) {
+              await pregnancyLogAPIRepository.addBloodPressure(
+                tekananDarah.id!,
+                tekananDarah.systolicPressure,
+                tekananDarah.diastolicPressure,
+                tekananDarah.heartRate,
+                DateTime.parse(tekananDarah.datetime),
+              );
+            }
+          }
+
+          if (localTimerKontraksi != null) {
+            for (var timerKontraksi in localTimerKontraksi) {
+              await pregnancyLogAPIRepository.addContractionTimer(
+                timerKontraksi.id!,
+                DateTime.parse(timerKontraksi.timeStart),
+                timerKontraksi.duration,
+              );
+            }
+          }
+
+          if (localGerakanBayi != null) {
+            for (var gerakanBayi in localGerakanBayi) {
+              await pregnancyLogAPIRepository.addKickCounterData(
+                gerakanBayi.id!,
+                DateTime.parse(gerakanBayi.datetimeStart),
+                DateTime.parse(gerakanBayi.datetimeEnd),
+                gerakanBayi.totalKicks,
+              );
             }
           }
         }

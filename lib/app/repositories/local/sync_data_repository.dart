@@ -33,18 +33,16 @@ class SyncDataRepository {
     }
   }
 
-  Future<void> fetchNewlySyncPregnancyHistoryData(List<PregnancyHistory> pregnancyHistoryDataFetchFromAPI, int userId) async {
+  Future<void> fetchNewlySyncPregnancyHistoryData(PregnancyHistory pregnancyHistoryDataFetchFromAPI, int userId) async {
     final db = await _databaseHelper.database;
     try {
       await db.transaction((txn) async {
-        for (var pregnancyHistoryData in pregnancyHistoryDataFetchFromAPI) {
-          pregnancyHistoryData.userId = userId;
-          await txn.insert(
-            'tb_riwayat_kehamilan',
-            pregnancyHistoryData.copyWith(remoteId: pregnancyHistoryData.id).toJson(),
-            conflictAlgorithm: ConflictAlgorithm.replace,
-          );
-        }
+        pregnancyHistoryDataFetchFromAPI.userId = userId;
+        await txn.insert(
+          'tb_riwayat_kehamilan',
+          pregnancyHistoryDataFetchFromAPI.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
       });
     } catch (e) {
       _logger.e("Error during create fetchNewlySyncPregnancyHistoryData: $e");

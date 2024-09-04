@@ -32,14 +32,17 @@ class VitaminListView extends GetView<VitaminListController> {
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.fromLTRB(28.w, 0.h, 20.w, 0),
-              child: Column(
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.pregnancyVaccineGuide,
-                    style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                  ),
-                  SizedBox(height: 20),
-                ],
+              child: Container(
+                width: Get.width,
+                child: Column(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.pregnancyVitaminGuideDesc,
+                      style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
           ),
@@ -77,13 +80,13 @@ class VitaminListView extends GetView<VitaminListController> {
                                 vertical: 25,
                               ),
                               title: Text(
-                                controller.storageService == "id" ? vitamin.vitaminsId! : vitamin.vitaminsEn!,
+                                controller.storageService.getLanguage() == "id" ? vitamin.vitaminsId! : vitamin.vitaminsEn!,
                                 style: CustomTextStyle.bold(16, height: 1.5),
                               ),
                               subtitle: Container(
                                 padding: EdgeInsets.only(top: 10),
                                 child: ReadMoreText(
-                                  controller.storageService == "id" ? vitamin.descriptionId! : vitamin.descriptionEn!,
+                                  controller.storageService.getLanguage() == "id" ? vitamin.descriptionId! : vitamin.descriptionEn!,
                                   trimLines: 4,
                                   colorClickableText: Colors.blue,
                                   trimMode: TrimMode.Line,

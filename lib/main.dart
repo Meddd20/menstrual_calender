@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
   await GetStorage.init();
   await DatabaseHelper.instance.database;
   await LocalNotificationService().init();
+  await dotenv.load(fileName: ".env");
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseNotificationService.initNotifications();

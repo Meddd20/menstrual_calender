@@ -1,7 +1,22 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class StorageService {
   final GetStorage box = GetStorage();
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+
+  // void setAuthToken(String authToken) async {
+  //   await secureStorage.write(key: "authToken", value: authToken);
+  //   print("lalala ${await getAuthToken()}");
+  // }
+
+  // Future<String> getAuthToken() async {
+  //   return await secureStorage.read(key: "authToken") ?? "";
+  // }
+
+  // void deleteAuthToken() async {
+  //   await secureStorage.delete(key: "authToken");
+  // }
 
   void storeCredentialToken(String token) {
     box.write("loginAuth", token);

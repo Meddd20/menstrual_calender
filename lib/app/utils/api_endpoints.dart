@@ -48,4 +48,18 @@ class _AuthEndPoints {
   final String getMasterDataPregnancy = 'master/get-pregnancy';
   final String getMasterDataVaccines = 'master/get-vaccines';
   final String getMasterDataVitamins = 'master/get-vitamins';
+
+  final String addPregnancyLog = 'pregnancy/add-pregnancy-log';
+  final String deletePregnancyLog = 'pregnancy/delete-pregnancy-log';
+
+  final String addBloodPressure = 'pregnancy/add-blood-pressure';
+  final String editBloodPressure = 'pregnancy/edit-blood-pressure';
+  final String deleteBloodPressure = 'pregnancy/delete-blood-pressure';
+
+  final String addContractionTimer = 'pregnancy/add-contraction-timer';
+  final String deleteContractionTimer = 'pregnancy/delete-contraction-timer';
+
+  final String addKickCounter = 'pregnancy/add-kicks-counter';
+  final String addKickCounterData = 'pregnancy/add-kicks-counter-data';
+  final String deleteKickCounter = 'pregnancy/delete-kicks-counter';
 }

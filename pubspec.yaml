@@ -16,10 +16,12 @@ dependencies:
   firebase_messaging: ^15.0.3
   flutter:
     sdk: flutter
+  flutter_dotenv: ^5.1.0
   flutter_local_notifications: ^17.2.1+2
   flutter_localizations:
     sdk: flutter
   flutter_screenutil: null
+  flutter_secure_storage: ^9.2.2
   flutter_speed_dial: ^7.0.0
   flutter_svg: ^2.0.10+1
   flutter_widget_from_html: ^0.15.0
@@ -59,6 +61,7 @@ flutter:
   generate: true
   uses-material-design: true
   assets:
+    - .env
     - assets/
     - assets/image/
     - assets/image/baby_comparison/

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
@@ -14,6 +13,7 @@ import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repositor
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -520,7 +520,7 @@ class DailyLogController extends GetxController {
   Future<void> saveLog() async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
-    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+    String formattedDate = formatDate(selectedDate);
 
     try {
       await _logService.upsertDailyLog(

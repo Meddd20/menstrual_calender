@@ -4,8 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_log_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
+import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
@@ -17,8 +20,10 @@ class TemperatureController extends GetxController {
   RxString selectedDataType = 'percentage30Days'.obs;
   RxMap<String, dynamic> specificTemperaturesData = RxMap<String, dynamic>();
   Rx<DateTime> selectedDate = DateTime.now().obs;
+  late RxString selectedDataTags;
   late TabController tabController;
   late final LogService _logService;
+  late final PregnancyLogService _pregnancyLogService;
 
   @override
   void onInit() {
@@ -27,7 +32,9 @@ class TemperatureController extends GetxController {
     final databaseHelper = DatabaseHelper.instance;
     final localLogRepository = LocalLogRepository(databaseHelper);
     _logService = LogService(localLogRepository);
-
+    final pregnancyLogRepository = PregnancyLogRepository(databaseHelper);
+    final pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
+    _pregnancyLogService = PregnancyLogService(pregnancyLogRepository, pregnancyHistoryRepository);
     data = DailyLogTagsData(
       tags: '',
       logs: {},
@@ -36,11 +43,15 @@ class TemperatureController extends GetxController {
       percentage6Months: null,
       percentage1Year: null,
     );
+    temperatures = RxMap<String, dynamic>();
     selectedDataType = 'percentage30Days'.obs;
+    selectedDataTags = (Get.arguments != null ? RxString(Get.arguments as String) : RxString(""));
+    if (selectedDataTags == "pregnancy_temperature") {
+      selectedDataType.value = "";
+    }
     fetchTemperatures();
     specifiedDataByDate();
     _updateSelectedDate();
-    temperatures = RxMap<String, dynamic>();
     super.onInit();
   }
 
@@ -116,7 +127,7 @@ class TemperatureController extends GetxController {
         case 'percentage1Year':
           return entryDate.isAfter(now.subtract(Duration(days: 366))) && entryDate.isBefore(now);
         default:
-          return false;
+          return true;
       }
     }).toList();
 
@@ -129,7 +140,11 @@ class TemperatureController extends GetxController {
 
   Future<void> fetchTemperatures() async {
     try {
-      data = await _logService.getLogsByTags("temperature");
+      if (selectedDataTags == "pregnancy_temperature") {
+        data = await _pregnancyLogService.getPregnancyLogByTags("temperature");
+      } else {
+        data = await _logService.getLogsByTags("temperature");
+      }
 
       Map<String, dynamic> logsMap = data.logs;
 

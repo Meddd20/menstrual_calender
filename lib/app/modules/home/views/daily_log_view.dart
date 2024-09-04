@@ -983,7 +983,6 @@ class DailyLogView extends GetView<DailyLogController> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  controller.originalWeight.value = controller.weights.value;
                                   showModalBottomSheet(
                                     isScrollControlled: true,
                                     context: context,

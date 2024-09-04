@@ -140,7 +140,7 @@ class PregnancyHistoryService {
       );
 
       await _localProfileRepository.updateProfile(updateUserProfile);
-      await _pregnancyHistoryRepository.deletePregnancy(userId);
+      await _pregnancyHistoryRepository.deleteCurrentPregnancy(userId);
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
     }

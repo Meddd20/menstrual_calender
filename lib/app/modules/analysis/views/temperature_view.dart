@@ -57,7 +57,7 @@ class TemperatureView extends GetView<TemperatureController> {
               ),
               Obx(
                 () => Text(
-                  "from ${controller.formatDate(controller.selectedDate.value)} up to today",
+                  controller.getSelectedDataType == "pregnancy_notes" ? "from ${controller.formatDate(controller.selectedDate.value)} up to today" : "dari hari pertama kehamilan",
                   style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
                 ),
               ),
@@ -134,17 +134,18 @@ class TemperatureView extends GetView<TemperatureController> {
                   },
                 ),
               ),
-              CustomTabBar(
-                controller: controller.tabController,
-                onTap: (index) {
-                  _pageController.animateToPage(
-                    index,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.ease,
-                  );
-                  controller.updateTabBar(index);
-                },
-              ),
+              if (controller.selectedDataTags != "pregnancy_temperature")
+                CustomTabBar(
+                  controller: controller.tabController,
+                  onTap: (index) {
+                    _pageController.animateToPage(
+                      index,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease,
+                    );
+                    controller.updateTabBar(index);
+                  },
+                ),
               Expanded(
                 child: PageView(
                   controller: _pageController,

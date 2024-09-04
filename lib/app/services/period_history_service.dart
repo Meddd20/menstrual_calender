@@ -10,7 +10,6 @@ import 'package:periodnpregnancycalender/app/repositories/local/period_history_r
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PeriodHistoryService {
   final PeriodHistoryRepository _periodHistoryRepository;

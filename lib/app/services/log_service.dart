@@ -62,15 +62,15 @@ class LogService {
 
         DailyLog updatedLog = existingLog.copyWith(
           dataHarian: existingDataHarian,
-          updatedAt: DateTime.now().toIso8601String(),
+          updatedAt: DateTime.now().toString(),
         );
         await _localLogRepository.upsertDailyLog(updatedLog);
       } else {
         DailyLog newLog = DailyLog(
           userId: userId,
           dataHarian: newDataHarian,
-          createdAt: DateTime.now().toIso8601String(),
-          updatedAt: DateTime.now().toIso8601String(),
+          createdAt: DateTime.now().toString(),
+          updatedAt: DateTime.now().toString(),
         );
         await _localLogRepository.upsertDailyLog(newLog);
       }
@@ -97,7 +97,7 @@ class LogService {
 
         DailyLog updatedLog = existingLog.copyWith(
           dataHarian: updatedDataHarian,
-          updatedAt: DateTime.now().toIso8601String(),
+          updatedAt: DateTime.now().toString(),
         );
 
         await _localLogRepository.upsertDailyLog(updatedLog);
@@ -331,15 +331,15 @@ class LogService {
 
         DailyLog updatedLog = existingLog.copyWith(
           pengingat: existingReminders,
-          updatedAt: DateTime.now().toIso8601String(),
+          updatedAt: DateTime.now().toString(),
         );
         await _localLogRepository.upsertDailyLog(updatedLog);
       } else {
         DailyLog newLog = DailyLog(
           userId: userId,
           pengingat: [reminder],
-          createdAt: DateTime.now().toIso8601String(),
-          updatedAt: DateTime.now().toIso8601String(),
+          createdAt: DateTime.now().toString(),
+          updatedAt: DateTime.now().toString(),
         );
         await _localLogRepository.upsertDailyLog(newLog);
       }
@@ -365,7 +365,7 @@ class LogService {
 
           DailyLog updatedLog = existingLog.copyWith(
             pengingat: existingReminders,
-            updatedAt: DateTime.now().toIso8601String(),
+            updatedAt: DateTime.now().toString(),
           );
 
           await _localLogRepository.upsertDailyLog(updatedLog);
@@ -388,7 +388,7 @@ class LogService {
       if (existingLog != null) {
         DailyLog updatedLog = existingLog.copyWith(
           pengingat: [],
-          updatedAt: DateTime.now().toIso8601String(),
+          updatedAt: DateTime.now().toString(),
         );
 
         await _localLogRepository.upsertDailyLog(updatedLog);
@@ -417,7 +417,7 @@ class LogService {
 
           DailyLog updatedLog = existingLog.copyWith(
             pengingat: existingReminders,
-            updatedAt: DateTime.now().toIso8601String(),
+            updatedAt: DateTime.now().toString(),
           );
 
           await _localLogRepository.upsertDailyLog(updatedLog);
