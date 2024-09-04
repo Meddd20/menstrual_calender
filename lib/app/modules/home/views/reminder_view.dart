@@ -1,13 +1,13 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/reminder_controller.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -311,7 +311,7 @@ class ReminderView extends GetView<ReminderController> {
                                           ),
                                           SizedBox(height: 2.h),
                                           Text(
-                                            DateFormat('HH:mm a').format(reminder.datetime != null ? DateTime.parse(reminder.datetime!) : DateTime.now()),
+                                            formatTimeWithAmPm(reminder.datetime != null ? DateTime.parse(reminder.datetime!) : DateTime.now()),
                                             style: CustomTextStyle.extraBold(24),
                                           ),
                                           SizedBox(height: 2.h),
@@ -341,7 +341,7 @@ class ReminderView extends GetView<ReminderController> {
                                     alignment: Alignment.center,
                                     child: IconButton(
                                       onPressed: () {
-                                        controller.deleteReminder(reminder.id ?? "");
+                                        controller.deleteReminder(context, reminder.id ?? "");
                                       },
                                       icon: Icon(Icons.delete),
                                     ),
@@ -455,7 +455,7 @@ class ReminderView extends GetView<ReminderController> {
                                                                   controller.timeSelected.value != null
                                                                       ? '${controller.timeSelected.value!.hour}:${controller.timeSelected.value!.minute.toString().padLeft(2, '0')}'
                                                                       : reminder.datetime != null
-                                                                          ? DateFormat('HH:mm').format(DateTime.parse(reminder.datetime ?? TimeOfDay.now().toString()))
+                                                                          ? formatHourMinute(DateTime.parse(reminder.datetime ?? TimeOfDay.now().toString()))
                                                                           : AppLocalizations.of(context)!.selectTime,
                                                                   style: CustomTextStyle.bold(15),
                                                                 ),

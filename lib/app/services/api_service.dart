@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class ApiService {
@@ -56,7 +56,7 @@ class ApiService {
   Future<http.Response> register(String name, DateTime birthday, String email, String password) async {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.regisUser);
 
-    String formattedBirthday = DateFormat('yyyy-MM-dd').format(birthday);
+    String formattedBirthday = formatDate(birthday);
     Map<String, dynamic> body = {"name": name, "birthday": formattedBirthday, "email": email, "password": password};
 
     return await http.post(url, body: body, headers: generalHeaders);

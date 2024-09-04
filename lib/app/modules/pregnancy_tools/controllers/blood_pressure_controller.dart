@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
@@ -23,6 +21,7 @@ import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BloodPressureController extends GetxController {
   final StorageService storageService = StorageService();
@@ -84,7 +83,7 @@ class BloodPressureController extends GetxController {
     final time = timeSelected.value;
 
     if (time != null) {
-      return DateFormat('HH:mm').format(DateTime(
+      return formatHourMinute(DateTime(
         0,
         0,
         0,
@@ -197,10 +196,10 @@ class BloodPressureController extends GetxController {
 
     try {
       await _pregnancyLogService.addBloodPressure(bloodPressure);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Blood pressure added successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.bloodPressureAddedSuccess));
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add blood pressure. Please try again later!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.bloodPressureAddFailed));
     }
 
     await fetchAllBloodPressure();
@@ -264,10 +263,10 @@ class BloodPressureController extends GetxController {
 
     try {
       await _pregnancyLogService.editBloodPressure(bloodPressure);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Blood pressure edited successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.bloodPressureEditedSuccess));
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to edit blood pressure. Please try again later!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.bloodPressureEditFailed));
     }
 
     await fetchAllBloodPressure();
@@ -323,10 +322,10 @@ class BloodPressureController extends GetxController {
 
     try {
       await _pregnancyLogService.deleteBloodPressure(id);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Blood pressure deleted successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.bloodPressureDeletedSuccess));
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to delete blood pressure. Please try again later!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.bloodPressureDeleteFailed));
     }
 
     await fetchAllBloodPressure();

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
@@ -16,7 +15,9 @@ import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PeriodCycleController extends GetxController {
   final ApiService apiService = ApiService();
@@ -32,12 +33,10 @@ class PeriodCycleController extends GetxController {
 
   void setStartDate(DateTime? date) {
     startDate.value = date;
-    print(startDate);
   }
 
   void setEndDate(DateTime? date) {
     endDate.value = date;
-    print(endDate);
   }
 
   @override
@@ -69,9 +68,9 @@ class PeriodCycleController extends GetxController {
     super.onClose();
   }
 
-  String get formattedStartDate => startDate.value != null ? DateFormat('yyyy-MM-dd').format(startDate.value!) : DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String get formattedStartDate => startDate.value != null ? formatDate(startDate.value!) : formatDate(DateTime.now());
 
-  String get formattedEndDate => endDate.value != null ? DateFormat('yyyy-MM-dd').format(endDate.value!) : DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String get formattedEndDate => endDate.value != null ? formatDate(endDate.value!) : formatDate(DateTime.now());
 
   Future<void> fetchPeriod() async {
     PeriodCycleIndex? periodCycle = await _periodHistoryService.getPeriodIndex();
@@ -109,7 +108,7 @@ class PeriodCycleController extends GetxController {
 
       try {
         await _periodHistoryService.addPeriod(newPeriod?[0].id ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
-        Get.showSnackbar(Ui.SuccessSnackBar(message: 'Period added successfully!'));
+        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.periodAddedSuccess));
 
         await fetchPeriod();
         cancelEdit();
@@ -118,10 +117,10 @@ class PeriodCycleController extends GetxController {
           MaterialPageRoute(builder: (context) => PeriodCycleView()),
         );
       } catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add period. Please try again!'));
+        Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodAddFailed));
       }
     } else {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Please select your period start date!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.selectPeriodStartDate));
     }
   }
 
@@ -153,10 +152,10 @@ class PeriodCycleController extends GetxController {
 
       try {
         await _periodHistoryService.updatePeriod(periodId, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), periodCycle);
-        Get.showSnackbar(Ui.SuccessSnackBar(message: 'Period edited successfully!'));
+        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.periodEditedSuccess));
         localSuccess = true;
       } catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to edit period. Please try again!'));
+        Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodEditFailed));
       }
 
       await fetchPeriod();

@@ -15,6 +15,7 @@ import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ContractionTimerController extends GetxController {
   final StorageService storageService = StorageService();
@@ -69,7 +70,7 @@ class ContractionTimerController extends GetxController {
       _stopwatch.stop();
       isRunning.value = false;
       _timer.cancel();
-      addContraction(elapsedTime.value.inSeconds);
+      addContraction(Get.context, elapsedTime.value.inSeconds);
       reset();
     }
   }
@@ -105,7 +106,7 @@ class ContractionTimerController extends GetxController {
     update();
   }
 
-  Future<void> addContraction(int duration) async {
+  Future<void> addContraction(context, int duration) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
     var uuid = Uuid();
@@ -115,7 +116,7 @@ class ContractionTimerController extends GetxController {
       await _pregnancyLogService.addContractionTimer(id, selectedDate.toString(), duration);
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add contraction. Please try again later!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.contractionAddFailed));
     }
 
     await fetchAllContraction();
@@ -152,7 +153,7 @@ class ContractionTimerController extends GetxController {
     await _syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> deleteContraction(String id) async {
+  Future<void> deleteContraction(context,String id) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
 
@@ -160,7 +161,7 @@ class ContractionTimerController extends GetxController {
       await _pregnancyLogService.deleteContractionTimer(id);
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to delete contraction. Please try again later!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.contractionDeleteFailed));
     }
 
     await fetchAllContraction();

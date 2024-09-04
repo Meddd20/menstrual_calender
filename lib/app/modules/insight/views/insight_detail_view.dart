@@ -9,6 +9,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/insight/controllers/insight_detail_controller.dart';
 import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class InsightDetailView extends GetView<InsightDetailController> {
   const InsightDetailView({Key? key}) : super(key: key);
@@ -77,7 +78,7 @@ class InsightDetailView extends GetView<InsightDetailController> {
                                         ),
                                         SizedBox(height: 5.h),
                                         Text(
-                                          controller.formatDate("${controller.data?.createdAt}"),
+                                          formatLongDateTime("${controller.data?.createdAt}"),
                                           style: CustomTextStyle.medium(14, height: 1.75, color: AppColors.black.withOpacity(0.6)),
                                         ),
                                         SizedBox(height: 10.h),

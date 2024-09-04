@@ -24,7 +24,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              "Blood Pressure",
+              AppLocalizations.of(context)!.bloodPressure,
               style: CustomTextStyle.extraBold(20),
             ),
           ),
@@ -65,7 +65,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                           Column(
                             children: [
                               Text(
-                                "Add Blood Pressure",
+                                AppLocalizations.of(context)!.addBloodPressure,
                                 style: CustomTextStyle.extraBold(20, height: 1.5),
                               ),
                               SizedBox(height: 10),
@@ -78,6 +78,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                   firstDay: controller.tanggalAwalMinggu.first,
                                   lastDay: DateTime.now(),
                                   startingDayOfWeek: StartingDayOfWeek.monday,
+                                  locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
                                   onDaySelected: (selectedDay, focusedDay) {
                                     controller.setSelectedDate(selectedDay);
                                     controller.setFocusedDate(focusedDay);
@@ -203,7 +204,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Time",
+                                        AppLocalizations.of(context)!.time,
                                         style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
                                       ),
                                       GestureDetector(
@@ -236,7 +237,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                   Column(
                                     children: [
                                       Text(
-                                        "Systolic",
+                                        AppLocalizations.of(context)!.systolic,
                                         style: CustomTextStyle.semiBold(14, height: 1.5),
                                       ),
                                       SizedBox(height: 10),
@@ -273,7 +274,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                   Column(
                                     children: [
                                       Text(
-                                        "Diastolic",
+                                        AppLocalizations.of(context)!.diastolic,
                                         style: CustomTextStyle.semiBold(14, height: 1.5),
                                       ),
                                       SizedBox(height: 10),
@@ -300,7 +301,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                   Column(
                                     children: [
                                       Text(
-                                        "Pulse",
+                                        AppLocalizations.of(context)!.pulse,
                                         style: CustomTextStyle.semiBold(14, height: 1.5),
                                       ),
                                       SizedBox(height: 10),
@@ -332,10 +333,9 @@ class BloodPressureView extends GetView<BloodPressureController> {
                             left: 0,
                             right: 0,
                             child: CustomButton(
-                              text: "Add",
+                              text: AppLocalizations.of(context)!.add,
                               onPressed: () {
                                 controller.addBloodPressure(context);
-                                
                               },
                             ),
                           ),
@@ -369,7 +369,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              "${formatToDayHour(entry.datetime)}",
+                              "${formatDateToDayHour(entry.datetime)}",
                               style: CustomTextStyle.bold(12, color: Colors.white),
                             ),
                             SizedBox(height: 5),
@@ -403,7 +403,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                   series: [
                     RangeColumnSeries<BloodPressure, String>(
                       dataSource: controller.allBloodPressure,
-                      xValueMapper: (BloodPressure data, _) => formatToDayHour(data.datetime),
+                      xValueMapper: (BloodPressure data, _) => formatDateToDayHour(data.datetime),
                       highValueMapper: (BloodPressure data, _) => data.systolicPressure,
                       lowValueMapper: (BloodPressure data, _) => data.diastolicPressure,
                       width: 0.2,
@@ -412,7 +412,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                     ),
                     ScatterSeries<BloodPressure, String>(
                       dataSource: controller.allBloodPressure,
-                      xValueMapper: (BloodPressure data, _) => formatToDayHour(data.datetime),
+                      xValueMapper: (BloodPressure data, _) => formatDateToDayHour(data.datetime),
                       yValueMapper: (BloodPressure data, _) => data.systolicPressure,
                       markerSettings: MarkerSettings(
                         isVisible: true,
@@ -426,7 +426,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                     ),
                     ScatterSeries<BloodPressure, String>(
                       dataSource: controller.allBloodPressure,
-                      xValueMapper: (BloodPressure data, _) => formatToDayHour(data.datetime),
+                      xValueMapper: (BloodPressure data, _) => formatDateToDayHour(data.datetime),
                       yValueMapper: (BloodPressure data, _) => data.diastolicPressure,
                       markerSettings: MarkerSettings(
                         isVisible: true,
@@ -455,7 +455,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                         label: Expanded(
                           child: Center(
                             child: Text(
-                              "Pressure",
+                              AppLocalizations.of(context)!.pressure,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -465,7 +465,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                         label: Expanded(
                           child: Center(
                             child: Text(
-                              "Pulse",
+                              AppLocalizations.of(context)!.pulse,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -475,7 +475,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                         label: Expanded(
                           child: Center(
                             child: Text(
-                              "Date",
+                              AppLocalizations.of(context)!.dates,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -485,7 +485,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                         label: Expanded(
                           child: Center(
                             child: Text(
-                              "Time",
+                              AppLocalizations.of(context)!.time,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -531,7 +531,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                             DataCell(
                               Center(
                                 child: Text(
-                                  DateFormat('dd.MM').format(DateTime.tryParse(bloodPressure.datetime) ?? DateTime.now()),
+                                  formatShortDate(bloodPressure.datetime),
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
                                 ),
@@ -540,7 +540,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                             DataCell(
                               Center(
                                 child: Text(
-                                  DateFormat('HH:mm').format(DateTime.tryParse(bloodPressure.datetime) ?? DateTime.now()),
+                                  formatHourMinute(DateTime.tryParse(bloodPressure.datetime) ?? DateTime.now()),
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
                                 ),
@@ -587,7 +587,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                         children: [
                                                                           Expanded(
                                                                             child: Text(
-                                                                              "Edit Blood Pressure",
+                                                                              AppLocalizations.of(context)!.editBloodPressure,
                                                                               style: CustomTextStyle.extraBold(20, height: 1.5),
                                                                               textAlign: TextAlign.center,
                                                                             ),
@@ -611,6 +611,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                           firstDay: controller.tanggalAwalMinggu.first,
                                                                           lastDay: DateTime.now(),
                                                                           startingDayOfWeek: StartingDayOfWeek.monday,
+                                                                          locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
                                                                           onDaySelected: (selectedDay, focusedDay) {
                                                                             controller.setSelectedDate(selectedDay);
                                                                             controller.setFocusedDate(focusedDay);
@@ -736,7 +737,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                             children: [
                                                                               Text(
-                                                                                "Time",
+                                                                                AppLocalizations.of(context)!.time,
                                                                                 style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
                                                                               ),
                                                                               GestureDetector(
@@ -753,7 +754,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                                     borderRadius: BorderRadius.circular(12),
                                                                                   ),
                                                                                   child: Text(
-                                                                                    controller.formattedSelectedTime != null ? "${controller.formattedSelectedTime}" : "Time",
+                                                                                    controller.formattedSelectedTime != null ? "${controller.formattedSelectedTime}" : AppLocalizations.of(context)!.time,
                                                                                     style: CustomTextStyle.bold(16, color: AppColors.white),
                                                                                   ),
                                                                                 ),
@@ -769,7 +770,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                           Column(
                                                                             children: [
                                                                               Text(
-                                                                                "Systolic",
+                                                                                AppLocalizations.of(context)!.systolic,
                                                                                 style: CustomTextStyle.semiBold(14, height: 1.5),
                                                                               ),
                                                                               SizedBox(height: 10),
@@ -806,7 +807,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                           Column(
                                                                             children: [
                                                                               Text(
-                                                                                "Diastolic",
+                                                                                AppLocalizations.of(context)!.diastolic,
                                                                                 style: CustomTextStyle.semiBold(14, height: 1.5),
                                                                               ),
                                                                               SizedBox(height: 10),
@@ -833,7 +834,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                           Column(
                                                                             children: [
                                                                               Text(
-                                                                                "Pulse",
+                                                                                AppLocalizations.of(context)!.pulse,
                                                                                 style: CustomTextStyle.semiBold(14, height: 1.5),
                                                                               ),
                                                                               SizedBox(height: 10),
@@ -865,7 +866,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                     left: 0,
                                                                     right: 0,
                                                                     child: CustomButton(
-                                                                      text: "Edit",
+                                                                      text: AppLocalizations.of(context)!.edit,
                                                                       onPressed: () {
                                                                         controller.editBloodPressure(context, bloodPressure.id!);
                                                                       },
@@ -890,7 +891,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             Text(
-                                                              "Edit Blood Pressure",
+                                                              AppLocalizations.of(context)!.editBloodPressure,
                                                               style: CustomTextStyle.bold(14),
                                                             ),
                                                             Icon(Icons.edit)
@@ -912,7 +913,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             Text(
-                                                              "Delete Blood Pressure",
+                                                              AppLocalizations.of(context)!.deleteBloodPressure,
                                                               style: CustomTextStyle.bold(14),
                                                             ),
                                                             Icon(Icons.delete)

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class CustomDateLook extends StatelessWidget {
   final MapEntry<String, dynamic> entry;
@@ -27,15 +27,15 @@ class CustomDateLook extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          DateFormat('dd').format(DateTime.parse(entry.key)),
+                          formatToDay(entry.key),
                           style: CustomTextStyle.extraBold(24),
                         ),
                         Text(
-                          DateFormat('MMM').format(DateTime.parse(entry.key)),
+                          formatToMonth(entry.key),
                           style: CustomTextStyle.bold(15),
                         ),
                         Text(
-                          DateFormat('yyyy').format(DateTime.parse(entry.key)),
+                          formatToYear(entry.key),
                           style: CustomTextStyle.bold(12),
                         ),
                       ],

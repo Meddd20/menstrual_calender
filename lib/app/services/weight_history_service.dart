@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
@@ -103,7 +102,7 @@ class WeightHistoryService {
 
   Future<void> addWeeklyWeightGain(DateTime tanggalPencatatan, double beratBadan, int mingguKehamilan) async {
     try {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(tanggalPencatatan);
+      String formattedDate = formatDate(tanggalPencatatan);
 
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
@@ -155,9 +154,7 @@ class WeightHistoryService {
 
           WeightHistory? matchingNewTanggalPencatatan = updatedWeightDataOnThisPregnancy.firstWhereOrNull((wh) {
             if (wh?.userId == userId && wh?.tanggalPencatatan != null) {
-              DateTime whDate = DateTime.parse(wh!.tanggalPencatatan!);
-              String whFormattedDate = DateFormat('yyyy-MM-dd').format(whDate);
-              return whFormattedDate == formattedDate;
+              return formatDateStr(wh!.tanggalPencatatan!) == formattedDate;
             }
             return false;
           });
@@ -294,14 +291,11 @@ class WeightHistoryService {
     }
 
     weightDataOnThisPregnancy.sort((a, b) {
-      if (a != null && b != null) {
-        int compareMinggu = b.mingguKehamilan!.compareTo(a.mingguKehamilan!);
-        if (compareMinggu != 0) {
-          return compareMinggu;
-        }
-        return b.tanggalPencatatan!.compareTo(a.tanggalPencatatan!);
+      int compareMinggu = b.mingguKehamilan!.compareTo(a.mingguKehamilan!);
+      if (compareMinggu != 0) {
+        return compareMinggu;
       }
-      return 0;
+      return b.tanggalPencatatan!.compareTo(a.tanggalPencatatan!);
     });
 
     return PregnancyWeightGainData(

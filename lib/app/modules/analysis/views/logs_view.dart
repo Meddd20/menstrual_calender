@@ -9,6 +9,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_doughnut_char
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/logs_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class LogsView extends GetView<LogsController> {
   const LogsView({Key? key}) : super(key: key);
@@ -94,7 +95,7 @@ class LogsView extends GetView<LogsController> {
                 style: CustomTextStyle.extraBold(26, height: 1.75),
               ),
               Text(
-                controller.selectedDataTags != "pregnancy_symptoms" ? AppLocalizations.of(context)!.entriesFromDate("${controller.formatDate(controller.selectedDate.value)}") : "dari hari pertama kehamilan",
+                controller.selectedDataTags != "pregnancy_symptoms" ? AppLocalizations.of(context)!.entriesFromDate("${formatDateWithMonthName(controller.selectedDate.value)}") : AppLocalizations.of(context)!.fromTheFirstDayOfPregnancy,
                 style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
               ),
               CustomDougnutChart(

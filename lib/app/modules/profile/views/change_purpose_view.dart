@@ -8,6 +8,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/controllers/profile_controller.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -64,6 +65,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                             firstDay: DateTime.now().subtract(Duration(days: 280)),
                             lastDay: DateTime.now(),
                             startingDayOfWeek: StartingDayOfWeek.monday,
+                            locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
                             onDaySelected: (selectedDay, focusedDay) {
                               controller.setSelectedDate(selectedDay);
                               controller.setFocusedDate(focusedDay);
@@ -201,7 +203,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                 style: CustomTextStyle.medium(15),
                               ),
                               Text(
-                                "${DateFormat('yyyy-MM-dd').format(controller.selectedDate ?? DateTime.now())}",
+                                "${formatDate(controller.selectedDate ?? DateTime.now())}",
                                 style: CustomTextStyle.extraBold(15, height: 1.5),
                               )
                             ],
@@ -219,7 +221,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                     children: [
                       CustomButton(
                         text: AppLocalizations.of(context)!.startPregnancy,
-                        onPressed: () => controller.startPregnancy(),
+                        onPressed: () => controller.startPregnancy(context),
                       ),
                     ],
                   ),
@@ -275,6 +277,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                             firstDay: DateTime.parse(controller.currentlyPregnantData.value.hariPertamaHaidTerakhir ?? DateTime.now().toString()),
                             lastDay: DateTime.now(),
                             startingDayOfWeek: StartingDayOfWeek.monday,
+                            locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
                             onDaySelected: (selectedDay, focusedDay) {
                               controller.setSelectedDate(selectedDay);
                               controller.setFocusedDate(focusedDay);
@@ -395,7 +398,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                 style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                               ),
                               Text(
-                                "${DateFormat('yyyy-MM-dd').format(controller.selectedDate ?? DateTime.now())}",
+                                "${formatDate(controller.selectedDate ?? DateTime.now())}",
                                 style: CustomTextStyle.bold(15, height: 1.5),
                               )
                             ],
@@ -524,7 +527,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                                         Expanded(
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              controller.deletePregnancy();
+                                              controller.deletePregnancy(context);
                                             },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: AppColors.primary,
@@ -554,7 +557,7 @@ class ChangePurposeView extends GetView<ProfileController> {
                           () => CustomButton(
                             text: AppLocalizations.of(context)!.endPregnancy,
                             onPressed: () {
-                              (controller.gender.value == "") ? null : controller.endPregnancy();
+                              (controller.gender.value == "") ? null : controller.endPregnancy(context);
                             },
                             backgroundColor: (controller.gender.value == "") ? Colors.grey : AppColors.primary,
                           ),

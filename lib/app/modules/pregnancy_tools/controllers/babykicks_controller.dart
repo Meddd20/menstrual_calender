@@ -13,6 +13,7 @@ import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BabykicksController extends GetxController {
   final storageService = StorageService();
@@ -53,7 +54,7 @@ class BabykicksController extends GetxController {
     update();
   }
 
-  Future<void> addKickCounter() async {
+  Future<void> addKickCounter(context) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
     var uuid = Uuid();
@@ -63,7 +64,7 @@ class BabykicksController extends GetxController {
       await _pregnancyLogService.addKicksCounter(id, DateTime.now().toString());
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add contraction. Please try again later!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.babyKickAddFailed));
     }
 
     await fetchAllBabyKicks();
@@ -97,16 +98,16 @@ class BabykicksController extends GetxController {
     await _syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> deleteKickCounter(String id) async {
+  Future<void> deleteKickCounter(context, String id) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
 
     try {
       await _pregnancyLogService.deleteKicksCounter(id);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Kick counter deleted successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.kickDataDeletedSuccess));
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to delete kick counter. Please try again later!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.kickDataDeleteFailed));
     }
 
     await fetchAllBabyKicks();
@@ -135,5 +136,12 @@ class BabykicksController extends GetxController {
     );
 
     await _syncDataRepository.addSyncLogData(syncLog);
+  }
+
+  String? isLastDateIsInWithin2Hours(String dateTimeString) {
+    final now = DateTime.now();
+    final dateTime = DateTime.parse(dateTimeString);
+    final difference = now.difference(dateTime).inSeconds;
+    return difference > 7200 ? '-' : null;
   }
 }

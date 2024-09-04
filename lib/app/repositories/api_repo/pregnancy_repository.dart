@@ -4,7 +4,7 @@ import 'package:periodnpregnancycalender/app/modules/profile/views/unauthorized_
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:intl/intl.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class PregnancyRepository {
   final ApiService apiService;
@@ -14,7 +14,7 @@ class PregnancyRepository {
 
   Future<Map<String, dynamic>> pregnancyBegin(String firstDayLastMenstruation, String? email_regis) async {
     DateTime parsedDate = DateTime.parse(firstDayLastMenstruation);
-    String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+    String formattedDate = formatDate(parsedDate);
 
     http.Response response = await apiService.pregnancyBegin(formattedDate, email_regis);
 
@@ -32,7 +32,7 @@ class PregnancyRepository {
 
   Future<void> pregnancyEnded(String pregnancyEndDate, String gender) async {
     DateTime parsedDate = DateTime.parse(pregnancyEndDate);
-    String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+    String formattedDate = formatDate(parsedDate);
 
     http.Response response = await apiService.pregnancyEnded(formattedDate, gender);
 

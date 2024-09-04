@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:d_chart/d_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
@@ -8,6 +7,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_add_period_bo
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/period_cycle_controller.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -61,13 +61,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                           buttonCaption: AppLocalizations.of(context)!.addPeriod,
                           startDate: Obx(
                             () => Text(
-                              "${DateFormat('yyyy-MM-dd').format(controller.startDate.value ?? DateTime.now())}",
+                              "${formatDate(controller.startDate.value ?? DateTime.now())}",
                               style: CustomTextStyle.extraBold(15, height: 1.5),
                             ),
                           ),
                           endDate: Obx(
                             () => Text(
-                              "${DateFormat('yyyy-MM-dd').format(controller.endDate.value ?? DateTime.now())}",
+                              "${formatDate(controller.endDate.value ?? DateTime.now())}",
                               style: CustomTextStyle.extraBold(15, height: 1.5),
                             ),
                           ),
@@ -132,14 +132,14 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                         series: <CartesianSeries>[
                           StackedColumnSeries<PeriodChart, String>(
                             dataSource: periodHistoryList?.periodChart ?? [],
-                            xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}').add(Duration(days: data.periodCycle!)))}',
+                            xValueMapper: (PeriodChart data, _) => '${formatDateToShortMonthDay(data.startDate.toString())} - ${formatDateToShortMonthDay(DateTime.parse('${data.endDate}').add(Duration(days: data.periodCycle!)).toString())}',
                             yValueMapper: (PeriodChart data, _) => data.periodDuration?.toDouble() ?? 0.0,
                             name: AppLocalizations.of(context)!.periodDuration,
                             color: AppColors.primary,
                           ),
                           StackedColumnSeries<PeriodChart, String>(
                             dataSource: periodHistoryList?.periodChart ?? [],
-                            xValueMapper: (PeriodChart data, _) => '${DateFormat('MMM dd').format(DateTime.parse('${data.startDate}'))} - ${DateFormat('MMM dd').format(DateTime.parse('${data.endDate}').add(Duration(days: data.periodCycle!)))}',
+                            xValueMapper: (PeriodChart data, _) => '${formatDateToShortMonthDay(data.startDate.toString())} - ${formatDateToShortMonthDay(DateTime.parse('${data.endDate}').add(Duration(days: data.periodCycle!)).toString())}',
                             yValueMapper: (PeriodChart data, _) => (data.periodCycle?.toDouble() ?? 0.0),
                             name: AppLocalizations.of(context)!.periodCycle,
                             color: AppColors.highlight,
@@ -192,7 +192,6 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                   return Wrap(
                                     children: [
                                       AddPeriodBottomSheetWidget(
-                                        
                                         closeModalBottomSheet: () {
                                           controller.cancelEdit();
                                           Get.back();
@@ -201,13 +200,13 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                         buttonCaption: AppLocalizations.of(context)!.editPeriod,
                                         startDate: Obx(
                                           () => Text(
-                                            "${DateFormat('yyyy-MM-dd').format(controller.startDate.value!)}",
+                                            "${formatDate(controller.startDate.value!)}",
                                             style: CustomTextStyle.extraBold(15, height: 1.5),
                                           ),
                                         ),
                                         endDate: Obx(
                                           () => Text(
-                                            "${DateFormat('yyyy-MM-dd').format(controller.endDate.value!)}",
+                                            "${formatDate(controller.endDate.value!)}",
                                             style: CustomTextStyle.extraBold(15, height: 1.5),
                                           ),
                                         ),
@@ -238,7 +237,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                           },
                           child: ListTile(
                             title: Text(
-                              '${actualPeriodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${actualPeriodHistory.haidAwal}')) : "N/A"} - ${actualPeriodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${actualPeriodHistory.haidAkhir}')) : "N/A"}',
+                              '${actualPeriodHistory != null ? formatDateWithMonthName(DateTime.parse('${actualPeriodHistory.haidAwal}')) : "N/A"} - ${actualPeriodHistory != null ? formatDateWithMonthName(DateTime.parse('${actualPeriodHistory.haidAkhir}')) : "N/A"}',
                               style: CustomTextStyle.medium(14, height: 2.0),
                             ),
                             subtitle: Column(
@@ -283,7 +282,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '${periodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${periodHistory.haidAwal}')) : "N/A"} - ${periodHistory != null ? DateFormat('MMM dd, yyyy').format(DateTime.parse('${periodHistory.haidAkhir}')) : "N/A"}',
+                                '${periodHistory != null ? formatDateWithMonthName(DateTime.parse('${periodHistory.haidAwal}')) : "N/A"} - ${periodHistory != null ? formatDateWithMonthName(DateTime.parse('${periodHistory.haidAkhir}')) : "N/A"}',
                                 style: CustomTextStyle.medium(14, height: 2.0),
                               ),
                             ],

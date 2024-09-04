@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
@@ -15,6 +14,7 @@ import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DetailprofileController extends GetxController {
   late User? userProfile;
@@ -47,7 +47,7 @@ class DetailprofileController extends GetxController {
     originalNama = userProfile!.nama!;
     if (userProfile?.tanggalLahir != null) {
       originalBirthday = userProfile!.tanggalLahir!;
-      birthdayC.text = DateFormat('yyyy/MM/dd').format(DateTime.parse(userProfile!.tanggalLahir!));
+      birthdayC.text = formatYearMonthDay(userProfile!.tanggalLahir!);
       userBirthday.value = DateTime.parse(originalBirthday);
     }
 
@@ -83,10 +83,10 @@ class DetailprofileController extends GetxController {
     if (namaC.text != originalNama || birthdayC.text != originalBirthday) {
       try {
         await _profileService.updateProfile(namaC.text, formatDate(userBirthday.value!));
-        Get.showSnackbar(Ui.SuccessSnackBar(message: 'Profile edited successfully!'));
+        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.profileEditedSuccess));
         localSuccess = true;
       } catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to edit profile. Please try again!'));
+        Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.profileEditFailed));
       }
 
       Get.offAllNamed(Routes.NAVIGATION_MENU);

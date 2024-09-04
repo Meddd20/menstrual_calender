@@ -1,9 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-
 import 'package:periodnpregnancycalender/app/models/detail_article_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/article_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
@@ -174,15 +171,6 @@ class InsightDetailController extends GetxController {
     } catch (e) {
       print("Error fetching articles: $e");
     }
-  }
-
-  String formatDate(String? inputDate) {
-    if (inputDate != null) {
-      DateTime date = DateTime.parse(inputDate);
-      String formattedDate = DateFormat('EEEE, d MMMM yyyy HH:mm').format(date);
-      return formattedDate;
-    }
-    return '';
   }
 
   String formatDateTime(String dateTime) {

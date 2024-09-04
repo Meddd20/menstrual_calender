@@ -16,13 +16,13 @@ import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
-import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/profile_service.dart';
 import 'package:periodnpregnancycalender/app/services/sync_data_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -168,7 +168,7 @@ class ProfileController extends GetxController {
     return user;
   }
 
-  void startPregnancy() async {
+  void startPregnancy(context) async {
     bool remoteSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
 
@@ -194,9 +194,9 @@ class ProfileController extends GetxController {
 
       storageService.storeIsPregnant("1");
       Get.offAllNamed(Routes.NAVIGATION_MENU);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Pregnancy started successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyStartedSuccess));
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to begin pregnancy. Please try again!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyStartFailed));
     }
   }
 
@@ -217,16 +217,16 @@ class ProfileController extends GetxController {
     await syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> endPregnancy() async {
+  Future<void> endPregnancy(context) async {
     bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
 
     try {
       await _pregnancyHistoryService.endPregnancy(selectedDate!, gender.value);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Pregnancy ended successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyEndedSuccess));
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to end pregnancy. Please try again!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyEndFailed));
     }
 
     storageService.storeIsPregnant("0");
@@ -262,16 +262,16 @@ class ProfileController extends GetxController {
     await syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> deletePregnancy() async {
+  Future<void> deletePregnancy(context) async {
     bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
 
     try {
       await _pregnancyHistoryService.deletePregnancy();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Pregnancy deleted successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyDeletedSuccess));
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to delete pregnancy. Please try again!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyDeleteFailed));
     }
 
     storageService.storeIsPregnant("0");
@@ -350,15 +350,13 @@ class ProfileController extends GetxController {
     currentlyPregnantData.value = result!;
     weeklyData.assignAll(currentlyPregnantData.value.weeklyData!);
 
-    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-
     for (var entry in weeklyData) {
       if (entry.tanggalAwalMinggu != null) {
-        DateTime parsedDate = dateFormat.parse(entry.tanggalAwalMinggu!);
+        DateTime parsedDate = formatDateStr(entry.tanggalAwalMinggu!);
         tanggalAwalMinggu.add(parsedDate);
       }
       if (entry.tanggalAkhirMinggu != null) {
-        DateTime parsedDate = dateFormat.parse(entry.tanggalAkhirMinggu!);
+        DateTime parsedDate = formatDateStr(entry.tanggalAkhirMinggu!);
         tanggalAkhirMinggu.add(parsedDate);
       }
     }

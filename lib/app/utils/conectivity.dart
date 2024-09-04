@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
 
 class CheckConnectivity {
   Future<bool> isConnectedToInternet() async {
@@ -13,7 +14,7 @@ class CheckConnectivity {
 
   Future<bool> _hasInternetAccess() async {
     try {
-      final result = await InternetAddress.lookup('example.com');
+      final result = await InternetAddress.lookup(ApiEndPoints.apiUrl);
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         return true;
       } else {

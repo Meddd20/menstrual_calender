@@ -23,11 +23,11 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, String>> tools = [
-      {'name': 'Pregnancy Log', 'icon': 'assets/icon/maternity.png'},
+      {'name': AppLocalizations.of(context)!.pregnancyLog, 'icon': 'assets/icon/maternity.png'},
       {'name': AppLocalizations.of(context)!.weightGainTracker, 'icon': 'assets/icon/weight-tracker.png'},
-      {'name': 'Contraction Timer', 'icon': 'assets/icon/stopwatch.png'},
-      {'name': 'Blood Pressure', 'icon': 'assets/icon/blood-pressure.png'},
-      {'name': 'Baby Kicks', 'icon': 'assets/icon/baby-kick.png'},
+      {'name': AppLocalizations.of(context)!.contractionTimer, 'icon': 'assets/icon/stopwatch.png'},
+      {'name': AppLocalizations.of(context)!.bloodPressure, 'icon': 'assets/icon/blood-pressure.png'},
+      {'name': AppLocalizations.of(context)!.babyKicks, 'icon': 'assets/icon/baby-kick.png'},
       {'name': AppLocalizations.of(context)!.reminder, 'icon': 'assets/icon/alarm.png'},
       {'name': AppLocalizations.of(context)!.fetalDevelopment, 'icon': 'assets/icon/fetal.png'},
       {'name': AppLocalizations.of(context)!.vaccine, 'icon': 'assets/icon/vaccine.png'},

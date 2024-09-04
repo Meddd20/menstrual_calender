@@ -50,13 +50,7 @@ class PregnancyLogService {
           updatedAt: DateTime.now().toString(),
         );
 
-        print("not finalized update ${updatedPregnancyLog.toJson()}");
-        print("existingpregnancy log${existingPregnancyLog.toJson()}");
-
         await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
-
-        PregnancyDailyLog? newPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
-        print("updated pregnancy log${newPregnancyLog?.toJson()}");
       } else {
         PregnancyDailyLog newPregnancyLog = PregnancyDailyLog(
           userId: userId,

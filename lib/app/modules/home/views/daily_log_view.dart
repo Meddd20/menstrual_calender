@@ -13,6 +13,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_filter_chip.d
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/daily_log_controller.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -34,7 +35,7 @@ class DailyLogView extends GetView<DailyLogController> {
           padding: const EdgeInsets.all(15.0),
           child: Obx(
             () => Text(
-              "Log on ${DateFormat('dd, MMMM yyy').format(controller.selectedDate)}",
+              "Log on ${formatFullDate(controller.selectedDate)}",
               style: CustomTextStyle.extraBold(20),
             ),
           ),
@@ -47,7 +48,7 @@ class DailyLogView extends GetView<DailyLogController> {
           TextButton(
             onPressed: () {
               controller.resetLog();
-              controller.saveLog();
+              controller.saveLog(context);
             },
             child: Text(
               'Reset',
@@ -63,7 +64,7 @@ class DailyLogView extends GetView<DailyLogController> {
           controller.fetchLog(DateTime.now());
         },
         child: Icon(Icons.today_outlined),
-        tooltip: "Back to current date",
+        tooltip: AppLocalizations.of(context)!.backToCurrentDate,
       ),
       body: FutureBuilder<DataHarian?>(
         future: controller.futureDataHarian,
@@ -92,6 +93,7 @@ class DailyLogView extends GetView<DailyLogController> {
                                 lastDay: DateTime.now(),
                                 calendarFormat: CalendarFormat.week,
                                 startingDayOfWeek: StartingDayOfWeek.monday,
+                                locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
                                 onDaySelected: (selectedDay, focusedDay) {
                                   controller.setSelectedDate(selectedDay);
                                   controller.setFocusedDate(focusedDay);
@@ -1103,7 +1105,7 @@ class DailyLogView extends GetView<DailyLogController> {
                         child: CustomButton(
                           text: AppLocalizations.of(context)!.addDailyLog,
                           onPressed: () {
-                            controller.saveLog();
+                            controller.saveLog(context);
                           },
                         ),
                       ),

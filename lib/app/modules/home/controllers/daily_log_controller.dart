@@ -517,7 +517,7 @@ class DailyLogController extends GetxController {
     return physicalActivityData;
   }
 
-  Future<void> saveLog() async {
+  Future<void> saveLog(context) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
     String formattedDate = formatDate(selectedDate);
@@ -536,14 +536,14 @@ class DailyLogController extends GetxController {
         getWeight().toString(),
         getNotes(),
       );
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Daily log saved successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.dailyLogSavedSuccess));
 
       localSuccess = true;
       isChanged.value = false;
       fetchLog(selectedDate);
       update();
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to save log. Please try again!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.dailyLogSaveFailed));
     }
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
@@ -626,7 +626,7 @@ class DailyLogController extends GetxController {
       notes.value = "";
       isChanged.value = false;
 
-      await saveLog();
+      await saveLog(Get.context);
       update();
     } catch (e) {
       print("Error resetting log: $e");

@@ -5,14 +5,13 @@ import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
-import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class ShettlesPredDetailView extends GetView {
   const ShettlesPredDetailView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    HomeMenstruationController homeController = Get.put(HomeMenstruationController());
     final argument = Get.arguments as ShettlesGenderPrediction;
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +50,7 @@ class ShettlesPredDetailView extends GetView {
                         style: CustomTextStyle.regular(16, height: 1.75),
                       ),
                       TextSpan(
-                        text: AppLocalizations.of(context)!.shettlesPredictionMethod3("${homeController.formatDate(argument.boyStartDate.toString())}", "${homeController.formatDate(argument.boyEndDate.toString())}"),
+                        text: AppLocalizations.of(context)!.shettlesPredictionMethod3("${formatDateToShortMonthDay(argument.boyStartDate.toString())}", "${formatDateToShortMonthDay(argument.boyEndDate.toString())}"),
                         style: CustomTextStyle.bold(16, height: 1.75),
                       ),
                       TextSpan(
@@ -59,7 +58,7 @@ class ShettlesPredDetailView extends GetView {
                         style: CustomTextStyle.regular(16, height: 1.75),
                       ),
                       TextSpan(
-                        text: AppLocalizations.of(context)!.shettlesPredictionMethod5("${homeController.formatDate(argument.girlStartDate.toString())}", "${homeController.formatDate(argument.girlEndDate.toString())}"),
+                        text: AppLocalizations.of(context)!.shettlesPredictionMethod5("${formatDateToShortMonthDay(argument.girlStartDate.toString())}", "${formatDateToShortMonthDay(argument.girlEndDate.toString())}"),
                         style: CustomTextStyle.bold(16, height: 1.75),
                       ),
                     ],

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart' as Pregnancy;
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
-import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_tracker_view.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
@@ -21,6 +20,7 @@ import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WeightTrackerController extends GetxController {
   final ApiService apiService = ApiService();
@@ -206,15 +206,13 @@ class WeightTrackerController extends GetxController {
     currentlyPregnantData.value = result!;
     weeklyData.assignAll(currentlyPregnantData.value.weeklyData!);
 
-    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-
     for (var entry in weeklyData) {
       if (entry.tanggalAwalMinggu != null) {
-        DateTime parsedDate = dateFormat.parse(entry.tanggalAwalMinggu!);
+        DateTime parsedDate = formatDateStr(entry.tanggalAwalMinggu!);
         tanggalAwalMinggu.add(parsedDate);
       }
       if (entry.tanggalAkhirMinggu != null) {
-        DateTime parsedDate = dateFormat.parse(entry.tanggalAkhirMinggu!);
+        DateTime parsedDate = formatDateStr(entry.tanggalAkhirMinggu!);
         tanggalAkhirMinggu.add(parsedDate);
       }
     }
@@ -229,11 +227,11 @@ class WeightTrackerController extends GetxController {
 
     try {
       await _weightHistoryService.initWeightGain(getHeight(), getWeight(), (isTwin.value == false) ? 0 : 1);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Weight gain initialized successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.weightGainInitializedSuccess));
       localSuccess = true;
     } catch (e) {
       await _syncInitializedWeightData();
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to initialize weight gain. Please try again!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.weightGainInitializeFailed));
     }
 
     await fetchWeightGainIndex();
@@ -280,10 +278,10 @@ class WeightTrackerController extends GetxController {
     if (selectedDate != null) {
       try {
         await _weightHistoryService.addWeeklyWeightGain(DateTime.parse(formatDate(selectedDate!)), getWeight(), selectedWeek);
-        Get.showSnackbar(Ui.SuccessSnackBar(message: 'Weight gain added successfully!'));
+        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.weightGainAddedSuccess));
         localSuccess = true;
       } catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add weight gain. Please try again!'));
+        Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.weightGainAddFailed));
       }
 
       await fetchWeightGainIndex();
@@ -332,10 +330,10 @@ class WeightTrackerController extends GetxController {
 
     try {
       await _weightHistoryService.deleteWeeklyWeightGain(deletedWeeklyWeightDate);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Weight gain deleted successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.weightGainDeletedSuccess));
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to delete weight gain. Please try again!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.weightGainDeleteFailed));
     }
 
     await fetchWeightGainIndex();

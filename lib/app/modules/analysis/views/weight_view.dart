@@ -8,6 +8,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/weight_controller.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -57,7 +58,7 @@ class WeightView extends GetView<WeightController> {
               ),
               Obx(
                 () => Text(
-                  AppLocalizations.of(context)!.entriesFromDate("${controller.formatDate(controller.selectedDate.value)}"),
+                  AppLocalizations.of(context)!.entriesFromDate("${formatDateWithMonthName(controller.selectedDate.value)}"),
                   style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
                 ),
               ),

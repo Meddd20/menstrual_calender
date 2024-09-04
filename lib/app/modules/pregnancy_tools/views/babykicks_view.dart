@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/babykicks_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class BabykicksView extends GetView<BabykicksController> {
   const BabykicksView({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class BabykicksView extends GetView<BabykicksController> {
         title: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Text(
-            "Baby Kicks",
+            AppLocalizations.of(context)!.babyKicks,
             style: CustomTextStyle.extraBold(20),
           ),
         ),
@@ -37,7 +38,7 @@ class BabykicksView extends GetView<BabykicksController> {
             children: [
               SizedBox(height: 20),
               InkWell(
-                onTap: () => controller.addKickCounter(),
+                onTap: () => controller.addKickCounter(context),
                 customBorder: CircleBorder(),
                 child: Ink(
                   width: Get.width,
@@ -61,6 +62,7 @@ class BabykicksView extends GetView<BabykicksController> {
                 child: controller.allKicks.isNotEmpty
                     ? Container(
                         width: Get.width,
+                        height: 100,
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
@@ -71,13 +73,17 @@ class BabykicksView extends GetView<BabykicksController> {
                           children: [
                             Column(
                               children: [
-                                Text(
-                                  "Date",
-                                  style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.dates,
+                                      style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(height: 7),
                                 Text(
-                                  DateFormat('dd.MM').format(DateTime.parse(controller.allKicks.last.datetimeStart)),
+                                  controller.isLastDateIsInWithin2Hours(controller.allKicks.last.datetimeStart) ?? formatShortDate(controller.allKicks.last.datetimeStart),
                                   style: CustomTextStyle.semiBold(14, height: 1.5),
                                 ),
                               ],
@@ -85,12 +91,12 @@ class BabykicksView extends GetView<BabykicksController> {
                             Column(
                               children: [
                                 Text(
-                                  "First Kick",
+                                  AppLocalizations.of(context)!.firstKick,
                                   style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                 ),
                                 SizedBox(height: 7),
                                 Text(
-                                  DateFormat('HH:mm:ss').format(DateTime.parse(controller.allKicks.first.datetimeStart)),
+                                  controller.isLastDateIsInWithin2Hours(controller.allKicks.last.datetimeStart) ?? formatHourMinuteSecond(controller.allKicks.first.datetimeStart),
                                   style: CustomTextStyle.semiBold(14, height: 1.5),
                                 ),
                               ],
@@ -98,12 +104,12 @@ class BabykicksView extends GetView<BabykicksController> {
                             Column(
                               children: [
                                 Text(
-                                  "Last Kick",
+                                  AppLocalizations.of(context)!.lastKick,
                                   style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                 ),
                                 SizedBox(height: 7),
                                 Text(
-                                  DateFormat('HH:mm:ss').format(DateTime.parse(controller.allKicks.first.datetimeEnd)),
+                                  controller.isLastDateIsInWithin2Hours(controller.allKicks.last.datetimeStart) ?? formatHourMinuteSecond(controller.allKicks.first.datetimeEnd),
                                   style: CustomTextStyle.semiBold(14, height: 1.5),
                                 ),
                               ],
@@ -111,12 +117,12 @@ class BabykicksView extends GetView<BabykicksController> {
                             Column(
                               children: [
                                 Text(
-                                  "Kicks Count",
+                                  AppLocalizations.of(context)!.kickCount,
                                   style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                 ),
                                 SizedBox(height: 7),
                                 Text(
-                                  controller.allKicks.first.totalKicks.toString(),
+                                  controller.isLastDateIsInWithin2Hours(controller.allKicks.last.datetimeStart) ?? controller.allKicks.first.totalKicks.toString(),
                                   style: CustomTextStyle.semiBold(14, height: 1.5),
                                 ),
                               ],
@@ -126,7 +132,7 @@ class BabykicksView extends GetView<BabykicksController> {
                       )
                     : Center(
                         child: Text(
-                          "No kicks recorded yet",
+                          AppLocalizations.of(context)!.noKicksRecordedYet,
                           style: CustomTextStyle.semiBold(14, height: 1.5),
                         ),
                       ),
@@ -147,8 +153,9 @@ class BabykicksView extends GetView<BabykicksController> {
                       label: Expanded(
                         child: Center(
                           child: Text(
-                            "Date",
+                            AppLocalizations.of(context)!.dates,
                             textAlign: TextAlign.center,
+                            maxLines: 2,
                           ),
                         ),
                       ),
@@ -157,8 +164,9 @@ class BabykicksView extends GetView<BabykicksController> {
                       label: Expanded(
                         child: Center(
                           child: Text(
-                            "First Kick",
+                            AppLocalizations.of(context)!.firstKick,
                             textAlign: TextAlign.center,
+                            maxLines: 2,
                           ),
                         ),
                       ),
@@ -167,8 +175,9 @@ class BabykicksView extends GetView<BabykicksController> {
                       label: Expanded(
                         child: Center(
                           child: Text(
-                            "Last Kick",
+                            AppLocalizations.of(context)!.lastKick,
                             textAlign: TextAlign.center,
+                            maxLines: 2,
                           ),
                         ),
                       ),
@@ -177,8 +186,9 @@ class BabykicksView extends GetView<BabykicksController> {
                       label: Expanded(
                         child: Center(
                           child: Text(
-                            "Kick\nCount",
+                            AppLocalizations.of(context)!.kicksCount,
                             textAlign: TextAlign.center,
+                            maxLines: 2,
                           ),
                         ),
                       ),
@@ -195,7 +205,7 @@ class BabykicksView extends GetView<BabykicksController> {
                         DataCell(
                           Center(
                             child: Text(
-                              DateFormat('dd.MM').format(DateTime.parse(kick.datetimeStart)),
+                              formatShortDate(kick.datetimeStart),
                               textAlign: TextAlign.center,
                               maxLines: 2,
                             ),
@@ -204,7 +214,7 @@ class BabykicksView extends GetView<BabykicksController> {
                         DataCell(
                           Center(
                             child: Text(
-                              DateFormat('HH:mm:ss').format(DateTime.parse(kick.datetimeStart)),
+                              formatHourMinuteSecond(kick.datetimeStart),
                               textAlign: TextAlign.center,
                               maxLines: 2,
                             ),
@@ -213,7 +223,7 @@ class BabykicksView extends GetView<BabykicksController> {
                         DataCell(
                           Center(
                             child: Text(
-                              DateFormat('HH:mm:ss').format(DateTime.parse(kick.datetimeEnd)),
+                              formatHourMinuteSecond(kick.datetimeEnd),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -231,7 +241,7 @@ class BabykicksView extends GetView<BabykicksController> {
                             child: IconButton(
                               icon: Icon(Icons.delete),
                               color: Colors.black.withOpacity(0.4),
-                              onPressed: () => controller.deleteKickCounter(kick.id!),
+                              onPressed: () => controller.deleteKickCounter(context, kick.id!),
                             ),
                           ),
                         ),

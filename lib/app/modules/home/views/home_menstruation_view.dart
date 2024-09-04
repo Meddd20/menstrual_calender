@@ -16,6 +16,7 @@ import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.da
 import 'package:periodnpregnancycalender/app/modules/home/views/daily_log_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/shettles_pred_detail_view.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../controllers/home_menstruation_controller.dart';
@@ -78,6 +79,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                   controller.setFormat(newFormat);
                                 },
                                 startingDayOfWeek: StartingDayOfWeek.monday,
+                                locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
                                 onDaySelected: (selectedDay, focusedDay) {
                                   controller.setSelectedDate(selectedDay);
                                   controller.setFocusedDate(focusedDay);
@@ -346,7 +348,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                           )),
                                       Obx(
                                         () => Text(
-                                          "${DateFormat('MMMM, dd yyyy').format(controller.selectedDate!)}",
+                                          "${formatMonthDayYear(controller.selectedDate!.toString())}",
                                           style: CustomTextStyle.medium(15),
                                         ),
                                       ),
@@ -407,7 +409,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       primaryColor: AppColors.primary,
                                       daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextMenstruation}'),
                                       predictionType: AppLocalizations.of(context)!.period,
-                                      datePrediction: "${controller.formatDate(controller.eventDatas.value.nextMenstruationStart)} - ${controller.formatDate(controller.eventDatas.value.nextMenstruationEnd)}",
+                                      datePrediction: "${formatDateToShortMonthDay(controller.eventDatas.value.nextMenstruationStart ?? "")} - ${formatDateToShortMonthDay(controller.eventDatas.value.nextMenstruationEnd ?? "")}",
                                       iconPath: 'assets/icon/blood.png',
                                     ),
                                   ),
@@ -418,7 +420,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       primaryColor: Color(0xFFFD9414),
                                       daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextFertile}'),
                                       predictionType: AppLocalizations.of(context)!.fertileDays,
-                                      datePrediction: '${controller.formatDate(controller.eventDatas.value.nextFertileStart)} - ${controller.formatDate(controller.eventDatas.value.nextFertileEnd)}',
+                                      datePrediction: '${formatDateToShortMonthDay(controller.eventDatas.value.nextFertileStart ?? "")} - ${formatDateToShortMonthDay(controller.eventDatas.value.nextFertileEnd ?? "")}',
                                       iconPath: 'assets/icon/sunflower.png',
                                     ),
                                   ),
@@ -434,7 +436,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       primaryColor: Color.fromARGB(255, 64, 176, 184),
                                       daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextOvulation}'),
                                       predictionType: AppLocalizations.of(context)!.ovulation,
-                                      datePrediction: '${controller.formatDate(controller.eventDatas.value.nextOvulation)}',
+                                      datePrediction: '${formatDateToShortMonthDay(controller.eventDatas.value.nextOvulation ?? "")}',
                                       iconPath: 'assets/icon/ovulation.png',
                                     ),
                                   ),
@@ -445,7 +447,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       primaryColor: Color.fromARGB(255, 111, 200, 161),
                                       daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextLuteal}'),
                                       predictionType: AppLocalizations.of(context)!.safeDays,
-                                      datePrediction: '${controller.formatDate(controller.eventDatas.value.nextLutealStart)} - ${controller.formatDate(controller.eventDatas.value.nextLutealEnd)}',
+                                      datePrediction: '${formatDateToShortMonthDay(controller.eventDatas.value.nextLutealStart ?? "")} - ${formatDateToShortMonthDay(controller.eventDatas.value.nextLutealEnd ?? "")}',
                                       iconPath: 'assets/icon/shield.png',
                                     ),
                                   )
@@ -844,14 +846,14 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                     style: CustomTextStyle.medium(15, height: 1.5),
                                                   ),
                                                   TextSpan(
-                                                    text: AppLocalizations.of(context)!.likelyConceiveMale('${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate.toString())}', '${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate.toString())}'),
+                                                    text: AppLocalizations.of(context)!.likelyConceiveMale('${formatDateToShortMonthDay(controller.eventDatas.value.shettlesGenderPrediction?.boyStartDate.toString() ?? "")}', '${formatDateToShortMonthDay(controller.eventDatas.value.shettlesGenderPrediction?.boyEndDate.toString() ?? "")}'),
                                                     style: CustomTextStyle.extraBold(16, height: 1.5),
                                                   ),
                                                   TextSpan(
                                                     text: AppLocalizations.of(context)!.likelyConceiveFemale,
                                                   ),
                                                   TextSpan(
-                                                    text: AppLocalizations.of(context)!.femalePrediction('${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate.toString())}', '${controller.formatDate(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate.toString())}'),
+                                                    text: AppLocalizations.of(context)!.femalePrediction('${formatDateToShortMonthDay(controller.eventDatas.value.shettlesGenderPrediction?.girlStartDate.toString() ?? "")}', '${formatDateToShortMonthDay(controller.eventDatas.value.shettlesGenderPrediction?.girlEndDate.toString() ?? "")}'),
                                                     style: CustomTextStyle.extraBold(16, height: 1.5),
                                                   ),
                                                 ],
@@ -912,18 +914,18 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                             buttonCaption: AppLocalizations.of(context)!.addPeriod,
                             startDate: Obx(
                               () => Text(
-                                "${DateFormat('yyyy-MM-dd').format(controller.startDate.value ?? DateTime.now())}",
+                                "${formatDate(controller.startDate.value ?? DateTime.now())}",
                                 style: CustomTextStyle.extraBold(15, height: 1.5),
                               ),
                             ),
                             endDate: Obx(
                               () => Text(
-                                "${DateFormat('yyyy-MM-dd').format(controller.endDate.value ?? DateTime.now())}",
+                                "${formatDate(controller.endDate.value ?? DateTime.now())}",
                                 style: CustomTextStyle.extraBold(15, height: 1.5),
                               ),
                             ),
                             addPeriodOnPressedButton: () async {
-                              controller.addPeriod(controller.data?.avgPeriodDuration ?? 7, controller.data?.avgPeriodCycle ?? 28);
+                              controller.addPeriod(context, controller.data?.avgPeriodDuration ?? 7, controller.data?.avgPeriodCycle ?? 28);
                             },
                             calenderValue: [controller.startDate.value, controller.endDate.value],
                             calenderOnValueChanged: (dates) {

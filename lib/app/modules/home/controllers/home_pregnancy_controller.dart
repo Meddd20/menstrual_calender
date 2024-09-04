@@ -11,11 +11,12 @@ import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_histor
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePregnancyController extends GetxController {
   final ApiService apiService = ApiService();
@@ -87,18 +88,18 @@ class HomePregnancyController extends GetxController {
     update();
   }
 
-  Future<void> editPregnancyStartDate() async {
+  Future<void> editPregnancyStartDate(context) async {
     bool localSuccess = false;
 
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
-    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate!);
+    String formattedDate = formatDate(selectedDate!);
 
     try {
       await _pregnancyHistoryService.beginPregnancy(selectedDate!, null);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Reminder added successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.firstDayOfLastPeriodEditedSuccess));
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add reminder. Please try again!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.firstDayOfLastPeriodEditFailed));
     }
 
     Get.offAll(() => NavigationMenuView());
@@ -143,11 +144,5 @@ class HomePregnancyController extends GetxController {
     if (currentPregnancyWeekIndex.value > 40) {
       currentPregnancyWeekIndex.value = 40;
     }
-  }
-
-  String? formatDate(String dateString) {
-    DateTime date = DateTime.parse(dateString);
-    DateFormat formatter = DateFormat('MMMM dd');
-    return formatter.format(date);
   }
 }

@@ -90,33 +90,63 @@ class InsightView extends GetView<InsightController> {
                       ),
                     );
                   } else if (controller.articles.isEmpty) {
-                    return SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(20.w, 100.h, 20.w, 0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/image/no-data.png',
-                              width: 200.w,
-                              height: 200.h,
-                            ),
-                            SizedBox(height: 20),
-                            Text(
-                              AppLocalizations.of(context)!.notFound,
-                              style: CustomTextStyle.extraBold(20),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              AppLocalizations.of(context)!.notFoundDesc,
-                              style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                    if (controller.isConnected.value) {
+                      return SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(20.w, 100.h, 20.w, 0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/image/no-data.png',
+                                width: 200.w,
+                                height: 200.h,
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                AppLocalizations.of(context)!.notFound,
+                                style: CustomTextStyle.extraBold(20),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                AppLocalizations.of(context)!.notFoundDesc,
+                                style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      return SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(20.w, 100.h, 20.w, 0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/image/no-signal.png',
+                                width: 200.w,
+                                height: 200.h,
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                AppLocalizations.of(context)!.noInternetHeader,
+                                style: CustomTextStyle.extraBold(20),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                AppLocalizations.of(context)!.noInternetBody,
+                                style: CustomTextStyle.medium(16, color: AppColors.black.withOpacity(0.6), height: 1.5),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
                   } else {
                     return SliverPadding(
                       padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),

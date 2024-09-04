@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
@@ -14,9 +13,11 @@ import 'package:periodnpregnancycalender/app/services/local_notification_service
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReminderController extends GetxController {
   final ApiService apiService = ApiService();
@@ -58,7 +59,7 @@ class ReminderController extends GetxController {
     final selectedDate = dateSelected.value;
 
     if (selectedDate != null) {
-      return DateFormat('yyyy-MM-dd').format(selectedDate);
+      return formatDate(selectedDate);
     }
 
     return null;
@@ -68,7 +69,7 @@ class ReminderController extends GetxController {
     final time = timeSelected.value;
 
     if (time != null) {
-      return DateFormat('HH:mm').format(DateTime(
+      return formatHourMinute(DateTime(
         0,
         0,
         0,
@@ -113,7 +114,7 @@ class ReminderController extends GetxController {
       } else if (isSameDay(reminderDate, tomorrowDate)) {
         return 'Tomorrow';
       } else {
-        return DateFormat('EEEE, dd MMMM yyyy').format(reminderDate);
+        return formatDayOfWeekDate(reminderDate.toString());
       }
     } else {
       return '';
@@ -169,10 +170,10 @@ class ReminderController extends GetxController {
 
       try {
         await _logService.addReminder(newReminder);
-        Get.showSnackbar(Ui.SuccessSnackBar(message: 'Reminder added successfully!'));
+        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.reminderAddedSuccess));
         localSuccess = true;
       } catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to add reminder. Please try again later!'));
+        Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.reminderAddFailed));
       }
 
       await fetchAllReminder();
@@ -224,8 +225,8 @@ class ReminderController extends GetxController {
     String? editedSelectedDate = formattedSelectedDate?.isEmpty ?? true ? null : formattedSelectedDate;
     String? editedSelectedTime = formattedSelectedTime?.isEmpty ?? true ? null : formattedSelectedTime;
 
-    editedSelectedDate ??= originalDateTime != null ? DateFormat('yyyy-MM-dd').format(DateTime.parse(originalDateTime)) : null;
-    editedSelectedTime ??= originalDateTime != null ? DateFormat('HH:mm').format(DateTime.parse(originalDateTime)) : null;
+    editedSelectedDate ??= originalDateTime != null ? formatDate(DateTime.parse(originalDateTime)) : null;
+    editedSelectedTime ??= originalDateTime != null ? formatHourMinute(DateTime.parse(originalDateTime)) : null;
 
     String? editedDateTime = (editedSelectedDate != null && editedSelectedTime != null) ? '$editedSelectedDate $editedSelectedTime' : null;
     Reminders editReminder = Reminders(
@@ -237,10 +238,10 @@ class ReminderController extends GetxController {
 
     try {
       await _logService.editReminder(editReminder);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Reminder edited successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.reminderEditedSuccess));
       localSuccess = true;
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to edit reminder. Please try again later!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.reminderEditFailed));
     }
 
     await fetchAllReminder();
@@ -283,16 +284,16 @@ class ReminderController extends GetxController {
     await _syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> deleteReminder(String id) async {
+  Future<void> deleteReminder(context, String id) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
 
     try {
       await _logService.deleteReminder(id);
       localSuccess = true;
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'All reminder deleted successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.reminderDeletedSuccess));
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to delete all reminder. Please try again later!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.reminderDeleteFailed));
     }
 
     await fetchAllReminder();

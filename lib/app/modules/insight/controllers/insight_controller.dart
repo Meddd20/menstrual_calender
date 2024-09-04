@@ -5,6 +5,7 @@ import 'package:periodnpregnancycalender/app/models/article_model.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/article_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class InsightController extends GetxController {
@@ -15,6 +16,7 @@ class InsightController extends GetxController {
   var isLoading = RxBool(true);
   RxList<Articles> articles = <Articles>[].obs;
   late Future<void> articlesFuture;
+  RxBool isConnected = true.obs;
 
   @override
   void onInit() {
@@ -63,7 +65,13 @@ class InsightController extends GetxController {
 
   Future<void> fetchArticles(String? tags) async {
     try {
-      isLoading.value = true;
+      isConnected.value = await CheckConnectivity().isConnectedToInternet();
+      if (isConnected.value) {
+        isLoading.value = true;
+      } else {
+        isLoading.value = false;
+      }
+
       Article? result;
 
       if (selectedTag.value.isEmpty) {

@@ -25,7 +25,7 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
         title: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Text(
-            "Pregnancy Log",
+            AppLocalizations.of(context)!.pregnancyLog,
             style: CustomTextStyle.extraBold(20),
           ),
         ),
@@ -41,15 +41,14 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
         actions: [
           TextButton(
             onPressed: () {
-              controller.deletePregnancyLog(controller.selectedDate);
+              controller.deletePregnancyLog(context, controller.selectedDate);
             },
             child: Text(
-              'Reset',
+              AppLocalizations.of(context)!.reset,
               style: CustomTextStyle.extraBold(15, color: AppColors.primary),
             ),
           ),
           PopupMenuButton<String>(
-            
             onSelected: (value) {
               switch (value) {
                 case 'pregnancy_symptoms':
@@ -70,7 +69,7 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                   children: [
                     Icon(Icons.history, color: Colors.black),
                     SizedBox(width: 8),
-                    Text('Logs'),
+                    Text(AppLocalizations.of(context)!.logs),
                   ],
                 ),
               ),
@@ -80,7 +79,7 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                   children: [
                     Icon(Icons.notes, color: Colors.black),
                     SizedBox(width: 8),
-                    Text('Notes'),
+                    Text(AppLocalizations.of(context)!.notes),
                   ],
                 ),
               ),
@@ -90,7 +89,7 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                   children: [
                     Icon(Icons.thermostat, color: Colors.black),
                     SizedBox(width: 8),
-                    Text('Temperature'),
+                    Text(AppLocalizations.of(context)!.temperature),
                   ],
                 ),
               ),
@@ -105,7 +104,7 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
           controller.fetchPregnancyLog(DateTime.now());
         },
         child: Icon(Icons.today_outlined),
-        tooltip: "Back to current date",
+        tooltip: AppLocalizations.of(context)!.backToCurrentDate,
       ),
       body: FutureBuilder(
         future: controller.fetchPregnancyData(),
@@ -114,8 +113,6 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
             return Center(
               child: CircularProgressIndicator(),
             );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('No data available'));
           } else {
             return Obx(
               () => Stack(
@@ -135,6 +132,7 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                               firstDay: DateTime.parse(controller.currentlyPregnantData.value.hariPertamaHaidTerakhir ?? DateTime.now().toString()),
                               lastDay: DateTime.now(),
                               startingDayOfWeek: StartingDayOfWeek.monday,
+                              locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
                               onDaySelected: (selectedDay, focusedDay) {
                                 controller.setSelectedDate(selectedDay);
                                 controller.setFocusedDate(focusedDay);
@@ -263,7 +261,7 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                                     Container(
                                       width: Get.width,
                                       child: Text(
-                                        "Pregnancy Symptoms",
+                                        AppLocalizations.of(context)!.pregnancySymptoms,
                                         style: CustomTextStyle.bold(20, height: 1.5),
                                       ),
                                     ),
@@ -584,7 +582,7 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                           child: CustomButton(
                             text: AppLocalizations.of(context)!.addDailyLog,
                             onPressed: () {
-                              controller.savePregnancyLog();
+                              controller.savePregnancyLog(context);
                             },
                           ),
                         ),

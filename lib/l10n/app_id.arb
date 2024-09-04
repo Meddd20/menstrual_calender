@@ -95,6 +95,7 @@
     "reminder": "Pengingat",
     "notes": "Catatan",
  
+    "fromTheFirstDayOfPregnancy": "dari hari pertama kehamilan",
     "totalEntries": "Total Entri",
     "totalEntriesData": "{totalEntries} Entri",
     "entriesFromDate": "dari {dateFromNow} hingga hari ini",
@@ -442,5 +443,90 @@
     "confirmPinCodeDescription": "Masukkan PIN Anda sekali lagi",
     "enterPin": "Masukkan PIN Anda",
     "enterPinDesc": "Masukkan PIN Anda untuk melanjutkan",
-    "errorPinCode": "PIN Anda tidak cocok. Silakan coba lagi!"
+    "errorPinCode": "PIN Anda tidak cocok. Silakan coba lagi!",
+
+    "pregnancyLog": "Catatan Kehamilan",
+    "contractionTimer": "Timer Kontraksi",
+    "bloodPressure": "Tekanan Darah",
+    "babyKicks": "Gerakan Bayi",
+
+    "reset": "Reset",
+    "logs": "Log",
+    "backToCurrentDate": "Kembali ke tanggal saat ini",
+    "pregnancySymptoms": "Gejala Kehamilan",
+
+    "time": "Waktu",
+    "duration": "Durasi",
+    "interval": "Interval",
+    "firstKick": "Gerakan\nPertama",
+    "lastKick": "Gerakan\nTerakhir",
+    "kicksCount": "Jumlah\nGerakan",
+    "kickCount": "Hitungan\nGerakan",
+    "noKicksRecordedYet": "Belum ada gerakan",
+    "addBloodPressure": "Tambah Tekanan Darah",
+    "systolic": "Sistolik",
+    "diastolic": "Diastolik",
+    "pulse": "Nadi",
+    "pressure": "Tekanan",
+    "editBloodPressure": "Edit Tekanan Darah",
+    "edit": "Edit",
+    "deleteBloodPressure": "Hapus Tekanan Darah",
+
+    "periodAddedSuccess": "Menstruasi berhasil ditambahkan!",
+    "periodAddFailed": "Gagal menambahkan menstruasi. Silakan coba lagi!",
+    "selectPeriodStartDate": "Silakan pilih tanggal mulai menstruasi Anda!",
+    "periodEditedSuccess": "Menstruasi berhasil diedit!",
+    "periodEditFailed": "Gagal mengedit menstruasi. Silakan coba lagi!",
+
+    "dailyLogSavedSuccess": "Catatan harian berhasil disimpan!",
+    "dailyLogSaveFailed": "Gagal menyimpan catatan. Silakan coba lagi!",
+
+    "firstDayOfLastPeriodEditedSuccess": "Hari pertama menstruasi terakhir Anda berhasil diedit!",
+    "firstDayOfLastPeriodEditFailed": "Gagal mengedit hari pertama menstruasi terakhir Anda. Silakan coba lagi!",
+
+    "reminderAddedSuccess": "Pengingat berhasil ditambahkan!",
+    "reminderAddFailed": "Gagal menambahkan pengingat. Silakan coba lagi nanti!",
+    "reminderEditedSuccess": "Pengingat berhasil diedit!",
+    "reminderEditFailed": "Gagal mengedit pengingat. Silakan coba lagi nanti!",
+
+    "reminderDeletedSuccess": "Pengingat berhasil dihapus!",
+    "reminderDeleteFailed": "Gagal menghapus pengingat. Silakan coba lagi nanti!",
+
+    "babyKickAddFailed": "Gagal menambahkan tendangan bayi. Silakan coba lagi nanti!",
+    "kickDataDeletedSuccess": "Data tendangan berhasil dihapus!",
+    "kickDataDeleteFailed": "Gagal menghapus data tendangan. Silakan coba lagi nanti!",
+
+    "bloodPressureAddedSuccess": "Tekanan darah berhasil ditambahkan!",
+    "bloodPressureAddFailed": "Gagal menambahkan tekanan darah. Silakan coba lagi nanti!",
+    "bloodPressureEditedSuccess": "Tekanan darah berhasil diedit!",
+    "bloodPressureEditFailed": "Gagal mengedit tekanan darah. Silakan coba lagi nanti!",
+    "bloodPressureDeletedSuccess": "Tekanan darah berhasil dihapus!",
+    "bloodPressureDeleteFailed": "Gagal menghapus tekanan darah. Silakan coba lagi nanti!",
+
+    "contractionAddFailed": "Gagal menambahkan kontraksi. Silakan coba lagi nanti!",
+    "contractionDeleteFailed": "Gagal menghapus kontraksi. Silakan coba lagi nanti!",
+
+    "pregnancyLogSavedSuccess": "Catatan kehamilan berhasil disimpan!",
+    "pregnancyLogSaveFailed": "Gagal menyimpan catatan kehamilan. Silakan coba lagi!",
+    "pregnancyLogResetFailed": "Gagal mereset catatan kehamilan. Silakan coba lagi!",
+
+    "weightGainInitializedSuccess": "Peningkatan berat badan berhasil diinisialisasi!",
+    "weightGainInitializeFailed": "Gagal menginisialisasi peningkatan berat badan. Silakan coba lagi!",
+    "weightGainAddedSuccess": "Peningkatan berat badan berhasil ditambahkan!",
+    "weightGainAddFailed": "Gagal menambahkan peningkatan berat badan. Silakan coba lagi!",
+    "weightGainDeletedSuccess": "Peningkatan berat badan berhasil dihapus!",
+    "weightGainDeleteFailed": "Gagal menghapus peningkatan berat badan. Silakan coba lagi!",
+
+    "profileEditedSuccess": "Profil berhasil diedit!",
+    "profileEditFailed": "Gagal mengedit profil. Silakan coba lagi!",
+
+    "pregnancyStartedSuccess": "Kehamilan berhasil dimulai!",
+    "pregnancyStartFailed": "Gagal memulai kehamilan. Silakan coba lagi!",
+    "pregnancyEndedSuccess": "Kehamilan berhasil diakhiri!",
+    "pregnancyEndFailed": "Gagal mengakhiri kehamilan. Silakan coba lagi!",
+    "pregnancyDeletedSuccess": "Kehamilan berhasil dihapus!",
+    "pregnancyDeleteFailed": "Gagal menghapus kehamilan. Silakan coba lagi!",
+
+    "noInternetHeader": "Koneksi Internet Terputus",
+    "noInternetBody": "Tidak dapat terhubung ke server. Periksa koneksi internet Anda dan coba lagi."
 }

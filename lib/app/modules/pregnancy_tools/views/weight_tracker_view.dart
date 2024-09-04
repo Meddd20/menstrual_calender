@@ -9,6 +9,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/weight_tracker_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/init_weight_gain_tracker_view.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -96,6 +97,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                   firstDay: controller.tanggalAwalMinggu.first,
                                   lastDay: DateTime.now(),
                                   startingDayOfWeek: StartingDayOfWeek.monday,
+                                  locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
                                   onDaySelected: (selectedDay, focusedDay) {
                                     controller.setSelectedDate(selectedDay);
                                     controller.setFocusedDate(focusedDay);
@@ -226,7 +228,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                     style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
                                   ),
                                   Text(
-                                    "${DateFormat('yyyy-MM-dd').format(controller.selectedDate ?? DateTime.now())}",
+                                    "${formatDate(controller.selectedDate ?? DateTime.now())}",
                                     style: CustomTextStyle.bold(16),
                                   )
                                 ],
@@ -580,7 +582,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                 final isEvenRow = index % 2 == 0;
                                 final rowColor = isEvenRow ? Colors.pink[50] : null;
                                 final DateTime? parsedDate = weightData.tanggalPencatatan != null ? DateTime.tryParse(weightData.tanggalPencatatan!) : null;
-                                final formattedDate = parsedDate != null ? DateFormat('dd.MM').format(parsedDate) : 'Invalid date';
+                                final formattedDate = parsedDate != null ? formatShortDate(parsedDate.toString()) : 'Invalid date';
                                 DateTime? tanggalPencatatan = DateTime.tryParse(weightData.tanggalPencatatan ?? '');
 
                                 return DataRow(
@@ -692,6 +694,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                                         firstDay: controller.tanggalAwalMinggu.first,
                                                                                         lastDay: DateTime.now(),
                                                                                         startingDayOfWeek: StartingDayOfWeek.monday,
+                                                                                        locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
                                                                                         onPageChanged: (focusedDay) {
                                                                                           controller.setFocusedDate(focusedDay);
                                                                                         },
@@ -818,7 +821,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                                             style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
                                                                                           ),
                                                                                           Text(
-                                                                                            "${DateFormat('yyyy-MM-dd').format(controller.selectedDate ?? DateTime.now())}",
+                                                                                            "${formatDate(controller.selectedDate ?? DateTime.now())}",
                                                                                             style: CustomTextStyle.bold(16),
                                                                                           )
                                                                                         ],

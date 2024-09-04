@@ -18,7 +18,7 @@ import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PregnancyLogController extends GetxController {
   final StorageService storageService = StorageService();
@@ -157,15 +157,13 @@ class PregnancyLogController extends GetxController {
     currentlyPregnantData.value = result!;
     weeklyData.assignAll(currentlyPregnantData.value.weeklyData!);
 
-    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-
     for (var entry in weeklyData) {
       if (entry.tanggalAwalMinggu != null) {
-        DateTime parsedDate = dateFormat.parse(entry.tanggalAwalMinggu!);
+        DateTime parsedDate = formatDateStr(entry.tanggalAwalMinggu!);
         tanggalAwalMinggu.add(parsedDate);
       }
       if (entry.tanggalAkhirMinggu != null) {
-        DateTime parsedDate = dateFormat.parse(entry.tanggalAkhirMinggu!);
+        DateTime parsedDate = formatDateStr(entry.tanggalAkhirMinggu!);
         tanggalAkhirMinggu.add(parsedDate);
       }
     }
@@ -196,20 +194,20 @@ class PregnancyLogController extends GetxController {
     }
   }
 
-  Future<void> savePregnancyLog() async {
+  Future<void> savePregnancyLog(context) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
     String formattedDate = formatDate(selectedDate);
 
     try {
       await _pregnancyLogService.upsertPregnancyDailyLog(selectedDate, getUpdatedSymptoms(), getTemperature(), getNotes());
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Daily log saved successfully!'));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyLogSavedSuccess));
 
       localSuccess = true;
       isChanged.value = false;
       fetchPregnancyLog(selectedDate);
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to save pregnancy log. Please try again!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyLogSaveFailed));
     }
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
@@ -243,7 +241,7 @@ class PregnancyLogController extends GetxController {
     await _syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> deletePregnancyLog(DateTime date) async {
+  Future<void> deletePregnancyLog(context, DateTime date) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
     String formattedDate = formatDate(date);
@@ -256,7 +254,7 @@ class PregnancyLogController extends GetxController {
       fetchPregnancyLog(selectedDate);
       update();
     } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: 'Failed to reset pregnancy log. Please try again!'));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyLogResetFailed));
     }
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {

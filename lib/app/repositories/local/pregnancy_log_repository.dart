@@ -13,13 +13,11 @@ class PregnancyLogRepository {
     final db = await _databaseHelper.database;
     try {
       final data = pregnancyDailyLog.toJson();
-      _logger.i("Inserting/updating data: $data");
       await db.insert(
         "tb_data_harian_kehamilan",
         data,
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      _logger.i("Data successfully inserted/updated");
     } catch (e) {
       _logger.e("Error during upsert pregnancy daily log: $e");
       rethrow;

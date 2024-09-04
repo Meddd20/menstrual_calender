@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
@@ -160,9 +159,5 @@ class TemperatureController extends GetxController {
     } catch (e) {
       print("Error fetching temperatures: $e");
     }
-  }
-
-  String formatDate(DateTime date) {
-    return DateFormat('MMM dd, yyyy').format(date);
   }
 }

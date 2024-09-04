@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/models/date_event_model.dart';
-import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -13,7 +13,6 @@ class ChinesePredDetailView extends GetView {
   const ChinesePredDetailView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    HomeMenstruationController homeController = Get.put(HomeMenstruationController());
     final argument = Get.arguments as ChineseGenderPrediction;
 
     return Scaffold(
@@ -129,7 +128,7 @@ class ChinesePredDetailView extends GetView {
                             ),
                           ),
                           Text(
-                            "${homeController.formatDate1(argument.dateOfBirth)}",
+                            "${formatDateStrWithMonthName(argument.dateOfBirth ?? "")}",
                             style: CustomTextStyle.extraBold(20, height: 2.0),
                             textAlign: TextAlign.center,
                           ),
@@ -147,7 +146,7 @@ class ChinesePredDetailView extends GetView {
                             ),
                           ),
                           Text(
-                            "${homeController.formatDate1(argument.lunarDateOfBirth)}",
+                            "${formatDateStrWithMonthName(argument.lunarDateOfBirth ?? "")}",
                             style: CustomTextStyle.extraBold(20, height: 2.0),
                             textAlign: TextAlign.center,
                           ),
@@ -172,7 +171,7 @@ class ChinesePredDetailView extends GetView {
                             ),
                           ),
                           Text(
-                            "${homeController.formatDate1(argument.specifiedDate)}",
+                            "${formatDateStrWithMonthName(argument.specifiedDate ?? "")}",
                             style: CustomTextStyle.extraBold(20, height: 2.0),
                             textAlign: TextAlign.center,
                           ),
@@ -190,7 +189,7 @@ class ChinesePredDetailView extends GetView {
                             ),
                           ),
                           Text(
-                            "${homeController.formatDate1(argument.lunarSpecifiedDate)}",
+                            "${formatDateStrWithMonthName(argument.lunarSpecifiedDate ?? "")}",
                             style: CustomTextStyle.extraBold(20, height: 2.0),
                             textAlign: TextAlign.center,
                           ),

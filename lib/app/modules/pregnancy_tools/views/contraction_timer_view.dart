@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/contraction_timer_controller.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class ContractionTimerView extends GetView<ContractionTimerController> {
   const ContractionTimerView({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              "Contraction Timer",
+              AppLocalizations.of(context)!.contractionTimer,
               style: CustomTextStyle.extraBold(20),
             ),
           ),
@@ -82,7 +83,7 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
                         label: Expanded(
                           child: Center(
                             child: Text(
-                              "Tanggal",
+                              AppLocalizations.of(context)!.dates,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -92,7 +93,7 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
                         label: Expanded(
                           child: Center(
                             child: Text(
-                              "Waktu",
+                              AppLocalizations.of(context)!.time,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -102,7 +103,7 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
                         label: Expanded(
                           child: Center(
                             child: Text(
-                              "Durasi",
+                              AppLocalizations.of(context)!.duration,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -112,7 +113,7 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
                         label: Expanded(
                           child: Center(
                             child: Text(
-                              "Interval",
+                              AppLocalizations.of(context)!.interval,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -131,7 +132,7 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
                             DataCell(
                               Center(
                                 child: Text(
-                                  DateFormat('dd.MM').format(DateTime.parse(contraction.timeStart)),
+                                  formatShortDate(contraction.timeStart),
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
                                 ),
@@ -140,7 +141,7 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
                             DataCell(
                               Center(
                                 child: Text(
-                                  DateFormat('HH:mm:ss').format(DateTime.parse(contraction.timeStart)),
+                                  formatHourMinuteSecond(contraction.timeStart),
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
                                 ),
@@ -167,7 +168,7 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
                                 child: IconButton(
                                   icon: Icon(Icons.delete),
                                   color: Colors.black.withOpacity(0.4),
-                                  onPressed: () => controller.deleteContraction(contraction.id!),
+                                  onPressed: () => controller.deleteContraction(context, contraction.id!),
                                 ),
                               ),
                             ),

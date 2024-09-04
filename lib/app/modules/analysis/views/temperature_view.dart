@@ -8,6 +8,7 @@ import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/temperature_controller.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -46,18 +47,18 @@ class TemperatureView extends GetView<TemperatureController> {
             children: [
               SizedBox(height: 10),
               Text(
-                "Total Entries",
+                AppLocalizations.of(context)!.totalEntries,
                 style: CustomTextStyle.medium(15, color: Colors.black.withOpacity(0.6)),
               ),
               Obx(
                 () => Text(
-                  "${controller.specificTemperaturesData.entries.length} Entries",
+                  AppLocalizations.of(context)!.totalEntriesData("${controller.specificTemperaturesData.entries.length}"),
                   style: CustomTextStyle.extraBold(26, height: 1.75),
                 ),
               ),
               Obx(
                 () => Text(
-                  controller.getSelectedDataType == "pregnancy_notes" ? "from ${controller.formatDate(controller.selectedDate.value)} up to today" : "dari hari pertama kehamilan",
+                  controller.getSelectedDataType == "pregnancy_notes" ? AppLocalizations.of(context)!.entriesFromDate(formatDateWithMonthName(controller.selectedDate.value)) : AppLocalizations.of(context)!.fromTheFirstDayOfPregnancy,
                   style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
                 ),
               ),

@@ -7,7 +7,6 @@ import 'package:periodnpregnancycalender/app/repositories/local/log_repository.d
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
-import 'package:intl/intl.dart';
 
 class LogService {
   final Logger _logger = Logger();
@@ -45,9 +44,9 @@ class LogService {
 
         for (var i = 0; i < existingDataHarian.length; i++) {
           DateTime parsedExistingDate = DateTime.parse(existingDataHarian[i].date ?? "${DateTime.now()}");
-          String formattedExistingDate = DateFormat('yyyy-MM-dd').format(parsedExistingDate);
+          String formattedExistingDate = formatDate(parsedExistingDate);
           DateTime parsedDate = DateTime.parse(date);
-          String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+          String formattedDate = formatDate(parsedDate);
 
           if (formattedExistingDate == formattedDate) {
             existingDataHarian[i] = dailyLogByDate;
@@ -88,9 +87,9 @@ class LogService {
 
         List<DataHarian> updatedDataHarian = existingDataHarian.where((data) {
           DateTime parsedExistingDate = DateTime.parse(data.date ?? "${DateTime.now()}");
-          String formattedExistingDate = DateFormat('yyyy-MM-dd').format(parsedExistingDate);
+          String formattedExistingDate = formatDate(parsedExistingDate);
           DateTime parsedDate = DateTime.parse(date);
-          String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+          String formattedDate = formatDate(parsedDate);
 
           return formattedExistingDate != formattedDate;
         }).toList();
