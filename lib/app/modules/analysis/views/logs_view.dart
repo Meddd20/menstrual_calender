@@ -25,7 +25,7 @@ class LogsView extends GetView<LogsController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              controller.selectedDataTags != "pregnancy_symptoms" ? controller.pageTags(context) : "Pregnancy Symptoms",
+              controller.selectedDataTags != "pregnancy_symptoms" ? controller.pageTags(context) : AppLocalizations.of(context)!.pregnancySymptoms,
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -44,7 +44,7 @@ class LogsView extends GetView<LogsController> {
           padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
           child: Column(
             children: [
-              if (controller.selectedDataTags != "pregnancy_symptoms")
+              if (controller.selectedDataTags != "pregnancy_symptoms") ...[
                 CustomTabBar(
                   controller: controller.tabController,
                   onTap: (index) {
@@ -56,21 +56,30 @@ class LogsView extends GetView<LogsController> {
                     controller.updateTabBar(index);
                   },
                 ),
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    controller.tabController.animateTo(index);
-                    controller.updateTabBar(index);
-                  },
-                  children: [
-                    _buildChart(context),
-                    _buildChart(context),
-                    _buildChart(context),
-                    _buildChart(context),
-                  ],
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      controller.tabController.animateTo(index);
+                      controller.updateTabBar(index);
+                    },
+                    children: [
+                      _buildChart(context),
+                      _buildChart(context),
+                      _buildChart(context),
+                      _buildChart(context),
+                    ],
+                  ),
                 ),
-              ),
+              ] else ...[
+                Expanded(
+                  child: PageView(
+                    children: [
+                      _buildChart(context),
+                    ],
+                  ),
+                ),
+              ]
             ],
           ),
         ),

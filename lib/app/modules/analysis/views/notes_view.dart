@@ -42,7 +42,7 @@ class NotesView extends GetView<NotesController> {
           padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
           child: Column(
             children: [
-              if (controller.selectedDataTags != "pregnancy_notes")
+              if (controller.selectedDataTags != "pregnancy_notes") ...[
                 CustomTabBar(
                   controller: controller.tabController,
                   onTap: (index) {
@@ -54,21 +54,30 @@ class NotesView extends GetView<NotesController> {
                     controller.updateTabBar(index);
                   },
                 ),
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    controller.tabController.animateTo(index);
-                    controller.updateTabBar(index);
-                  },
-                  children: [
-                    _buildChart(context),
-                    _buildChart(context),
-                    _buildChart(context),
-                    _buildChart(context),
-                  ],
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      controller.tabController.animateTo(index);
+                      controller.updateTabBar(index);
+                    },
+                    children: [
+                      _buildChart(context),
+                      _buildChart(context),
+                      _buildChart(context),
+                      _buildChart(context),
+                    ],
+                  ),
                 ),
-              ),
+              ] else ...[
+                Expanded(
+                  child: PageView(
+                    children: [
+                      _buildChart(context),
+                    ],
+                  ),
+                ),
+              ]
             ],
           ),
         ),
