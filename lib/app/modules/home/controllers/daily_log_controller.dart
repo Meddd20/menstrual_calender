@@ -6,13 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -53,10 +51,8 @@ class DailyLogController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    final databaseHelper = DatabaseHelper.instance;
-    final localLogRepository = LocalLogRepository(databaseHelper);
-    _logService = LogService(localLogRepository);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
+    _logService = LogService();
+    _syncDataRepository = SyncDataRepository();
 
     futureDataHarian = fetchLog(DateTime.now());
     isChanged.value = false;
@@ -610,6 +606,49 @@ class DailyLogController extends GetxController {
       "weight": getWeight(),
       "notes": getNotes(),
     };
+  }
+
+  Future<void> deleteLog(context) async {
+    bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool localSuccess = false;
+    String formattedDate = formatDate(selectedDate);
+
+    try {
+      await _logService.deleteDailyLog(formattedDate);
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.dailyLogSavedSuccess));
+
+      localSuccess = true;
+      isChanged.value = false;
+      fetchLog(selectedDate);
+      update();
+    } catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.dailyLogSaveFailed));
+    }
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await logRepository.deleteLog(formattedDate);
+      } catch (e) {
+        syncDeleteLog(formattedDate);
+      }
+    } else if (localSuccess) {
+      syncDeleteLog(formattedDate);
+    }
+  }
+
+  Future<void> syncDeleteLog(String formattedDate) async {
+    Map<String, dynamic> data = {"date": formattedDate};
+
+    String jsonData = jsonEncode(data);
+
+    SyncLog syncLog = SyncLog(
+      tableName: 'tb_data_harian',
+      operation: 'deleteDailyLog',
+      data: jsonData,
+      createdAt: DateTime.now().toString(),
+    );
+
+    await _syncDataRepository.addSyncLogData(syncLog);
   }
 
   Future<void> resetLog() async {

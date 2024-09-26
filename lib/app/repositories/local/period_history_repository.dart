@@ -3,10 +3,8 @@ import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class PeriodHistoryRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  PeriodHistoryRepository(this._databaseHelper);
 
   Future<void> addPeriodHistory(PeriodHistory periodHistory) async {
     final db = await _databaseHelper.database;

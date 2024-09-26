@@ -1,23 +1,4 @@
 class PeriodCycleIndex {
-  PeriodCycleIndex(
-      {required this.initialYear,
-      required this.latestYear,
-      required this.currentYear,
-      required this.age,
-      required this.lunarAge,
-      required this.shortestPeriod,
-      required this.longestPeriod,
-      required this.shortestCycle,
-      required this.longestCycle,
-      required this.avgPeriodDuration,
-      required this.avgPeriodCycle,
-      required this.periodChart,
-      required this.latestPeriodHistory,
-      required this.periodHistory,
-      required this.actualPeriod,
-      required this.predictionPeriod,
-      required this.shettlesGenderPrediction});
-
   final String? initialYear;
   final String? latestYear;
   final String? currentYear;
@@ -29,12 +10,32 @@ class PeriodCycleIndex {
   final int? longestCycle;
   final int? avgPeriodDuration;
   final int? avgPeriodCycle;
-  final List<PeriodChart> periodChart;
+  final List<PeriodChart>? periodChart;
   final PeriodHistory? latestPeriodHistory;
-  final List<PeriodHistory> periodHistory;
-  final List<PeriodHistory> actualPeriod;
-  final List<PeriodHistory> predictionPeriod;
-  final List<ShettlesGenderPrediction> shettlesGenderPrediction;
+  final List<PeriodHistory>? periodHistory;
+  final List<PeriodHistory>? actualPeriod;
+  final List<PeriodHistory>? predictionPeriod;
+  final List<ShettlesGenderPrediction>? shettlesGenderPrediction;
+
+  PeriodCycleIndex({
+    this.initialYear,
+    this.latestYear,
+    this.currentYear,
+    this.age,
+    this.lunarAge,
+    this.shortestPeriod,
+    this.longestPeriod,
+    this.shortestCycle,
+    this.longestCycle,
+    this.avgPeriodDuration,
+    this.avgPeriodCycle,
+    this.periodChart,
+    this.latestPeriodHistory,
+    this.periodHistory,
+    this.actualPeriod,
+    this.predictionPeriod,
+    this.shettlesGenderPrediction,
+  });
 
   factory PeriodCycleIndex.fromJson(Map<String, dynamic> json) {
     return PeriodCycleIndex(

@@ -136,6 +136,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                             yValueMapper: (PeriodChart data, _) => data.periodDuration?.toDouble() ?? 0.0,
                             name: AppLocalizations.of(context)!.periodDuration,
                             color: AppColors.primary,
+                            enableTooltip: false,
                           ),
                           StackedColumnSeries<PeriodChart, String>(
                             dataSource: periodHistoryList?.periodChart ?? [],
@@ -167,9 +168,9 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                 children: [
                   Center(
                     child: ListView.builder(
-                      itemCount: periodHistoryList?.actualPeriod.length ?? 0,
+                      itemCount: periodHistoryList?.actualPeriod?.length ?? 0,
                       itemBuilder: (context, index) {
-                        var actualPeriodHistory = periodHistoryList?.actualPeriod[index];
+                        var actualPeriodHistory = periodHistoryList?.actualPeriod![index];
                         var periodHistory = periodHistoryList;
 
                         DateTime? haidAwalDate = actualPeriodHistory?.haidAwal;
@@ -274,9 +275,9 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                   ),
                   Center(
                     child: ListView.builder(
-                      itemCount: periodHistoryList?.predictionPeriod.length ?? 0,
+                      itemCount: periodHistoryList?.predictionPeriod?.length ?? 0,
                       itemBuilder: (context, index) {
-                        var periodHistory = periodHistoryList?.predictionPeriod[index];
+                        var periodHistory = periodHistoryList?.predictionPeriod![index];
                         return ListTile(
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

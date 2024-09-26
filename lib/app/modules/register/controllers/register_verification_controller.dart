@@ -12,12 +12,10 @@ import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_reposito
 import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:periodnpregnancycalender/app/services/profile_service.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class RegisterVerificationController extends GetxController {
   final ApiService apiService = ApiService();
-  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
   late final AuthRepository authRepository = AuthRepository(apiService);
   late final PeriodRepository periodRepository = PeriodRepository(apiService);
   late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
@@ -35,10 +33,8 @@ class RegisterVerificationController extends GetxController {
 
   @override
   void onInit() {
-    final databaseHelper = DatabaseHelper.instance;
-    final localProfileRepository = LocalProfileRepository(databaseHelper);
-    _localProfileRepository = LocalProfileRepository(databaseHelper);
-    _profileService = ProfileService(localProfileRepository);
+    _localProfileRepository = LocalProfileRepository();
+    _profileService = ProfileService();
     requestVerificationResponse = Get.arguments as Map<String, dynamic>;
     userEmail.value = requestVerificationResponse["email"];
     startResendTimer();

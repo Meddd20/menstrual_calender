@@ -4,11 +4,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
@@ -19,7 +14,6 @@ import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onbo
 import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/profile_service.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
@@ -43,28 +37,11 @@ class RegisterController extends GetxController {
 
   @override
   void onInit() {
-    final databaseHelper = DatabaseHelper.instance;
-    final localProfileRepository = LocalProfileRepository(databaseHelper);
-    final periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-    final masterNewmoonRepository = MasterNewmoonRepository(databaseHelper);
-    final masterGenderRepository = MasterGenderRepository(databaseHelper);
-    final pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    final masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
-    _profileService = ProfileService(localProfileRepository);
-    _localProfileRepository = LocalProfileRepository(databaseHelper);
-    _periodHistoryService = PeriodHistoryService(
-      periodHistoryRepository,
-      localProfileRepository,
-      masterNewmoonRepository,
-      masterGenderRepository,
-    );
-    _pregnancyHistoryService = PregnancyHistoryService(
-      pregnancyHistoryRepository,
-      masterKehamilanRepository,
-      periodHistoryRepository,
-      localProfileRepository,
-    );
+    _syncDataRepository = SyncDataRepository();
+    _profileService = ProfileService();
+    _localProfileRepository = LocalProfileRepository();
+    _periodHistoryService = PeriodHistoryService();
+    _pregnancyHistoryService = PregnancyHistoryService();
 
     var bd = Get.arguments as String? ?? "";
     birthday.value = bd;

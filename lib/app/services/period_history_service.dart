@@ -3,36 +3,58 @@ import 'package:periodnpregnancycalender/app/models/date_event_model.dart';
 import 'package:periodnpregnancycalender/app/models/master_gender.dart';
 import 'package:periodnpregnancycalender/app/models/master_newmoon_model.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
+import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PeriodHistoryService {
-  final PeriodHistoryRepository _periodHistoryRepository;
-  final LocalProfileRepository _localProfileRepository;
-  final MasterNewmoonRepository _masterNewmoonRepository;
-  final MasterGenderRepository _masterGenderRepository;
-
   final Logger _logger = Logger();
   final StorageService storageService = StorageService();
 
-  PeriodHistoryService(this._periodHistoryRepository, this._localProfileRepository, this._masterNewmoonRepository, this._masterGenderRepository);
+  late final PregnancyHistoryRepository _pregnancyHistoryRepository = PregnancyHistoryRepository();
+  late final PeriodHistoryRepository _periodHistoryRepository = PeriodHistoryRepository();
+  late final LocalProfileRepository _localProfileRepository = LocalProfileRepository();
+  late final MasterNewmoonRepository _masterNewmoonRepository = MasterNewmoonRepository();
+  late final MasterGenderRepository _masterGenderRepository = MasterGenderRepository();
 
   Future<void> addPeriod(int? remoteId, DateTime haidAwal, DateTime haidAkhir, int? lamaSiklus) async {
     try {
       int userId = storageService.getAccountLocalId();
 
+      List<PregnancyHistory> getAllPregnancyHistory = await _pregnancyHistoryRepository.getAllPregnancyHistory(userId);
       List<PeriodHistory> getAllPeriodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
       List<PeriodHistory> isActualPeriodHistories = getAllPeriodHistory.where((period) => period.isActual == "1").toList();
       List<PeriodHistory> isNotActualPeriodHistories = getAllPeriodHistory.where((period) => period.isActual == "0").toList();
 
+      User? userProfile = await _localProfileRepository.getProfile();
+      User updateUserProfile = userProfile!.copyWith(
+        isPregnant: "0",
+        updatedAt: DateTime.now().toString(),
+      );
+      await _localProfileRepository.updateProfile(updateUserProfile);
+      storageService.storeIsPregnant("0");
+
       for (var period in isActualPeriodHistories) {
         if ((haidAwal.isBefore(period.haidAkhir!) || haidAwal.isAtSameMomentAs(period.haidAkhir!)) && (haidAkhir.isAfter(period.haidAwal!) || haidAkhir.isAtSameMomentAs(period.haidAwal!))) {
           throw Exception('Siklus menstruasi yang dimasukkan overlap dengan siklus yang sudah ada');
+        }
+      }
+
+      if (getAllPregnancyHistory.length > 0) {
+        for (var pregnancy in getAllPregnancyHistory) {
+          DateTime hariPertamaHaidTerakhir = DateTime.parse(pregnancy.hariPertamaHaidTerakhir!);
+          DateTime kehamilanAkhir = DateTime.parse(pregnancy.kehamilanAkhir!);
+
+          if ((haidAwal.isAtSameMomentAs(hariPertamaHaidTerakhir) || (haidAwal.isAfter(hariPertamaHaidTerakhir)) && (haidAwal.isBefore(kehamilanAkhir)) || haidAwal.isAtSameMomentAs(kehamilanAkhir)) || (haidAkhir.isAtSameMomentAs(hariPertamaHaidTerakhir) || (haidAkhir.isAfter(hariPertamaHaidTerakhir)) && (haidAkhir.isBefore(kehamilanAkhir)) || haidAkhir.isAtSameMomentAs(kehamilanAkhir))) {
+            throw Exception('Tanggal awal atau akhir siklus menstruasi yang dimasukkan overlap dengan riwayat kehamilan Anda.');
+          }
         }
       }
 
@@ -475,10 +497,11 @@ class PeriodHistoryService {
     }
   }
 
-  Future<Event> getDateEvent(DateTime specifiedDate) async {
+  Future<Event> getDateEvent(DateTime specifiedDate, context) async {
     try {
       int userId = storageService.getAccountLocalId();
       List<PeriodHistory> getAllPeriodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
+      List<PregnancyHistory> getAllPregnancyHistory = await _pregnancyHistoryRepository.getAllPregnancyHistory(userId);
 
       User? getProfile = await _localProfileRepository.getProfile();
 
@@ -513,196 +536,207 @@ class PeriodHistoryService {
 
       ShettlesGenderPrediction? shettlesGenderPrediction;
 
-      for (int key = 0; key < countPeriodHistoryData; key++) {
-        var periodHistory = getAllPeriodHistory[key];
-        currentDataIsActual = periodHistory.isActual ?? "1";
-        int currentIndex = getAllPeriodHistory.indexOf(periodHistory);
+      if (getAllPregnancyHistory.length > 0) {
+        for (var pregnancy in getAllPregnancyHistory) {
+          DateTime hariPertamaHaidTerakhir = DateTime.parse(pregnancy.hariPertamaHaidTerakhir!);
+          DateTime kehamilanAkhir = DateTime.parse(pregnancy.kehamilanAkhir!);
 
-        if (key < (countPeriodHistoryData - 1)) {
-          var nextPeriodData = getAllPeriodHistory[key + 1];
-          lutealEnd = nextPeriodData.haidAwal!.subtract(Duration(days: 1));
-        } else {
-          lutealEnd = periodHistory.hariTerakhirSiklus ?? DateTime.now();
-        }
-
-        DateTime periodStart = periodHistory.haidAwal ?? DateTime.now();
-        DateTime periodEnd = periodHistory.haidAkhir ?? DateTime.now();
-        DateTime ovulation = periodHistory.ovulasi ?? DateTime.now();
-        DateTime fertileStart = periodHistory.masaSuburAwal ?? DateTime.now();
-        DateTime fertileEnd = periodHistory.masaSuburAkhir ?? DateTime.now();
-        DateTime follicularStart = periodEnd.add(Duration(days: 1));
-        DateTime follicularEnd = fertileStart.subtract(Duration(days: 1));
-        DateTime lutealStart = fertileEnd.add(Duration(days: 1));
-
-        if (currentDataIsActual == "1") {
-          firstDayOfMenstruation = periodStart;
-        } else {
-          List<PeriodHistory> sortedPeriodHistory = [...getAllPeriodHistory];
-          sortedPeriodHistory.sort((a, b) => b.haidAwal!.compareTo(a.haidAwal!));
-
-          PeriodHistory? lastIsActualPeriodData = sortedPeriodHistory.firstWhere((period) => period.isActual == "1");
-          firstDayOfMenstruation = lastIsActualPeriodData.haidAwal ?? DateTime.now();
-        }
-
-        dayOfCycle = (specifiedDate.difference(firstDayOfMenstruation).inDays + 1);
-
-        if (specifiedDate.isAfter(periodStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(lutealEnd.add(Duration(days: 1)))) {
-          shettlesGenderPrediction = ShettlesGenderPrediction(
-            boyStartDate: ovulation,
-            boyEndDate: ovulation.add(Duration(days: 3)),
-            girlStartDate: periodEnd.add(Duration(days: 1)),
-            girlEndDate: ovulation.subtract(Duration(days: 2)),
-          );
-        }
-
-        if (specifiedDate.isAfter(periodStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(periodEnd.add(Duration(days: 1)))) {
-          event = storageService.getLanguage() == "en" ? "Menstruation Phase" : "Masa Menstruasi";
-          pregnancyChances = storageService.getLanguage() == "en" ? "Low" : "Rendah";
-          currentDataIsActual = periodHistory.isActual ?? '';
-          eventId = periodHistory.id ?? 0;
-
-          if (key == countPeriodHistoryData - 1) {
-            nextMenstruationStart = periodHistory.haidBerikutnyaAwal ?? DateTime.now();
-            nextMenstruationEnd = periodHistory.haidBerikutnyaAkhir ?? DateTime.now();
-            nextLutealEnd = periodHistory.haidBerikutnyaAwal?.subtract(Duration(days: 1)) ?? DateTime.now();
-          } else {
-            var nextRecord = getAllPeriodHistory[currentIndex + 1];
-            nextMenstruationStart = nextRecord.haidAwal ?? DateTime.now();
-            nextMenstruationEnd = nextRecord.haidAkhir ?? DateTime.now();
-            nextLutealEnd = nextRecord.haidAwal?.subtract(Duration(days: 1)) ?? DateTime.now();
+          if (specifiedDate.isAfter(hariPertamaHaidTerakhir.subtract(Duration(days: 1))) && specifiedDate.isBefore(kehamilanAkhir.add(Duration(days: 1)))) {
+            event = AppLocalizations.of(context)!.pregnancy;
+            pregnancyChances = AppLocalizations.of(context)!.high;
+            break;
           }
-          daysUntilNextMenstruation = nextMenstruationStart.difference(specifiedDate).inDays;
-
-          nextOvulation = periodHistory.ovulasi ?? DateTime.now();
-          daysUntilNextOvulation = nextOvulation.difference(specifiedDate).inDays;
-
-          nextFollicularStart = periodEnd.add(Duration(days: 1));
-          nextFollicularEnd = fertileStart.subtract(Duration(days: 1));
-          daysUntilNextFollicular = nextFollicularStart.difference(specifiedDate).inDays;
-
-          nextFertileStart = fertileStart;
-          nextFertileEnd = fertileEnd;
-          daysUntilNextFertile = nextFertileStart.difference(specifiedDate).inDays;
-
-          nextLutealStart = fertileEnd.add(Duration(days: 1));
-          daysUntilNextLuteal = nextLutealStart.difference(specifiedDate).inDays;
-          break;
         }
+      }
 
-        if (specifiedDate.isAfter(fertileStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(fertileEnd.add(Duration(days: 1)))) {
-          event = specifiedDate.isAtSameMomentAs(ovulation)
-              ? storageService.getLanguage() == "en"
-                  ? "Ovulation"
-                  : "Ovulasi"
-              : storageService.getLanguage() == "en"
-                  ? "Fertile Phase"
-                  : "Masa Subur";
-          pregnancyChances = storageService.getLanguage() == "en" ? "High" : "Tinggi";
-          currentDataIsActual = periodHistory.isActual ?? '';
-          eventId = periodHistory.id ?? 0;
+      if (event == "") {
+        if (countPeriodHistoryData > 0) {
+          for (int key = 0; key < countPeriodHistoryData; key++) {
+            var periodHistory = getAllPeriodHistory[key];
+            currentDataIsActual = periodHistory.isActual ?? "1";
+            int currentIndex = getAllPeriodHistory.indexOf(periodHistory);
 
-          if (key == countPeriodHistoryData - 1) {
-            nextMenstruationStart = periodHistory.haidBerikutnyaAwal ?? DateTime.now();
-            nextMenstruationEnd = periodHistory.haidBerikutnyaAkhir ?? DateTime.now();
-            nextFollicularStart = (periodHistory.haidBerikutnyaAkhir ?? DateTime.now()).add(Duration(days: 1));
-            nextFollicularEnd = (periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
-            nextFertileStart = periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now();
-            nextFertileEnd = periodHistory.masaSuburBerikutnyaAkhir ?? DateTime.now();
-            nextLutealEnd = (periodHistory.haidBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
+            if (key < (countPeriodHistoryData - 1)) {
+              var nextPeriodData = getAllPeriodHistory[key + 1];
+              lutealEnd = nextPeriodData.haidAwal!.subtract(Duration(days: 1));
+            } else {
+              lutealEnd = periodHistory.hariTerakhirSiklus ?? DateTime.now();
+            }
 
-            nextOvulation = specifiedDate.isBefore(ovulation) ? periodHistory.ovulasi ?? DateTime.now() : periodHistory.ovulasiBerikutnya ?? DateTime.now();
-          } else {
-            var nextRecord = getAllPeriodHistory[currentIndex + 1];
-            nextMenstruationStart = nextRecord.haidAwal ?? DateTime.now();
-            nextMenstruationEnd = nextRecord.haidAkhir ?? DateTime.now();
-            nextFollicularStart = (nextRecord.haidAkhir ?? DateTime.now()).add(Duration(days: 1));
-            nextFollicularEnd = (nextRecord.masaSuburAwal ?? DateTime.now()).subtract(Duration(days: 1));
-            nextFertileStart = nextRecord.masaSuburAwal ?? DateTime.now();
-            nextFertileEnd = nextRecord.masaSuburAkhir ?? DateTime.now();
-            nextLutealEnd = periodHistory.hariTerakhirSiklus ?? DateTime.now();
+            DateTime periodStart = periodHistory.haidAwal ?? DateTime.now();
+            DateTime periodEnd = periodHistory.haidAkhir ?? DateTime.now();
+            DateTime ovulation = periodHistory.ovulasi ?? DateTime.now();
+            DateTime fertileStart = periodHistory.masaSuburAwal ?? DateTime.now();
+            DateTime fertileEnd = periodHistory.masaSuburAkhir ?? DateTime.now();
+            DateTime follicularStart = periodEnd.add(Duration(days: 1));
+            DateTime follicularEnd = fertileStart.subtract(Duration(days: 1));
+            DateTime lutealStart = fertileEnd.add(Duration(days: 1));
 
-            nextOvulation = specifiedDate.isBefore(ovulation) ? periodHistory.ovulasi ?? DateTime.now() : nextRecord.ovulasi ?? DateTime.now();
+            if (currentDataIsActual == "1") {
+              firstDayOfMenstruation = periodStart;
+            } else {
+              List<PeriodHistory> sortedPeriodHistory = [...getAllPeriodHistory];
+              sortedPeriodHistory.sort((a, b) => b.haidAwal!.compareTo(a.haidAwal!));
+
+              PeriodHistory? lastIsActualPeriodData = sortedPeriodHistory.firstWhere((period) => period.isActual == "1");
+              firstDayOfMenstruation = lastIsActualPeriodData.haidAwal ?? DateTime.now();
+            }
+
+            dayOfCycle = (specifiedDate.difference(firstDayOfMenstruation).inDays + 1);
+
+            if (specifiedDate.isAfter(periodStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(lutealEnd.add(Duration(days: 1)))) {
+              shettlesGenderPrediction = ShettlesGenderPrediction(
+                boyStartDate: ovulation,
+                boyEndDate: ovulation.add(Duration(days: 3)),
+                girlStartDate: periodEnd.add(Duration(days: 1)),
+                girlEndDate: ovulation.subtract(Duration(days: 2)),
+              );
+            }
+
+            if (specifiedDate.isAfter(periodStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(periodEnd.add(Duration(days: 1)))) {
+              event = AppLocalizations.of(context)!.menstruationPhase;
+              pregnancyChances = AppLocalizations.of(context)!.low;
+              currentDataIsActual = periodHistory.isActual ?? '';
+              eventId = periodHistory.id ?? 0;
+
+              if (key == countPeriodHistoryData - 1) {
+                nextMenstruationStart = periodHistory.haidBerikutnyaAwal ?? DateTime.now();
+                nextMenstruationEnd = periodHistory.haidBerikutnyaAkhir ?? DateTime.now();
+                nextLutealEnd = periodHistory.haidBerikutnyaAwal?.subtract(Duration(days: 1)) ?? DateTime.now();
+              } else {
+                var nextRecord = getAllPeriodHistory[currentIndex + 1];
+                nextMenstruationStart = nextRecord.haidAwal ?? DateTime.now();
+                nextMenstruationEnd = nextRecord.haidAkhir ?? DateTime.now();
+                nextLutealEnd = nextRecord.haidAwal?.subtract(Duration(days: 1)) ?? DateTime.now();
+              }
+              daysUntilNextMenstruation = nextMenstruationStart.difference(specifiedDate).inDays;
+
+              nextOvulation = periodHistory.ovulasi ?? DateTime.now();
+              daysUntilNextOvulation = nextOvulation.difference(specifiedDate).inDays;
+
+              nextFollicularStart = periodEnd.add(Duration(days: 1));
+              nextFollicularEnd = fertileStart.subtract(Duration(days: 1));
+              daysUntilNextFollicular = nextFollicularStart.difference(specifiedDate).inDays;
+
+              nextFertileStart = fertileStart;
+              nextFertileEnd = fertileEnd;
+              daysUntilNextFertile = nextFertileStart.difference(specifiedDate).inDays;
+
+              nextLutealStart = fertileEnd.add(Duration(days: 1));
+              daysUntilNextLuteal = nextLutealStart.difference(specifiedDate).inDays;
+              break;
+            }
+
+            if (specifiedDate.isAfter(fertileStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(fertileEnd.add(Duration(days: 1)))) {
+              event = specifiedDate.isAtSameMomentAs(ovulation) ? AppLocalizations.of(context)!.ovulation : AppLocalizations.of(context)!.fertilePhase;
+              pregnancyChances = AppLocalizations.of(context)!.high;
+              currentDataIsActual = periodHistory.isActual ?? '';
+              eventId = periodHistory.id ?? 0;
+
+              if (key == countPeriodHistoryData - 1) {
+                nextMenstruationStart = periodHistory.haidBerikutnyaAwal ?? DateTime.now();
+                nextMenstruationEnd = periodHistory.haidBerikutnyaAkhir ?? DateTime.now();
+                nextFollicularStart = (periodHistory.haidBerikutnyaAkhir ?? DateTime.now()).add(Duration(days: 1));
+                nextFollicularEnd = (periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
+                nextFertileStart = periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now();
+                nextFertileEnd = periodHistory.masaSuburBerikutnyaAkhir ?? DateTime.now();
+                nextLutealEnd = (periodHistory.haidBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
+
+                nextOvulation = specifiedDate.isBefore(ovulation) ? periodHistory.ovulasi ?? DateTime.now() : periodHistory.ovulasiBerikutnya ?? DateTime.now();
+              } else {
+                var nextRecord = getAllPeriodHistory[currentIndex + 1];
+                nextMenstruationStart = nextRecord.haidAwal ?? DateTime.now();
+                nextMenstruationEnd = nextRecord.haidAkhir ?? DateTime.now();
+                nextFollicularStart = (nextRecord.haidAkhir ?? DateTime.now()).add(Duration(days: 1));
+                nextFollicularEnd = (nextRecord.masaSuburAwal ?? DateTime.now()).subtract(Duration(days: 1));
+                nextFertileStart = nextRecord.masaSuburAwal ?? DateTime.now();
+                nextFertileEnd = nextRecord.masaSuburAkhir ?? DateTime.now();
+                nextLutealEnd = periodHistory.hariTerakhirSiklus ?? DateTime.now();
+
+                nextOvulation = specifiedDate.isBefore(ovulation) ? periodHistory.ovulasi ?? DateTime.now() : nextRecord.ovulasi ?? DateTime.now();
+              }
+
+              daysUntilNextMenstruation = nextMenstruationStart.difference(specifiedDate).inDays;
+              daysUntilNextOvulation = nextOvulation.difference(specifiedDate).inDays;
+              daysUntilNextFollicular = nextFollicularStart.difference(specifiedDate).inDays;
+              daysUntilNextFertile = nextFertileStart.difference(specifiedDate).inDays;
+
+              nextLutealStart = fertileEnd.add(Duration(days: 1));
+              daysUntilNextLuteal = nextLutealStart.difference(specifiedDate).inDays;
+              break;
+            }
+
+            if ((specifiedDate.isAfter(follicularStart) && specifiedDate.isBefore(follicularEnd)) || specifiedDate.isAtSameMomentAs(follicularStart) || specifiedDate.isAtSameMomentAs(follicularEnd)) {
+              event = AppLocalizations.of(context)!.follicularPhase;
+              pregnancyChances = AppLocalizations.of(context)!.low;
+              currentDataIsActual = periodHistory.isActual ?? '';
+              eventId = periodHistory.id ?? 0;
+
+              if (key == countPeriodHistoryData - 1) {
+                nextMenstruationStart = periodHistory.haidBerikutnyaAwal ?? DateTime.now();
+                nextMenstruationEnd = periodHistory.haidBerikutnyaAkhir ?? DateTime.now();
+                nextFollicularStart = (periodHistory.haidBerikutnyaAkhir ?? DateTime.now()).add(Duration(days: 1));
+                nextFollicularEnd = (periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
+              } else {
+                var nextRecord = getAllPeriodHistory[currentIndex + 1];
+                nextMenstruationStart = nextRecord.haidAwal ?? DateTime.now();
+                nextMenstruationEnd = nextRecord.haidAkhir ?? DateTime.now();
+                nextFollicularStart = (nextRecord.haidAkhir ?? DateTime.now()).add(Duration(days: 1));
+                nextFollicularEnd = (nextRecord.masaSuburAwal ?? DateTime.now()).subtract(Duration(days: 1));
+                nextLutealEnd = nextRecord.haidAwal ?? DateTime.now();
+              }
+              daysUntilNextMenstruation = nextMenstruationStart.difference(specifiedDate).inDays;
+              daysUntilNextFollicular = nextFollicularStart.difference(specifiedDate).inDays;
+
+              nextOvulation = periodHistory.ovulasi ?? DateTime.now();
+              daysUntilNextOvulation = nextOvulation.difference(specifiedDate).inDays;
+
+              nextFertileStart = periodHistory.masaSuburAwal ?? DateTime.now();
+              nextFertileEnd = periodHistory.masaSuburAkhir ?? DateTime.now();
+              daysUntilNextFertile = nextFertileStart.difference(specifiedDate).inDays;
+
+              nextLutealStart = periodHistory.masaSuburAkhir ?? DateTime.now();
+
+              daysUntilNextLuteal = nextLutealStart.difference(specifiedDate).inDays;
+              break;
+            }
+
+            if (specifiedDate.isAfter(lutealStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(lutealEnd.add(Duration(days: 1)))) {
+              event = AppLocalizations.of(context)!.lutealPhase;
+              pregnancyChances = AppLocalizations.of(context)!.low;
+              currentDataIsActual = periodHistory.isActual ?? '';
+              eventId = periodHistory.id ?? 0;
+
+              if (key == countPeriodHistoryData - 1) {
+                nextMenstruationStart = periodHistory.haidBerikutnyaAwal ?? DateTime.now();
+                nextMenstruationEnd = periodHistory.haidBerikutnyaAkhir ?? DateTime.now();
+                nextFollicularStart = (periodHistory.haidBerikutnyaAkhir ?? DateTime.now()).add(Duration(days: 1));
+                nextFollicularEnd = (periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
+                nextFertileStart = periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now();
+                nextFertileEnd = periodHistory.masaSuburBerikutnyaAkhir ?? DateTime.now();
+                nextOvulation = periodHistory.ovulasiBerikutnya ?? DateTime.now();
+                nextLutealStart = (periodHistory.masaSuburBerikutnyaAkhir ?? DateTime.now()).add(Duration(days: 1));
+                nextLutealEnd = periodHistory.hariTerakhirSiklusBerikutnya ?? DateTime.now();
+              } else {
+                var nextRecord = getAllPeriodHistory[currentIndex + 1];
+                nextMenstruationStart = nextRecord.haidAwal ?? DateTime.now();
+                nextMenstruationEnd = nextRecord.haidAkhir ?? DateTime.now();
+                nextFollicularStart = (nextRecord.haidAkhir ?? DateTime.now()).add(Duration(days: 1));
+                nextFollicularEnd = (nextRecord.masaSuburAwal ?? DateTime.now()).subtract(Duration(days: 1));
+                nextFertileStart = nextRecord.masaSuburAwal ?? DateTime.now();
+                nextFertileEnd = nextRecord.masaSuburAkhir ?? DateTime.now();
+                nextOvulation = nextRecord.ovulasi ?? DateTime.now();
+                nextLutealStart = (nextRecord.masaSuburAkhir ?? DateTime.now()).add(Duration(days: 1));
+                nextLutealEnd = (nextRecord.haidBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
+              }
+              daysUntilNextMenstruation = nextMenstruationStart.difference(specifiedDate).inDays;
+              daysUntilNextOvulation = nextOvulation.difference(specifiedDate).inDays;
+              daysUntilNextFollicular = nextFollicularStart.difference(specifiedDate).inDays;
+              daysUntilNextFertile = nextFertileStart.difference(specifiedDate).inDays;
+              daysUntilNextLuteal = nextLutealStart.difference(specifiedDate).inDays;
+              break;
+            }
           }
-
-          daysUntilNextMenstruation = nextMenstruationStart.difference(specifiedDate).inDays;
-          daysUntilNextOvulation = nextOvulation.difference(specifiedDate).inDays;
-          daysUntilNextFollicular = nextFollicularStart.difference(specifiedDate).inDays;
-          daysUntilNextFertile = nextFertileStart.difference(specifiedDate).inDays;
-
-          nextLutealStart = fertileEnd.add(Duration(days: 1));
-          daysUntilNextLuteal = nextLutealStart.difference(specifiedDate).inDays;
-          break;
-        }
-
-        if ((specifiedDate.isAfter(follicularStart) && specifiedDate.isBefore(follicularEnd)) || specifiedDate.isAtSameMomentAs(follicularStart) || specifiedDate.isAtSameMomentAs(follicularEnd)) {
-          event = storageService.getLanguage() == "en" ? "Follicular Phase" : "Fase Folikuler";
-          pregnancyChances = storageService.getLanguage() == "en" ? "Low" : "Rendah";
-          currentDataIsActual = periodHistory.isActual ?? '';
-          eventId = periodHistory.id ?? 0;
-
-          if (key == countPeriodHistoryData - 1) {
-            nextMenstruationStart = periodHistory.haidBerikutnyaAwal ?? DateTime.now();
-            nextMenstruationEnd = periodHistory.haidBerikutnyaAkhir ?? DateTime.now();
-            nextFollicularStart = (periodHistory.haidBerikutnyaAkhir ?? DateTime.now()).add(Duration(days: 1));
-            nextFollicularEnd = (periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
-          } else {
-            var nextRecord = getAllPeriodHistory[currentIndex + 1];
-            nextMenstruationStart = nextRecord.haidAwal ?? DateTime.now();
-            nextMenstruationEnd = nextRecord.haidAkhir ?? DateTime.now();
-            nextFollicularStart = (nextRecord.haidAkhir ?? DateTime.now()).add(Duration(days: 1));
-            nextFollicularEnd = (nextRecord.masaSuburAwal ?? DateTime.now()).subtract(Duration(days: 1));
-            nextLutealEnd = nextRecord.haidAwal ?? DateTime.now();
-          }
-          daysUntilNextMenstruation = nextMenstruationStart.difference(specifiedDate).inDays;
-          daysUntilNextFollicular = nextFollicularStart.difference(specifiedDate).inDays;
-
-          nextOvulation = periodHistory.ovulasi ?? DateTime.now();
-          daysUntilNextOvulation = nextOvulation.difference(specifiedDate).inDays;
-
-          nextFertileStart = periodHistory.masaSuburAwal ?? DateTime.now();
-          nextFertileEnd = periodHistory.masaSuburAkhir ?? DateTime.now();
-          daysUntilNextFertile = nextFertileStart.difference(specifiedDate).inDays;
-
-          nextLutealStart = periodHistory.masaSuburAkhir ?? DateTime.now();
-
-          daysUntilNextLuteal = nextLutealStart.difference(specifiedDate).inDays;
-          break;
-        }
-
-        if (specifiedDate.isAfter(lutealStart.subtract(Duration(days: 1))) && specifiedDate.isBefore(lutealEnd.add(Duration(days: 1)))) {
-          event = storageService.getLanguage() == "en" ? "Luteal Phase" : "Fase Luteal";
-          pregnancyChances = storageService.getLanguage() == "en" ? "Low" : "Rendah";
-          currentDataIsActual = periodHistory.isActual ?? '';
-          eventId = periodHistory.id ?? 0;
-
-          if (key == countPeriodHistoryData - 1) {
-            nextMenstruationStart = periodHistory.haidBerikutnyaAwal ?? DateTime.now();
-            nextMenstruationEnd = periodHistory.haidBerikutnyaAkhir ?? DateTime.now();
-            nextFollicularStart = (periodHistory.haidBerikutnyaAkhir ?? DateTime.now()).add(Duration(days: 1));
-            nextFollicularEnd = (periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
-            nextFertileStart = periodHistory.masaSuburBerikutnyaAwal ?? DateTime.now();
-            nextFertileEnd = periodHistory.masaSuburBerikutnyaAkhir ?? DateTime.now();
-            nextOvulation = periodHistory.ovulasiBerikutnya ?? DateTime.now();
-            nextLutealStart = (periodHistory.masaSuburBerikutnyaAkhir ?? DateTime.now()).add(Duration(days: 1));
-            nextLutealEnd = periodHistory.hariTerakhirSiklusBerikutnya ?? DateTime.now();
-          } else {
-            var nextRecord = getAllPeriodHistory[currentIndex + 1];
-            nextMenstruationStart = nextRecord.haidAwal ?? DateTime.now();
-            nextMenstruationEnd = nextRecord.haidAkhir ?? DateTime.now();
-            nextFollicularStart = (nextRecord.haidAkhir ?? DateTime.now()).add(Duration(days: 1));
-            nextFollicularEnd = (nextRecord.masaSuburAwal ?? DateTime.now()).subtract(Duration(days: 1));
-            nextFertileStart = nextRecord.masaSuburAwal ?? DateTime.now();
-            nextFertileEnd = nextRecord.masaSuburAkhir ?? DateTime.now();
-            nextOvulation = nextRecord.ovulasi ?? DateTime.now();
-            nextLutealStart = (nextRecord.masaSuburAkhir ?? DateTime.now()).add(Duration(days: 1));
-            nextLutealEnd = (nextRecord.haidBerikutnyaAwal ?? DateTime.now()).subtract(Duration(days: 1));
-          }
-          daysUntilNextMenstruation = nextMenstruationStart.difference(specifiedDate).inDays;
-          daysUntilNextOvulation = nextOvulation.difference(specifiedDate).inDays;
-          daysUntilNextFollicular = nextFollicularStart.difference(specifiedDate).inDays;
-          daysUntilNextFertile = nextFertileStart.difference(specifiedDate).inDays;
-          daysUntilNextLuteal = nextLutealStart.difference(specifiedDate).inDays;
-          break;
         }
       }
 

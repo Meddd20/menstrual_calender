@@ -6,6 +6,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
+import 'package:periodnpregnancycalender/app/modules/home/views/end_pregnancy_view.dart';
 import 'package:periodnpregnancycalender/app/modules/login/views/login_view.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/pin/views/pin_view.dart';
@@ -274,304 +275,346 @@ class ProfileView extends GetView<ProfileController> {
                                 ],
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (BuildContext context) {
-                                    return Padding(
-                                      padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 25.h),
-                                      child: Wrap(
-                                        children: [
-                                          Obx(
-                                            () => Column(
+                            Visibility(
+                              visible: controller.storageService.getIsPregnant() == "1",
+                              child: Container(
+                                width: Get.width,
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  color: Colors.white,
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/icon/newborns.png",
+                                        height: 100,
+                                      ),
+                                      SizedBox(width: 15),
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)!.pregnancyUpdates,
+                                              style: CustomTextStyle.bold(16, height: 1.5),
+                                            ),
+                                            SizedBox(height: 10),
+                                            CustomButton(
+                                              text: AppLocalizations.of(context)!.endPregnancy,
+                                              onPressed: () => Get.to(() => EndPregnancyView()),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Visibility(
+                              visible: controller.storageService.getIsPregnant() != "1",
+                              child: GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return Padding(
+                                        padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 25.h),
+                                        child: Wrap(
+                                          children: [
+                                            Obx(
+                                              () => Column(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/image/target.png',
+                                                    width: 70,
+                                                    height: 70,
+                                                  ),
+                                                  SizedBox(height: 15),
+                                                  Text(
+                                                    AppLocalizations.of(context)!.usagePreference,
+                                                    style: CustomTextStyle.extraBold(22),
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                  Container(
+                                                    width: Get.width,
+                                                    height: 120.h,
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors.primary,
+                                                      borderRadius: BorderRadius.circular(30),
+                                                    ),
+                                                    child: RadioListTile<int>(
+                                                      value: 0,
+                                                      groupValue: controller.radioGoalSelect.value,
+                                                      onChanged: (int? value) {
+                                                        if (value != null && controller.getRadioGoalSelect != value) {
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return SimpleDialog(
+                                                                title: Text(
+                                                                  AppLocalizations.of(context)!.changeGoalConfirm,
+                                                                  style: CustomTextStyle.bold(22),
+                                                                ),
+                                                                contentPadding: EdgeInsets.all(16.0),
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child: ElevatedButton(
+                                                                          onPressed: () => Get.back(),
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            backgroundColor: Colors.transparent,
+                                                                            elevation: 0,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                            shadowColor: Colors.transparent,
+                                                                            minimumSize: Size(Get.width, 45.h),
+                                                                          ),
+                                                                          child: Text(
+                                                                            AppLocalizations.of(context)!.no,
+                                                                            style: CustomTextStyle.bold(16),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(width: 5),
+                                                                      Expanded(
+                                                                        child: ElevatedButton(
+                                                                          onPressed: () {
+                                                                            Get.to(() => ChangePurposeView());
+                                                                          },
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            backgroundColor: AppColors.primary,
+                                                                            elevation: 0,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                            shadowColor: AppColors.primary,
+                                                                            minimumSize: Size(Get.width, 45.h),
+                                                                          ),
+                                                                          child: Text(
+                                                                            AppLocalizations.of(context)!.yes,
+                                                                            style: CustomTextStyle.bold(16, color: Colors.white),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        }
+                                                      },
+                                                      activeColor: Colors.white,
+                                                      contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
+                                                      hoverColor: Colors.black,
+                                                      title: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Container(
+                                                              padding: EdgeInsets.only(left: 8),
+                                                              alignment: Alignment.centerLeft,
+                                                              child: Text(
+                                                                AppLocalizations.of(context)!.trackPeriodGoal,
+                                                                style: CustomTextStyle.extraBold(18, color: Colors.white),
+                                                                textAlign: TextAlign.left,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            child: Container(
+                                                              height: 120.h,
+                                                              alignment: Alignment.centerRight,
+                                                              child: ClipRRect(
+                                                                borderRadius: BorderRadius.circular(30),
+                                                                child: Image.asset(
+                                                                  "assets/a0ffb3b8a7b12e87a13bac8ea30839d9.png",
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 15),
+                                                  Container(
+                                                    width: Get.width,
+                                                    height: 120.h,
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors.primary,
+                                                      borderRadius: BorderRadius.circular(30),
+                                                    ),
+                                                    child: RadioListTile<int>(
+                                                      value: 1,
+                                                      groupValue: controller.radioGoalSelect.value,
+                                                      onChanged: (int? value) {
+                                                        if (value != null && controller.getRadioGoalSelect != value) {
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return SimpleDialog(
+                                                                title: Text(
+                                                                  AppLocalizations.of(context)!.changeGoalConfirm,
+                                                                  style: CustomTextStyle.bold(22),
+                                                                ),
+                                                                contentPadding: EdgeInsets.all(16.0),
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child: ElevatedButton(
+                                                                          onPressed: () => Get.back(),
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            backgroundColor: Colors.transparent,
+                                                                            elevation: 0,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                            shadowColor: Colors.transparent,
+                                                                            minimumSize: Size(Get.width, 45.h),
+                                                                          ),
+                                                                          child: Text(
+                                                                            AppLocalizations.of(context)!.no,
+                                                                            style: CustomTextStyle.bold(16),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(width: 5),
+                                                                      Expanded(
+                                                                        child: ElevatedButton(
+                                                                          onPressed: () {
+                                                                            Get.to(() => ChangePurposeView());
+                                                                          },
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            backgroundColor: AppColors.primary,
+                                                                            elevation: 0,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                            shadowColor: AppColors.primary,
+                                                                            minimumSize: Size(Get.width, 45.h),
+                                                                          ),
+                                                                          child: Text(
+                                                                            AppLocalizations.of(context)!.yes,
+                                                                            style: CustomTextStyle.bold(16, color: Colors.white),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        } else {
+                                                          controller.setRadioGoalSelect(value ?? 1);
+                                                        }
+                                                      },
+                                                      activeColor: Colors.white,
+                                                      contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
+                                                      title: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 2,
+                                                            child: Container(
+                                                              padding: EdgeInsets.only(left: 8),
+                                                              alignment: Alignment.centerLeft,
+                                                              child: Text(
+                                                                AppLocalizations.of(context)!.pregnancyGoal,
+                                                                style: CustomTextStyle.extraBold(18, color: Colors.white),
+                                                                textAlign: TextAlign.left,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 3,
+                                                            child: Container(
+                                                              height: 120.h,
+                                                              alignment: Alignment.centerRight,
+                                                              child: ClipRRect(
+                                                                borderRadius: BorderRadius.circular(30),
+                                                                child: Image.asset(
+                                                                  "assets/582f6eee055d99f5cec860e1df879f99.png",
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ).then((value) {
+                                    controller.usePurpose();
+                                  });
+                                },
+                                child: Wrap(
+                                  children: [
+                                    Container(
+                                      width: Get.width,
+                                      decoration: ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        color: Colors.white,
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(20),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: 24,
+                                              child: Image.asset(
+                                                'assets/icon/targets.png',
+                                                width: 24,
+                                                height: 24,
+                                                color: Colors.black.withOpacity(0.6),
+                                              ),
+                                            ),
+                                            SizedBox(width: 15),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Image.asset(
-                                                  'assets/image/target.png',
-                                                  width: 70,
-                                                  height: 70,
-                                                ),
-                                                SizedBox(height: 15),
                                                 Text(
                                                   AppLocalizations.of(context)!.usagePreference,
-                                                  style: CustomTextStyle.extraBold(22),
+                                                  style: CustomTextStyle.bold(15, height: 1.75),
                                                 ),
-                                                SizedBox(height: 20),
-                                                Container(
-                                                  width: Get.width,
-                                                  height: 120.h,
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.primary,
-                                                    borderRadius: BorderRadius.circular(30),
-                                                  ),
-                                                  child: RadioListTile<int>(
-                                                    value: 0,
-                                                    groupValue: controller.radioGoalSelect.value,
-                                                    onChanged: (int? value) {
-                                                      if (value != null && controller.getRadioGoalSelect != value) {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return SimpleDialog(
-                                                              title: Text(
-                                                                AppLocalizations.of(context)!.changeGoalConfirm,
-                                                                style: CustomTextStyle.bold(22),
-                                                              ),
-                                                              contentPadding: EdgeInsets.all(16.0),
-                                                              children: [
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child: ElevatedButton(
-                                                                        onPressed: () => Get.back(),
-                                                                        style: ElevatedButton.styleFrom(
-                                                                          backgroundColor: Colors.transparent,
-                                                                          elevation: 0,
-                                                                          shape: RoundedRectangleBorder(
-                                                                            borderRadius: BorderRadius.circular(10),
-                                                                          ),
-                                                                          shadowColor: Colors.transparent,
-                                                                          minimumSize: Size(Get.width, 45.h),
-                                                                        ),
-                                                                        child: Text(
-                                                                          AppLocalizations.of(context)!.no,
-                                                                          style: CustomTextStyle.bold(16),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(width: 5),
-                                                                    Expanded(
-                                                                      child: ElevatedButton(
-                                                                        onPressed: () {
-                                                                          Get.to(() => ChangePurposeView());
-                                                                        },
-                                                                        style: ElevatedButton.styleFrom(
-                                                                          backgroundColor: AppColors.primary,
-                                                                          elevation: 0,
-                                                                          shape: RoundedRectangleBorder(
-                                                                            borderRadius: BorderRadius.circular(10),
-                                                                          ),
-                                                                          shadowColor: AppColors.primary,
-                                                                          minimumSize: Size(Get.width, 45.h),
-                                                                        ),
-                                                                        child: Text(
-                                                                          AppLocalizations.of(context)!.yes,
-                                                                          style: CustomTextStyle.bold(16, color: Colors.white),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                      }
-                                                    },
-                                                    activeColor: Colors.white,
-                                                    contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
-                                                    hoverColor: Colors.black,
-                                                    title: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Container(
-                                                            padding: EdgeInsets.only(left: 8),
-                                                            alignment: Alignment.centerLeft,
-                                                            child: Text(
-                                                              AppLocalizations.of(context)!.trackPeriodGoal,
-                                                              style: CustomTextStyle.extraBold(18, color: Colors.white),
-                                                              textAlign: TextAlign.left,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Container(
-                                                            height: 120.h,
-                                                            alignment: Alignment.centerRight,
-                                                            child: ClipRRect(
-                                                              borderRadius: BorderRadius.circular(30),
-                                                              child: Image.asset(
-                                                                "assets/a0ffb3b8a7b12e87a13bac8ea30839d9.png",
-                                                                fit: BoxFit.cover,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 15),
-                                                Container(
-                                                  width: Get.width,
-                                                  height: 120.h,
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.primary,
-                                                    borderRadius: BorderRadius.circular(30),
-                                                  ),
-                                                  child: RadioListTile<int>(
-                                                    value: 1,
-                                                    groupValue: controller.radioGoalSelect.value,
-                                                    onChanged: (int? value) {
-                                                      if (value != null && controller.getRadioGoalSelect != value) {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return SimpleDialog(
-                                                              title: Text(
-                                                                AppLocalizations.of(context)!.changeGoalConfirm,
-                                                                style: CustomTextStyle.bold(22),
-                                                              ),
-                                                              contentPadding: EdgeInsets.all(16.0),
-                                                              children: [
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child: ElevatedButton(
-                                                                        onPressed: () => Get.back(),
-                                                                        style: ElevatedButton.styleFrom(
-                                                                          backgroundColor: Colors.transparent,
-                                                                          elevation: 0,
-                                                                          shape: RoundedRectangleBorder(
-                                                                            borderRadius: BorderRadius.circular(10),
-                                                                          ),
-                                                                          shadowColor: Colors.transparent,
-                                                                          minimumSize: Size(Get.width, 45.h),
-                                                                        ),
-                                                                        child: Text(
-                                                                          AppLocalizations.of(context)!.no,
-                                                                          style: CustomTextStyle.bold(16),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(width: 5),
-                                                                    Expanded(
-                                                                      child: ElevatedButton(
-                                                                        onPressed: () {
-                                                                          Get.to(() => ChangePurposeView());
-                                                                        },
-                                                                        style: ElevatedButton.styleFrom(
-                                                                          backgroundColor: AppColors.primary,
-                                                                          elevation: 0,
-                                                                          shape: RoundedRectangleBorder(
-                                                                            borderRadius: BorderRadius.circular(10),
-                                                                          ),
-                                                                          shadowColor: AppColors.primary,
-                                                                          minimumSize: Size(Get.width, 45.h),
-                                                                        ),
-                                                                        child: Text(
-                                                                          AppLocalizations.of(context)!.yes,
-                                                                          style: CustomTextStyle.bold(16, color: Colors.white),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                      } else {
-                                                        controller.setRadioGoalSelect(value ?? 1);
-                                                      }
-                                                    },
-                                                    activeColor: Colors.white,
-                                                    contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
-                                                    title: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 2,
-                                                          child: Container(
-                                                            padding: EdgeInsets.only(left: 8),
-                                                            alignment: Alignment.centerLeft,
-                                                            child: Text(
-                                                              AppLocalizations.of(context)!.pregnancyGoal,
-                                                              style: CustomTextStyle.extraBold(18, color: Colors.white),
-                                                              textAlign: TextAlign.left,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          flex: 3,
-                                                          child: Container(
-                                                            height: 120.h,
-                                                            alignment: Alignment.centerRight,
-                                                            child: ClipRRect(
-                                                              borderRadius: BorderRadius.circular(30),
-                                                              child: Image.asset(
-                                                                "assets/582f6eee055d99f5cec860e1df879f99.png",
-                                                                fit: BoxFit.cover,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
+                                                Text(
+                                                  controller.storageService.getIsPregnant() == "0" ? AppLocalizations.of(context)!.trackPeriodGoal : AppLocalizations.of(context)!.pregnancyGoal,
+                                                  style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
                                                 ),
                                               ],
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ).then((value) {
-                                  controller.usePurpose();
-                                });
-                              },
-                              child: Wrap(
-                                children: [
-                                  Container(
-                                    width: Get.width,
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      color: Colors.white,
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(20),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: 24,
-                                            child: Image.asset(
-                                              'assets/icon/targets.png',
-                                              width: 24,
-                                              height: 24,
-                                              color: Colors.black.withOpacity(0.6),
-                                            ),
-                                          ),
-                                          SizedBox(width: 15),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)!.usagePreference,
-                                                style: CustomTextStyle.bold(15, height: 1.75),
-                                              ),
-                                              Text(
-                                                controller.storageService.getIsPregnant() == "0" ? AppLocalizations.of(context)!.trackPeriodGoal : AppLocalizations.of(context)!.pregnancyGoal,
-                                                style: CustomTextStyle.medium(12, height: 1.75, color: Colors.black.withOpacity(0.6)),
-                                              ),
-                                            ],
-                                          ),
-                                          Spacer(),
-                                          Icon(Iconsax.arrow_right_34)
-                                        ],
+                                            Spacer(),
+                                            Icon(Iconsax.arrow_right_34)
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                             SizedBox(height: 15.h),

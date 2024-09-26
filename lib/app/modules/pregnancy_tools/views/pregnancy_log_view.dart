@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_expanded_calendar.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_filter_chip.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/logs_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/notes_view.dart';
@@ -24,9 +24,67 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Text(
-            AppLocalizations.of(context)!.pregnancyLog,
-            style: CustomTextStyle.extraBold(20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.pregnancyLog,
+                    style: CustomTextStyle.extraBold(20),
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return Container(
+                        padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
+                        height: Get.height * 0.97,
+                        child: SingleChildScrollView(
+                          child: Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.pregnancyDailyLog,
+                                    style: CustomTextStyle.extraBold(22, height: 1.5),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    AppLocalizations.of(context)!.pregnancyDailyLogDesc,
+                                    style: CustomTextStyle.medium(16, height: 1.75),
+                                  ),
+                                  SizedBox(height: 15),
+                                ],
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.close),
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                icon: Icon(
+                  Icons.help,
+                  size: 20,
+                  color: AppColors.black.withOpacity(0.4),
+                ),
+              ),
+            ],
           ),
         ),
         centerTitle: true,
@@ -127,12 +185,10 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                               color: Colors.transparent,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: TableCalendar(
-                              focusedDay: controller.getFocusedDate,
+                            child: CustomExpandedCalendar(
                               firstDay: DateTime.parse(controller.currentlyPregnantData.value.hariPertamaHaidTerakhir ?? DateTime.now().toString()),
                               lastDay: DateTime.now(),
-                              startingDayOfWeek: StartingDayOfWeek.monday,
-                              locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
+                              focusedDay: controller.getFocusedDate,
                               onDaySelected: (selectedDay, focusedDay) {
                                 controller.setSelectedDate(selectedDay);
                                 controller.setFocusedDate(focusedDay);
@@ -145,79 +201,8 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                                 controller.selectedDate,
                                 day,
                               ),
-                              rowHeight: 50,
-                              daysOfWeekHeight: 25.0,
-                              calendarStyle: CalendarStyle(
-                                cellMargin: EdgeInsets.all(6),
-                                outsideDaysVisible: false,
-                                isTodayHighlighted: true,
-                                rangeStartDecoration: BoxDecoration(
-                                  color: Colors.red,
-                                  shape: BoxShape.circle,
-                                ),
-                                rangeEndDecoration: BoxDecoration(
-                                  color: Colors.red,
-                                  shape: BoxShape.circle,
-                                ),
-                                withinRangeDecoration: BoxDecoration(
-                                  color: Colors.red.withOpacity(0.5),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              headerStyle: HeaderStyle(
-                                formatButtonVisible: false,
-                                leftChevronVisible: true,
-                                rightChevronVisible: true,
-                                titleCentered: true,
-                                titleTextStyle: CustomTextStyle.bold(16),
-                                headerMargin: EdgeInsets.only(bottom: 10),
-                              ),
-                              availableGestures: AvailableGestures.all,
-                              calendarBuilders: CalendarBuilders(dowBuilder: (context, day) {
-                                return Center(
-                                  child: Text(
-                                    DateFormat.E().format(day),
-                                    style: CustomTextStyle.regular(14),
-                                  ),
-                                );
-                              }, defaultBuilder: (context, day, focusedDay) {
-                                return Container(
-                                  child: Center(
-                                    child: Text(
-                                      '${day.day}',
-                                      style: CustomTextStyle.bold(16),
-                                    ),
-                                  ),
-                                );
-                              }, selectedBuilder: (context, day, focusedDay) {
-                                return Container(
-                                  margin: EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: Colors.deepPurpleAccent,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '${day.day}',
-                                      style: CustomTextStyle.bold(16, color: Colors.white),
-                                    ),
-                                  ),
-                                );
-                              }, todayBuilder: (context, day, focusedDay) {
-                                return Container(
-                                  margin: EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: Colors.deepPurpleAccent[100],
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '${day.day}',
-                                      style: CustomTextStyle.bold(16, color: Colors.white),
-                                    ),
-                                  ),
-                                );
-                              }, markerBuilder: (context, day, events) {
+                              calendarFormat: CalendarFormat.month,
+                              markerBuilder: (context, day, events) {
                                 for (var i = 0; i < controller.tanggalAwalMinggu.length; i++) {
                                   var weekDatePregnancy = controller.tanggalAwalMinggu[i];
                                   if (day.isAtSameMomentAs(weekDatePregnancy)) {
@@ -239,8 +224,8 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                                     );
                                   }
                                 }
-                                return null;
-                              }),
+                                return SizedBox();
+                              },
                             ),
                           ),
                           SizedBox(height: 25),

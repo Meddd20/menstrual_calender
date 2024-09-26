@@ -4,10 +4,8 @@ import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class PregnancyHistoryRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  PregnancyHistoryRepository(this._databaseHelper);
 
   Future<void> beginPregnancy(PregnancyHistory pregnancyHistory) async {
     final db = await _databaseHelper.database;
@@ -56,7 +54,12 @@ class PregnancyHistoryRepository {
   Future<List<PregnancyHistory>> getAllPregnancyHistory(int user_id) async {
     final db = await _databaseHelper.database;
     try {
-      List<Map<String, dynamic>> pregnancyData = await db.query("tb_riwayat_kehamilan", where: 'user_id = ?', whereArgs: [user_id], orderBy: 'hari_pertama_haid_terakhir ASC');
+      List<Map<String, dynamic>> pregnancyData = await db.query(
+        "tb_riwayat_kehamilan",
+        where: 'user_id = ?',
+        whereArgs: [user_id],
+        orderBy: 'hari_pertama_haid_terakhir ASC',
+      );
 
       return List.generate(pregnancyData.length, (i) {
         return PregnancyHistory.fromJson(pregnancyData[i]);

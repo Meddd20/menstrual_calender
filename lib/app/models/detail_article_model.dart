@@ -51,7 +51,6 @@ class Article {
   final String? videoLink;
   final String? source;
   final String? tags;
-  final String? publishAt;
   final String? createdAt;
   final String? updatedAt;
 
@@ -69,7 +68,6 @@ class Article {
     this.videoLink,
     this.source,
     this.tags,
-    this.publishAt,
     this.createdAt,
     this.updatedAt,
   });
@@ -89,7 +87,6 @@ class Article {
       videoLink: json['video_link'],
       source: json['source'],
       tags: json['tags'],
-      publishAt: json['publish_at'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );
@@ -106,8 +103,6 @@ class Comment {
   final String? parentCommentUserUsername;
   final String? content;
   final int? likes;
-  final String? isPinned;
-  final String? isHidden;
   final String? createdAt;
   final String? updatedAt;
   final bool? is_liked_by_active_user;
@@ -123,8 +118,6 @@ class Comment {
     this.parentCommentUserUsername,
     this.content,
     this.likes,
-    this.isPinned,
-    this.isHidden,
     this.createdAt,
     this.updatedAt,
     this.is_liked_by_active_user,
@@ -142,8 +135,6 @@ class Comment {
       parentCommentUserUsername: json['parent_comment_user_username'],
       content: json['content'],
       likes: json['likes'],
-      isPinned: json['is_pinned'],
-      isHidden: json['is_hidden'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
       is_liked_by_active_user: json['is_liked_by_active_user'],

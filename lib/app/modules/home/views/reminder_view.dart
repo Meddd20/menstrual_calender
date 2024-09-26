@@ -306,7 +306,7 @@ class ReminderView extends GetView<ReminderController> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            controller.formatDateTime(reminder.datetime),
+                                            controller.formatDateTime(reminder.datetime, context),
                                             style: CustomTextStyle.regular(14, height: 1.5),
                                           ),
                                           SizedBox(height: 2.h),

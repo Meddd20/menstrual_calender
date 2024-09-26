@@ -7,17 +7,18 @@ class ApiEndPoints {
 class _AuthEndPoints {
   final String storeFcmToken = 'notifications/token';
 
-  final String login = 'auth/login';
-  final String regisUser = 'auth/register/user';
-  final String requestVerification = 'auth/requestverification';
-  final String verifyCode = 'auth/verifyverification';
-  final String resetPassword = 'auth/changepassword';
-  final String logOut = 'auth/logout';
-  final String checkToken = 'auth/check-token';
-  final String profile = 'auth/get-profile';
-  final String editProfile = 'auth/update-profile';
-  final String getSycData = 'auth/sync-data';
-  final String deleteData = 'auth/delete-data';
+  final String login = 'login';
+  final String regisUser = 'register/user';
+  final String requestVerification = 'requestverification';
+  final String verifyCode = 'verifyverification';
+  final String resetPassword = 'changepassword';
+  final String logOut = 'logout';
+  final String checkToken = 'check-token';
+  final String profile = 'get-profile';
+  final String editProfile = 'update-profile';
+  final String getSycData = 'sync-data';
+  final String getSycMasterData = 'sync-master-data';
+  final String deleteData = 'delete-data';
 
   final String getAllArticle = 'articles/show-all-articles';
   final String getArticle = 'articles/show-articles';
@@ -26,6 +27,7 @@ class _AuthEndPoints {
   final String updatePeriod = 'period/update-period';
 
   final String storeLog = 'daily-log/update-log';
+  final String deleteLog = 'daily-log/delete-log';
 
   final String storeReminder = 'reminder/store-reminder';
   final String editReminder = 'reminder/edit-reminder';

@@ -6,13 +6,11 @@ import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -36,10 +34,8 @@ class ReminderController extends GetxController {
 
   @override
   void onInit() {
-    final databaseHelper = DatabaseHelper.instance;
-    final localLogRepository = LocalLogRepository(databaseHelper);
-    _logService = LogService(localLogRepository);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
+    _logService = LogService();
+    _syncDataRepository = SyncDataRepository();
 
     reminderFuture = fetchAllReminder();
     super.onInit();
@@ -103,16 +99,16 @@ class ReminderController extends GetxController {
     update();
   }
 
-  String formatDateTime(String? datetime) {
+  String formatDateTime(String? datetime, context) {
     DateTime? reminderDate = datetime != null ? DateTime.parse(datetime) : null;
     DateTime currentDate = DateTime.now();
     DateTime tomorrowDate = DateTime.now().add(Duration(days: 1));
 
     if (reminderDate != null) {
       if (isSameDay(reminderDate, currentDate)) {
-        return 'Today';
+        return AppLocalizations.of(context)!.today;
       } else if (isSameDay(reminderDate, tomorrowDate)) {
-        return 'Tomorrow';
+        return AppLocalizations.of(context)!.tomorrow;
       } else {
         return formatDayOfWeekDate(reminderDate.toString());
       }
@@ -135,16 +131,16 @@ class ReminderController extends GetxController {
   void checkReminder(BuildContext context) {
     try {
       if (formattedSelectedDate == null || formattedSelectedDate!.isEmpty) {
-        throw "Please select a date when the reminder will be triggered";
+        throw AppLocalizations.of(context)!.reminderSelectDate;
       }
       if (formattedSelectedTime == null || formattedSelectedTime!.isEmpty) {
-        throw "Please select a time when the reminder will be triggered";
+        throw AppLocalizations.of(context)!.reminderSelectTime;
       }
       if (getReminderTitle().isEmpty) {
-        throw "Please fill out the reminder title";
+        throw AppLocalizations.of(context)!.reminderFillTitle;
       }
       if (getReminderDescription().isEmpty) {
-        throw "Please fill out the reminder description";
+        throw AppLocalizations.of(context)!.reminderFillDescription;
       }
 
       storeReminder(context);

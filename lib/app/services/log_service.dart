@@ -10,11 +10,11 @@ import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class LogService {
   final Logger _logger = Logger();
-  final LocalLogRepository _localLogRepository;
-  final StorageService storageService = StorageService();
-  final LocalNotificationService _localNotificationService = LocalNotificationService();
 
-  LogService(this._localLogRepository);
+  final StorageService storageService = StorageService();
+
+  final LocalNotificationService _localNotificationService = LocalNotificationService();
+  late final LocalLogRepository _localLogRepository = LocalLogRepository();
 
   Future<void> upsertDailyLog(String date, String? sexActivity, String? bleedingFlow, Map<String, bool>? symptoms, String? vaginalDischarge, Map<String, bool>? moods, Map<String, bool>? others, Map<String, bool>? physicalActivity, String? temperature, String? weight, String? notes) async {
     try {

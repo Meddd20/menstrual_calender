@@ -3,10 +3,8 @@ import 'package:periodnpregnancycalender/app/models/master_vitamins_model.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class MasterVitaminsRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  MasterVitaminsRepository(this._databaseHelper);
 
   Future<List<MasterVitamin>> getAllVitamins() async {
     final db = await _databaseHelper.database;

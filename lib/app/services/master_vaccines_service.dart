@@ -2,9 +2,7 @@ import 'package:periodnpregnancycalender/app/models/master_vaccines_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_vaccines_repository.dart';
 
 class MasterVaccinesService {
-  final MasterVaccinesRepository _masterVaccinesRepository;
-
-  MasterVaccinesService(this._masterVaccinesRepository);
+  late final MasterVaccinesRepository _masterVaccinesRepository = MasterVaccinesRepository();
 
   Future<List<MasterVaccine>> getAllVaccines() async {
     return await _masterVaccinesRepository.getAllVaccines();

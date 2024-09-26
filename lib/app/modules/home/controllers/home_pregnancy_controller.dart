@@ -5,22 +5,16 @@ import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/navigation_menu/views/navigation_menu_view.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePregnancyController extends GetxController {
   final ApiService apiService = ApiService();
-  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
   late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
   late Future<void> pregnancyData;
   Rx<CurrentlyPregnant> currentlyPregnantData = Rx<CurrentlyPregnant>(CurrentlyPregnant());
@@ -51,19 +45,8 @@ class HomePregnancyController extends GetxController {
 
   @override
   void onInit() {
-    // storageService.storeIsPregnant("0");
-    final databaseHelper = DatabaseHelper.instance;
-    final PregnancyHistoryRepository pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    final MasterDataKehamilanRepository masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
-    final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
-    _pregnancyHistoryService = PregnancyHistoryService(
-      pregnancyHistoryRepository,
-      masterKehamilanRepository,
-      periodHistoryRepository,
-      localProfileRepository,
-    );
+    _syncDataRepository = SyncDataRepository();
+    _pregnancyHistoryService = PregnancyHistoryService();
     pregnancyData = fetchPregnancyData();
     super.onInit();
   }

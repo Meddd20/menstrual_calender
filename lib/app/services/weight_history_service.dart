@@ -9,13 +9,11 @@ import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class WeightHistoryService {
-  final WeightHistoryRepository _weightHistoryRepository;
-  final PregnancyHistoryRepository _pregnancyHistoryRepository;
-
   final Logger _logger = Logger();
   final StorageService storageService = StorageService();
 
-  WeightHistoryService(this._weightHistoryRepository, this._pregnancyHistoryRepository);
+  late final WeightHistoryRepository _weightHistoryRepository = WeightHistoryRepository();
+  late final PregnancyHistoryRepository _pregnancyHistoryRepository = PregnancyHistoryRepository();
 
   Future<void> initWeightGain(double tinggiBadan, double beratPrakehamilan, int isTwin) async {
     try {

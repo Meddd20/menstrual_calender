@@ -91,7 +91,7 @@ class DatabaseHelper {
       status TEXT CHECK(status IN('Verified','Unverified')),
       nama TEXT,
       tanggal_lahir DATE,
-      is_pregnant TEXT CHECK(is_pregnant IN ('0', '1')) DEFAULT '0',
+      is_pregnant TEXT CHECK(is_pregnant IN ('0', '1', '2')) DEFAULT '0',
       email TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP

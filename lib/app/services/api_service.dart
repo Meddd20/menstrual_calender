@@ -35,6 +35,11 @@ class ApiService {
     return await http.get(url, headers: loginHeaders);
   }
 
+  Future<http.Response> getSycMasterDataApi() async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getSycMasterData);
+    return await http.get(url, headers: loginHeaders);
+  }
+
   Future<http.Response> storeFcmToken(String fcmToken, int userId) async {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.storeFcmToken);
     Map<String, String> body = {
@@ -195,6 +200,16 @@ class ApiService {
     };
 
     return await http.patch(url, body: body, headers: loginHeaders);
+  }
+
+  Future<http.Response> deleteLog(String date) async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.deleteLog);
+
+    Map<String, dynamic> body = {
+      "date": date,
+    };
+
+    return await http.delete(url, body: body, headers: loginHeaders);
   }
 
   Future<http.Response> storeReminder(String id, String title, String description, String dateTime) async {

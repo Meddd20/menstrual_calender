@@ -5,13 +5,10 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart
 import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_log_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:uuid/uuid.dart';
@@ -32,14 +29,8 @@ class ContractionTimerController extends GetxController {
 
   @override
   void onInit() {
-    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-    final PregnancyLogRepository pregnancyLogRepository = PregnancyLogRepository(databaseHelper);
-    final PregnancyHistoryRepository pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
-    _pregnancyLogService = PregnancyLogService(
-      pregnancyLogRepository,
-      pregnancyHistoryRepository,
-    );
+    _syncDataRepository = SyncDataRepository();
+    _pregnancyLogService = PregnancyLogService();
     fetchAllContraction();
     super.onInit();
   }
@@ -153,7 +144,7 @@ class ContractionTimerController extends GetxController {
     await _syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> deleteContraction(context,String id) async {
+  Future<void> deleteContraction(context, String id) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
 

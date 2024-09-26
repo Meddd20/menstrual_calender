@@ -39,6 +39,21 @@ class LogRepository {
     }
   }
 
+  Future<void> deleteLog(String date) async {
+    String formattedDate = formatDate(DateTime.parse(date));
+
+    http.Response response = await apiService.deleteLog(formattedDate);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
+    } else {
+      var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
+      _logger.e('[API ERROR] $errorMessage');
+    }
+  }
+
   Future<void> storeReminder(String id, String title, String description, String dateTime) async {
     http.Response response = await apiService.storeReminder(id, title, description, dateTime);
 

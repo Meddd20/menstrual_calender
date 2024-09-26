@@ -508,39 +508,42 @@ class InsightDetailView extends GetView<InsightDetailController> {
                           ),
                         ),
                       ),
-                      Container(
-                        height: 75.h,
-                        width: Get.width,
-                        color: AppColors.white,
-                        padding: EdgeInsets.fromLTRB(13.w, 10.h, 13.w, 0),
-                        child: TextFormField(
-                          controller: controller.textEditingController,
-                          onChanged: (value) {
-                            controller.setCommentContent(value);
-                          },
-                          focusNode: controller.focusNode,
-                          decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!.leaveYourThoughts,
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(12),
+                      Visibility(
+                        visible: controller.storageService.getCredentialToken() != null,
+                        child: Container(
+                          height: 75.h,
+                          width: Get.width,
+                          color: AppColors.white,
+                          padding: EdgeInsets.fromLTRB(13.w, 10.h, 13.w, 0),
+                          child: TextFormField(
+                            controller: controller.textEditingController,
+                            onChanged: (value) {
+                              controller.setCommentContent(value);
+                            },
+                            focusNode: controller.focusNode,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!.leaveYourThoughts,
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              contentPadding: const EdgeInsets.fromLTRB(16.0, 14.0, 16.0, 16.0),
+                              suffixIcon: controller.commentContent.isNotEmpty
+                                  ? IconButton(
+                                      onPressed: () {
+                                        controller.setArticleId(controller.data?.id ?? 0);
+                                        controller.storeComment();
+                                        controller.textEditingController.clear();
+                                        controller.isReplyingComment.value = false;
+                                        FocusScope.of(context).unfocus();
+                                      },
+                                      icon: Icon(Icons.send),
+                                    )
+                                  : null,
                             ),
-                            contentPadding: const EdgeInsets.fromLTRB(16.0, 14.0, 16.0, 16.0),
-                            suffixIcon: controller.commentContent.isNotEmpty
-                                ? IconButton(
-                                    onPressed: () {
-                                      controller.setArticleId(controller.data?.id ?? 0);
-                                      controller.storeComment();
-                                      controller.textEditingController.clear();
-                                      controller.isReplyingComment.value = false;
-                                      FocusScope.of(context).unfocus();
-                                    },
-                                    icon: Icon(Icons.send),
-                                  )
-                                : null,
+                            cursorColor: Colors.red,
+                            cursorWidth: 1.5,
                           ),
-                          cursorColor: Colors.red,
-                          cursorWidth: 1.5,
                         ),
                       ),
                     ],

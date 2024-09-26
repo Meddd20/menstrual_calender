@@ -79,7 +79,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                 NumberPicker(
                                                   minValue: 30,
                                                   maxValue: 150,
-                                                  value: controller.selectedWeight ?? 0,
+                                                  value: controller.selectedWeight,
                                                   onChanged: controller.setSelectedWeight,
                                                   textStyle: CustomTextStyle.light(18, color: Colors.grey),
                                                   selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
@@ -98,7 +98,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                 NumberPicker(
                                                   minValue: 0,
                                                   maxValue: 9,
-                                                  value: controller.selectedWeightDecimal ?? 0,
+                                                  value: controller.selectedWeightDecimal,
                                                   onChanged: controller.setSelectedWeightDecimal,
                                                   textStyle: CustomTextStyle.light(18, color: Colors.grey),
                                                   selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
@@ -194,7 +194,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                   NumberPicker(
                                                     minValue: 125,
                                                     maxValue: 200,
-                                                    value: controller.selectedInitHeight ?? 0,
+                                                    value: controller.selectedInitHeight,
                                                     onChanged: controller.setSelectedInitHeight,
                                                     textStyle: CustomTextStyle.light(18, color: Colors.grey),
                                                     selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
@@ -213,7 +213,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
                                                   NumberPicker(
                                                     minValue: 0,
                                                     maxValue: 9,
-                                                    value: controller.selectedInitHeightDecimal ?? 0,
+                                                    value: controller.selectedInitHeightDecimal,
                                                     onChanged: controller.setSelectedInitHeightDecimal,
                                                     textStyle: CustomTextStyle.light(18, color: Colors.grey),
                                                     selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
@@ -300,7 +300,7 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
               CustomButton(
                 text: AppLocalizations.of(context)!.send,
                 onPressed: () {
-                  controller.initializeWeightGain(context);
+                  controller.checkInitializeWeightGain(context);
                 },
               )
             ],

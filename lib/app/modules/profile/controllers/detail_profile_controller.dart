@@ -5,13 +5,11 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/profile_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -34,10 +32,8 @@ class DetailprofileController extends GetxController {
 
   @override
   void onInit() {
-    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
-    _profileService = ProfileService(localProfileRepository);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
+    _profileService = ProfileService();
+    _syncDataRepository = SyncDataRepository();
 
     namaC = TextEditingController();
     emailC = TextEditingController();

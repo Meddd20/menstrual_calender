@@ -5,11 +5,8 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
+import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
@@ -17,11 +14,11 @@ import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
+import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/profile_service.dart';
 import 'package:periodnpregnancycalender/app/services/sync_data_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -31,15 +28,13 @@ class ProfileController extends GetxController {
   final StorageService storageService = StorageService();
   late final ProfileRepository profileRepository = ProfileRepository(apiService);
   late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
+  late final PeriodRepository periodRepository = PeriodRepository(apiService);
   late final AuthRepository authRepository = AuthRepository(apiService);
   Rx<User?> profile = Rx<User?>(null);
   var radioGoalSelect = 0.obs;
   var periodStartDate = DateTime.now().obs;
   var birthDate = "".obs;
-  var gender = "".obs;
   var firstDayLastPeriod = DateTime.now().obs;
-  Rx<CurrentlyPregnant> currentlyPregnantData = Rx<CurrentlyPregnant>(CurrentlyPregnant());
-  RxList<WeeklyData> weeklyData = <WeeklyData>[].obs;
   var purposeText = "".obs;
   var useLastPeriodData = true.obs;
   Rx<int?> selectedLanguage = Rx<int>(0);
@@ -53,38 +48,41 @@ class ProfileController extends GetxController {
   late final ProfileService profileService;
   late final SyncDataRepository syncDataRepository;
   late final PregnancyHistoryService _pregnancyHistoryService;
+  late final PeriodHistoryService _periodHistoryService;
   late final SyncDataService syncDataService;
+
+  late List<Map<String, dynamic>> periods = [];
+  Rx<DateTime?> startDate = Rx<DateTime?>(DateTime.now());
+  Rx<DateTime?> endDate = Rx<DateTime?>(null);
+
+  void setStartDate(DateTime? date) {
+    startDate.value = date;
+    print(startDate);
+  }
+
+  void setEndDate(DateTime? date) {
+    endDate.value = date;
+    print(endDate);
+  }
 
   @override
   void onInit() async {
-    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
-    final PregnancyHistoryRepository pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    final MasterDataKehamilanRepository masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
-    final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-
-    syncDataRepository = SyncDataRepository(databaseHelper);
-    profileService = ProfileService(localProfileRepository);
-    _pregnancyHistoryService = PregnancyHistoryService(
-      pregnancyHistoryRepository,
-      masterKehamilanRepository,
-      periodHistoryRepository,
-      localProfileRepository,
-    );
+    syncDataRepository = SyncDataRepository();
+    profileService = ProfileService();
+    _pregnancyHistoryService = PregnancyHistoryService();
+    _periodHistoryService = PeriodHistoryService();
 
     syncDataService = SyncDataService();
     profileUser = fetchProfile();
     usePurpose();
 
-    if (storageService.getIsPregnant() == "1") {
-      fetchPregnancyData();
-    } else {
+    if (storageService.getIsPregnant() == "0") {
       HomeMenstruationController homeMenstruationController = Get.find<HomeMenstruationController>();
       setFocusedDate(homeMenstruationController.haidAwalList.first);
       setSelectedDate(homeMenstruationController.haidAwalList.first);
     }
+    radioGoalSelect.value = storageService.getIsPregnant() == "0" ? 0 : 1;
     selectedLanguage.value = storageService.getLanguage() == "en" ? 0 : 1;
-    // syncPreferences.value = storageService.getStoreDataMechanism() == "primary" ? 0 : 1;
     isDataBackedup.value = storageService.getIsBackup();
     setPin.value = storageService.isPinSecure();
     super.onInit();
@@ -157,14 +155,9 @@ class ProfileController extends GetxController {
     await _handleDataBackup(true);
   }
 
-  // Future<void> fetchProfile() async {
-  //   profile.value = await profileRepository.getProfile();
-  // }
-
   Future<User?> fetchProfile() async {
     User? user = await profileService.getProfile();
     birthDate.value = user!.tanggalLahir!;
-    print(birthDate.value);
     return user;
   }
 
@@ -217,89 +210,6 @@ class ProfileController extends GetxController {
     await syncDataRepository.addSyncLogData(syncLog);
   }
 
-  Future<void> endPregnancy(context) async {
-    bool localSuccess = false;
-    bool isConnected = await CheckConnectivity().isConnectedToInternet();
-
-    try {
-      await _pregnancyHistoryService.endPregnancy(selectedDate!, gender.value);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyEndedSuccess));
-      localSuccess = true;
-    } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyEndFailed));
-    }
-
-    storageService.storeIsPregnant("0");
-    LocalNotificationService().cancelAllPregnancyNotifications(storageService.getAccountLocalId());
-    Get.offAllNamed(Routes.NAVIGATION_MENU);
-
-    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      try {
-        await pregnancyRepository.pregnancyEnded(selectedDate.toString(), gender.value);
-      } catch (e) {
-        await _syncPregnancyEnded();
-      }
-    } else if (localSuccess) {
-      await _syncPregnancyEnded();
-    }
-  }
-
-  Future<void> _syncPregnancyEnded() async {
-    Map<String, dynamic> data = {
-      "pregnancyEndDate": selectedDate.toString(),
-      "gender": gender.value,
-    };
-
-    String jsonData = jsonEncode(data);
-
-    SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_kehamilan',
-      operation: 'endPregnancy',
-      data: jsonData,
-      createdAt: DateTime.now().toString(),
-    );
-
-    await syncDataRepository.addSyncLogData(syncLog);
-  }
-
-  Future<void> deletePregnancy(context) async {
-    bool localSuccess = false;
-    bool isConnected = await CheckConnectivity().isConnectedToInternet();
-
-    try {
-      await _pregnancyHistoryService.deletePregnancy();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyDeletedSuccess));
-      localSuccess = true;
-    } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyDeleteFailed));
-    }
-
-    storageService.storeIsPregnant("0");
-    LocalNotificationService().cancelAllPregnancyNotifications(storageService.getAccountLocalId());
-    Get.offAllNamed(Routes.NAVIGATION_MENU);
-
-    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      try {
-        await pregnancyRepository.deletePregnancy();
-      } catch (e) {
-        await _syncPregnancyDelete();
-      }
-    } else if (localSuccess) {
-      await _syncPregnancyDelete();
-    }
-  }
-
-  Future<void> _syncPregnancyDelete() async {
-    SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_kehamilan',
-      operation: 'deletePregnancy',
-      data: '{}',
-      createdAt: DateTime.now().toString(),
-    );
-
-    await syncDataRepository.addSyncLogData(syncLog);
-  }
-
   Future<void> performLogout() async {
     try {
       await Center(child: CircularProgressIndicator());
@@ -329,7 +239,7 @@ class ProfileController extends GetxController {
 
   void usePurpose() {
     var isPregnantString = storageService.getIsPregnant();
-    if (isPregnantString != null) {
+    if (isPregnantString.isNotEmpty) {
       var isPregnantInt = int.tryParse(isPregnantString);
       if (isPregnantInt != null) {
         setRadioGoalSelect(isPregnantInt);
@@ -340,28 +250,6 @@ class ProfileController extends GetxController {
         }
       }
     }
-  }
-
-  RxList<DateTime> tanggalAwalMinggu = <DateTime>[].obs;
-  RxList<DateTime> tanggalAkhirMinggu = <DateTime>[].obs;
-
-  Future<void> fetchPregnancyData() async {
-    var result = await _pregnancyHistoryService.getCurrentPregnancyData(storageService.getLanguage());
-    currentlyPregnantData.value = result!;
-    weeklyData.assignAll(currentlyPregnantData.value.weeklyData!);
-
-    for (var entry in weeklyData) {
-      if (entry.tanggalAwalMinggu != null) {
-        DateTime parsedDate = formatDateStr(entry.tanggalAwalMinggu!);
-        tanggalAwalMinggu.add(parsedDate);
-      }
-      if (entry.tanggalAkhirMinggu != null) {
-        DateTime parsedDate = formatDateStr(entry.tanggalAkhirMinggu!);
-        tanggalAkhirMinggu.add(parsedDate);
-      }
-    }
-
-    update();
   }
 
   List<String> aboutAppInfo(BuildContext context) {
@@ -385,13 +273,80 @@ class ProfileController extends GetxController {
     }
   }
 
-  void resetValuePregnancy() {
-    gender.value = "";
-    setSelectedDate(DateTime.now());
-  }
-
   void setPinSecure(bool isPinSecure) {
     setPin.value = isPinSecure;
     storageService.setPin(isPinSecure);
+  }
+
+  void cancelEdit() {
+    startDate.value = DateTime.now();
+    endDate.value = DateTime.now();
+  }
+
+  PregnancyHistory? lastPregnancyHistory;
+
+  Future<void> getAllPregnancyHistory() async {
+    List<PregnancyHistory>? pregnancyHistoryList = await _pregnancyHistoryService.getAllPregnancyHistory();
+    print("this is last pregnancy${pregnancyHistoryList?.last}");
+    lastPregnancyHistory = pregnancyHistoryList?.last;
+  }
+
+  String get formattedStartDate => startDate.value != null ? formatDate(startDate.value!) : formatDate(DateTime.now());
+  String get formattedEndDate => endDate.value != null ? formatDate(endDate.value!) : formatDate(DateTime.now());
+
+  void addPeriod(context, int avgPeriodDuration, int avgPeriodCycle) async {
+    bool isConnected = await CheckConnectivity().isConnectedToInternet();
+
+    if (startDate.value != null) {
+      if (formattedStartDate == formattedEndDate || endDate.value == null) {
+        setEndDate(startDate.value!.add(Duration(days: avgPeriodDuration)));
+      }
+
+      periods = [
+        {
+          'first_period': formattedStartDate,
+          'last_period': formattedEndDate,
+        }
+      ];
+
+      var newPeriod;
+      if (isConnected && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        try {
+          newPeriod = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
+        } catch (e) {
+          await syncAddedPeriod(periods, avgPeriodCycle);
+        }
+      } else {
+        await syncAddedPeriod(periods, avgPeriodCycle);
+      }
+
+      try {
+        await _periodHistoryService.addPeriod(newPeriod?[0].id ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
+        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.periodAddedSuccess));
+        Get.offAllNamed(Routes.NAVIGATION_MENU);
+      } catch (e) {
+        Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodAddFailed));
+      }
+    } else {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.selectPeriodStartDate));
+    }
+  }
+
+  Future<void> syncAddedPeriod(List<Map<String, dynamic>> periods, int periodCycle) async {
+    Map<String, dynamic> data = {
+      "periods": periods,
+      "periodCycle": periodCycle,
+    };
+
+    String jsonData = jsonEncode(data);
+
+    SyncLog syncLog = SyncLog(
+      tableName: 'tb_riwayat_mens',
+      operation: 'addPeriod',
+      data: jsonData,
+      createdAt: DateTime.now().toString(),
+    );
+
+    await syncDataRepository.addSyncLogData(syncLog);
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
 
@@ -44,12 +43,10 @@ class DailyLog {
     data['id'] = id;
     data['user_id'] = userId;
     if (dataHarian != null) {
-      data['data_harian'] =
-          jsonEncode(dataHarian!.map((v) => v.toJson()).toList());
+      data['data_harian'] = jsonEncode(dataHarian!.map((v) => v.toJson()).toList());
     }
     if (pengingat != null) {
-      data['pengingat'] =
-          jsonEncode(pengingat!.map((v) => v.toJson()).toList());
+      data['pengingat'] = jsonEncode(pengingat!.map((v) => v.toJson()).toList());
     }
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;

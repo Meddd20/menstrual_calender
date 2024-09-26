@@ -7,24 +7,17 @@ import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_tracker_view.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/weight_history_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/weight_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WeightTrackerController extends GetxController {
   final ApiService apiService = ApiService();
-  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
   late final PregnancyRepository pregnancyRepository = PregnancyRepository(apiService);
   late Future<void> weightGainIndexData;
   Rx<PregnancyWeightGainData?> pregnancyWeightGainData = Rx<PregnancyWeightGainData>(PregnancyWeightGainData());
@@ -46,15 +39,9 @@ class WeightTrackerController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    final databaseHelper = DatabaseHelper.instance;
-    final weightHistoryRepository = WeightHistoryRepository(databaseHelper);
-    final pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    final masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
-    final periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-    final localProfileRepository = LocalProfileRepository(databaseHelper);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
-    _pregnancyHistoryService = PregnancyHistoryService(pregnancyHistoryRepository, masterKehamilanRepository, periodHistoryRepository, localProfileRepository);
-    _weightHistoryService = WeightHistoryService(weightHistoryRepository, pregnancyHistoryRepository);
+    _syncDataRepository = SyncDataRepository();
+    _pregnancyHistoryService = PregnancyHistoryService();
+    _weightHistoryService = WeightHistoryService();
 
     weightGainIndexData = fetchWeightGainIndex().then((_) {
       update();
@@ -89,9 +76,9 @@ class WeightTrackerController extends GetxController {
     update();
   }
 
-  final Rx<int?> _selectedWeight = Rx<int?>(30);
+  final Rx<int> _selectedWeight = Rx<int>(45);
 
-  int? get selectedWeight => _selectedWeight.value;
+  int get selectedWeight => _selectedWeight.value;
 
   void setSelectedWeight(int selectedDate) {
     _selectedWeight.value = selectedDate;
@@ -99,9 +86,9 @@ class WeightTrackerController extends GetxController {
     update();
   }
 
-  final Rx<int?> _selectedWeightDecimal = Rx<int?>(0);
+  final Rx<int> _selectedWeightDecimal = Rx<int>(0);
 
-  int? get selectedWeightDecimal => _selectedWeightDecimal.value;
+  int get selectedWeightDecimal => _selectedWeightDecimal.value;
 
   void setSelectedWeightDecimal(int selectedDate) {
     _selectedWeightDecimal.value = selectedDate;
@@ -110,18 +97,17 @@ class WeightTrackerController extends GetxController {
   }
 
   var weights = Rx<double>(0.0);
-
   double getWeight() => weights.value;
 
   void updateWeight() {
-    weights.value = double.parse("${selectedWeight ?? 30}.${selectedWeightDecimal ?? 0}");
+    weights.value = double.parse("${selectedWeight}.${selectedWeightDecimal}");
     update();
   }
 
   void resetValue() {
     setFocusedDate(DateTime.now());
     setSelectedDate(DateTime.now());
-    setSelectedWeight(30);
+    setSelectedWeight(45);
     setSelectedWeightDecimal(0);
     getSelectedWeek(DateTime.now());
   }
@@ -165,11 +151,11 @@ class WeightTrackerController extends GetxController {
     return minWeightHistory < minReccomendWeightGain ? minWeightHistory : minReccomendWeightGain;
   }
 
-  final Rx<int?> _selectedInitHeight = Rx<int?>(125);
-  final Rx<int?> _selectedInitHeightDecimal = Rx<int?>(0);
+  final Rx<int> _selectedInitHeight = Rx<int>(155);
+  final Rx<int> _selectedInitHeightDecimal = Rx<int>(0);
 
-  int? get selectedInitHeight => _selectedInitHeight.value;
-  int? get selectedInitHeightDecimal => _selectedInitHeightDecimal.value;
+  int get selectedInitHeight => _selectedInitHeight.value;
+  int get selectedInitHeightDecimal => _selectedInitHeightDecimal.value;
 
   void setSelectedInitHeight(int selectedWeight) {
     _selectedInitHeight.value = selectedWeight;
@@ -180,11 +166,10 @@ class WeightTrackerController extends GetxController {
   }
 
   var height = Rx<double>(0.0);
-
   double getHeight() => height.value;
 
   void updateHeight() {
-    height.value = double.parse("${selectedInitHeight ?? 125}.${selectedInitHeightDecimal ?? 0}");
+    height.value = double.parse("${selectedInitHeight}.${selectedInitHeightDecimal}");
     update();
   }
 
@@ -219,6 +204,21 @@ class WeightTrackerController extends GetxController {
 
     update();
     getSelectedWeek(DateTime.now());
+  }
+
+  void checkInitializeWeightGain(BuildContext context) {
+    try {
+      if (getWeight() == 0.0) {
+        throw AppLocalizations.of(context)!.weightInitializedWeight;
+      }
+      if (getHeight() == 0.0) {
+        throw AppLocalizations.of(context)!.weightInitializedHeight;
+      }
+
+      initializeWeightGain(context);
+    } catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
   }
 
   Future<void> initializeWeightGain(context) async {

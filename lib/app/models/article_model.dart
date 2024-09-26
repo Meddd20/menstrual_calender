@@ -28,7 +28,6 @@ class Articles {
   String? banner;
   String? contentInd;
   String? contentEng;
-  String? videoLink;
   String? source;
   String? tags;
   String? publishAt;
@@ -47,7 +46,6 @@ class Articles {
       this.banner,
       this.contentInd,
       this.contentEng,
-      this.videoLink,
       this.source,
       this.tags,
       this.publishAt,
@@ -66,7 +64,6 @@ class Articles {
     banner = json['banner'];
     contentInd = json['content_ind'];
     contentEng = json['content_eng'];
-    videoLink = json['video_link'];
     source = json['source'];
     tags = json['tags'];
     publishAt = json['publish_at'];

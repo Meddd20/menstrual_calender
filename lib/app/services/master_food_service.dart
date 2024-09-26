@@ -2,9 +2,7 @@ import 'package:periodnpregnancycalender/app/models/master_food_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_food_repository.dart';
 
 class MasterFoodService {
-  final MasterFoodRepository _masterFoodRepository;
-
-  MasterFoodService(this._masterFoodRepository);
+  late final MasterFoodRepository _masterFoodRepository = MasterFoodRepository();
 
   Future<List<MasterFood>> getAllFood(String? foodSafety) async {
     return await _masterFoodRepository.getAllFood(foodSafety);

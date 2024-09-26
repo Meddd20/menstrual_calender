@@ -3,10 +3,8 @@ import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class LocalProfileRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  LocalProfileRepository(this._databaseHelper);
 
   Future<void> createProfile(User profile) async {
     final db = await _databaseHelper.database;

@@ -2,9 +2,7 @@ import 'package:periodnpregnancycalender/app/models/master_gender.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
 
 class MasterGenderService {
-  final MasterGenderRepository _masterGenderRepository;
-
-  MasterGenderService(this._masterGenderRepository);
+  late final MasterGenderRepository _masterGenderRepository = MasterGenderRepository();
 
   Future<List<MasterGender>> getGenderData() async {
     return await _masterGenderRepository.getAllGenderData();

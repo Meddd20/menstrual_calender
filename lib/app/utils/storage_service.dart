@@ -72,12 +72,20 @@ class StorageService {
     box.write("isPregnant", isPregnant);
   }
 
-  String? getIsPregnant() {
+  String getIsPregnant() {
     return box.read("isPregnant");
   }
 
   void deleteIsPregnant() {
     box.remove("isPregnant");
+  }
+
+  void storeIsBirthSuccess(bool isBirthSuccess) {
+    box.write("isBirthSucess", isBirthSuccess);
+  }
+
+  bool getIsBirthSuccess() {
+    return box.read("isBirthSucess") ?? true;
   }
 
   String getLanguage() {

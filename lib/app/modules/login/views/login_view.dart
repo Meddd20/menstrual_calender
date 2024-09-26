@@ -106,7 +106,7 @@ class LoginView extends GetView<LoginController> {
                       CustomButton(
                         text: AppLocalizations.of(context)!.login,
                         onPressed: () async {
-                          controller.checkLogin();
+                          controller.checkLogin(context);
                         },
                       ),
                       SizedBox(height: 20.h),

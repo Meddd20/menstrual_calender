@@ -1,8 +1,6 @@
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/models/master_vitamins_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_vitamins_repository.dart';
 import 'package:periodnpregnancycalender/app/services/master_vitamins_service.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class VitaminListController extends GetxController {
@@ -11,9 +9,7 @@ class VitaminListController extends GetxController {
   final StorageService storageService = StorageService();
   @override
   void onInit() {
-    final _databaseHelper = DatabaseHelper.instance;
-    final masterVitaminRepository = MasterVitaminsRepository(_databaseHelper);
-    _masterVitaminsService = MasterVitaminsService(masterVitaminRepository);
+    _masterVitaminsService = MasterVitaminsService();
     listVitamins = getAllVitaminList();
     super.onInit();
   }

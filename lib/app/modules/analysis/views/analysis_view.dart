@@ -91,7 +91,7 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                               ],
                             ),
                             Text(
-                              AppLocalizations.of(context)!.periodCycleLogged("${homeController.data?.actualPeriod.length}"),
+                              AppLocalizations.of(context)!.periodCycleLogged("${homeController.data?.actualPeriod?.length}"),
                               style: CustomTextStyle.medium(14, height: 2.0, color: Colors.black.withOpacity(0.6)),
                             ),
                             SizedBox(height: 5),

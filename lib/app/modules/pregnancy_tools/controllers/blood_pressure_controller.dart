@@ -7,17 +7,11 @@ import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/blood_pressure_view.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:uuid/uuid.dart';
@@ -36,23 +30,9 @@ class BloodPressureController extends GetxController {
 
   @override
   void onInit() {
-    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
-    final PregnancyHistoryRepository pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    final MasterDataKehamilanRepository masterKehamilanRepository = MasterDataKehamilanRepository(databaseHelper);
-    final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-    final PregnancyLogRepository pregnancyLogRepository = PregnancyLogRepository(databaseHelper);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
-    _pregnancyHistoryService = PregnancyHistoryService(
-      pregnancyHistoryRepository,
-      masterKehamilanRepository,
-      periodHistoryRepository,
-      localProfileRepository,
-    );
-    _pregnancyLogService = PregnancyLogService(
-      pregnancyLogRepository,
-      pregnancyHistoryRepository,
-    );
+    _syncDataRepository = SyncDataRepository();
+    _pregnancyHistoryService = PregnancyHistoryService();
+    _pregnancyLogService = PregnancyLogService();
     fetchPregnancyData();
     fetchAllBloodPressure();
     setTime(TimeOfDay.now());

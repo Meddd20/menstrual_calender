@@ -6,22 +6,16 @@ import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PeriodCycleController extends GetxController {
   final ApiService apiService = ApiService();
-  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
   late final PeriodRepository periodRepository = PeriodRepository(apiService);
   late List<Map<String, dynamic>> periods = [];
   RxList<PeriodCycleIndex> periodCycleData = <PeriodCycleIndex>[].obs;
@@ -41,18 +35,8 @@ class PeriodCycleController extends GetxController {
 
   @override
   void onInit() {
-    final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-    final PeriodHistoryRepository periodHistoryRepository = PeriodHistoryRepository(databaseHelper);
-    final LocalProfileRepository localProfileRepository = LocalProfileRepository(databaseHelper);
-    final MasterNewmoonRepository masterNewmoonRepository = MasterNewmoonRepository(databaseHelper);
-    final MasterGenderRepository masterGenderRepository = MasterGenderRepository(databaseHelper);
-    _syncDataRepository = SyncDataRepository(databaseHelper);
-    _periodHistoryService = PeriodHistoryService(
-      periodHistoryRepository,
-      localProfileRepository,
-      masterNewmoonRepository,
-      masterGenderRepository,
-    );
+    _syncDataRepository = SyncDataRepository();
+    _periodHistoryService = PeriodHistoryService();
     periodCycleData = <PeriodCycleIndex>[].obs;
     fetchPeriod();
     super.onInit();

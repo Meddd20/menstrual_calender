@@ -2,9 +2,7 @@ import 'package:periodnpregnancycalender/app/models/master_vitamins_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_vitamins_repository.dart';
 
 class MasterVitaminsService {
-  final MasterVitaminsRepository _masterVitaminsRepository;
-
-  MasterVitaminsService(this._masterVitaminsRepository);
+  late final MasterVitaminsRepository _masterVitaminsRepository = MasterVitaminsRepository();
 
   Future<List<MasterVitamin>> getAllVitamin() async {
     return await _masterVitaminsRepository.getAllVitamins();

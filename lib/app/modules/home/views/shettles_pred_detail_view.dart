@@ -125,6 +125,7 @@ class ShettlesPredDetailView extends GetView {
                 ),
                 SizedBox(height: 15),
                 ExpansionTile(
+                  shape: Border(),
                   title: Text(
                     AppLocalizations.of(context)!.references,
                     style: CustomTextStyle.bold(20),

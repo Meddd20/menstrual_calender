@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 
 class WeightController extends GetxController {
@@ -21,12 +19,9 @@ class WeightController extends GetxController {
 
   @override
   void onInit() {
+    _logService = LogService();
+
     tabController = TabController(length: 4, vsync: MyTickerProvider());
-
-    final databaseHelper = DatabaseHelper.instance;
-    final localLogRepository = LocalLogRepository(databaseHelper);
-    _logService = LogService(localLogRepository);
-
     data = DailyLogTagsData(
       tags: '',
       logs: {},

@@ -2,9 +2,7 @@ import 'package:periodnpregnancycalender/app/models/master_pregnancy_model.dart'
 import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
 
 class MasterKehamilanService {
-  final MasterDataKehamilanRepository _masterKehamilanRepository;
-
-  MasterKehamilanService(this._masterKehamilanRepository);
+  late final MasterDataKehamilanRepository _masterKehamilanRepository = MasterDataKehamilanRepository();
 
   Future<List<MasterPregnancy>> getAllPregnancyData() async {
     return await _masterKehamilanRepository.getAllPregnancyData();

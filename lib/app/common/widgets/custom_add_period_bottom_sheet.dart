@@ -6,7 +6,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddPeriodBottomSheetWidget extends StatelessWidget {
   final void Function()? closeModalBottomSheet;
@@ -80,7 +80,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
                       Container(
                         width: Get.width,
                         child: Text(
-                          StorageService().getLanguage() == "en" ? "Update the start and end dates of a specific time period for precise and current tracking." : "Perbarui tanggal mulai dan akhir untuk pelacakan siklus menstruasi yang akurat dan terkini.",
+                          AppLocalizations.of(context)!.updatePeriodCycleDesc,
                           style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                           softWrap: true,
                         ),
@@ -105,7 +105,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          StorageService().getLanguage() == "en" ? "Start Date" : "Tanggal Mulai",
+                          AppLocalizations.of(context)!.startDate,
                           style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                         Container(
@@ -125,7 +125,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          StorageService().getLanguage() == "en" ? "End Date" : "Tanggal Selesai",
+                          AppLocalizations.of(context)!.endDate,
                           style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
                         ),
                         Container(
@@ -152,7 +152,7 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
           isEdit ? SizedBox(height: 5.h) : SizedBox.shrink(),
           if (isEdit)
             CustomButton(
-              text: StorageService().getLanguage() == "en" ? "Cancel" : "Kembali",
+              text: AppLocalizations.of(context)!.cancel,
               onPressed: () => Get.back(),
               backgroundColor: Colors.transparent,
               textColor: Colors.black,

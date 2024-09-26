@@ -3,10 +3,8 @@ import 'package:periodnpregnancycalender/app/models/master_vaccines_model.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class MasterVaccinesRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  MasterVaccinesRepository(this._databaseHelper);
 
   Future<List<MasterVaccine>> getAllVaccines() async {
     final db = await _databaseHelper.database;

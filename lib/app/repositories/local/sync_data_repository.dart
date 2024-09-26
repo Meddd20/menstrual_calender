@@ -9,10 +9,8 @@ import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SyncDataRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  SyncDataRepository(this._databaseHelper);
 
   Future<void> fetchNewlySyncPeriodHistoryData(List<PeriodHistory> periodHistoryDataFetchFromAPI, int userId) async {
     final db = await _databaseHelper.database;
@@ -38,6 +36,7 @@ class SyncDataRepository {
     try {
       await db.transaction((txn) async {
         pregnancyHistoryDataFetchFromAPI.userId = userId;
+
         await txn.insert(
           'tb_riwayat_kehamilan',
           pregnancyHistoryDataFetchFromAPI.toJson(),
@@ -45,7 +44,7 @@ class SyncDataRepository {
         );
       });
     } catch (e) {
-      _logger.e("Error during create fetchNewlySyncPregnancyHistoryData: $e");
+      _logger.e("Error during create fetch NewlySyncPregnancyHistoryData: $e");
       rethrow;
     }
   }

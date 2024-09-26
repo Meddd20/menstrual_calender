@@ -3,10 +3,8 @@ import 'package:periodnpregnancycalender/app/models/master_newmoon_model.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class MasterNewmoonRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  MasterNewmoonRepository(this._databaseHelper);
 
   Future<List<MasterNewmoon>> getAllNewmoon() async {
     final db = await _databaseHelper.database;

@@ -11,32 +11,27 @@ import 'package:periodnpregnancycalender/app/services/local_notification_service
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class PregnancyHistoryService {
-  final PregnancyHistoryRepository _pregnancyHistoryRepository;
-  final MasterDataKehamilanRepository _masterKehamilanRepository;
-  final PeriodHistoryRepository _periodHistoryRepository;
-  final LocalProfileRepository _localProfileRepository;
-
   final Logger _logger = Logger();
   final StorageService storageService = StorageService();
 
-  PregnancyHistoryService(
-    this._pregnancyHistoryRepository,
-    this._masterKehamilanRepository,
-    this._periodHistoryRepository,
-    this._localProfileRepository,
-  );
+  late final PregnancyHistoryRepository _pregnancyHistoryRepository = PregnancyHistoryRepository();
+  late final MasterDataKehamilanRepository _masterKehamilanRepository = MasterDataKehamilanRepository();
+  late final PeriodHistoryRepository _periodHistoryRepository = PeriodHistoryRepository();
+  late final LocalProfileRepository _localProfileRepository = LocalProfileRepository();
 
   Future<void> beginPregnancy(DateTime hariPertamaHaidTerakhir, int? remoteId) async {
     try {
       int userId = storageService.getAccountLocalId();
       User? userProfile = await _localProfileRepository.getProfile();
       PregnancyHistory? existingPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      List<PregnancyHistory>? getAllPregnancyData = await _pregnancyHistoryRepository.getAllPregnancyHistory(userId);
       List<PeriodHistory> getAllPeriodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
       List<PeriodHistory> isActualPeriodHistories = getAllPeriodHistory.where((period) => period.isActual == "1").toList();
+      List<PeriodHistory> isNotActualPeriodHistories = getAllPeriodHistory.where((period) => period.isActual == "0").toList();
 
       DateTime estimatedDueDate = hariPertamaHaidTerakhir.add(Duration(days: 280));
 
-      if (isActualPeriodHistories.isNotEmpty) {
+      if (isActualPeriodHistories.length > 0) {
         int totalSiklus = 0;
         int countSiklus = 0;
 
@@ -49,7 +44,6 @@ class PregnancyHistoryService {
 
         if (countSiklus > 0) {
           int avgPeriodCycle = totalSiklus ~/ countSiklus;
-
           PeriodHistory lastPeriod = isActualPeriodHistories.last;
           PeriodHistory updatedLastPeriod = lastPeriod.copyWith(
             lamaSiklus: avgPeriodCycle,
@@ -57,6 +51,23 @@ class PregnancyHistoryService {
           );
 
           await _periodHistoryRepository.editPeriodHistory(updatedLastPeriod);
+        }
+      }
+
+      if (isNotActualPeriodHistories.length > 0) {
+        for (var period in isNotActualPeriodHistories) {
+          await _periodHistoryRepository.deletePeriodHistory(period.id!, userId);
+        }
+      }
+
+      if (getAllPregnancyData.length > 0) {
+        for (var pregnancy in getAllPregnancyData) {
+          DateTime hariPertamaHaidTerakhir = DateTime.parse(pregnancy.hariPertamaHaidTerakhir!);
+          DateTime kehamilanAkhir = DateTime.parse(pregnancy.kehamilanAkhir!);
+
+          if ((hariPertamaHaidTerakhir.isAtSameMomentAs(hariPertamaHaidTerakhir) || (hariPertamaHaidTerakhir.isAfter(hariPertamaHaidTerakhir)) && (hariPertamaHaidTerakhir.isBefore(kehamilanAkhir)) || hariPertamaHaidTerakhir.isAtSameMomentAs(kehamilanAkhir))) {
+            throw Exception('Tanggal hari pertama siklus menstruasi overlap kehamilan anda sebelumnya.');
+          }
         }
       }
 
@@ -98,24 +109,29 @@ class PregnancyHistoryService {
     try {
       int userId = storageService.getAccountLocalId();
       if (babyGender != "Boy" && babyGender != "Girl") {
-        throw Exception("Gender harus diisi dengan 'boy' atau 'girl'.");
+        throw Exception("Gender harus diisi dengan 'boy' atau 'girl'");
       }
+
+      if (kehamilanAkhir.isAfter(DateTime.now())) {
+        throw Exception("Tanggal melahirkan tidak boleh melebihi tanggal hari ini");
+      }
+
       User? userProfile = await _localProfileRepository.getProfile();
       PregnancyHistory? existingPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
 
       if (existingPregnancyData != null) {
         PregnancyHistory updatedPregnancyData = existingPregnancyData.copyWith(
           status: "Melahirkan",
-          kehamilanAkhir: kehamilanAkhir.toIso8601String(),
+          kehamilanAkhir: kehamilanAkhir.toString(),
           gender: babyGender,
-          updatedAt: DateTime.now().toIso8601String(),
+          updatedAt: DateTime.now().toString(),
         );
 
         await _pregnancyHistoryRepository.editPregnancy(updatedPregnancyData);
 
         User updateUserProfile = userProfile!.copyWith(
-          isPregnant: "0",
-          updatedAt: DateTime.now().toIso8601String(),
+          isPregnant: "2",
+          updatedAt: DateTime.now().toString(),
         );
 
         await _localProfileRepository.updateProfile(updateUserProfile);
@@ -135,8 +151,8 @@ class PregnancyHistoryService {
       User? userProfile = await _localProfileRepository.getProfile();
 
       User updateUserProfile = userProfile!.copyWith(
-        isPregnant: "0",
-        updatedAt: DateTime.now().toIso8601String(),
+        isPregnant: "2",
+        updatedAt: DateTime.now().toString(),
       );
 
       await _localProfileRepository.updateProfile(updateUserProfile);
@@ -146,7 +162,8 @@ class PregnancyHistoryService {
     }
   }
 
-  Future<List<PregnancyHistory>?> getAllPregnancyHistory(int userId) async {
+  Future<List<PregnancyHistory>?> getAllPregnancyHistory() async {
+    int userId = storageService.getAccountLocalId();
     return await _pregnancyHistoryRepository.getAllPregnancyHistory(userId);
   }
 
@@ -200,8 +217,8 @@ class PregnancyHistoryService {
             trimester: trimester,
             mingguSisa: mingguSisa,
             mingguLabel: mingguLabel,
-            tanggalAwalMinggu: parsedTanggalAwalMinggu.toIso8601String(),
-            tanggalAkhirMinggu: parsedTanggalAkhirMinggu.toIso8601String(),
+            tanggalAwalMinggu: parsedTanggalAwalMinggu.toString(),
+            tanggalAkhirMinggu: parsedTanggalAkhirMinggu.toString(),
             beratJanin: masterDataKehamilanMingguIni.beratJanin,
             tinggiBadanJanin: masterDataKehamilanMingguIni.tinggiBadanJanin,
             ukuranBayi: lang == "en" ? masterDataKehamilanMingguIni.ukuranBayiEn : masterDataKehamilanMingguIni.ukuranBayiId,

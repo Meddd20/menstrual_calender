@@ -3,10 +3,8 @@ import 'package:periodnpregnancycalender/app/models/master_gender.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class MasterGenderRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  MasterGenderRepository(this._databaseHelper);
 
   Future<List<MasterGender>> getAllGenderData() async {
     final db = await _databaseHelper.database;

@@ -5,10 +5,8 @@ import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class WeightHistoryRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  WeightHistoryRepository(this._databaseHelper);
 
   Future<void> addWeightHistory(WeightHistory weightHistory) async {
     final db = await _databaseHelper.database;

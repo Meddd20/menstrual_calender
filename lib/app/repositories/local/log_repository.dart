@@ -4,10 +4,8 @@ import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LocalLogRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  LocalLogRepository(this._databaseHelper);
 
   Future<void> upsertDailyLog(DailyLog dailyLog) async {
     final db = await _databaseHelper.database;

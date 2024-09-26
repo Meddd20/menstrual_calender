@@ -3,10 +3,8 @@ import 'package:periodnpregnancycalender/app/models/master_pregnancy_model.dart'
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class MasterDataKehamilanRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  MasterDataKehamilanRepository(this._databaseHelper);
 
   Future<List<MasterPregnancy>> getAllPregnancyData() async {
     final db = await _databaseHelper.database;

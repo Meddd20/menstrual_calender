@@ -15,7 +15,7 @@ class ProfileBinding extends Bindings {
     Get.lazyPut<DatabaseHelper>(() => DatabaseHelper.instance);
 
     Get.lazyPut<LocalProfileRepository>(
-      () => LocalProfileRepository(Get.find<DatabaseHelper>()),
+      () => LocalProfileRepository(),
     );
 
     Get.lazyPut<ProfileController>(

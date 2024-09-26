@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/models/master_food_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_food_repository.dart';
 import 'package:periodnpregnancycalender/app/services/master_food_service.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -16,9 +14,7 @@ class FoodListController extends GetxController {
 
   @override
   void onInit() {
-    final _databaseHelper = DatabaseHelper.instance;
-    final masterFoodRepository = MasterFoodRepository(_databaseHelper);
-    _masterFoodService = MasterFoodService(masterFoodRepository);
+    _masterFoodService = MasterFoodService();
     getAllFoodList(null);
     super.onInit();
   }

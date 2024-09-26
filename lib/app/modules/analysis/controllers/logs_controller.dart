@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_log_repository.dart';
 import 'package:periodnpregnancycalender/app/services/log_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LogsController extends GetxController {
-  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
   late DailyLogTagsData data;
   RxMap<String, dynamic> logs = RxMap<String, dynamic>();
   Rx<dynamic> percentage30Days = Rx<dynamic>(null);
@@ -28,18 +23,10 @@ class LogsController extends GetxController {
 
   @override
   void onInit() {
+    _logService = LogService();
+    _pregnancyLogService = PregnancyLogService();
+
     tabController = TabController(length: 4, vsync: MyTickerProvider());
-
-    final databaseHelper = DatabaseHelper.instance;
-    final localLogRepository = LocalLogRepository(databaseHelper);
-    final pregnancyLogRepository = PregnancyLogRepository(databaseHelper);
-    final pregnancyHistoryRepository = PregnancyHistoryRepository(databaseHelper);
-    _logService = LogService(localLogRepository);
-    _pregnancyLogService = PregnancyLogService(
-      pregnancyLogRepository,
-      pregnancyHistoryRepository,
-    );
-
     data = DailyLogTagsData(
       tags: '',
       logs: {},

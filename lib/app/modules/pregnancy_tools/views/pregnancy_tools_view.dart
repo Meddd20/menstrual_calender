@@ -14,6 +14,7 @@ import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/pregn
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/vaccine_list_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/vitamin_list_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_tracker_view.dart';
+import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 import '../controllers/pregnancy_tools_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -22,7 +23,8 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
   const PregnancyToolsView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> tools = [
+    final isPregnant = StorageService().getIsPregnant();
+    final List<Map<String, String>> pregnancyTools = [
       {'name': AppLocalizations.of(context)!.pregnancyLog, 'icon': 'assets/icon/maternity.png'},
       {'name': AppLocalizations.of(context)!.weightGainTracker, 'icon': 'assets/icon/weight-tracker.png'},
       {'name': AppLocalizations.of(context)!.contractionTimer, 'icon': 'assets/icon/stopwatch.png'},
@@ -34,6 +36,17 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
       {'name': AppLocalizations.of(context)!.vitamins, 'icon': 'assets/icon/vitamin.png'},
       {'name': AppLocalizations.of(context)!.food, 'icon': 'assets/icon/nutrition.png'},
     ];
+
+    final List<Map<String, String>> recoveryTools = [
+      {'name': AppLocalizations.of(context)!.reminder, 'icon': 'assets/icon/alarm.png'},
+      {'name': AppLocalizations.of(context)!.fetalDevelopment, 'icon': 'assets/icon/fetal.png'},
+      {'name': AppLocalizations.of(context)!.vaccine, 'icon': 'assets/icon/vaccine.png'},
+      {'name': AppLocalizations.of(context)!.vitamins, 'icon': 'assets/icon/vitamin.png'},
+      {'name': AppLocalizations.of(context)!.food, 'icon': 'assets/icon/nutrition.png'},
+    ];
+
+    final List<Map<String, String>> tools = isPregnant == "1" ? pregnancyTools : recoveryTools;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -58,37 +71,57 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
               final tool = tools[index];
               return GestureDetector(
                 onTap: () {
-                  switch (index) {
-                    case 0:
-                      Get.to(() => PregnancyLogView());
-                      break;
-                    case 1:
-                      Get.to(() => WeightTrackerView());
-                      break;
-                    case 2:
-                      Get.to(() => ContractionTimerView());
-                      break;
-                    case 3:
-                      Get.to(() => BloodPressureView());
-                      break;
-                    case 4:
-                      Get.to(() => BabykicksView());
-                      break;
-                    case 5:
-                      Get.to(() => ReminderView());
-                      break;
-                    case 6:
-                      Get.to(() => BabyWeightHeigthTrackerView());
-                      break;
-                    case 7:
-                      Get.to(() => VaccineListView());
-                      break;
-                    case 8:
-                      Get.to(() => VitaminListView());
-                      break;
-                    case 9:
-                      Get.to(() => FoodListView());
-                      break;
+                  if (isPregnant == "1") {
+                    switch (index) {
+                      case 0:
+                        Get.to(() => PregnancyLogView());
+                        break;
+                      case 1:
+                        Get.to(() => WeightTrackerView());
+                        break;
+                      case 2:
+                        Get.to(() => ContractionTimerView());
+                        break;
+                      case 3:
+                        Get.to(() => BloodPressureView());
+                        break;
+                      case 4:
+                        Get.to(() => BabykicksView());
+                        break;
+                      case 5:
+                        Get.to(() => ReminderView());
+                        break;
+                      case 6:
+                        Get.to(() => BabyWeightHeigthTrackerView());
+                        break;
+                      case 7:
+                        Get.to(() => VaccineListView());
+                        break;
+                      case 8:
+                        Get.to(() => VitaminListView());
+                        break;
+                      case 9:
+                        Get.to(() => FoodListView());
+                        break;
+                    }
+                  } else {
+                    switch (index) {
+                      case 0:
+                        Get.to(() => ReminderView());
+                        break;
+                      case 1:
+                        Get.to(() => BabyWeightHeigthTrackerView());
+                        break;
+                      case 2:
+                        Get.to(() => VaccineListView());
+                        break;
+                      case 3:
+                        Get.to(() => VitaminListView());
+                        break;
+                      case 4:
+                        Get.to(() => FoodListView());
+                        break;
+                    }
                   }
                 },
                 child: Container(

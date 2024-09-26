@@ -51,7 +51,6 @@ class InsightDetailController extends GetxController {
       videoLink: null,
       source: null,
       tags: null,
-      publishAt: null,
       createdAt: null,
       updatedAt: null,
     );

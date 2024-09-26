@@ -1,6 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -9,6 +8,7 @@ import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_choice_chip.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_expanded_calendar.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_filter_chip.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
@@ -33,11 +33,67 @@ class DailyLogView extends GetView<DailyLogController> {
         ),
         title: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Obx(
-            () => Text(
-              "Log on ${formatFullDate(controller.selectedDate)}",
-              style: CustomTextStyle.extraBold(20),
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Text(
+                    "Log on ${formatFullDate(controller.selectedDate)}",
+                    style: CustomTextStyle.extraBold(20),
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return Container(
+                        padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
+                        height: Get.height * 0.97,
+                        child: SingleChildScrollView(
+                          child: Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.dailyLogInfo,
+                                    style: CustomTextStyle.extraBold(22, height: 1.5),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    AppLocalizations.of(context)!.dailyLogInfoDesc,
+                                    style: CustomTextStyle.medium(16, height: 1.75),
+                                  ),
+                                  SizedBox(height: 15),
+                                ],
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.close),
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                icon: Icon(
+                  Icons.help,
+                  size: 20,
+                  color: AppColors.black.withOpacity(0.4),
+                ),
+              ),
+            ],
           ),
         ),
         centerTitle: true,
@@ -47,8 +103,9 @@ class DailyLogView extends GetView<DailyLogController> {
         actions: [
           TextButton(
             onPressed: () {
-              controller.resetLog();
-              controller.saveLog(context);
+              // controller.resetLog();
+              // controller.saveLog(context);
+              controller.deleteLog(context);
             },
             child: Text(
               'Reset',
@@ -83,58 +140,26 @@ class DailyLogView extends GetView<DailyLogController> {
                         children: [
                           Obx(
                             () => Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: TableCalendar(
-                                focusedDay: controller.getFocusedDate,
-                                firstDay: DateTime.utc(2010, 10, 16),
-                                lastDay: DateTime.now(),
-                                calendarFormat: CalendarFormat.week,
-                                startingDayOfWeek: StartingDayOfWeek.monday,
-                                locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
-                                onDaySelected: (selectedDay, focusedDay) {
-                                  controller.setSelectedDate(selectedDay);
-                                  controller.setFocusedDate(focusedDay);
-                                  controller.fetchLog(selectedDay);
-                                },
-                                onPageChanged: (focusedDay) {
-                                  controller.setFocusedDate(focusedDay);
-                                },
-                                selectedDayPredicate: (day) => isSameDay(
-                                  controller.selectedDate,
-                                  day,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                rowHeight: 50,
-                                daysOfWeekHeight: 25.0,
-                                calendarStyle: CalendarStyle(
-                                  cellMargin: EdgeInsets.all(6),
-                                  outsideDaysVisible: false,
-                                  isTodayHighlighted: true,
-                                  rangeStartDecoration: BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
+                                child: CustomExpandedCalendar(
+                                  firstDay: DateTime.utc(2010, 10, 16),
+                                  lastDay: DateTime.now(),
+                                  focusedDay: controller.getFocusedDate,
+                                  onDaySelected: (selectedDay, focusedDay) {
+                                    controller.setSelectedDate(selectedDay);
+                                    controller.setFocusedDate(focusedDay);
+                                    controller.fetchLog(selectedDay);
+                                  },
+                                  onPageChanged: (focusedDay) {
+                                    controller.setFocusedDate(focusedDay);
+                                  },
+                                  selectedDayPredicate: (day) => isSameDay(
+                                    controller.selectedDate,
+                                    day,
                                   ),
-                                  rangeEndDecoration: BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  withinRangeDecoration: BoxDecoration(
-                                    color: Colors.red.withOpacity(0.5),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                headerStyle: HeaderStyle(
-                                  formatButtonVisible: false,
-                                  leftChevronVisible: true,
-                                  rightChevronVisible: true,
-                                  titleCentered: true,
-                                  titleTextStyle: CustomTextStyle.bold(16),
-                                  headerMargin: EdgeInsets.only(bottom: 10),
-                                ),
-                                availableGestures: AvailableGestures.all,
-                                calendarBuilders: CalendarBuilders(
                                   defaultBuilder: (context, day, focusedDay) {
                                     for (int i = 0; i < homeController.haidAwalList.length; i++) {
                                       if (day.isAtSameMomentAs(homeController.haidAwalList[i]) || day.isAfter(homeController.haidAwalList[i]) && day.isBefore(homeController.haidAkhirList[i]) || day.isAtSameMomentAs(homeController.haidAkhirList[i]))
@@ -258,47 +283,8 @@ class DailyLogView extends GetView<DailyLogController> {
                                       ),
                                     );
                                   },
-                                  dowBuilder: (context, day) {
-                                    return Center(
-                                      child: Text(
-                                        DateFormat.E().format(day),
-                                        style: CustomTextStyle.regular(14),
-                                      ),
-                                    );
-                                  },
-                                  selectedBuilder: (context, day, focusedDay) {
-                                    return Container(
-                                      margin: EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.deepPurpleAccent,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '${day.day}',
-                                          style: CustomTextStyle.bold(16, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  todayBuilder: (context, day, focusedDay) {
-                                    return Container(
-                                      margin: EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.deepPurpleAccent[100],
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '${day.day}',
-                                          style: CustomTextStyle.bold(16, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
+                                  calendarFormat: CalendarFormat.week,
+                                )),
                           ),
                           SizedBox(height: 16.h),
                           Wrap(

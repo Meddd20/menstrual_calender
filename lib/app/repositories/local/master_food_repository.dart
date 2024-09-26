@@ -3,10 +3,8 @@ import 'package:periodnpregnancycalender/app/models/master_food_model.dart';
 import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 
 class MasterFoodRepository {
-  final DatabaseHelper _databaseHelper;
+  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final Logger _logger = Logger();
-
-  MasterFoodRepository(this._databaseHelper);
 
   Future<List<MasterFood>> getAllFood(String? foodSafety) async {
     final db = await _databaseHelper.database;

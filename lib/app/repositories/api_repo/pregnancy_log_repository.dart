@@ -13,6 +13,9 @@ class PregnancyLogAPIRepository {
   PregnancyLogAPIRepository(this.apiService);
 
   Future<void> storePregnancyLog(DateTime date, Map<String, dynamic> pregnancySymptoms, double? temperature, String? notes) async {
+    print(pregnancySymptoms.toString());
+    print(date);
+
     http.Response response = await apiService.storePregnancyLog(
       formatDate(date),
       pregnancySymptoms,

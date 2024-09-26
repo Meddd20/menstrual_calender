@@ -2,9 +2,7 @@ import 'package:periodnpregnancycalender/app/models/master_newmoon_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
 
 class MasterNewmoonService {
-  final MasterNewmoonRepository _masterNewmoonRepository;
-
-  MasterNewmoonService(this._masterNewmoonRepository);
+  late final MasterNewmoonRepository _masterNewmoonRepository = MasterNewmoonRepository();
 
   Future<List<MasterNewmoon>> getAllNewmoon() async {
     return await _masterNewmoonRepository.getAllNewmoon();

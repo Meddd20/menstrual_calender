@@ -5,12 +5,10 @@ import 'package:periodnpregnancycalender/app/repositories/local/profile_reposito
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class ProfileService {
-  final LocalProfileRepository _localProfileRepository;
-
   final Logger _logger = Logger();
   final StorageService storageService = StorageService();
 
-  ProfileService(this._localProfileRepository);
+  late final LocalProfileRepository _localProfileRepository = LocalProfileRepository();
 
   Future<void> createProfile(String tanggalLahir, int isPregnant) async {
     try {

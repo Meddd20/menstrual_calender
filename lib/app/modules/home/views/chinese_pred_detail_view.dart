@@ -25,7 +25,7 @@ class ChinesePredDetailView extends GetView {
           ),
         ),
         centerTitle: true,
-        backgroundColor: AppColors.white,
+        backgroundColor: argument.genderPrediction == "f" ? Color.fromARGB(255, 253, 225, 248) : Color(0xFF2196F3),
         surfaceTintColor: AppColors.white,
         elevation: 4,
       ),
@@ -128,7 +128,7 @@ class ChinesePredDetailView extends GetView {
                             ),
                           ),
                           Text(
-                            "${formatDateStrWithMonthName(argument.dateOfBirth ?? "")}",
+                            argument.dateOfBirth != null ? formatDateStrWithMonthName(argument.dateOfBirth!) : "N/A",
                             style: CustomTextStyle.extraBold(20, height: 2.0),
                             textAlign: TextAlign.center,
                           ),
@@ -146,7 +146,7 @@ class ChinesePredDetailView extends GetView {
                             ),
                           ),
                           Text(
-                            "${formatDateStrWithMonthName(argument.lunarDateOfBirth ?? "")}",
+                            argument.lunarDateOfBirth != null ? formatDateStrWithMonthName(argument.lunarDateOfBirth!) : "N/A",
                             style: CustomTextStyle.extraBold(20, height: 2.0),
                             textAlign: TextAlign.center,
                           ),
@@ -171,7 +171,7 @@ class ChinesePredDetailView extends GetView {
                             ),
                           ),
                           Text(
-                            "${formatDateStrWithMonthName(argument.specifiedDate ?? "")}",
+                            argument.specifiedDate != null ? formatDateStrWithMonthName(argument.specifiedDate!) : "N/A",
                             style: CustomTextStyle.extraBold(20, height: 2.0),
                             textAlign: TextAlign.center,
                           ),
@@ -189,7 +189,7 @@ class ChinesePredDetailView extends GetView {
                             ),
                           ),
                           Text(
-                            "${formatDateStrWithMonthName(argument.lunarSpecifiedDate ?? "")}",
+                            argument.lunarSpecifiedDate != null ? formatDateStrWithMonthName(argument.lunarSpecifiedDate!) : "N/A",
                             style: CustomTextStyle.extraBold(20, height: 2.0),
                             textAlign: TextAlign.center,
                           ),
@@ -211,6 +211,7 @@ class ChinesePredDetailView extends GetView {
                   ),
                   SizedBox(height: 15),
                   ExpansionTile(
+                    shape: Border(),
                     title: Text(
                       AppLocalizations.of(context)!.references,
                       style: CustomTextStyle.bold(20),

@@ -1,8 +1,6 @@
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/models/master_vaccines_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_vaccines_repository.dart';
 import 'package:periodnpregnancycalender/app/services/master_vaccines_service.dart';
-import 'package:periodnpregnancycalender/app/utils/database_helper.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class VaccineListController extends GetxController {
@@ -12,9 +10,7 @@ class VaccineListController extends GetxController {
 
   @override
   void onInit() {
-    final _databaseHelper = DatabaseHelper.instance;
-    final masterVaccineRepository = MasterVaccinesRepository(_databaseHelper);
-    _masterVaccinesService = MasterVaccinesService(masterVaccineRepository);
+    _masterVaccinesService = MasterVaccinesService();
     listVaccines = getAllVaccineList();
     super.onInit();
   }

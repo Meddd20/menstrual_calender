@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
+import 'package:periodnpregnancycalender/app/common/widgets/custom_expanded_calendar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/blood_pressure_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -23,9 +23,65 @@ class BloodPressureView extends GetView<BloodPressureController> {
         appBar: AppBar(
           title: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Text(
-              AppLocalizations.of(context)!.bloodPressure,
-              style: CustomTextStyle.extraBold(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.bloodPressure,
+                    style: CustomTextStyle.extraBold(20),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return Container(
+                          padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
+                          height: Get.height * 0.97,
+                          child: SingleChildScrollView(
+                            child: Stack(
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.bloodPressureInfo,
+                                      style: CustomTextStyle.extraBold(22, height: 1.5),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      AppLocalizations.of(context)!.bloodPressureInfoDesc,
+                                      style: CustomTextStyle.medium(16, height: 1.75),
+                                    ),
+                                    SizedBox(height: 15),
+                                  ],
+                                ),
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    icon: Icon(Icons.close),
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  icon: Icon(
+                    Icons.help,
+                    size: 20,
+                    color: AppColors.black.withOpacity(0.4),
+                  ),
+                ),
+              ],
             ),
           ),
           centerTitle: true,
@@ -64,21 +120,32 @@ class BloodPressureView extends GetView<BloodPressureController> {
                         children: [
                           Column(
                             children: [
-                              Text(
-                                AppLocalizations.of(context)!.addBloodPressure,
-                                style: CustomTextStyle.extraBold(20, height: 1.5),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.addBloodPressure,
+                                      style: CustomTextStyle.extraBold(20, height: 1.5),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.close),
+                                    onPressed: () {
+                                      controller.resetBloodPressure();
+                                      Get.back();
+                                    },
+                                  ),
+                                ],
                               ),
-                              SizedBox(height: 10),
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: TableCalendar(
-                                  focusedDay: controller.getFocusedDate,
+                                child: CustomExpandedCalendar(
                                   firstDay: controller.tanggalAwalMinggu.first,
                                   lastDay: DateTime.now(),
-                                  startingDayOfWeek: StartingDayOfWeek.monday,
-                                  locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
+                                  focusedDay: controller.getFocusedDate,
                                   onDaySelected: (selectedDay, focusedDay) {
                                     controller.setSelectedDate(selectedDay);
                                     controller.setFocusedDate(focusedDay);
@@ -90,87 +157,8 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                     controller.selectedDate,
                                     day,
                                   ),
-                                  rowHeight: 50,
-                                  daysOfWeekHeight: 25.0,
-                                  calendarStyle: CalendarStyle(
-                                    cellMargin: EdgeInsets.all(6),
-                                    outsideDaysVisible: false,
-                                    isTodayHighlighted: true,
-                                    rangeStartDecoration: BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    rangeEndDecoration: BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    withinRangeDecoration: BoxDecoration(
-                                      color: Colors.red.withOpacity(0.5),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  headerStyle: HeaderStyle(
-                                    formatButtonVisible: false,
-                                    leftChevronVisible: true,
-                                    rightChevronVisible: true,
-                                    titleCentered: true,
-                                    formatButtonDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 2,
-                                      ),
-                                      color: Colors.red,
-                                    ),
-                                    titleTextStyle: CustomTextStyle.bold(16),
-                                    headerMargin: EdgeInsets.only(bottom: 10),
-                                  ),
-                                  availableGestures: AvailableGestures.all,
-                                  calendarBuilders: CalendarBuilders(dowBuilder: (context, day) {
-                                    return Center(
-                                      child: Text(
-                                        DateFormat.E().format(day),
-                                        style: CustomTextStyle.regular(14),
-                                      ),
-                                    );
-                                  }, defaultBuilder: (context, day, focusedDay) {
-                                    return Container(
-                                      child: Center(
-                                        child: Text(
-                                          '${day.day}',
-                                          style: CustomTextStyle.bold(16),
-                                        ),
-                                      ),
-                                    );
-                                  }, selectedBuilder: (context, day, focusedDay) {
-                                    return Container(
-                                      margin: EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.deepPurpleAccent,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '${day.day}',
-                                          style: CustomTextStyle.bold(16, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                  }, todayBuilder: (context, day, focusedDay) {
-                                    return Container(
-                                      margin: EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.deepPurpleAccent[100],
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '${day.day}',
-                                          style: CustomTextStyle.bold(16, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                  }, markerBuilder: (context, day, events) {
+                                  calendarFormat: CalendarFormat.month,
+                                  markerBuilder: (context, day, events) {
                                     for (var i = 0; i < controller.tanggalAwalMinggu.length; i++) {
                                       var weekDatePregnancy = controller.tanggalAwalMinggu[i];
                                       if (day.isAtSameMomentAs(weekDatePregnancy)) {
@@ -192,8 +180,8 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                         );
                                       }
                                     }
-                                    return null;
-                                  }),
+                                    return SizedBox();
+                                  },
                                 ),
                               ),
                               SizedBox(height: 5),
@@ -601,17 +589,14 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                           ),
                                                                         ],
                                                                       ),
-                                                                      SizedBox(height: 10),
                                                                       Container(
                                                                         decoration: BoxDecoration(
                                                                           borderRadius: BorderRadius.circular(10),
                                                                         ),
-                                                                        child: TableCalendar(
-                                                                          focusedDay: controller.getFocusedDate,
+                                                                        child: CustomExpandedCalendar(
                                                                           firstDay: controller.tanggalAwalMinggu.first,
                                                                           lastDay: DateTime.now(),
-                                                                          startingDayOfWeek: StartingDayOfWeek.monday,
-                                                                          locale: controller.storageService.getLanguage() == "en" ? 'en_US' : 'id_ID',
+                                                                          focusedDay: controller.getFocusedDate,
                                                                           onDaySelected: (selectedDay, focusedDay) {
                                                                             controller.setSelectedDate(selectedDay);
                                                                             controller.setFocusedDate(focusedDay);
@@ -623,87 +608,8 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                             controller.selectedDate,
                                                                             day,
                                                                           ),
-                                                                          rowHeight: 50,
-                                                                          daysOfWeekHeight: 25.0,
-                                                                          calendarStyle: CalendarStyle(
-                                                                            cellMargin: EdgeInsets.all(6),
-                                                                            outsideDaysVisible: false,
-                                                                            isTodayHighlighted: true,
-                                                                            rangeStartDecoration: BoxDecoration(
-                                                                              color: Colors.red,
-                                                                              shape: BoxShape.circle,
-                                                                            ),
-                                                                            rangeEndDecoration: BoxDecoration(
-                                                                              color: Colors.red,
-                                                                              shape: BoxShape.circle,
-                                                                            ),
-                                                                            withinRangeDecoration: BoxDecoration(
-                                                                              color: Colors.red.withOpacity(0.5),
-                                                                              shape: BoxShape.circle,
-                                                                            ),
-                                                                          ),
-                                                                          headerStyle: HeaderStyle(
-                                                                            formatButtonVisible: false,
-                                                                            leftChevronVisible: true,
-                                                                            rightChevronVisible: true,
-                                                                            titleCentered: true,
-                                                                            formatButtonDecoration: BoxDecoration(
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                              border: Border.all(
-                                                                                color: Colors.black,
-                                                                                width: 2,
-                                                                              ),
-                                                                              color: Colors.red,
-                                                                            ),
-                                                                            titleTextStyle: CustomTextStyle.bold(16),
-                                                                            headerMargin: EdgeInsets.only(bottom: 10),
-                                                                          ),
-                                                                          availableGestures: AvailableGestures.all,
-                                                                          calendarBuilders: CalendarBuilders(dowBuilder: (context, day) {
-                                                                            return Center(
-                                                                              child: Text(
-                                                                                DateFormat.E().format(day),
-                                                                                style: CustomTextStyle.regular(14),
-                                                                              ),
-                                                                            );
-                                                                          }, defaultBuilder: (context, day, focusedDay) {
-                                                                            return Container(
-                                                                              child: Center(
-                                                                                child: Text(
-                                                                                  '${day.day}',
-                                                                                  style: CustomTextStyle.bold(16),
-                                                                                ),
-                                                                              ),
-                                                                            );
-                                                                          }, selectedBuilder: (context, day, focusedDay) {
-                                                                            return Container(
-                                                                              margin: EdgeInsets.all(6),
-                                                                              decoration: BoxDecoration(
-                                                                                color: Colors.deepPurpleAccent,
-                                                                                shape: BoxShape.circle,
-                                                                              ),
-                                                                              child: Center(
-                                                                                child: Text(
-                                                                                  '${day.day}',
-                                                                                  style: CustomTextStyle.bold(16, color: Colors.white),
-                                                                                ),
-                                                                              ),
-                                                                            );
-                                                                          }, todayBuilder: (context, day, focusedDay) {
-                                                                            return Container(
-                                                                              margin: EdgeInsets.all(6),
-                                                                              decoration: BoxDecoration(
-                                                                                color: Colors.deepPurpleAccent[100],
-                                                                                shape: BoxShape.circle,
-                                                                              ),
-                                                                              child: Center(
-                                                                                child: Text(
-                                                                                  '${day.day}',
-                                                                                  style: CustomTextStyle.bold(16, color: Colors.white),
-                                                                                ),
-                                                                              ),
-                                                                            );
-                                                                          }, markerBuilder: (context, day, events) {
+                                                                          calendarFormat: CalendarFormat.month,
+                                                                          markerBuilder: (context, day, events) {
                                                                             for (var i = 0; i < controller.tanggalAwalMinggu.length; i++) {
                                                                               var weekDatePregnancy = controller.tanggalAwalMinggu[i];
                                                                               if (day.isAtSameMomentAs(weekDatePregnancy)) {
@@ -725,8 +631,8 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                                                                 );
                                                                               }
                                                                             }
-                                                                            return null;
-                                                                          }),
+                                                                            return SizedBox();
+                                                                          },
                                                                         ),
                                                                       ),
                                                                       SizedBox(height: 5),

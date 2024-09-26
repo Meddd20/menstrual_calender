@@ -144,298 +144,182 @@ class DataHarianKehamilan {
 }
 
 class PregnancySymptoms {
-  bool achesAndPains;
-  bool abdominalPressure;
-  bool abdominalStretching;
-  bool babyKicks;
+  bool alteredBodyImage;
+  bool anxiety;
   bool backPain;
-  bool backaches;
-  bool breastEnlargement;
-  bool breastSoreness;
-  bool breastSwelling;
-  bool breastTenderness;
-  bool breathlessness;
-  bool carpalTunnelSyndrome;
+  bool breastPain;
+  bool brownishMarksOnFace;
+  bool carpalTunnel;
   bool changesInLibido;
-  bool clumsiness;
+  bool changesInNipples;
   bool constipation;
-  bool cervicalDilation;
-  bool decreasedLibido;
-  bool darkeningOfSkin;
   bool dizziness;
-  bool dryEyes;
   bool dryMouth;
-  bool drySkin;
-  bool easierBreathing;
-  bool excessiveSalivation;
-  bool fastGrowingHairAndNails;
-  bool fatigue;
-  bool foodAversions;
+  bool fainting;
+  bool feelingDepressed;
   bool foodCravings;
-  bool frequentHeadaches;
-  bool frequentUrination;
-  bool generalDiscomfort;
-  bool gumSensitivity;
-  bool hairGrowthChanges;
+  bool forgetfulness;
+  bool greasySkinAcne;
+  bool haemorrhoids;
+  bool headache;
   bool heartPalpitations;
-  bool heartburn;
-  bool hipPain;
-  bool hipGroinAndAbdominalPain;
-  bool hemorrhoids;
-  bool increasedAppetite;
-  bool increasedSaliva;
-  bool increasedThirst;
-  bool increasedUrgeToPush;
+  bool hipPelvicPain;
   bool increasedVaginalDischarge;
-  bool insomnia;
-  bool itchinessInHandsAndFeet;
+  bool incontinenceLeakingUrine;
+  bool itchySkin;
   bool legCramps;
-  bool legSwelling;
-  bool leakyBreasts;
-  bool looseLigaments;
-  bool lossOfMucusPlug;
-  bool lowerBackPain;
-  bool moodSwings;
-  bool nasalCongestion;
-  bool nauseaAndVomiting;
-  bool numbnessOrTingling;
-  bool pelvicPain;
-  bool pelvicPainAsBabyDescends;
-  bool pelvicPressure;
-  bool pregnancyBrain;
-  bool pregnancyGlow;
-  bool roundLigamentPain;
-  bool skinChanges;
+  bool nausea;
+  bool painfulVaginalVeins;
+  bool poorSleep;
+  bool reflux;
+  bool restlessLegs;
   bool shortnessOfBreath;
-  bool spottingAfterSex;
-  bool stuffyNose;
+  bool sciatica;
+  bool snoring;
+  bool soreNipples;
   bool stretchMarks;
-  bool swellingInHandsAndFeet;
-  bool swollenFeet;
-  bool vividDreams;
+  bool swollenHandsFeet;
+  bool tasteSmellChanges;
+  bool thrush;
+  bool tirednessFatigue;
+  bool urinaryFrequency;
   bool varicoseVeins;
-  bool waterBreaking;
+  bool vividDreams;
+  bool vomiting;
 
   PregnancySymptoms({
-    required this.achesAndPains,
-    required this.abdominalPressure,
-    required this.abdominalStretching,
-    required this.babyKicks,
+    required this.alteredBodyImage,
+    required this.anxiety,
     required this.backPain,
-    required this.backaches,
-    required this.breastEnlargement,
-    required this.breastSoreness,
-    required this.breastSwelling,
-    required this.breastTenderness,
-    required this.breathlessness,
-    required this.carpalTunnelSyndrome,
+    required this.breastPain,
+    required this.brownishMarksOnFace,
+    required this.carpalTunnel,
     required this.changesInLibido,
-    required this.clumsiness,
+    required this.changesInNipples,
     required this.constipation,
-    required this.cervicalDilation,
-    required this.decreasedLibido,
-    required this.darkeningOfSkin,
     required this.dizziness,
-    required this.dryEyes,
     required this.dryMouth,
-    required this.drySkin,
-    required this.easierBreathing,
-    required this.excessiveSalivation,
-    required this.fastGrowingHairAndNails,
-    required this.fatigue,
-    required this.foodAversions,
+    required this.fainting,
+    required this.feelingDepressed,
     required this.foodCravings,
-    required this.frequentHeadaches,
-    required this.frequentUrination,
-    required this.generalDiscomfort,
-    required this.gumSensitivity,
-    required this.hairGrowthChanges,
+    required this.forgetfulness,
+    required this.greasySkinAcne,
+    required this.haemorrhoids,
+    required this.headache,
     required this.heartPalpitations,
-    required this.heartburn,
-    required this.hipPain,
-    required this.hipGroinAndAbdominalPain,
-    required this.hemorrhoids,
-    required this.increasedAppetite,
-    required this.increasedSaliva,
-    required this.increasedThirst,
-    required this.increasedUrgeToPush,
+    required this.hipPelvicPain,
     required this.increasedVaginalDischarge,
-    required this.insomnia,
-    required this.itchinessInHandsAndFeet,
+    required this.incontinenceLeakingUrine,
+    required this.itchySkin,
     required this.legCramps,
-    required this.legSwelling,
-    required this.leakyBreasts,
-    required this.looseLigaments,
-    required this.lossOfMucusPlug,
-    required this.lowerBackPain,
-    required this.moodSwings,
-    required this.nasalCongestion,
-    required this.nauseaAndVomiting,
-    required this.numbnessOrTingling,
-    required this.pelvicPain,
-    required this.pelvicPainAsBabyDescends,
-    required this.pelvicPressure,
-    required this.pregnancyBrain,
-    required this.pregnancyGlow,
-    required this.roundLigamentPain,
-    required this.skinChanges,
+    required this.nausea,
+    required this.painfulVaginalVeins,
+    required this.poorSleep,
+    required this.reflux,
+    required this.restlessLegs,
     required this.shortnessOfBreath,
-    required this.spottingAfterSex,
-    required this.stuffyNose,
+    required this.sciatica,
+    required this.snoring,
+    required this.soreNipples,
     required this.stretchMarks,
-    required this.swellingInHandsAndFeet,
-    required this.swollenFeet,
-    required this.vividDreams,
+    required this.swollenHandsFeet,
+    required this.tasteSmellChanges,
+    required this.thrush,
+    required this.tirednessFatigue,
+    required this.urinaryFrequency,
     required this.varicoseVeins,
-    required this.waterBreaking,
+    required this.vividDreams,
+    required this.vomiting,
   });
 
   PregnancySymptoms.fromJson(Map<String, dynamic> json)
-      : achesAndPains = json["Aches and Pains"],
-        abdominalPressure = json["Abdominal Pressure"],
-        abdominalStretching = json["Abdominal Stretching"],
-        babyKicks = json["Baby Kicks"],
-        backPain = json["Back Pain"],
-        backaches = json["Backaches"],
-        breastEnlargement = json["Breast Enlargement"],
-        breastSoreness = json["Breast Soreness"],
-        breastSwelling = json["Breast Swelling"],
-        breastTenderness = json["Breast Tenderness"],
-        breathlessness = json["Breathlessness"],
-        carpalTunnelSyndrome = json["Carpal Tunnel Syndrome"],
-        changesInLibido = json["Changes in Libido"],
-        clumsiness = json["Clumsiness"],
-        constipation = json["Constipation"],
-        cervicalDilation = json["Cervical Dilation"],
-        decreasedLibido = json["Decreased Libido"],
-        darkeningOfSkin = json["Darkening of Skin"],
-        dizziness = json["Dizziness"],
-        dryEyes = json["Dry Eyes"],
-        dryMouth = json["Dry Mouth"],
-        drySkin = json["Dry Skin"],
-        easierBreathing = json["Easier Breathing"],
-        excessiveSalivation = json["Excessive Salivation"],
-        fastGrowingHairAndNails = json["Fast-Growing Hair and Nails"],
-        fatigue = json["Fatigue"],
-        foodAversions = json["Food Aversions"],
-        foodCravings = json["Food Cravings"],
-        frequentHeadaches = json["Frequent Headaches"],
-        frequentUrination = json["Frequent Urination"],
-        generalDiscomfort = json["General Discomfort"],
-        gumSensitivity = json["Gum Sensitivity"],
-        hairGrowthChanges = json["Hair Growth Changes"],
-        heartPalpitations = json["Heart Palpitations"],
-        heartburn = json["Heartburn"],
-        hipPain = json["Hip Pain"],
-        hipGroinAndAbdominalPain = json["Hip, Groin, and Abdominal Pain"],
-        hemorrhoids = json["Hemorrhoids"],
-        increasedAppetite = json["Increased Appetite"],
-        increasedSaliva = json["Increased Saliva"],
-        increasedThirst = json["Increased Thirst"],
-        increasedUrgeToPush = json["Increased Urge to Push"],
-        increasedVaginalDischarge = json["Increased Vaginal Discharge"],
-        insomnia = json["Insomnia"],
-        itchinessInHandsAndFeet = json["Itchiness in Hands and Feet"],
-        legCramps = json["Leg Cramps"],
-        legSwelling = json["Leg Swelling"],
-        leakyBreasts = json["Leaky Breasts"],
-        looseLigaments = json["Loose Ligaments"],
-        lossOfMucusPlug = json["Loss of Mucus Plug"],
-        lowerBackPain = json["Lower Back Pain"],
-        moodSwings = json["Mood Swings"],
-        nasalCongestion = json["Nasal Congestion"],
-        nauseaAndVomiting = json["Nausea and Vomiting"],
-        numbnessOrTingling = json["Numbness or Tingling"],
-        pelvicPain = json["Pelvic Pain"],
-        pelvicPainAsBabyDescends = json["Pelvic Pain as Baby Descends"],
-        pelvicPressure = json["Pelvic Pressure"],
-        pregnancyBrain = json["Pregnancy Brain (Forgetfulness)"],
-        pregnancyGlow = json["Pregnancy Glow"],
-        roundLigamentPain = json["Round Ligament Pain"],
-        skinChanges = json["Skin Changes"],
-        shortnessOfBreath = json["Shortness of Breath"],
-        spottingAfterSex = json["Spotting After Sex"],
-        stuffyNose = json["Stuffy Nose"],
-        stretchMarks = json["Stretch Marks"],
-        swellingInHandsAndFeet = json["Swelling in Hands and Feet"],
-        swollenFeet = json["Swollen Feet"],
-        vividDreams = json["Vivid Dreams"],
-        varicoseVeins = json["Varicose Veins"],
-        waterBreaking = json["Water Breaking"];
+      : alteredBodyImage = json['Altered Body Image'],
+        anxiety = json['Anxiety'],
+        backPain = json['Back Pain'],
+        breastPain = json['Breast Pain'],
+        brownishMarksOnFace = json['Brownish Marks on Face'],
+        carpalTunnel = json['Carpal Tunnel'],
+        changesInLibido = json['Changes in Libido'],
+        changesInNipples = json['Changes in Nipples'],
+        constipation = json['Constipation'],
+        dizziness = json['Dizziness'],
+        dryMouth = json['Dry Mouth'],
+        fainting = json['Fainting'],
+        feelingDepressed = json['Feeling Depressed'],
+        foodCravings = json['Food Cravings'],
+        forgetfulness = json['Forgetfulness'],
+        greasySkinAcne = json['Greasy Skin/Acne'],
+        haemorrhoids = json['Haemorrhoids'],
+        headache = json['Headache'],
+        heartPalpitations = json['Heart Palpitations'],
+        hipPelvicPain = json['Hip/Pelvic Pain'],
+        increasedVaginalDischarge = json['Increased Vaginal Discharge'],
+        incontinenceLeakingUrine = json['Incontinence/Leaking Urine'],
+        itchySkin = json['Itchy Skin'],
+        legCramps = json['Leg Cramps'],
+        nausea = json['Nausea'],
+        painfulVaginalVeins = json['Painful Vaginal Veins'],
+        poorSleep = json['Poor Sleep'],
+        reflux = json['Reflux'],
+        restlessLegs = json['Restless Legs'],
+        shortnessOfBreath = json['Shortness of Breath'],
+        sciatica = json['Sciatica'],
+        snoring = json['Snoring'],
+        soreNipples = json['Sore Nipples'],
+        stretchMarks = json['Stretch Marks'],
+        swollenHandsFeet = json['Swollen Hands/Feet'],
+        tasteSmellChanges = json['Taste/Smell Changes'],
+        thrush = json['Thrush'],
+        tirednessFatigue = json['Tiredness/Fatigue'],
+        urinaryFrequency = json['Urinary Frequency'],
+        varicoseVeins = json['Varicose Veins'],
+        vividDreams = json['Vivid Dreams'],
+        vomiting = json['Vomiting'];
 
   Map<String, dynamic> toJson() {
     final Map<String, bool> data = <String, bool>{};
-    data["Aches and Pains"] = this.achesAndPains;
-    data["Abdominal Pressure"] = this.abdominalPressure;
-    data["Abdominal Stretching"] = this.abdominalStretching;
-    data["Baby Kicks"] = this.babyKicks;
-    data["Back Pain"] = this.backPain;
-    data["Backaches"] = this.backaches;
-    data["Breast Enlargement"] = this.breastEnlargement;
-    data["Breast Soreness"] = this.breastSoreness;
-    data["Breast Swelling"] = this.breastSwelling;
-    data["Breast Tenderness"] = this.breastTenderness;
-    data["Breathlessness"] = this.breathlessness;
-    data["Carpal Tunnel Syndrome"] = this.carpalTunnelSyndrome;
-    data["Changes in Libido"] = this.changesInLibido;
-    data["Clumsiness"] = this.clumsiness;
-    data["Constipation"] = this.constipation;
-    data["Cervical Dilation"] = this.cervicalDilation;
-    data["Decreased Libido"] = this.decreasedLibido;
-    data["Darkening of Skin"] = this.darkeningOfSkin;
-    data["Dizziness"] = this.dizziness;
-    data["Dry Eyes"] = this.dryEyes;
-    data["Dry Mouth"] = this.dryMouth;
-    data["Dry Skin"] = this.drySkin;
-    data["Easier Breathing"] = this.easierBreathing;
-    data["Excessive Salivation"] = this.excessiveSalivation;
-    data["Fast-Growing Hair and Nails"] = this.fastGrowingHairAndNails;
-    data["Fatigue"] = this.fatigue;
-    data["Food Aversions"] = this.foodAversions;
-    data["Food Cravings"] = this.foodCravings;
-    data["Frequent Headaches"] = this.frequentHeadaches;
-    data["Frequent Urination"] = this.frequentUrination;
-    data["General Discomfort"] = this.generalDiscomfort;
-    data["Gum Sensitivity"] = this.gumSensitivity;
-    data["Hair Growth Changes"] = this.hairGrowthChanges;
-    data["Heart Palpitations"] = this.heartPalpitations;
-    data["Heartburn"] = this.heartburn;
-    data["Hip Pain"] = this.hipPain;
-    data["Hip, Groin, and Abdominal Pain"] = this.hipGroinAndAbdominalPain;
-    data["Hemorrhoids"] = this.hemorrhoids;
-    data["Increased Appetite"] = this.increasedAppetite;
-    data["Increased Saliva"] = this.increasedSaliva;
-    data["Increased Thirst"] = this.increasedThirst;
-    data["Increased Urge to Push"] = this.increasedUrgeToPush;
-    data["Increased Vaginal Discharge"] = this.increasedVaginalDischarge;
-    data["Insomnia"] = this.insomnia;
-    data["Itchiness in Hands and Feet"] = this.itchinessInHandsAndFeet;
-    data["Leg Cramps"] = this.legCramps;
-    data["Leg Swelling"] = this.legSwelling;
-    data["Leaky Breasts"] = this.leakyBreasts;
-    data["Loose Ligaments"] = this.looseLigaments;
-    data["Loss of Mucus Plug"] = this.lossOfMucusPlug;
-    data["Lower Back Pain"] = this.lowerBackPain;
-    data["Mood Swings"] = this.moodSwings;
-    data["Nasal Congestion"] = this.nasalCongestion;
-    data["Nausea and Vomiting"] = this.nauseaAndVomiting;
-    data["Numbness or Tingling"] = this.numbnessOrTingling;
-    data["Pelvic Pain"] = this.pelvicPain;
-    data["Pelvic Pain as Baby Descends"] = this.pelvicPainAsBabyDescends;
-    data["Pelvic Pressure"] = this.pelvicPressure;
-    data["Pregnancy Brain (Forgetfulness)"] = this.pregnancyBrain;
-    data["Pregnancy Glow"] = this.pregnancyGlow;
-    data["Round Ligament Pain"] = this.roundLigamentPain;
-    data["Skin Changes"] = this.skinChanges;
-    data["Shortness of Breath"] = this.shortnessOfBreath;
-    data["Spotting After Sex"] = this.spottingAfterSex;
-    data["Stuffy Nose"] = this.stuffyNose;
-    data["Stretch Marks"] = this.stretchMarks;
-    data["Swelling in Hands and Feet"] = this.swellingInHandsAndFeet;
-    data["Swollen Feet"] = this.swollenFeet;
-    data["Vivid Dreams"] = this.vividDreams;
-    data["Varicose Veins"] = this.varicoseVeins;
-    data["Water Breaking"] = this.waterBreaking;
+    data['Altered Body Image'] = alteredBodyImage;
+    data['Anxiety'] = anxiety;
+    data['Back Pain'] = backPain;
+    data['Breast Pain'] = breastPain;
+    data['Brownish Marks on Face'] = brownishMarksOnFace;
+    data['Carpal Tunnel'] = carpalTunnel;
+    data['Changes in Libido'] = changesInLibido;
+    data['Changes in Nipples'] = changesInNipples;
+    data['Constipation'] = constipation;
+    data['Dizziness'] = dizziness;
+    data['Dry Mouth'] = dryMouth;
+    data['Fainting'] = fainting;
+    data['Feeling Depressed'] = feelingDepressed;
+    data['Food Cravings'] = foodCravings;
+    data['Forgetfulness'] = forgetfulness;
+    data['Greasy Skin/Acne'] = greasySkinAcne;
+    data['Haemorrhoids'] = haemorrhoids;
+    data['Headache'] = headache;
+    data['Heart Palpitations'] = heartPalpitations;
+    data['Hip/Pelvic Pain'] = hipPelvicPain;
+    data['Increased Vaginal Discharge'] = increasedVaginalDischarge;
+    data['Incontinence/Leaking Urine'] = incontinenceLeakingUrine;
+    data['Itchy Skin'] = itchySkin;
+    data['Leg Cramps'] = legCramps;
+    data['Nausea'] = nausea;
+    data['Painful Vaginal Veins'] = painfulVaginalVeins;
+    data['Poor Sleep'] = poorSleep;
+    data['Reflux'] = reflux;
+    data['Restless Legs'] = restlessLegs;
+    data['Shortness of Breath'] = shortnessOfBreath;
+    data['Sciatica'] = sciatica;
+    data['Snoring'] = snoring;
+    data['Sore Nipples'] = soreNipples;
+    data['Stretch Marks'] = stretchMarks;
+    data['Swollen Hands/Feet'] = swollenHandsFeet;
+    data['Taste/Smell Changes'] = tasteSmellChanges;
+    data['Thrush'] = thrush;
+    data['Tiredness/Fatigue'] = tirednessFatigue;
+    data['Urinary Frequency'] = urinaryFrequency;
+    data['Varicose Veins'] = varicoseVeins;
+    data['Vivid Dreams'] = vividDreams;
+    data['Vomiting'] = vomiting;
     return data;
   }
 }
