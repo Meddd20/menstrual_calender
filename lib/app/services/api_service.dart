@@ -25,7 +25,7 @@ class ApiService {
       loginHeaders = {
         "token": dotenv.env["API_TOKEN"] ?? "",
         "Accept": "application/json",
-        "user_id": storageService.getCredentialToken() ?? "",
+        "userToken": storageService.getCredentialToken() ?? "",
       };
     }
   }
@@ -53,7 +53,6 @@ class ApiService {
   Future<http.Response> login(String email, String password) async {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.login);
     Map<String, String> body = {"email": email, "password": password};
-    print(generalHeaders);
 
     return await http.post(url, body: body, headers: generalHeaders);
   }

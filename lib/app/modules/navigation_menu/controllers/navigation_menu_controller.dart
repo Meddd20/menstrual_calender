@@ -17,6 +17,7 @@ class NavigationMenuController extends GetxController {
   late final AuthRepository authRepository = AuthRepository(apiService);
   final storageService = StorageService();
   Rx<bool?> deleteData = Rx<bool>(false);
+  Rx<String?> isPregnant = Rx<String?>(StorageService().getIsPregnant());
 
   @override
   void onInit() async {
@@ -41,7 +42,7 @@ class NavigationMenuController extends GetxController {
           storageService.setHasSyncData(true);
         }
 
-        authRepository.checkToken();
+        await authRepository.checkToken();
       }
     }
   }

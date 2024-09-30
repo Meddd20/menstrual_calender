@@ -63,7 +63,7 @@ class Onboarding1View extends GetView<OnboardingController> {
                           controller.birthday.value = dates.isNotEmpty ? dates[0] ?? DateTime.now() : DateTime.now();
                           controller.update();
                         },
-                        lastDate: DateTime.now(),
+                        lastDate: DateTime.now().subtract(Duration(days: 365 * 13)),
                         calendarType: CalendarDatePicker2Type.single,
                       ),
                     ),

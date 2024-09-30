@@ -58,7 +58,7 @@ class TemperatureView extends GetView<TemperatureController> {
               ),
               Obx(
                 () => Text(
-                  controller.getSelectedDataType == "pregnancy_notes" ? AppLocalizations.of(context)!.entriesFromDate(formatDateWithMonthName(controller.selectedDate.value)) : AppLocalizations.of(context)!.fromTheFirstDayOfPregnancy,
+                  controller.selectedDataTags != "pregnancy_temperature" ? AppLocalizations.of(context)!.entriesFromDate(formatDateWithMonthName(controller.selectedDate.value)) : AppLocalizations.of(context)!.fromTheFirstDayOfPregnancy,
                   style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
                 ),
               ),

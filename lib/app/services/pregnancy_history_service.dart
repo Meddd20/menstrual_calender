@@ -95,6 +95,7 @@ class PregnancyHistoryService {
           isPregnant: "1",
           updatedAt: DateTime.now().toString(),
         );
+        storageService.storeIsPregnant("1");
 
         await _localProfileRepository.updateProfile(updateUserProfile);
       }

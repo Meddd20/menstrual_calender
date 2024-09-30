@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static final String baseUrl = "http://10.0.2.2:8000";
+  static final String baseUrl = "https://period-pregnancy.inovasi-digital.my.id";
   static final String apiUrl = "${baseUrl}/api/";
   static _AuthEndPoints authEndPoints = _AuthEndPoints();
 }

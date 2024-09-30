@@ -38,7 +38,7 @@ class NotesController extends GetxController {
     if (selectedDataTags == "pregnancy_notes") {
       selectedDataType.value = "";
     }
-    fetchNotes();
+    fetchNotes(Get.context);
     specifiedDataByDate();
     super.onInit();
   }
@@ -114,13 +114,13 @@ class NotesController extends GetxController {
     return specificNotesData;
   }
 
-  Future<void> fetchNotes() async {
+  Future<void> fetchNotes(context) async {
     try {
       DailyLogTagsData? result;
       if (selectedDataTags == "pregnancy_notes") {
-        result = await _pregnancyLogService.getPregnancyLogByTags("notes");
+        result = await _pregnancyLogService.getPregnancyLogByTags(context, "notes");
       } else {
-        result = await _logService.getLogsByTags("notes");
+        result = await _logService.getLogsByTags(context, "notes");
       }
 
       notes.value = result.logs;

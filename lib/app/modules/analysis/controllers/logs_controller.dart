@@ -47,7 +47,7 @@ class LogsController extends GetxController {
     _updateSelectedDate();
     specifiedDataByDate();
 
-    fetchLogs();
+    fetchLogs(Get.context);
     super.onInit();
   }
 
@@ -186,7 +186,7 @@ class LogsController extends GetxController {
       return AppLocalizations.of(context)!.symptoms;
     } else if (selectedDataTags == "vaginal_discharge") {
       return AppLocalizations.of(context)!.vaginalDischarge;
-    } else if (selectedDataTags == "logs") {
+    } else if (selectedDataTags == "moods") {
       return AppLocalizations.of(context)!.moods;
     } else if (selectedDataTags == "others") {
       return AppLocalizations.of(context)!.others;
@@ -197,13 +197,13 @@ class LogsController extends GetxController {
     }
   }
 
-  Future<void> fetchLogs() async {
+  Future<void> fetchLogs(context) async {
     try {
       DailyLogTagsData? result;
       if (selectedDataTags == "pregnancy_symptoms") {
-        result = await _pregnancyLogService.getPregnancyLogByTags("pregnancySymptoms");
+        result = await _pregnancyLogService.getPregnancyLogByTags(context, "pregnancySymptoms");
       } else {
-        result = await _logService.getLogsByTags(selectedDataTags.value);
+        result = await _logService.getLogsByTags(context, selectedDataTags.value);
       }
 
       logs.value = result.logs;

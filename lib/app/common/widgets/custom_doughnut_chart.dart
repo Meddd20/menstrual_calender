@@ -79,7 +79,20 @@ class CustomDougnutChart extends StatelessWidget {
             );
           },
         ),
-        tooltipBehavior: TooltipBehavior(enable: true),
+        tooltipBehavior: TooltipBehavior(
+          enable: true,
+          tooltipPosition: TooltipPosition.auto,
+          builder: (data, point, series, pointIndex, seriesIndex) {
+            return Container(
+              padding: EdgeInsets.all(8.0),
+              color: Colors.black54,
+              child: Text(
+                '${point.x} ${point.y?.toInt()}',
+                style: CustomTextStyle.bold(12, color: Colors.white),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

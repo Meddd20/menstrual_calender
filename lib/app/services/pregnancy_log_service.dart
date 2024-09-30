@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
@@ -7,6 +8,7 @@ import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_histor
 import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_log_repository.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PregnancyLogService {
   final Logger _logger = Logger();
@@ -127,7 +129,7 @@ class PregnancyLogService {
     }
   }
 
-  Future<DailyLogTagsData> getPregnancyLogByTags(String tags) async {
+  Future<DailyLogTagsData> getPregnancyLogByTags(BuildContext context, String tags) async {
     List<String> allowedTags = ["pregnancySymptoms", "notes", "temperature"];
 
     if (!allowedTags.contains(tags)) {
@@ -160,7 +162,7 @@ class PregnancyLogService {
           dynamic tagValue = pregnancyLog.toJson()[tags];
 
           if (tags == "pregnancySymptoms") {
-            Map<String, dynamic>? tagMap = pregnancyLog.toJson()[tags];
+            Map<String, dynamic>? tagMap = pregnancyLog.pregnancySymptoms?.toJson();
             if (tagMap != null && tagMap.isNotEmpty) {
               List<String> trueTags = tagMap.entries.where((entry) => entry.value == true).map((entry) => entry.key).toList();
               if (trueTags.isNotEmpty) {
@@ -173,7 +175,7 @@ class PregnancyLogService {
                 logs[logDate] = [tagValue.toString()];
               }
             } else {
-              if (tagValue != null) {
+              if (tagValue != null && tagValue.toString().isNotEmpty) {
                 logs[logDate] = [tagValue.toString()];
               }
             }
@@ -189,13 +191,23 @@ class PregnancyLogService {
       Map<String, int> percentage6Months = findOccurrences(sortedLogs, sixMonthsAgo);
       Map<String, int> percentage1Year = findOccurrences(sortedLogs, oneYearAgo);
 
+      var translatedLogs = sortedLogs.map((key, value) {
+        String translatedSymptoms = value.map((symptom) => getTranslationKey(context, symptom)).join(', ');
+        return MapEntry(key, translatedSymptoms);
+      });
+      var translatedPercentage30Days = percentage30Days.map((key, value) => MapEntry(getTranslationKey(context, key), value));
+      var translatedPercentage3Months = percentage3Months.map((key, value) => MapEntry(getTranslationKey(context, key), value));
+      var translatedPercentage6Months = percentage6Months.map((key, value) => MapEntry(getTranslationKey(context, key), value));
+      var translatedPercentage1Year = percentage1Year.map((key, value) => MapEntry(getTranslationKey(context, key), value));
+
+
       return DailyLogTagsData(
         tags: tags,
-        logs: sortedLogs,
-        percentage30Days: percentage30Days,
-        percentage3Months: percentage3Months,
-        percentage6Months: percentage6Months,
-        percentage1Year: percentage1Year,
+        logs: translatedLogs,
+        percentage30Days: translatedPercentage30Days,
+        percentage3Months: translatedPercentage3Months,
+        percentage6Months: translatedPercentage6Months,
+        percentage1Year: translatedPercentage1Year,
       );
     } else {
       return DailyLogTagsData(
@@ -585,6 +597,58 @@ class PregnancyLogService {
     return gerakanBayi;
   }
 
+  String getTranslationKey(BuildContext context, String key) {
+    final translations = getTranslations(context);
+    return translations[key] ?? key;
+  }
+
+  Map<String, String> getTranslations(BuildContext context) {
+    return {
+      "Altered Body Image": AppLocalizations.of(context)!.alteredBodyImage,
+      "Anxiety": AppLocalizations.of(context)!.anxiety,
+      "Back Pain": AppLocalizations.of(context)!.backPain,
+      "Breast Pain": AppLocalizations.of(context)!.breastPain,
+      "Brownish Marks on Face": AppLocalizations.of(context)!.brownishMarksOnFace,
+      "Carpal Tunnel": AppLocalizations.of(context)!.carpalTunnel,
+      "Changes in Libido": AppLocalizations.of(context)!.changesInLibido,
+      "Changes in Nipples": AppLocalizations.of(context)!.changesInNipples,
+      "Constipation": AppLocalizations.of(context)!.constipation,
+      "Dizziness": AppLocalizations.of(context)!.dizziness,
+      "Dry Mouth": AppLocalizations.of(context)!.dryMouth,
+      "Fainting": AppLocalizations.of(context)!.fainting,
+      "Feeling Depressed": AppLocalizations.of(context)!.feelingDepressed,
+      "Food Cravings": AppLocalizations.of(context)!.foodCravings,
+      "Forgetfulness": AppLocalizations.of(context)!.forgetfulness,
+      "Greasy Skin/Acne": AppLocalizations.of(context)!.greasySkinAcne,
+      "Haemorrhoids": AppLocalizations.of(context)!.haemorrhoids,
+      "Headache": AppLocalizations.of(context)!.headache,
+      "Heart Palpitations": AppLocalizations.of(context)!.heartPalpitations,
+      "Hip/Pelvic Pain": AppLocalizations.of(context)!.hipPelvicPain,
+      "Increased Vaginal Discharge": AppLocalizations.of(context)!.increasedVaginalDischarge,
+      "Incontinence/Leaking Urine": AppLocalizations.of(context)!.incontinenceLeakingUrine,
+      "Itchy Skin": AppLocalizations.of(context)!.itchySkin,
+      "Leg Cramps": AppLocalizations.of(context)!.legCramps,
+      "Nausea": AppLocalizations.of(context)!.nausea,
+      "Painful Vaginal Veins": AppLocalizations.of(context)!.painfulVaginalVeins,
+      "Poor Sleep": AppLocalizations.of(context)!.poorSleep,
+      "Reflux": AppLocalizations.of(context)!.reflux,
+      "Restless Legs": AppLocalizations.of(context)!.restlessLegs,
+      "Shortness of Breath": AppLocalizations.of(context)!.shortnessOfBreath,
+      "Sciatica": AppLocalizations.of(context)!.sciatica,
+      "Snoring": AppLocalizations.of(context)!.snoring,
+      "Sore Nipples": AppLocalizations.of(context)!.soreNipples,
+      "Stretch Marks": AppLocalizations.of(context)!.stretchMarks,
+      "Swollen Hands/Feet": AppLocalizations.of(context)!.swollenHandsFeet,
+      "Taste/Smell Changes": AppLocalizations.of(context)!.tasteSmellChanges,
+      "Thrush": AppLocalizations.of(context)!.thrush,
+      "Tiredness/Fatigue": AppLocalizations.of(context)!.tirednessFatigue,
+      "Urinary Frequency": AppLocalizations.of(context)!.urinaryFrequency,
+      "Varicose Veins": AppLocalizations.of(context)!.varicoseVeins,
+      "Vivid Dreams": AppLocalizations.of(context)!.vividDreams,
+      "Vomiting": AppLocalizations.of(context)!.vomiting,
+    };
+  }
+
   PregnancySymptoms _defaultPregnancySymptoms() {
     return PregnancySymptoms(
       alteredBodyImage: false,
@@ -630,78 +694,5 @@ class PregnancyLogService {
       vividDreams: false,
       vomiting: false,
     );
-    // return PregnancySymptoms(
-    //   achesAndPains: false,
-    //   abdominalPressure: false,
-    //   abdominalStretching: false,
-    //   babyKicks: false,
-    //   backPain: false,
-    //   backaches: false,
-    //   breastEnlargement: false,
-    //   breastSoreness: false,
-    //   breastSwelling: false,
-    //   breastTenderness: false,
-    //   breathlessness: false,
-    //   carpalTunnelSyndrome: false,
-    //   changesInLibido: false,
-    //   clumsiness: false,
-    //   constipation: false,
-    //   cervicalDilation: false,
-    //   decreasedLibido: false,
-    //   darkeningOfSkin: false,
-    //   dizziness: false,
-    //   dryEyes: false,
-    //   dryMouth: false,
-    //   drySkin: false,
-    //   easierBreathing: false,
-    //   excessiveSalivation: false,
-    //   fastGrowingHairAndNails: false,
-    //   fatigue: false,
-    //   foodAversions: false,
-    //   foodCravings: false,
-    //   frequentHeadaches: false,
-    //   frequentUrination: false,
-    //   generalDiscomfort: false,
-    //   gumSensitivity: false,
-    //   hairGrowthChanges: false,
-    //   heartPalpitations: false,
-    //   heartburn: false,
-    //   hipPain: false,
-    //   hipGroinAndAbdominalPain: false,
-    //   hemorrhoids: false,
-    //   increasedAppetite: false,
-    //   increasedSaliva: false,
-    //   increasedThirst: false,
-    //   increasedUrgeToPush: false,
-    //   increasedVaginalDischarge: false,
-    //   insomnia: false,
-    //   itchinessInHandsAndFeet: false,
-    //   legCramps: false,
-    //   legSwelling: false,
-    //   leakyBreasts: false,
-    //   looseLigaments: false,
-    //   lossOfMucusPlug: false,
-    //   lowerBackPain: false,
-    //   moodSwings: false,
-    //   nasalCongestion: false,
-    //   nauseaAndVomiting: false,
-    //   numbnessOrTingling: false,
-    //   pelvicPain: false,
-    //   pelvicPainAsBabyDescends: false,
-    //   pelvicPressure: false,
-    //   pregnancyBrain: false,
-    //   pregnancyGlow: false,
-    //   roundLigamentPain: false,
-    //   skinChanges: false,
-    //   shortnessOfBreath: false,
-    //   spottingAfterSex: false,
-    //   stuffyNose: false,
-    //   stretchMarks: false,
-    //   swellingInHandsAndFeet: false,
-    //   swollenFeet: false,
-    //   vividDreams: false,
-    //   varicoseVeins: false,
-    //   waterBreaking: false,
-    // );
   }
 }

@@ -45,7 +45,6 @@ class RegisterController extends GetxController {
 
     var bd = Get.arguments as String? ?? "";
     birthday.value = bd;
-    print(birthday.value);
 
     super.onInit();
   }

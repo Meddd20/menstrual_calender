@@ -32,7 +32,7 @@ class WeightController extends GetxController {
     );
     selectedDataType = 'percentage30Days'.obs;
     _updateSelectedDate();
-    fetchWeight();
+    fetchWeight(Get.context);
     specifiedDataByDate();
     weight = RxMap<String, dynamic>();
     super.onInit();
@@ -121,9 +121,9 @@ class WeightController extends GetxController {
     return specificWeightData;
   }
 
-  Future<void> fetchWeight() async {
+  Future<void> fetchWeight(context) async {
     try {
-      DailyLogTagsData? result = await _logService.getLogsByTags("weight");
+      DailyLogTagsData? result = await _logService.getLogsByTags(context, "weight");
 
       Map<String, dynamic> logsMap = result.logs;
 

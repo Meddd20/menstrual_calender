@@ -36,8 +36,8 @@ class LoginController extends GetxController {
     emailC = TextEditingController();
     passwordC = TextEditingController();
     final arguments = Get.arguments;
-    if (arguments != null && arguments is Map<String, dynamic> && arguments.isNotEmpty) {
-      overrideExistingData.value = arguments['arg1'] as bool? ?? false;
+    if (arguments != null && arguments is bool) {
+      overrideExistingData.value = arguments;
     }
     super.onInit();
   }
@@ -59,12 +59,11 @@ class LoginController extends GetxController {
   Future<void> login(context) async {
     try {
       User? user = await authRepository.login(emailC.text.trim(), passwordC.text.trim());
+      User? localProfile = await _profileService.getProfile();
 
       if (user == null || user.token == null) {
         return;
       }
-
-      User? localProfile = await _profileService.getProfile();
 
       if (localProfile == null) {
         await _profileService.createLoginProfile(
@@ -90,7 +89,7 @@ class LoginController extends GetxController {
 
         if (storageService.getAccountLocalId() != 0) {
           if (overrideExistingData == false) {
-            _profileService.deletePendingDataChanges();
+            await _profileService.deletePendingDataChanges();
           }
         } else {
           storageService.storeAccountLocalId(localProfile.id!);
@@ -99,7 +98,7 @@ class LoginController extends GetxController {
         FirebaseNotificationService().storeFcmToken(user.id!);
         storageService.storeIsAuth(true);
         storageService.storeAccountId(user.id!);
-        storageService.storeIsPregnant(user.isPregnant!);
+        overrideExistingData == false ? storageService.storeIsPregnant(user.isPregnant!) : null;
         storageService.storeIsBackup(true);
 
         Get.offAllNamed(Routes.NAVIGATION_MENU, arguments: overrideExistingData.value);

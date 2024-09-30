@@ -21,8 +21,8 @@ class UnauthorizedErrorView extends GetView<ProfileController> {
             children: [
               Container(
                 child: Image.asset(
-                  'assets/image/alert.png',
-                  width: Get.width,
+                  'assets/icon/not-found.png',
+                  width: Get.width / 1.5,
                 ),
               ),
               SizedBox(height: 30),

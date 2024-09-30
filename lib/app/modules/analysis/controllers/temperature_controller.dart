@@ -40,7 +40,7 @@ class TemperatureController extends GetxController {
     if (selectedDataTags == "pregnancy_temperature") {
       selectedDataType.value = "";
     }
-    fetchTemperatures();
+    fetchTemperatures(Get.context);
     specifiedDataByDate();
     _updateSelectedDate();
     super.onInit();
@@ -129,12 +129,12 @@ class TemperatureController extends GetxController {
     return specificTemperaturesData;
   }
 
-  Future<void> fetchTemperatures() async {
+  Future<void> fetchTemperatures(context) async {
     try {
       if (selectedDataTags == "pregnancy_temperature") {
-        data = await _pregnancyLogService.getPregnancyLogByTags("temperature");
+        data = await _pregnancyLogService.getPregnancyLogByTags(context, "temperature");
       } else {
-        data = await _logService.getLogsByTags("temperature");
+        data = await _logService.getLogsByTags(context, "temperature");
       }
 
       Map<String, dynamic> logsMap = data.logs;

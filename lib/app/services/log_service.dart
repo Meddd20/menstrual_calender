@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/models/daily_log_model.dart';
@@ -7,6 +8,7 @@ import 'package:periodnpregnancycalender/app/repositories/local/log_repository.d
 import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LogService {
   final Logger _logger = Logger();
@@ -205,7 +207,7 @@ class LogService {
     return DataHarian();
   }
 
-  Future<DailyLogTagsData> getLogsByTags(String tags) async {
+  Future<DailyLogTagsData> getLogsByTags(BuildContext context, String tags) async {
     List<String> allowedTags = [
       "sex_activity",
       "bleeding_flow",
@@ -281,13 +283,22 @@ class LogService {
     Map<String, int> percentage6Months = findOccurrences(logs, sixMonthsAgo);
     Map<String, int> percentage1Year = findOccurrences(logs, oneYearAgo);
 
+    var translatedLogs = sortedLogs.map((key, value) {
+      String translatedValue = value.map((symptom) => getTranslationKey(context, symptom)).join(', ');
+      return MapEntry(key, translatedValue);
+    });
+    var translatedPercentage30Days = percentage30Days.map((key, value) => MapEntry(getTranslationKey(context, key), value));
+    var translatedPercentage3Months = percentage3Months.map((key, value) => MapEntry(getTranslationKey(context, key), value));
+    var translatedPercentage6Months = percentage6Months.map((key, value) => MapEntry(getTranslationKey(context, key), value));
+    var translatedPercentage1Year = percentage1Year.map((key, value) => MapEntry(getTranslationKey(context, key), value));
+
     return DailyLogTagsData(
       tags: tags,
-      logs: sortedLogs,
-      percentage30Days: percentage30Days,
-      percentage3Months: percentage3Months,
-      percentage6Months: percentage6Months,
-      percentage1Year: percentage1Year,
+      logs: translatedLogs,
+      percentage30Days: translatedPercentage30Days,
+      percentage3Months: translatedPercentage3Months,
+      percentage6Months: translatedPercentage6Months,
+      percentage1Year: translatedPercentage1Year,
     );
   }
 
@@ -429,5 +440,88 @@ class LogService {
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
     }
+  }
+
+  String getTranslationKey(BuildContext context, String key) {
+    final translations = getTranslations(context);
+    return translations[key] ?? key;
+  }
+
+  Map<String, String> getTranslations(BuildContext context) {
+    return {
+      "Didn't have sex": AppLocalizations.of(context)!.didntHaveSex,
+      "Unprotected sex": AppLocalizations.of(context)!.unprotectedSex,
+      "Protected sex": AppLocalizations.of(context)!.protectedSex,
+      "No discharge": AppLocalizations.of(context)!.noDischarge,
+      "Creamy": AppLocalizations.of(context)!.creamyDischarge,
+      "Spotting": AppLocalizations.of(context)!.spottingDischarge,
+      "Eggwhite": AppLocalizations.of(context)!.eggwhiteDischarge,
+      "Sticky": AppLocalizations.of(context)!.stickyDischarge,
+      "Watery": AppLocalizations.of(context)!.wateryDischarge,
+      "Unusual": AppLocalizations.of(context)!.unusualDischarge,
+      "Light": AppLocalizations.of(context)!.lightBleedingFlow,
+      "Medium": AppLocalizations.of(context)!.mediumBleedingFlow,
+      "Heavy": AppLocalizations.of(context)!.heavyBleedingFlow,
+      "Abdominal cramps": AppLocalizations.of(context)!.abdominalCramps,
+      "Acne": AppLocalizations.of(context)!.acne,
+      "Backache": AppLocalizations.of(context)!.backache,
+      "Bloating": AppLocalizations.of(context)!.bloating,
+      "Body aches": AppLocalizations.of(context)!.bodyAches,
+      "Chills": AppLocalizations.of(context)!.chills,
+      "Constipation": AppLocalizations.of(context)!.constipation,
+      "Cramps": AppLocalizations.of(context)!.cramps,
+      "Cravings": AppLocalizations.of(context)!.cravings,
+      "Diarrhea": AppLocalizations.of(context)!.diarrhea,
+      "Dizziness": AppLocalizations.of(context)!.dizziness,
+      "Fatigue": AppLocalizations.of(context)!.fatigue,
+      "Feel good": AppLocalizations.of(context)!.feelGood,
+      "Gas": AppLocalizations.of(context)!.gas,
+      "Headache": AppLocalizations.of(context)!.headache,
+      "Hot flashes": AppLocalizations.of(context)!.hotFlashes,
+      "Insomnia": AppLocalizations.of(context)!.insomnia,
+      "Low back pain": AppLocalizations.of(context)!.lowBackPain,
+      "Nausea": AppLocalizations.of(context)!.nausea,
+      "Nipple changes": AppLocalizations.of(context)!.nippleChanges,
+      "PMS": AppLocalizations.of(context)!.pms,
+      "Swelling": AppLocalizations.of(context)!.swelling,
+      "Tender breasts": AppLocalizations.of(context)!.tenderBreasts,
+      "Angry": AppLocalizations.of(context)!.angry,
+      "Anxious": AppLocalizations.of(context)!.anxious,
+      "Apathetic": AppLocalizations.of(context)!.apathetic,
+      "Calm": AppLocalizations.of(context)!.calm,
+      "Confused": AppLocalizations.of(context)!.confused,
+      "Cranky": AppLocalizations.of(context)!.cranky,
+      "Depressed": AppLocalizations.of(context)!.depressed,
+      "Emotional": AppLocalizations.of(context)!.emotional,
+      "Energetic": AppLocalizations.of(context)!.energetic,
+      "Excited": AppLocalizations.of(context)!.excited,
+      "Feeling guilty": AppLocalizations.of(context)!.feelingGuilty,
+      "Frisky": AppLocalizations.of(context)!.frisky,
+      "Frustrated": AppLocalizations.of(context)!.frustrated,
+      "Happy": AppLocalizations.of(context)!.happy,
+      "Irritated": AppLocalizations.of(context)!.irritated,
+      "Low energy": AppLocalizations.of(context)!.lowEnergy,
+      "Mood swings": AppLocalizations.of(context)!.moodSwings,
+      "Obsessive thoughts": AppLocalizations.of(context)!.obsessiveThoughts,
+      "Sad": AppLocalizations.of(context)!.sad,
+      "Sensitive": AppLocalizations.of(context)!.sensitive,
+      "Sleepy": AppLocalizations.of(context)!.sleepy,
+      "Tired": AppLocalizations.of(context)!.tired,
+      "Unfocused": AppLocalizations.of(context)!.unfocused,
+      "Very self-critical": AppLocalizations.of(context)!.verySelfCritical,
+      "Travel": AppLocalizations.of(context)!.travel,
+      "Stress": AppLocalizations.of(context)!.stress,
+      "Disease or Injury": AppLocalizations.of(context)!.diseaseOrInjury,
+      "Alcohol": AppLocalizations.of(context)!.alcohol,
+      "Didn't exercise": AppLocalizations.of(context)!.didntExercise,
+      "Yoga": AppLocalizations.of(context)!.yoga,
+      "Gym": AppLocalizations.of(context)!.gym,
+      "Aerobics & Dancing": AppLocalizations.of(context)!.aerobicsAndDancing,
+      "Swimming": AppLocalizations.of(context)!.swimming,
+      "Team sports": AppLocalizations.of(context)!.teamSports,
+      "Running": AppLocalizations.of(context)!.running,
+      "Cycling": AppLocalizations.of(context)!.cycling,
+      "Walking": AppLocalizations.of(context)!.walking,
+    };
   }
 }
