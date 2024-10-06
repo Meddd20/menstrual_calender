@@ -196,8 +196,8 @@ class BabykicksView extends GetView<BabykicksController> {
                     dataRowMaxHeight: 60.0,
                     dividerThickness: 0,
                     sortAscending: true,
-                    headingTextStyle: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                    dataTextStyle: CustomTextStyle.semiBold(14, height: 1.5),
+                    headingTextStyle: CustomTextStyle.regular(12, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                    dataTextStyle: CustomTextStyle.semiBold(13, height: 1.5),
                     columns: [
                       DataColumn(
                         label: Expanded(
@@ -244,7 +244,11 @@ class BabykicksView extends GetView<BabykicksController> {
                         ),
                       ),
                       DataColumn(
-                        label: Expanded(child: Center(child: Text(""))),
+                        label: Expanded(
+                          child: Center(
+                            child: Text(""),
+                          ),
+                        ),
                       ),
                     ],
                     rows: List<DataRow>.generate(
@@ -287,11 +291,12 @@ class BabykicksView extends GetView<BabykicksController> {
                             ),
                           ),
                           DataCell(
-                            Center(
-                              child: IconButton(
-                                icon: Icon(Icons.delete),
+                            IconButton(
+                              onPressed: () => controller.deleteKickCounter(context, kick.id!),
+                              icon: Icon(
+                                Icons.delete,
+                                size: 20,
                                 color: Colors.black.withOpacity(0.4),
-                                onPressed: () => controller.deleteKickCounter(context, kick.id!),
                               ),
                             ),
                           ),

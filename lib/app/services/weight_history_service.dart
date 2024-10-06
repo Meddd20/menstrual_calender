@@ -104,8 +104,10 @@ class WeightHistoryService {
 
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      print(currentPregnancyData?.toJson());
       List<WeightHistory?> getAllWeightHistory = await _weightHistoryRepository.getWeightHistory(userId);
       List<WeightHistory?> weightDataOnThisPregnancy = getAllWeightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData?.id).toList();
+      print(weightDataOnThisPregnancy.first?.toJson());
 
       if (currentPregnancyData != null) {
         DateTime hariPertamaHaidTerakhir = DateTime.parse(currentPregnancyData.hariPertamaHaidTerakhir ?? "");
@@ -152,7 +154,7 @@ class WeightHistoryService {
 
           WeightHistory? matchingNewTanggalPencatatan = updatedWeightDataOnThisPregnancy.firstWhereOrNull((wh) {
             if (wh?.userId == userId && wh?.tanggalPencatatan != null) {
-              return formatDateStr(wh!.tanggalPencatatan!) == formattedDate;
+              return formatDate(DateTime.parse(wh!.tanggalPencatatan!)) == formattedDate;
             }
             return false;
           });
@@ -208,8 +210,6 @@ class WeightHistoryService {
         if (index != -1) {
           WeightHistory? previousIndexWeightData = index > 0 ? weightDataOnThisPregnancy[index - 1] : null;
           WeightHistory? nextIndexWeightData = index < weightDataOnThisPregnancy.length - 1 ? weightDataOnThisPregnancy[index + 1] : null;
-
-          print(previousIndexWeightData?.toJson());
 
           await _weightHistoryRepository.deleteWeightHistory(tanggalPencatatan.toString(), userId);
 

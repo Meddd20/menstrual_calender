@@ -57,7 +57,7 @@ class StorageService {
   }
 
   bool getIsAuth() {
-    return box.read("isAuth");
+    return box.read("isAuth") ?? false;
   }
 
   void storeIsBackup(bool isBackup) {

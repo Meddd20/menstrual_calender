@@ -30,71 +30,69 @@ class OnboardingView extends GetView<OnboardingController> {
                     alignment: Alignment.topRight,
                     child: Wrap(
                       children: [
-                        Wrap(
-                          children: [
-                            Container(
-                              width: Get.width / 2.1,
-                              child: DropdownButtonFormField<Locale>(
-                                value: Get.locale,
-                                items: [
-                                  DropdownMenuItem(
-                                    value: Locale('id'),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('Bahasa Indonesia'),
-                                        Image.asset(
-                                          'assets/icon/indonesia.png',
-                                          width: 30,
-                                          height: 30,
-                                        ),
-                                      ],
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: Get.width / 2,
+                          ),
+                          child: DropdownButtonFormField<Locale>(
+                            value: Get.locale,
+                            items: [
+                              DropdownMenuItem(
+                                value: Locale('id'),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Bahasa Indonesia'),
+                                    Image.asset(
+                                      'assets/icon/indonesia.png',
+                                      width: 30,
+                                      height: 30,
                                     ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: Locale('en'),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('English'),
-                                        Image.asset(
-                                          'assets/icon/english.png',
-                                          width: 30,
-                                          height: 30,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
-                                  ),
+                                  ],
                                 ),
-                                onChanged: (Locale? newLocale) {
-                                  if (newLocale != null) {
-                                    Get.updateLocale(newLocale);
-                                    StorageService().setLanguage(newLocale.languageCode);
-                                  }
-                                },
-                                icon: SizedBox.shrink(),
+                              ),
+                              DropdownMenuItem(
+                                value: Locale('en'),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('English'),
+                                    Image.asset(
+                                      'assets/icon/english.png',
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(color: Color(0xFFE8E8E8)),
                               ),
                             ),
-                          ],
+                            onChanged: (Locale? newLocale) {
+                              if (newLocale != null) {
+                                Get.updateLocale(newLocale);
+                                StorageService().setLanguage(newLocale.languageCode);
+                              }
+                            },
+                            icon: SizedBox.shrink(),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  // SizedBox(height: 20.h),
+                  SizedBox(height: 10.h),
                   Container(
                     width: Get.width,
-                    height: 300.h,
+                    height: 280.h,
                     child: Image.asset('assets/image/bd48b2bc7befdf66265a70239c555886.png'),
                   ),
                   SizedBox(height: 30.h),

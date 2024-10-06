@@ -152,8 +152,8 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
                     dataRowMaxHeight: 60.0,
                     dividerThickness: 0,
                     sortAscending: true,
-                    headingTextStyle: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                    dataTextStyle: CustomTextStyle.semiBold(14, height: 1.5),
+                    headingTextStyle: CustomTextStyle.regular(12.sp, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                    dataTextStyle: CustomTextStyle.semiBold(13.sp, height: 1.5),
                     columns: [
                       DataColumn(
                         label: Expanded(
@@ -196,7 +196,11 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
                         ),
                       ),
                       DataColumn(
-                        label: Expanded(child: Center(child: Text(""))),
+                        label: Expanded(
+                          child: Center(
+                            child: Text(""),
+                          ),
+                        ),
                       ),
                     ],
                     rows: List<DataRow>.generate(

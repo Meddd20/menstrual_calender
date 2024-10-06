@@ -152,7 +152,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                 return SafeArea(
                   child: Obx(
                     () => Container(
-                      padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
+                      padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
                       width: Get.width,
                       child: Stack(
                         children: [
@@ -531,8 +531,8 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                             dataRowMaxHeight: 60.0,
                             dividerThickness: 0,
                             sortAscending: true,
-                            headingTextStyle: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                            dataTextStyle: CustomTextStyle.semiBold(14, height: 1.5),
+                            headingTextStyle: CustomTextStyle.regular(12.sp, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                            dataTextStyle: CustomTextStyle.semiBold(13.sp, height: 1.5),
                             columns: [
                               DataColumn(
                                 label: Center(
@@ -630,8 +630,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                       Center(
                                         child: Text(
                                           '${weightData.pertambahanBerat?.toStringAsFixed(1) ?? "0"} kg',
-                                          style: CustomTextStyle.semiBold(14,
-                                              height: 1.5,
+                                          style: CustomTextStyle.semiBold(13.sp,
                                               color: (weightData.pertambahanBerat ?? 0) < 0
                                                   ? Colors.red
                                                   : (weightData.pertambahanBerat ?? 0) == 0
@@ -686,7 +685,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                           return SafeArea(
                                                                             child: Obx(
                                                                               () => Container(
-                                                                                padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
+                                                                                padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
                                                                                 width: Get.width,
                                                                                 child: Stack(
                                                                                   children: [
