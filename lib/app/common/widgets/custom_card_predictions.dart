@@ -22,49 +22,50 @@ class CustomCardPrediction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: 115.h,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: containerColor,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(14.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: AppColors.white,
-                    child: Image.asset(
-                      iconPath,
-                      width: 25,
-                      // height: 22,
+    return Wrap(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: containerColor,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor: AppColors.white,
+                      child: Image.asset(
+                        iconPath,
+                        width: 25,
+                        // height: 22,
+                      ),
                     ),
-                  ),
-                  Text(
-                    daysLeft,
-                    style: CustomTextStyle.semiBold(15),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                predictionType,
-                style: CustomTextStyle.extraBold(16, color: primaryColor, height: 1.5),
-              ),
-              Text(
-                datePrediction,
-                style: CustomTextStyle.semiBold(14),
-              )
-            ],
+                    Text(
+                      daysLeft,
+                      style: CustomTextStyle.semiBold(12),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  predictionType,
+                  style: CustomTextStyle.extraBold(16, color: primaryColor, height: 1.5),
+                ),
+                Text(
+                  datePrediction,
+                  style: CustomTextStyle.semiBold(14.sp),
+                )
+              ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

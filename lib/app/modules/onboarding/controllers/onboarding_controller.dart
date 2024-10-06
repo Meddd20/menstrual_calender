@@ -5,6 +5,8 @@ import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding
 import 'package:periodnpregnancycalender/app/modules/register/views/register_view.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class OnboardingController extends GetxController {
   final StorageService storageService = StorageService();
@@ -19,7 +21,6 @@ class OnboardingController extends GetxController {
 
   @override
   void onInit() {
-    // purposes = 0.obs;
     super.onInit();
   }
 
@@ -71,29 +72,31 @@ class OnboardingController extends GetxController {
     }
 
     periods.sort((a, b) => a['first_period']!.compareTo(b['first_period']!));
-
-    print(periods);
-    print('Number of selected date ranges: ${periods.length}');
   }
 
-  void validateBirthday() {
+  void validateBirthday(context) {
     DateTime? birthDate = birthday.value;
 
     if (birthDate != null) {
       Get.to(() => Onboarding2View());
     } else {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: "Please select your date of birth."));
-      print("Error: Birthday is null.");
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.dateOfBirthSelection));
     }
   }
 
-  void validateLastPeriod() {
+  void validateLastPeriod(context) {
     if (periods.isEmpty) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: "Please select at least one period range."));
-      print("Error: Please select at least one period range.");
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodRangeSelectionRequired));
     } else if (periods.length > 3) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: "Please select only 3 period range."));
-      print("Error: Please select only 3 period range.");
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodRangeLimit));
+    } else {
+      Get.to(() => BackupDataView());
+    }
+  }
+
+  void validateFirstDayLastPeriod(context) {
+    if (lastPeriodDate.value == null) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.lastPeriodFirstDaySelection));
     } else {
       Get.to(() => BackupDataView());
     }

@@ -5,6 +5,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
 import 'package:periodnpregnancycalender/app/modules/login/views/reset_password_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CodeVerificationController extends GetxController {
   final ApiService apiService = ApiService();
@@ -34,11 +35,9 @@ class CodeVerificationController extends GetxController {
     super.onClose();
   }
 
-  Future<void> forgetPassword() async {
+  Future<void> forgetPassword(context) async {
     if (pinController.text.isEmpty || pinController.text.length < 6) {
-      Get.showSnackbar(Ui.ErrorSnackBar(
-          message:
-              "Verification code are empty, please fill the verification code"));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.emptyVerificationCode));
     } else {
       Map<String, dynamic> data = await authRepository.validateCodeVerif(
         userEmail.value,
@@ -49,15 +48,13 @@ class CodeVerificationController extends GetxController {
 
       final response = data["data"];
       print(response);
-      Get.offAll(() => ResetPasswordView(),
-          arguments: {'email': userEmail.value});
+      Get.offAll(() => ResetPasswordView(), arguments: {'email': userEmail.value});
       print({'email': userEmail.value});
     }
   }
 
   Future<void> resendVerificationCode() async {
-    await authRepository.requestVerificationCode(
-        userEmail.value, "Lupa Password");
+    await authRepository.requestVerificationCode(userEmail.value, "Lupa Password");
   }
 
   void startResendTimer() {

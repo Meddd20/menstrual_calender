@@ -107,7 +107,7 @@ class Onboarding5View extends GetView<OnboardingController> {
               child: CustomButton(
                 text: AppLocalizations.of(context)!.next,
                 onPressed: () {
-                  controller.validateLastPeriod();
+                  controller.validateLastPeriod(context);
                 },
               ),
             )

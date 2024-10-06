@@ -8,7 +8,6 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
-import 'package:periodnpregnancycalender/app/modules/register/views/register_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Onboarding6View extends GetView<OnboardingController> {
@@ -78,9 +77,7 @@ class Onboarding6View extends GetView<OnboardingController> {
               right: 20,
               child: CustomButton(
                 text: AppLocalizations.of(context)!.next,
-                onPressed: () {
-                  Get.to(() => BackupDataView());
-                },
+                onPressed: () => controller.validateFirstDayLastPeriod(context),
               ),
             )
           ],

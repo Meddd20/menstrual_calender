@@ -13,6 +13,7 @@ import 'package:periodnpregnancycalender/app/repositories/api_repo/period_reposi
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:periodnpregnancycalender/app/services/profile_service.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterVerificationController extends GetxController {
   final ApiService apiService = ApiService();
@@ -51,9 +52,9 @@ class RegisterVerificationController extends GetxController {
     super.onClose();
   }
 
-  Future<void> codeVerification() async {
+  Future<void> codeVerification(context) async {
     if (pinController.text.isEmpty || pinController.text.length < 6) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: "Verification code are empty, please fill the verification code"));
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.emptyVerificationCode));
     } else {
       Map<String, dynamic> data = await authRepository.validateCodeVerif(
         userEmail.value,

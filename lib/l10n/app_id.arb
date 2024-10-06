@@ -371,7 +371,7 @@
     "weeksPregnant": "{weeks} Minggu Hamil",
     "dueDate": "Tanggal Perkiraan",
     "weekDue": "Sisa Minggu Kehamilan",
-    "trimester": "Trimester Minggu Ini",
+    "trimester": "Trimester \nMinggu Ini",
     "babySize": "Ukuran bayi seperti",
     "idealWeight": " Berat ideal",
     "idealHeight": " Tinggi ideal",
@@ -696,5 +696,12 @@
     "urinaryFrequency": "Sering Buang Air Kecil",
     "varicoseVeins": "Varises",
     "vividDreams": "Mimpi yang Jelas",
-    "vomiting": "Muntah"
+    "vomiting": "Muntah",
+
+    "dateOfBirthSelection": "Silakan pilih tanggal lahir Anda.",
+    "periodRangeSelectionRequired": "Silakan pilih setidaknya satu rentang periode.",
+    "periodRangeLimit": "Silakan pilih hanya 3 rentang periode.",
+    "lastPeriodFirstDaySelection": "Silakan pilih hari pertama dari periode terakhir Anda.",
+    "emptyVerificationCode": "Kode verifikasi kosong, silakan isi kode verifikasi.",
+    "genericError": "Terjadi kesalahan. Silakan coba lagi nanti."
 }

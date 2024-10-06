@@ -93,16 +93,18 @@ class PeriodCycleController extends GetxController {
       try {
         await _periodHistoryService.addPeriod(newPeriod?[0].id ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
         Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.periodAddedSuccess));
-
-        await fetchPeriod();
-        cancelEdit();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => PeriodCycleView()),
-        );
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodAddFailed));
+        return;
       }
+
+      await fetchPeriod();
+      cancelEdit();
+      update();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => PeriodCycleView()),
+      );
     } else {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.selectPeriodStartDate));
     }
@@ -142,13 +144,6 @@ class PeriodCycleController extends GetxController {
         Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodEditFailed));
       }
 
-      await fetchPeriod();
-      update();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => PeriodCycleView()),
-      );
-
       if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
         try {
           await periodRepository.updatePeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
@@ -159,7 +154,15 @@ class PeriodCycleController extends GetxController {
         await syncEditPeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
       }
 
+      await fetchPeriod();
       cancelEdit();
+      update();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => PeriodCycleView()),
+      );
+    } else {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.selectPeriodStartDate));
     }
   }
 

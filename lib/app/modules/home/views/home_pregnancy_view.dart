@@ -23,7 +23,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
   @override
   Widget build(BuildContext context) {
     Get.put(HomePregnancyController());
-    return controller.storageService.getIsPregnant() == "1" ? homePregnancy(context) : pregnancyRecovery(context);
+    return controller.storageService.getIsPregnant() == "2" ? pregnancyRecovery(context) : homePregnancy(context);
   }
 
   Widget homePregnancy(BuildContext context) {
@@ -177,7 +177,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                                 child: Text(
                                                   AppLocalizations.of(context)!.dueDate,
                                                   textAlign: TextAlign.center,
-                                                  style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                                  style: CustomTextStyle.medium(11, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                                   maxLines: 2,
                                                 ),
                                               ),
@@ -260,7 +260,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                           Text(
                                             "${formatDate(DateTime.parse(controller.currentlyPregnantData.value.tanggalPerkiraanLahir!))}",
                                             textAlign: TextAlign.center,
-                                            style: CustomTextStyle.bold(15, height: 1.5),
+                                            style: CustomTextStyle.bold(12, height: 1.5),
                                           ),
                                         ],
                                       ),
@@ -282,13 +282,13 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                           Text(
                                             AppLocalizations.of(context)!.trimester,
                                             textAlign: TextAlign.center,
-                                            style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                            style: CustomTextStyle.medium(11, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                             maxLines: 2,
                                           ),
                                           Text(
                                             "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].trimester ?? ""}",
                                             textAlign: TextAlign.center,
-                                            style: CustomTextStyle.bold(15, height: 1.5),
+                                            style: CustomTextStyle.bold(12, height: 1.5),
                                           ),
                                         ],
                                       ),
@@ -310,13 +310,13 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
                                           Text(
                                             AppLocalizations.of(context)!.weekDue,
                                             textAlign: TextAlign.center,
-                                            style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                            style: CustomTextStyle.medium(11, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                             maxLines: 2,
                                           ),
                                           Text(
                                             "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].mingguSisa ?? ""}W",
                                             textAlign: TextAlign.center,
-                                            style: CustomTextStyle.bold(15, height: 1.5),
+                                            style: CustomTextStyle.bold(12, height: 1.5),
                                           ),
                                         ],
                                       ),

@@ -16,22 +16,22 @@ class DetailProfileView extends GetView<DetailprofileController> {
   @override
   Widget build(BuildContext context) {
     Get.put(DetailprofileController());
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Text(
-              AppLocalizations.of(context)!.profile,
-              style: CustomTextStyle.extraBold(22),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            AppLocalizations.of(context)!.profile,
+            style: CustomTextStyle.extraBold(22),
           ),
-          centerTitle: true,
-          backgroundColor: AppColors.white,
-          surfaceTintColor: AppColors.white,
-          elevation: 4,
         ),
-        body: Padding(
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
+      ),
+      body: SafeArea(
+        child: Padding(
           padding: EdgeInsets.fromLTRB(10.w, 40.h, 10.w, 15.h),
           child: Align(
             child: Column(

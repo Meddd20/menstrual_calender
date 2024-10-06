@@ -833,5 +833,12 @@
     "urinaryFrequency": "Urinary Frequency",
     "varicoseVeins": "Varicose Veins",
     "vividDreams": "Vivid Dreams",
-    "vomiting": "Vomiting"
+    "vomiting": "Vomiting",
+
+    "dateOfBirthSelection": "Please select your date of birth.",
+    "periodRangeSelectionRequired": "Please select at least one period range.",
+    "periodRangeLimit": "Please select only 3 period range.",
+    "lastPeriodFirstDaySelection": "Please select the first day of your last period.",
+    "emptyVerificationCode": "Verification code are empty, please fill the verification code.",
+    "genericError": "An error occurred. Please try again later."
 }

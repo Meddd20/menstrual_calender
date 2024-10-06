@@ -67,7 +67,7 @@ class CodeVerificationView extends GetView<CodeVerificationController> {
                     CustomButton(
                       text: AppLocalizations.of(context)!.sendCode,
                       onPressed: () {
-                        controller.forgetPassword();
+                        controller.forgetPassword(context);
                       },
                     ),
                     SizedBox(height: 20.h),

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:crypto/crypto.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
@@ -203,5 +205,20 @@ class LocalNotificationService {
       status = await Permission.notification.request();
     }
     return status == PermissionStatus.granted;
+  }
+
+  Future<bool> requestExactAlarmPermission() async {
+    if (Platform.isAndroid) {
+      var androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt >= 31) {
+        var status = await Permission.scheduleExactAlarm.request();
+        if (status.isGranted) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
   }
 }

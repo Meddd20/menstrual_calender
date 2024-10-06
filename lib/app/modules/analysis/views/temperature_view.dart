@@ -41,137 +41,139 @@ class TemperatureView extends GetView<TemperatureController> {
             },
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
-          child: Column(
-            children: [
-              SizedBox(height: 10),
-              Text(
-                AppLocalizations.of(context)!.totalEntries,
-                style: CustomTextStyle.medium(15, color: Colors.black.withOpacity(0.6)),
-              ),
-              Obx(
-                () => Text(
-                  AppLocalizations.of(context)!.totalEntriesData("${controller.specificTemperaturesData.entries.length}"),
-                  style: CustomTextStyle.extraBold(26, height: 1.75),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                Text(
+                  AppLocalizations.of(context)!.totalEntries,
+                  style: CustomTextStyle.medium(15, color: Colors.black.withOpacity(0.6)),
                 ),
-              ),
-              Obx(
-                () => Text(
-                  controller.selectedDataTags != "pregnancy_temperature" ? AppLocalizations.of(context)!.entriesFromDate(formatDateWithMonthName(controller.selectedDate.value)) : AppLocalizations.of(context)!.fromTheFirstDayOfPregnancy,
-                  style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
+                Obx(
+                  () => Text(
+                    AppLocalizations.of(context)!.totalEntriesData("${controller.specificTemperaturesData.entries.length}"),
+                    style: CustomTextStyle.extraBold(26, height: 1.75),
+                  ),
                 ),
-              ),
-              Container(
-                height: Get.height * 0.375,
-                width: Get.width,
-                child: Obx(
-                  () {
-                    List<double> values = controller.temperatures.entries.map((entry) => double.parse(entry.value)).toList();
-                    double max = values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
-                    double min = values.isNotEmpty ? values.reduce((a, b) => a < b ? a : b) : 0;
-                    return SfCartesianChart(
-                      tooltipBehavior: TooltipBehavior(
-                        enable: true,
-                        builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
-                          final MapEntry<String, dynamic> entry = controller.temperatures.entries.elementAt(pointIndex);
-
-                          return Container(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.date("${entry.key}"),
-                                  style: CustomTextStyle.bold(12, color: Colors.white),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  AppLocalizations.of(context)!.temperatureCelcius("${entry.value}"),
-                                  style: CustomTextStyle.bold(12, color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      primaryXAxis: DateTimeAxis(
-                        initialVisibleMinimum: DateTime.now().subtract(Duration(days: 5)),
-                        initialVisibleMaximum: DateTime.now(),
-                        autoScrollingDelta: 5,
-                        autoScrollingMode: AutoScrollingMode.end,
-                        autoScrollingDeltaType: DateTimeIntervalType.days,
-                        interval: 01,
-                        intervalType: DateTimeIntervalType.days,
-                        initialZoomPosition: 0.1,
-                        enableAutoIntervalOnZooming: true,
-                        plotOffset: 34,
-                        dateFormat: DateFormat('MMM dd'),
-                        labelIntersectAction: AxisLabelIntersectAction.hide,
-                      ),
-                      primaryYAxis: NumericAxis(
-                        minimum: min - 1,
-                        maximum: max + 0.5,
-                        edgeLabelPlacement: EdgeLabelPlacement.shift,
-                      ),
-                      series: <CartesianSeries>[
-                        ScatterSeries<MapEntry<String, dynamic>, DateTime>(
-                          dataSource: controller.temperatures.entries.toList(),
-                          xValueMapper: (MapEntry<String, dynamic> entry, _) => DateTime.parse(entry.key),
-                          yValueMapper: (MapEntry<String, dynamic> entry, _) => double.parse(entry.value),
-                          markerSettings: MarkerSettings(
-                            isVisible: true,
-                            height: 15,
-                            width: 15,
-                          ),
-                          name: "Temperature",
+                Obx(
+                  () => Text(
+                    controller.selectedDataTags != "pregnancy_temperature" ? AppLocalizations.of(context)!.entriesFromDate(formatDateWithMonthName(controller.selectedDate.value)) : AppLocalizations.of(context)!.fromTheFirstDayOfPregnancy,
+                    style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
+                  ),
+                ),
+                Container(
+                  height: Get.height * 0.375,
+                  width: Get.width,
+                  child: Obx(
+                    () {
+                      List<double> values = controller.temperatures.entries.map((entry) => double.parse(entry.value)).toList();
+                      double max = values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
+                      double min = values.isNotEmpty ? values.reduce((a, b) => a < b ? a : b) : 0;
+                      return SfCartesianChart(
+                        tooltipBehavior: TooltipBehavior(
+                          enable: true,
+                          builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
+                            final MapEntry<String, dynamic> entry = controller.temperatures.entries.elementAt(pointIndex);
+          
+                            return Container(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.date("${entry.key}"),
+                                    style: CustomTextStyle.bold(12, color: Colors.white),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    AppLocalizations.of(context)!.temperatureCelcius("${entry.value}"),
+                                    style: CustomTextStyle.bold(12, color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
-                      ],
-                      zoomPanBehavior: ZoomPanBehavior(
-                        enablePanning: true,
-                      ),
-                    );
-                  },
+                        primaryXAxis: DateTimeAxis(
+                          initialVisibleMinimum: DateTime.now().subtract(Duration(days: 5)),
+                          initialVisibleMaximum: DateTime.now(),
+                          autoScrollingDelta: 5,
+                          autoScrollingMode: AutoScrollingMode.end,
+                          autoScrollingDeltaType: DateTimeIntervalType.days,
+                          interval: 01,
+                          intervalType: DateTimeIntervalType.days,
+                          initialZoomPosition: 0.1,
+                          enableAutoIntervalOnZooming: true,
+                          plotOffset: 34,
+                          dateFormat: DateFormat('MMM dd'),
+                          labelIntersectAction: AxisLabelIntersectAction.hide,
+                        ),
+                        primaryYAxis: NumericAxis(
+                          minimum: min - 1,
+                          maximum: max + 0.5,
+                          edgeLabelPlacement: EdgeLabelPlacement.shift,
+                        ),
+                        series: <CartesianSeries>[
+                          ScatterSeries<MapEntry<String, dynamic>, DateTime>(
+                            dataSource: controller.temperatures.entries.toList(),
+                            xValueMapper: (MapEntry<String, dynamic> entry, _) => DateTime.parse(entry.key),
+                            yValueMapper: (MapEntry<String, dynamic> entry, _) => double.parse(entry.value),
+                            markerSettings: MarkerSettings(
+                              isVisible: true,
+                              height: 15,
+                              width: 15,
+                            ),
+                            name: "Temperature",
+                          ),
+                        ],
+                        zoomPanBehavior: ZoomPanBehavior(
+                          enablePanning: true,
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              if (controller.selectedDataTags != "pregnancy_temperature") ...[
-                CustomTabBar(
-                  controller: controller.tabController,
-                  onTap: (index) {
-                    _pageController.animateToPage(
-                      index,
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.ease,
-                    );
-                    controller.updateTabBar(index);
-                  },
-                ),
-                Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (index) {
-                      controller.tabController.animateTo(index);
+                if (controller.selectedDataTags != "pregnancy_temperature") ...[
+                  CustomTabBar(
+                    controller: controller.tabController,
+                    onTap: (index) {
+                      _pageController.animateToPage(
+                        index,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
                       controller.updateTabBar(index);
                     },
-                    children: [
-                      _buildChart(context),
-                      _buildChart(context),
-                      _buildChart(context),
-                      _buildChart(context),
-                    ],
                   ),
-                ),
-              ] else ...[
-                Expanded(
-                  child: PageView(
-                    children: [
-                      _buildChart(context),
-                    ],
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (index) {
+                        controller.tabController.animateTo(index);
+                        controller.updateTabBar(index);
+                      },
+                      children: [
+                        _buildChart(context),
+                        _buildChart(context),
+                        _buildChart(context),
+                        _buildChart(context),
+                      ],
+                    ),
                   ),
-                ),
-              ]
-            ],
+                ] else ...[
+                  Expanded(
+                    child: PageView(
+                      children: [
+                        _buildChart(context),
+                      ],
+                    ),
+                  ),
+                ]
+              ],
+            ),
           ),
         ),
       ),

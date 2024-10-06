@@ -16,235 +16,223 @@ class ReminderView extends GetView<ReminderController> {
   @override
   Widget build(BuildContext context) {
     Get.put(ReminderController());
-    return SafeArea(
-      child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.add,
-            color: AppColors.white,
-          ),
-          backgroundColor: AppColors.primary,
-          shape: CircleBorder(),
-          onPressed: () async {
-            bool isNotificationPermissionGranted = await controller.localNotificationService.requestNotificationPermission();
-            if (isNotificationPermissionGranted) {
-              showModalBottomSheet(
-                isScrollControlled: true,
-                useSafeArea: true,
-                context: context,
-                builder: (BuildContext context) {
-                  return Wrap(
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add,
+          color: AppColors.white,
+        ),
+        backgroundColor: AppColors.primary,
+        shape: CircleBorder(),
+        onPressed: () async {
+          bool isNotificationPermissionGranted = await controller.localNotificationService.requestNotificationPermission();
+          bool isExactAlarmPermissionGranted = await controller.localNotificationService.requestExactAlarmPermission();
+          if (isNotificationPermissionGranted && isExactAlarmPermissionGranted) {
+            showModalBottomSheet(
+              isScrollControlled: true,
+              context: context,
+              builder: (BuildContext context) {
+                return SafeArea(
+                  child: Wrap(
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0),
+                        padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
                         child: SizedBox(
                           height: Get.height,
                           width: Get.width,
-                          child: Center(
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 4.h,
-                                  width: 32.w,
-                                  margin: EdgeInsets.only(top: 16.h),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blueGrey,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(3.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)!.addNewReminder,
+                                              style: CustomTextStyle.extraBold(20),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.close,
+                                                size: 25,
+                                                color: Color(0xFFFD6666),
+                                              ),
+                                              onPressed: () {
+                                                controller.cancelEdit();
+                                                Get.back();
+                                              },
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(height: 4.h),
+                                        Container(
+                                          width: Get.width,
+                                          child: Text(
+                                            AppLocalizations.of(context)!.adjustDates,
+                                            style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                            softWrap: true,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                                SizedBox(height: 10.h),
-                                Row(
+                                ],
+                              ),
+                              SizedBox(height: 10.h),
+                              CustomCalendarDatePicker(
+                                value: [controller.getDate()],
+                                onValueChanged: (dates) {
+                                  controller.setDate(dates.first);
+                                },
+                                firstDate: DateTime.now(),
+                                calendarType: CalendarDatePicker2Type.single,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 5.0, left: 5.0),
+                                child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)!.addNewReminder,
-                                                style: CustomTextStyle.extraBold(20),
-                                              ),
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.close,
-                                                  size: 25,
-                                                  color: Color(0xFFFD6666),
-                                                ),
-                                                onPressed: () {
-                                                  controller.cancelEdit();
-                                                  Get.back();
-                                                },
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(height: 4.h),
-                                          Container(
-                                            width: Get.width,
-                                            child: Text(
-                                              AppLocalizations.of(context)!.adjustDates,
-                                              style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                                              softWrap: true,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    Text(
+                                      AppLocalizations.of(context)!.time,
+                                      style: CustomTextStyle.semiBold(18),
                                     ),
-                                  ],
-                                ),
-                                SizedBox(height: 10.h),
-                                CustomCalendarDatePicker(
-                                  value: [controller.getDate()],
-                                  onValueChanged: (dates) {
-                                    controller.setDate(dates.first);
-                                  },
-                                  firstDate: DateTime.now(),
-                                  calendarType: CalendarDatePicker2Type.single,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 5.0, left: 5.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        AppLocalizations.of(context)!.time,
-                                        style: CustomTextStyle.semiBold(18),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () async {
-                                          TimeOfDay? selectedTime = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(DateTime.now()));
-                                          if (selectedTime != null) {
-                                            controller.setTime(selectedTime);
-                                          }
-                                        },
-                                        child: IntrinsicWidth(
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 10.0),
-                                            height: 40.h,
-                                            decoration: BoxDecoration(
-                                              color: AppColors.highlight,
-                                              borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                            ),
-                                            child: Center(
-                                              child: Obx(
-                                                () => Text(
-                                                  controller.formattedSelectedTime ?? AppLocalizations.of(context)!.selectTime,
-                                                  style: CustomTextStyle.medium(14, height: 1.5),
-                                                ),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        TimeOfDay? selectedTime = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(DateTime.now()));
+                                        if (selectedTime != null) {
+                                          controller.setTime(selectedTime);
+                                        }
+                                      },
+                                      child: IntrinsicWidth(
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                          height: 40.h,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.highlight,
+                                            borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                          ),
+                                          child: Center(
+                                            child: Obx(
+                                              () => Text(
+                                                controller.formattedSelectedTime ?? AppLocalizations.of(context)!.selectTime,
+                                                style: CustomTextStyle.medium(14, height: 1.5),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 15.h),
-                                TextFormField(
-                                  onChanged: (text) => controller.updateReminderTitle(text),
-                                  decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!.enterReminderTitle,
-                                    border: OutlineInputBorder(
-                                      borderSide: const BorderSide(color: Colors.black),
-                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    contentPadding: const EdgeInsets.all(18),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 15.h),
+                              TextFormField(
+                                onChanged: (text) => controller.updateReminderTitle(text),
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!.enterReminderTitle,
+                                  border: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  style: CustomTextStyle.medium(15),
+                                  contentPadding: const EdgeInsets.all(18),
                                 ),
-                                SizedBox(height: 10.h),
-                                TextFormField(
-                                  onChanged: (text) => controller.updateReminderDescription(text),
-                                  decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!.enterReminderDescription,
-                                    border: OutlineInputBorder(
-                                      borderSide: const BorderSide(color: Colors.black),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    contentPadding: const EdgeInsets.all(18),
+                                style: CustomTextStyle.medium(15),
+                              ),
+                              SizedBox(height: 10.h),
+                              TextFormField(
+                                onChanged: (text) => controller.updateReminderDescription(text),
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!.enterReminderDescription,
+                                  border: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  style: CustomTextStyle.medium(15),
-                                  maxLines: 2,
+                                  contentPadding: const EdgeInsets.all(18),
                                 ),
-                                SizedBox(height: 20.h),
-                                CustomButton(
-                                  text: AppLocalizations.of(context)!.addReminder,
-                                  onPressed: () => controller.checkReminder(context),
-                                ),
-                              ],
-                            ),
+                                style: CustomTextStyle.medium(15),
+                                maxLines: 2,
+                              ),
+                              SizedBox(height: 20.h),
+                              CustomButton(
+                                text: AppLocalizations.of(context)!.addReminder,
+                                onPressed: () => controller.checkReminder(context),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ],
-                  );
-                },
-              ).then((value) {
-                controller.cancelEdit();
-              });
-            } else if (await Permission.notification.isPermanentlyDenied) {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return SimpleDialog(
-                    title: Text(
-                      AppLocalizations.of(context)!.permissionRequired,
-                      style: CustomTextStyle.bold(22),
-                      textAlign: TextAlign.center,
-                    ),
-                    contentPadding: EdgeInsets.all(16.0),
-                    children: [
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 8.0),
-                            child: Text(
-                              AppLocalizations.of(context)!.notificationPermissionRequired,
-                              style: CustomTextStyle.medium(15, height: 1.5),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          CustomButton(
-                            text: AppLocalizations.of(context)!.openSettings,
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              openAppSettings();
-                            },
-                          ),
-                          SizedBox(height: 5),
-                          CustomButton(
-                            text: AppLocalizations.of(context)!.cancel,
-                            textColor: AppColors.black,
-                            backgroundColor: AppColors.transparent,
-                            onPressed: () => Get.back(closeOverlays: true),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-              );
-            } else {
-              bool isGranted = await controller.localNotificationService.requestNotificationPermission();
-              if (!isGranted) {
-                Get.snackbar(
-                  AppLocalizations.of(context)!.permissionDenied,
-                  AppLocalizations.of(context)!.allowNotifications,
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.red,
-                  colorText: Colors.white,
+                  ),
                 );
-              }
+              },
+            ).then((value) {
+              controller.cancelEdit();
+            });
+          } else if (await Permission.notification.isPermanentlyDenied || await Permission.scheduleExactAlarm.isPermanentlyDenied) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return SimpleDialog(
+                  title: Text(
+                    AppLocalizations.of(context)!.permissionRequired,
+                    style: CustomTextStyle.bold(22),
+                    textAlign: TextAlign.center,
+                  ),
+                  contentPadding: EdgeInsets.all(16.0),
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 8.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.notificationPermissionRequired,
+                            style: CustomTextStyle.medium(15, height: 1.5),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        CustomButton(
+                          text: AppLocalizations.of(context)!.openSettings,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            openAppSettings();
+                          },
+                        ),
+                        SizedBox(height: 5),
+                        CustomButton(
+                          text: AppLocalizations.of(context)!.cancel,
+                          textColor: AppColors.black,
+                          backgroundColor: AppColors.transparent,
+                          onPressed: () => Get.back(closeOverlays: true),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            bool isGranted = await controller.localNotificationService.requestNotificationPermission();
+            if (!isGranted) {
+              Get.snackbar(
+                AppLocalizations.of(context)!.permissionDenied,
+                AppLocalizations.of(context)!.allowNotifications,
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+              );
             }
-          },
-        ),
-        body: CustomScrollView(
+          }
+        },
+      ),
+      body: SafeArea(
+        child: CustomScrollView(
           slivers: [
             SliverAppBar.medium(
               title: Padding(
@@ -351,31 +339,18 @@ class ReminderView extends GetView<ReminderController> {
                               onTap: () {
                                 showModalBottomSheet(
                                   isScrollControlled: true,
-                                  useSafeArea: true,
                                   context: context,
                                   builder: (BuildContext context) {
                                     return Wrap(
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0),
+                                          padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0),
                                           child: SizedBox(
                                             height: Get.height,
                                             width: Get.width,
                                             child: Center(
                                               child: Column(
                                                 children: [
-                                                  Container(
-                                                    height: 4.h,
-                                                    width: 32.w,
-                                                    margin: EdgeInsets.only(top: 16.h),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.blueGrey,
-                                                      borderRadius: BorderRadius.all(
-                                                        Radius.circular(3.0),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 10.h),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [

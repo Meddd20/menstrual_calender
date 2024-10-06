@@ -19,10 +19,10 @@ class InitWeightGainTrackerView extends GetView<WeightTrackerController> {
       print(controller.isTwin.value);
     }
     Get.find<WeightTrackerController>();
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(),
-        body: Padding(
+    return Scaffold(
+      appBar: AppBar(),
+      body: SafeArea(
+        child: Padding(
           padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 10.h),
           child: Column(
             children: [

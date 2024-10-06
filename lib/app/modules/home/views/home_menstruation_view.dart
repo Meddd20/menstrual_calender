@@ -332,22 +332,26 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
-                                    CustomCardPrediction(
-                                      containerColor: Color(0xFFFFD7DF),
-                                      primaryColor: AppColors.primary,
-                                      daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextMenstruation}'),
-                                      predictionType: AppLocalizations.of(context)!.period,
-                                      datePrediction: "${formatDateToShortMonthDay(controller.eventDatas.value.nextMenstruationStart ?? "${DateTime.now()}")} - ${formatDateToShortMonthDay(controller.eventDatas.value.nextMenstruationEnd ?? "${DateTime.now()}")}",
-                                      iconPath: 'assets/icon/blood.png',
+                                    Expanded(
+                                      child: CustomCardPrediction(
+                                        containerColor: Color(0xFFFFD7DF),
+                                        primaryColor: AppColors.primary,
+                                        daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextMenstruation}'),
+                                        predictionType: AppLocalizations.of(context)!.period,
+                                        datePrediction: "${formatDateToShortMonthDay(controller.eventDatas.value.nextMenstruationStart ?? "${DateTime.now()}")} - ${formatDateToShortMonthDay(controller.eventDatas.value.nextMenstruationEnd ?? "${DateTime.now()}")}",
+                                        iconPath: 'assets/icon/blood.png',
+                                      ),
                                     ),
                                     SizedBox(width: 10.h),
-                                    CustomCardPrediction(
-                                      containerColor: Color(0xFFFFE69E),
-                                      primaryColor: Color(0xFFFD9414),
-                                      daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextFertile}'),
-                                      predictionType: AppLocalizations.of(context)!.fertileDays,
-                                      datePrediction: '${formatDateToShortMonthDay(controller.eventDatas.value.nextFertileStart ?? "${DateTime.now()}")} - ${formatDateToShortMonthDay(controller.eventDatas.value.nextFertileEnd ?? "${DateTime.now()}")}',
-                                      iconPath: 'assets/icon/sunflower.png',
+                                    Expanded(
+                                      child: CustomCardPrediction(
+                                        containerColor: Color(0xFFFFE69E),
+                                        primaryColor: Color(0xFFFD9414),
+                                        daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextFertile}'),
+                                        predictionType: AppLocalizations.of(context)!.fertileDays,
+                                        datePrediction: '${formatDateToShortMonthDay(controller.eventDatas.value.nextFertileStart ?? "${DateTime.now()}")} - ${formatDateToShortMonthDay(controller.eventDatas.value.nextFertileEnd ?? "${DateTime.now()}")}',
+                                        iconPath: 'assets/icon/sunflower.png',
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -355,22 +359,26 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
-                                    CustomCardPrediction(
-                                      containerColor: Color(0x7FA5F9FF),
-                                      primaryColor: Color.fromARGB(255, 64, 176, 184),
-                                      daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextOvulation}'),
-                                      predictionType: AppLocalizations.of(context)!.ovulation,
-                                      datePrediction: '${formatDateToShortMonthDay(controller.eventDatas.value.nextOvulation ?? "${DateTime.now()}")}',
-                                      iconPath: 'assets/icon/ovulation.png',
+                                    Expanded(
+                                      child: CustomCardPrediction(
+                                        containerColor: Color(0x7FA5F9FF),
+                                        primaryColor: Color.fromARGB(255, 64, 176, 184),
+                                        daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextOvulation}'),
+                                        predictionType: AppLocalizations.of(context)!.ovulation,
+                                        datePrediction: '${formatDateToShortMonthDay(controller.eventDatas.value.nextOvulation ?? "${DateTime.now()}")}',
+                                        iconPath: 'assets/icon/ovulation.png',
+                                      ),
                                     ),
                                     SizedBox(width: 10.h),
-                                    CustomCardPrediction(
-                                      containerColor: Color(0xFFC6FCE5),
-                                      primaryColor: Color.fromARGB(255, 111, 200, 161),
-                                      daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextLuteal}'),
-                                      predictionType: AppLocalizations.of(context)!.safeDays,
-                                      datePrediction: '${formatDateToShortMonthDay(controller.eventDatas.value.nextLutealStart ?? "${DateTime.now()}")} - ${formatDateToShortMonthDay(controller.eventDatas.value.nextLutealEnd ?? "${DateTime.now()}")}',
-                                      iconPath: 'assets/icon/shield.png',
+                                    Expanded(
+                                      child: CustomCardPrediction(
+                                        containerColor: Color(0xFFC6FCE5),
+                                        primaryColor: Color.fromARGB(255, 111, 200, 161),
+                                        daysLeft: AppLocalizations.of(context)!.daysLeft('${controller.eventDatas.value.daysUntilNextLuteal}'),
+                                        predictionType: AppLocalizations.of(context)!.safeDays,
+                                        datePrediction: '${formatDateToShortMonthDay(controller.eventDatas.value.nextLutealStart ?? "${DateTime.now()}")} - ${formatDateToShortMonthDay(controller.eventDatas.value.nextLutealEnd ?? "${DateTime.now()}")}',
+                                        iconPath: 'assets/icon/shield.png',
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -424,97 +432,90 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Column(
-                                          children: [
-                                            Container(
-                                              height: 110.h,
-                                              width: 155,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(12),
-                                                color: Color(0xFFFFD7DF),
-                                                border: Border.all(
-                                                  color: AppColors.primary,
-                                                  width: 0.5,
-                                                ),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(16.0),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      AppLocalizations.of(context)!.averageCycleLength,
-                                                      style: CustomTextStyle.extraBold(15, color: AppColors.primary),
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    RichText(
-                                                      text: TextSpan(
-                                                        children: [
-                                                          TextSpan(
-                                                            text: "${controller.data?.avgPeriodCycle}",
-                                                            style: CustomTextStyle.extraBold(23),
-                                                          ),
-                                                          TextSpan(
-                                                            text: AppLocalizations.of(context)!.daysPrefix,
-                                                            style: CustomTextStyle.semiBold(14),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
+                                        Expanded(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12),
+                                              color: Color(0xFFFFD7DF),
+                                              border: Border.all(
+                                                color: AppColors.primary,
+                                                width: 0.5,
                                               ),
                                             ),
-                                          ],
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    AppLocalizations.of(context)!.averageCycleLength,
+                                                    style: CustomTextStyle.extraBold(15, color: AppColors.primary),
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                  SizedBox(height: 5),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: "${controller.data?.avgPeriodCycle}",
+                                                          style: CustomTextStyle.extraBold(23),
+                                                        ),
+                                                        TextSpan(
+                                                          text: AppLocalizations.of(context)!.daysPrefix,
+                                                          style: CustomTextStyle.semiBold(14),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        Column(
-                                          children: [
-                                            Container(
-                                              height: 110.h,
-                                              width: 155,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(12),
-                                                border: Border.all(
-                                                  color: Color(0xFFFD9414),
-                                                  width: 0.5,
-                                                ),
-                                                color: Color(0xFFFFE69E),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12),
+                                              border: Border.all(
+                                                color: Color(0xFFFD9414),
+                                                width: 0.5,
                                               ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(16.0),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      AppLocalizations.of(context)!.averagePeriodLength,
-                                                      style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow.ellipsis,
+                                              color: Color(0xFFFFE69E),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    AppLocalizations.of(context)!.averagePeriodLength,
+                                                    style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                  SizedBox(height: 5),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: "${controller.data?.avgPeriodDuration}",
+                                                          style: CustomTextStyle.extraBold(23),
+                                                        ),
+                                                        TextSpan(
+                                                          text: AppLocalizations.of(context)!.daysPrefix,
+                                                          style: CustomTextStyle.semiBold(14),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    SizedBox(height: 10),
-                                                    RichText(
-                                                      text: TextSpan(
-                                                        children: [
-                                                          TextSpan(
-                                                            text: "${controller.data?.avgPeriodDuration}",
-                                                            style: CustomTextStyle.extraBold(23),
-                                                          ),
-                                                          TextSpan(
-                                                            text: AppLocalizations.of(context)!.daysPrefix,
-                                                            style: CustomTextStyle.semiBold(14),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
+                                                  )
+                                                ],
                                               ),
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -526,104 +527,107 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Stack(
-                                  children: [
-                                    Container(
-                                      height: 350.h,
-                                      width: Get.width / 2 - 20,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 10.0),
-                                        child: Container(
-                                          height: 320.h,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(12),
-                                            color: const Color.fromARGB(255, 234, 255, 44),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Column(
-                                              children: [
-                                                SizedBox(height: 140),
-                                                Text(
-                                                  AppLocalizations.of(context)!.manageYourPeriodEvents,
-                                                  style: CustomTextStyle.extraBold(16, height: 1.5),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Text(
-                                                  AppLocalizations.of(context)!.trackYourPeriodCycle,
-                                                  style: CustomTextStyle.medium(13, height: 1.5),
-                                                ),
-                                                SizedBox(height: 10),
-                                                CustomButton(
-                                                  text: AppLocalizations.of(context)!.reminder,
-                                                  textColor: Colors.black,
-                                                  backgroundColor: AppColors.white,
-                                                  onPressed: () => Get.to(() => ReminderView()),
-                                                ),
-                                              ],
+                                Expanded(
+                                  child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12),
+                                              color: const Color.fromARGB(255, 234, 255, 44),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Column(
+                                                children: [
+                                                  SizedBox(height: 140),
+                                                  Text(
+                                                    AppLocalizations.of(context)!.manageYourPeriodEvents,
+                                                    style: CustomTextStyle.extraBold(16, height: 1.5),
+                                                  ),
+                                                  SizedBox(height: 5),
+                                                  Text(
+                                                    AppLocalizations.of(context)!.trackYourPeriodCycle,
+                                                    style: CustomTextStyle.medium(13, height: 1.5),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  CustomButton(
+                                                    text: AppLocalizations.of(context)!.reminder,
+                                                    textColor: Colors.black,
+                                                    backgroundColor: AppColors.white,
+                                                    onPressed: () => Get.to(() => ReminderView()),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                          Positioned(
+                                            top: 30,
+                                            child: SvgPicture.asset(
+                                              'assets/image/reminder.svg',
+                                              height: 110,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Positioned(
-                                      top: 30,
-                                      child: SvgPicture.asset(
-                                        'assets/image/reminder.svg',
-                                        height: 110,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                                Stack(
-                                  children: [
-                                    Container(
-                                      height: 350.h,
-                                      width: Get.width / 2 - 20,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 10.0),
-                                        child: Container(
-                                          height: 320.h,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(12),
-                                            color: Colors.cyan,
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Column(
-                                              children: [
-                                                const SizedBox(height: 140),
-                                                Text(
-                                                  AppLocalizations.of(context)!.remarkYourBodyChanges,
-                                                  style: CustomTextStyle.extraBold(16, height: 1.5),
-                                                ),
-                                                const SizedBox(height: 5),
-                                                Text(
-                                                  AppLocalizations.of(context)!.logYourBodyChanges,
-                                                  style: CustomTextStyle.medium(13, height: 1.5),
-                                                ),
-                                                const SizedBox(height: 32),
-                                                CustomButton(
-                                                  text: AppLocalizations.of(context)!.dailyLog,
-                                                  textColor: Colors.black,
-                                                  backgroundColor: AppColors.white,
-                                                  onPressed: () => Get.to(() => DailyLogView()),
-                                                ),
-                                              ],
+                                SizedBox(width: 5),
+                                Expanded(
+                                  child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12),
+                                              color: Colors.cyan,
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Column(
+                                                children: [
+                                                  const SizedBox(height: 140),
+                                                  Text(
+                                                    AppLocalizations.of(context)!.remarkYourBodyChanges,
+                                                    style: CustomTextStyle.extraBold(16, height: 1.5),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                    AppLocalizations.of(context)!.logYourBodyChanges,
+                                                    style: CustomTextStyle.medium(13, height: 1.5),
+                                                  ),
+                                                  const SizedBox(height: 32),
+                                                  CustomButton(
+                                                    text: AppLocalizations.of(context)!.dailyLog,
+                                                    textColor: Colors.black,
+                                                    backgroundColor: AppColors.white,
+                                                    onPressed: () => Get.to(() => DailyLogView()),
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                          Positioned(
+                                            top: 5,
+                                            left: 0,
+                                            right: 0,
+                                            child: SvgPicture.asset(
+                                              'assets/image/lalla.svg',
+                                              height: 140,
+                                              width: Get.width,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Positioned(
-                                      top: 0,
-                                      child: SvgPicture.asset(
-                                        'assets/image/lalla.svg',
-                                        width: 200,
-                                        height: 150,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),

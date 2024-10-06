@@ -31,22 +31,22 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
   Widget build(BuildContext context) {
     Get.put(AnalysisController());
     HomeMenstruationController homeController = Get.put(HomeMenstruationController());
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Text(
-              AppLocalizations.of(context)!.periodAnalysis,
-              style: CustomTextStyle.extraBold(22),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            AppLocalizations.of(context)!.periodAnalysis,
+            style: CustomTextStyle.extraBold(22),
           ),
-          centerTitle: true,
-          backgroundColor: AppColors.white,
-          surfaceTintColor: AppColors.white,
-          elevation: 4,
         ),
-        body: Padding(
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
+      ),
+      body: SafeArea(
+        child: Padding(
           padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
           child: Align(
             child: SingleChildScrollView(
@@ -99,100 +99,191 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Column(
-                                  children: [
-                                    Container(
-                                      height: 110.h,
-                                      width: 155,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: Color(0xFFFFD7DF),
-                                        border: Border.all(
-                                          color: AppColors.primary,
-                                          width: 0.5,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              AppLocalizations.of(context)!.averageCycleLength,
-                                              style: CustomTextStyle.extraBold(15, color: AppColors.primary),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            SizedBox(height: 5),
-                                            RichText(
-                                              text: TextSpan(
-                                                children: [
-                                                  TextSpan(
-                                                    text: "${homeController.data?.avgPeriodCycle}",
-                                                    style: CustomTextStyle.extraBold(23),
-                                                  ),
-                                                  TextSpan(
-                                                    text: AppLocalizations.of(context)!.daysPrefix,
-                                                    style: CustomTextStyle.semiBold(14),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Color(0xFFFFD7DF),
+                                      border: Border.all(
+                                        color: AppColors.primary,
+                                        width: 0.5,
                                       ),
                                     ),
-                                  ],
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(context)!.averageCycleLength,
+                                            style: CustomTextStyle.extraBold(15, color: AppColors.primary),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 5),
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: "${homeController.data?.avgPeriodCycle}",
+                                                  style: CustomTextStyle.extraBold(23),
+                                                ),
+                                                TextSpan(
+                                                  text: AppLocalizations.of(context)!.daysPrefix,
+                                                  style: CustomTextStyle.semiBold(14),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                Column(
-                                  children: [
-                                    Container(
-                                      height: 110.h,
-                                      width: 155,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: Color(0xFFFD9414),
-                                          width: 0.5,
-                                        ),
-                                        color: Color(0xFFFFE69E),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: Color(0xFFFD9414),
+                                        width: 0.5,
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              AppLocalizations.of(context)!.averagePeriodLength,
-                                              style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
+                                      color: Color(0xFFFFE69E),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(context)!.averagePeriodLength,
+                                            style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 5),
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: "${homeController.data?.avgPeriodDuration}",
+                                                  style: CustomTextStyle.extraBold(23),
+                                                ),
+                                                TextSpan(
+                                                  text: AppLocalizations.of(context)!.daysPrefix,
+                                                  style: CustomTextStyle.semiBold(14),
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(height: 5),
-                                            RichText(
-                                              text: TextSpan(
-                                                children: [
-                                                  TextSpan(
-                                                    text: "${homeController.data?.avgPeriodDuration}",
-                                                    style: CustomTextStyle.extraBold(23),
-                                                  ),
-                                                  TextSpan(
-                                                    text: AppLocalizations.of(context)!.daysPrefix,
-                                                    style: CustomTextStyle.semiBold(14),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                                          )
+                                        ],
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   crossAxisAlignment: CrossAxisAlignment.start,
+                            //   children: [
+                            //     Column(
+                            //       children: [
+                            //         Container(
+                            //           height: 110.h,
+                            //           width: 155,
+                            //           decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(12),
+                            //             color: Color(0xFFFFD7DF),
+                            //             border: Border.all(
+                            //               color: AppColors.primary,
+                            //               width: 0.5,
+                            //             ),
+                            //           ),
+                            //           child: Padding(
+                            //             padding: const EdgeInsets.all(16.0),
+                            //             child: Column(
+                            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //               crossAxisAlignment: CrossAxisAlignment.center,
+                            //               children: [
+                            //                 Text(
+                            //                   AppLocalizations.of(context)!.averageCycleLength,
+                            //                   style: CustomTextStyle.extraBold(15, color: AppColors.primary),
+                            //                   maxLines: 2,
+                            //                   overflow: TextOverflow.ellipsis,
+                            //                 ),
+                            //                 SizedBox(height: 5),
+                            //                 RichText(
+                            //                   text: TextSpan(
+                            //                     children: [
+                            //                       TextSpan(
+                            //                         text: "${homeController.data?.avgPeriodCycle}",
+                            //                         style: CustomTextStyle.extraBold(23),
+                            //                       ),
+                            //                       TextSpan(
+                            //                         text: AppLocalizations.of(context)!.daysPrefix,
+                            //                         style: CustomTextStyle.semiBold(14),
+                            //                       ),
+                            //                     ],
+                            //                   ),
+                            //                 )
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //     Column(
+                            //       children: [
+                            //         Container(
+                            //           height: 110.h,
+                            //           width: 155,
+                            //           decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(12),
+                            //             border: Border.all(
+                            //               color: Color(0xFFFD9414),
+                            //               width: 0.5,
+                            //             ),
+                            //             color: Color(0xFFFFE69E),
+                            //           ),
+                            //           child: Padding(
+                            //             padding: const EdgeInsets.all(16.0),
+                            //             child: Column(
+                            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //               crossAxisAlignment: CrossAxisAlignment.center,
+                            //               children: [
+                            //                 Text(
+                            //                   AppLocalizations.of(context)!.averagePeriodLength,
+                            //                   style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
+                            //                   maxLines: 2,
+                            //                   overflow: TextOverflow.ellipsis,
+                            //                 ),
+                            //                 SizedBox(height: 5),
+                            //                 RichText(
+                            //                   text: TextSpan(
+                            //                     children: [
+                            //                       TextSpan(
+                            //                         text: "${homeController.data?.avgPeriodDuration}",
+                            //                         style: CustomTextStyle.extraBold(23),
+                            //                       ),
+                            //                       TextSpan(
+                            //                         text: AppLocalizations.of(context)!.daysPrefix,
+                            //                         style: CustomTextStyle.semiBold(14),
+                            //                       ),
+                            //                     ],
+                            //                   ),
+                            //                 )
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ],
+                            // ),
                           ],
                         ),
                       ),

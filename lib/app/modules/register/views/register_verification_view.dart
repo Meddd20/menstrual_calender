@@ -68,7 +68,7 @@ class RegisterVerificationView extends GetView<RegisterVerificationController> {
                     CustomButton(
                       text: AppLocalizations.of(context)!.sendCode,
                       onPressed: () {
-                        controller.codeVerification();
+                        controller.codeVerification(context);
                       },
                     ),
                     SizedBox(height: 8.h),

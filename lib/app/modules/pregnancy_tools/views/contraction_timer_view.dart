@@ -12,119 +12,119 @@ class ContractionTimerView extends GetView<ContractionTimerController> {
   @override
   Widget build(BuildContext context) {
     Get.put(ContractionTimerController());
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.contractionTimer,
-                    style: CustomTextStyle.extraBold(20),
-                  ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  AppLocalizations.of(context)!.contractionTimer,
+                  style: CustomTextStyle.extraBold(20),
                 ),
-                IconButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (BuildContext context) {
-                        return Container(
-                          padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
-                          height: Get.height * 0.97,
+              ),
+              IconButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return SafeArea(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
                           child: SingleChildScrollView(
-                            child: Stack(
+                            child: Column(
                               children: [
-                                Column(
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      AppLocalizations.of(context)!.contractionInfo,
-                                      style: CustomTextStyle.extraBold(22, height: 1.5),
+                                    Expanded(
+                                      child: Text(
+                                        AppLocalizations.of(context)!.contractionInfo,
+                                        style: CustomTextStyle.extraBold(22, height: 1.5),
+                                      ),
                                     ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      AppLocalizations.of(context)!.contractionDesc,
-                                      style: CustomTextStyle.medium(16, height: 1.75),
-                                    ),
-                                    SizedBox(height: 15),
-                                    Text(
-                                      AppLocalizations.of(context)!.whyTrackingContractionImportant,
-                                      style: CustomTextStyle.extraBold(22, height: 1.5),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      AppLocalizations.of(context)!.whyTrackingContractionImportantDesc,
-                                      style: CustomTextStyle.medium(16, height: 1.75),
-                                    ),
-                                    SizedBox(height: 15),
-                                    Text(
-                                      AppLocalizations.of(context)!.twoTypeContraction,
-                                      style: CustomTextStyle.extraBold(22, height: 1.5),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      AppLocalizations.of(context)!.twoTypeContractionDesc,
-                                      style: CustomTextStyle.medium(16, height: 1.75),
-                                    ),
-                                    SizedBox(height: 15),
+                                    IconButton(
+                                      icon: Icon(Icons.close),
+                                      onPressed: () {
+                                        Get.back();
+                                      },
+                                    )
                                   ],
                                 ),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: IconButton(
-                                    icon: Icon(Icons.close),
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                  ),
+                                SizedBox(height: 10),
+                                Text(
+                                  AppLocalizations.of(context)!.contractionDesc,
+                                  style: CustomTextStyle.medium(16, height: 1.75),
                                 ),
+                                SizedBox(height: 15),
+                                Text(
+                                  AppLocalizations.of(context)!.whyTrackingContractionImportant,
+                                  style: CustomTextStyle.extraBold(22, height: 1.5),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  AppLocalizations.of(context)!.whyTrackingContractionImportantDesc,
+                                  style: CustomTextStyle.medium(16, height: 1.75),
+                                ),
+                                SizedBox(height: 15),
+                                Text(
+                                  AppLocalizations.of(context)!.twoTypeContraction,
+                                  style: CustomTextStyle.extraBold(22, height: 1.5),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  AppLocalizations.of(context)!.twoTypeContractionDesc,
+                                  style: CustomTextStyle.medium(16, height: 1.75),
+                                ),
+                                SizedBox(height: 15),
                               ],
                             ),
                           ),
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(
-                    Icons.help,
-                    size: 20,
-                    color: AppColors.black.withOpacity(0.4),
-                  ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                icon: Icon(
+                  Icons.help,
+                  size: 20,
+                  color: AppColors.black.withOpacity(0.4),
                 ),
-              ],
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: AppColors.white,
-          surfaceTintColor: AppColors.white,
-          elevation: 4,
-          leading: BackButton(
-            onPressed: () {
-              Get.back();
-            },
-          ),
-        ),
-        floatingActionButton: Obx(
-          () => Container(
-            width: Get.width / 2,
-            height: 50,
-            child: FloatingActionButton(
-              onPressed: controller.isRunning.value ? controller.stop : controller.start,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-              backgroundColor: AppColors.highlight,
-              child: Icon(
-                controller.isRunning.value ? Icons.stop : Icons.play_arrow,
-                size: 30,
               ),
+            ],
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
+        leading: BackButton(
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      ),
+      floatingActionButton: Obx(
+        () => Container(
+          width: Get.width / 2,
+          height: 50,
+          child: FloatingActionButton(
+            onPressed: controller.isRunning.value ? controller.stop : controller.start,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+            backgroundColor: AppColors.highlight,
+            child: Icon(
+              controller.isRunning.value ? Icons.stop : Icons.play_arrow,
+              size: 30,
             ),
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        body: Obx(
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: SafeArea(
+        child: Obx(
           () => SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

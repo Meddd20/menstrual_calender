@@ -88,7 +88,7 @@ class LoginController extends GetxController {
         storageService.storeCredentialToken(user.token!);
 
         if (storageService.getAccountLocalId() != 0) {
-          if (overrideExistingData == false) {
+          if (overrideExistingData.value == false) {
             await _profileService.deletePendingDataChanges();
           }
         } else {
@@ -98,7 +98,7 @@ class LoginController extends GetxController {
         FirebaseNotificationService().storeFcmToken(user.id!);
         storageService.storeIsAuth(true);
         storageService.storeAccountId(user.id!);
-        overrideExistingData == false ? storageService.storeIsPregnant(user.isPregnant!) : null;
+        overrideExistingData.value == false ? storageService.storeIsPregnant(user.isPregnant!) : null;
         storageService.storeIsBackup(true);
 
         Get.offAllNamed(Routes.NAVIGATION_MENU, arguments: overrideExistingData.value);

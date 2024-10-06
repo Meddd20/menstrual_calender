@@ -34,23 +34,11 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
+      padding: EdgeInsets.fromLTRB(10.w, 25.h, 10.w, 0.h),
       child: Column(
         children: [
-          Container(
-            height: 4.h,
-            width: 32.w,
-            margin: EdgeInsets.only(top: 16.h),
-            decoration: BoxDecoration(
-              color: Colors.blueGrey,
-              borderRadius: BorderRadius.all(
-                Radius.circular(3.0),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
           Padding(
-            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+            padding: EdgeInsets.symmetric(horizontal: 5.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -64,13 +52,13 @@ class AddPeriodBottomSheetWidget extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: CustomTextStyle.extraBold(20),
+                            style: CustomTextStyle.extraBold(20.sp),
                           ),
                           IconButton(
                             icon: Icon(
                               Icons.close,
                               size: 25,
-                              color: Color(0xFFFD6666),
+                              color: const Color(0xFFFD6666),
                             ),
                             onPressed: closeModalBottomSheet,
                           )

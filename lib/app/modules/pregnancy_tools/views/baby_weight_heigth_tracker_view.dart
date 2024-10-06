@@ -15,7 +15,6 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
   Widget build(BuildContext context) {
     Get.put(BabyWeightHeigthTrackerController());
     final PageController _pageController = PageController();
-
     return Scaffold(
       appBar: AppBar(
         title: Obx(
@@ -29,69 +28,71 @@ class BabyWeightHeigthTrackerView extends GetView<BabyWeightHeigthTrackerControl
         surfaceTintColor: AppColors.white,
         elevation: 4,
       ),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                color: Color(0xFFFefeff0),
-              ),
-              child: TabBar(
-                controller: controller.tabController,
-                indicator: BoxDecoration(
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
-                  color: AppColors.white,
+                  color: Color(0xFFFefeff0),
                 ),
-                dividerColor: AppColors.transparent,
-                indicatorSize: TabBarIndicatorSize.tab,
-                indicatorPadding: EdgeInsets.all(2),
-                labelColor: Colors.black,
-                isScrollable: false,
-                onTap: (index) {
-                  _pageController.animateToPage(
-                    index,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.ease,
-                  );
-                  controller.updateTabBar(index);
-                },
-                unselectedLabelColor: Colors.grey.shade600,
-                tabs: [
-                  Tab(
-                    child: Text(
-                      AppLocalizations.of(context)!.fetalWeight,
-                      style: CustomTextStyle.bold(15),
-                    ),
+                child: TabBar(
+                  controller: controller.tabController,
+                  indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: AppColors.white,
                   ),
-                  Tab(
-                    child: Text(
-                      AppLocalizations.of(context)!.fetalHeight,
-                      style: CustomTextStyle.bold(15),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            Obx(
-              () => Expanded(
-                child: PageView(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    controller.tabController.animateTo(index);
+                  dividerColor: AppColors.transparent,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorPadding: EdgeInsets.all(2),
+                  labelColor: Colors.black,
+                  isScrollable: false,
+                  onTap: (index) {
+                    _pageController.animateToPage(
+                      index,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease,
+                    );
                     controller.updateTabBar(index);
                   },
-                  children: [
-                    _buildChart(controller.babyWeightData, context),
-                    _buildChart(controller.babyHeightData, context),
+                  unselectedLabelColor: Colors.grey.shade600,
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        AppLocalizations.of(context)!.fetalWeight,
+                        style: CustomTextStyle.bold(15),
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        AppLocalizations.of(context)!.fetalHeight,
+                        style: CustomTextStyle.bold(15),
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 10),
+              Obx(
+                () => Expanded(
+                  child: PageView(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      controller.tabController.animateTo(index);
+                      controller.updateTabBar(index);
+                    },
+                    children: [
+                      _buildChart(controller.babyWeightData, context),
+                      _buildChart(controller.babyHeightData, context),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

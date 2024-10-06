@@ -13,9 +13,9 @@ class InsightView extends GetView<InsightController> {
   @override
   Widget build(BuildContext context) {
     Get.put(InsightController());
-    return SafeArea(
-      child: Scaffold(
-        body: RefreshIndicator(
+    return Scaffold(
+      body: SafeArea(
+        child: RefreshIndicator(
           onRefresh: () async {
             await controller.fetchArticles(null);
           },

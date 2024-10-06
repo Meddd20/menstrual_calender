@@ -12,9 +12,9 @@ class UnauthorizedErrorView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     Get.put(ProfileController());
-    return SafeArea(
-      child: Scaffold(
-        body: Padding(
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
           padding: EdgeInsets.fromLTRB(10.w, 30.h, 10.w, 15.h),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

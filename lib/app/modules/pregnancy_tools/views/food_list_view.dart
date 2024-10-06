@@ -13,168 +13,174 @@ class FoodListView extends GetView<FoodListController> {
   Widget build(BuildContext context) {
     Get.put(FoodListController());
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar.medium(
-            title: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(
-                AppLocalizations.of(context)!.pregnancyFoodGuide,
-                style: CustomTextStyle.extraBold(22),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar.large(
+              title: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  AppLocalizations.of(context)!.pregnancyFoodGuide,
+                  style: CustomTextStyle.extraBold(22, height: 1.5),
+                ),
               ),
+              centerTitle: true,
+              backgroundColor: AppColors.white,
+              surfaceTintColor: AppColors.white,
+              elevation: 4,
+              stretchTriggerOffset: 50,
             ),
-            centerTitle: true,
-            backgroundColor: AppColors.white,
-            surfaceTintColor: AppColors.white,
-            elevation: 4,
-          ),
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _SliverPersistentHeaderDelegate(
-              minExtent: 130.h,
-              maxExtent: 130.h,
-              child: Container(
-                color: AppColors.white,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: TextField(
-                          controller: controller.searchController,
-                          onChanged: (query) {
-                            controller.searchFood(query);
-                          },
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search),
-                            hintText: AppLocalizations.of(context)!.searchFood,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SliverPersistentHeaderDelegate(
+                minExtent: 130.h,
+                maxExtent: 130.h,
+                child: Container(
+                  color: AppColors.white,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: TextField(
+                            controller: controller.searchController,
+                            onChanged: (query) {
+                              controller.searchFood(query);
+                            },
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.search),
+                              hintText: AppLocalizations.of(context)!.searchFood,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Obx(
-                        () => Container(
-                          width: Get.width,
-                          child: Wrap(
-                            alignment: WrapAlignment.start,
-                            children: controller.filterTags.map((tag) {
-                              final tagTranslations = controller.getFilterTag(context);
-                              return Container(
-                                padding: EdgeInsets.symmetric(horizontal: 6.0),
-                                child: ChoiceChip(
-                                  label: Text(tagTranslations[tag] ?? tag),
-                                  selected: controller.getSelectedTag() == tag,
-                                  onSelected: (bool isSelected) {
-                                    if (isSelected) {
-                                      controller.setSelectedTag(tag);
-                                    } else {
-                                      controller.setSelectedTag("");
-                                    }
-                                  },
-                                  labelStyle: CustomTextStyle.semiBold(14, color: controller.getSelectedTag() == tag ? AppColors.white : AppColors.black),
-                                  backgroundColor: AppColors.transparent,
-                                  selectedColor: AppColors.contrast,
-                                  showCheckmark: false,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Obx(
-            () => SliverPadding(
-              padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final food = controller.filteredFoodList[index];
-                    return Wrap(
-                      children: [
-                        Container(
-                          width: Get.width,
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Card(
-                            color: Colors.white,
-                            child: ListTile(
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 15,
-                              ),
-                              title: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        food.foodSafety == "Unsafe"
-                                            ? Icons.cancel_outlined
-                                            : food.foodSafety == "Caution"
-                                                ? Icons.warning_amber_rounded
-                                                : Icons.check_circle_outline,
-                                        color: food.foodSafety == "Unsafe"
-                                            ? Colors.red
-                                            : food.foodSafety == "Caution"
-                                                ? Colors.yellow
-                                                : Colors.green,
-                                      ),
-                                      SizedBox(width: 15),
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              width: Get.width,
-                                              child: Text(
-                                                controller.storageService.getLanguage() == "id" ? food.foodId! : food.foodEn!,
-                                                style: CustomTextStyle.semiBold(16, height: 1.5),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ),
-                                            Visibility(
-                                              visible: (controller.storageService.getLanguage() == "id" ? food.descriptionId : food.descriptionEn) != null && (controller.storageService.getLanguage() == "id" ? food.descriptionId : food.descriptionEn)!.isNotEmpty,
-                                              child: Container(
-                                                padding: EdgeInsets.only(top: 10),
-                                                child: ReadMoreText(
-                                                  controller.storageService.getLanguage() == "id" ? food.descriptionId ?? "" : food.descriptionEn ?? "",
-                                                  trimLines: 4,
-                                                  colorClickableText: Colors.blue,
-                                                  trimMode: TrimMode.Line,
-                                                  trimCollapsedText: AppLocalizations.of(context)!.readMore,
-                                                  trimExpandedText: AppLocalizations.of(context)!.showLess,
-                                                  moreStyle: CustomTextStyle.bold(14, height: 1.75, color: Colors.blue),
-                                                  lessStyle: CustomTextStyle.bold(14, height: 1.75, color: Colors.blue),
-                                                  style: CustomTextStyle.regular(14, height: 1.75),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                        Obx(
+                          () => Container(
+                            width: Get.width,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Wrap(
+                                alignment: WrapAlignment.start,
+                                children: controller.filterTags.map((tag) {
+                                  final tagTranslations = controller.getFilterTag(context);
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 6.0),
+                                    child: ChoiceChip(
+                                      label: Text(tagTranslations[tag] ?? tag),
+                                      selected: controller.getSelectedTag() == tag,
+                                      onSelected: (bool isSelected) {
+                                        if (isSelected) {
+                                          controller.setSelectedTag(tag);
+                                        } else {
+                                          controller.setSelectedTag("");
+                                        }
+                                      },
+                                      labelStyle: CustomTextStyle.semiBold(14, color: controller.getSelectedTag() == tag ? AppColors.white : AppColors.black),
+                                      backgroundColor: AppColors.transparent,
+                                      selectedColor: AppColors.contrast,
+                                      showCheckmark: false,
+                                    ),
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ),
                         ),
                       ],
-                    );
-                  },
-                  childCount: controller.filteredFoodList.length,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            Obx(
+              () => SliverPadding(
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final food = controller.filteredFoodList[index];
+                      return Wrap(
+                        children: [
+                          Container(
+                            width: Get.width,
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: Card(
+                              color: Colors.white,
+                              child: ListTile(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 15,
+                                ),
+                                title: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          food.foodSafety == "Unsafe"
+                                              ? Icons.cancel_outlined
+                                              : food.foodSafety == "Caution"
+                                                  ? Icons.warning_amber_rounded
+                                                  : Icons.check_circle_outline,
+                                          color: food.foodSafety == "Unsafe"
+                                              ? Colors.red
+                                              : food.foodSafety == "Caution"
+                                                  ? Colors.yellow
+                                                  : Colors.green,
+                                        ),
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: Get.width,
+                                                child: Text(
+                                                  controller.storageService.getLanguage() == "id" ? food.foodId! : food.foodEn!,
+                                                  style: CustomTextStyle.semiBold(16, height: 1.5),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ),
+                                              Visibility(
+                                                visible: (controller.storageService.getLanguage() == "id" ? food.descriptionId : food.descriptionEn) != null && (controller.storageService.getLanguage() == "id" ? food.descriptionId : food.descriptionEn)!.isNotEmpty,
+                                                child: Container(
+                                                  padding: EdgeInsets.only(top: 10),
+                                                  child: ReadMoreText(
+                                                    controller.storageService.getLanguage() == "id" ? food.descriptionId ?? "" : food.descriptionEn ?? "",
+                                                    trimLines: 4,
+                                                    colorClickableText: Colors.blue,
+                                                    trimMode: TrimMode.Line,
+                                                    trimCollapsedText: AppLocalizations.of(context)!.readMore,
+                                                    trimExpandedText: AppLocalizations.of(context)!.showLess,
+                                                    moreStyle: CustomTextStyle.bold(14, height: 1.75, color: Colors.blue),
+                                                    lessStyle: CustomTextStyle.bold(14, height: 1.75, color: Colors.blue),
+                                                    style: CustomTextStyle.regular(14, height: 1.75),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    childCount: controller.filteredFoodList.length,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -38,122 +38,121 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
   @override
   Widget build(BuildContext context) {
     Get.put(WeightTrackerController());
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.weightGainTracker,
-                    style: CustomTextStyle.extraBold(20),
-                  ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  AppLocalizations.of(context)!.weightGainTracker,
+                  style: CustomTextStyle.extraBold(19),
                 ),
-                IconButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (BuildContext context) {
-                        return Container(
-                          padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
-                          height: Get.height * 0.97,
+              ),
+              IconButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return SafeArea(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
                           child: SingleChildScrollView(
-                            child: Stack(
+                            child: Column(
                               children: [
-                                Column(
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      AppLocalizations.of(context)!.weightChanges,
-                                      style: CustomTextStyle.extraBold(22, height: 1.5),
+                                    Expanded(
+                                      child: Text(
+                                        AppLocalizations.of(context)!.weightChanges,
+                                        style: CustomTextStyle.extraBold(22, height: 1.5),
+                                      ),
                                     ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      AppLocalizations.of(context)!.weightChangesDesc,
-                                      style: CustomTextStyle.medium(16, height: 1.75),
-                                    ),
-                                    SizedBox(height: 15),
-                                    Text(
-                                      AppLocalizations.of(context)!.recommendWeightInfoTitle,
-                                      style: CustomTextStyle.extraBold(22, height: 1.5),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      AppLocalizations.of(context)!.recommendWeightInfo,
-                                      style: CustomTextStyle.semiBold(16, height: 1.75),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      AppLocalizations.of(context)!.recommendWeightInfoDesc,
-                                      style: CustomTextStyle.medium(16, height: 1.75),
-                                    ),
-                                    SizedBox(height: 15),
-                                    Text(
-                                      AppLocalizations.of(context)!.whyWeightGainImportant,
-                                      style: CustomTextStyle.medium(16, height: 1.75),
-                                    ),
-                                    SizedBox(height: 15),
+                                    IconButton(
+                                      icon: Icon(Icons.close),
+                                      onPressed: () {
+                                        Get.back();
+                                      },
+                                    )
                                   ],
                                 ),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: IconButton(
-                                    icon: Icon(Icons.close),
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                  ),
+                                SizedBox(height: 10),
+                                Text(
+                                  AppLocalizations.of(context)!.weightChangesDesc,
+                                  style: CustomTextStyle.medium(16, height: 1.75),
                                 ),
+                                SizedBox(height: 15),
+                                Text(
+                                  AppLocalizations.of(context)!.recommendWeightInfoTitle,
+                                  style: CustomTextStyle.extraBold(22, height: 1.5),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  AppLocalizations.of(context)!.recommendWeightInfo,
+                                  style: CustomTextStyle.semiBold(16, height: 1.75),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  AppLocalizations.of(context)!.recommendWeightInfoDesc,
+                                  style: CustomTextStyle.medium(16, height: 1.75),
+                                ),
+                                SizedBox(height: 15),
+                                Text(
+                                  AppLocalizations.of(context)!.whyWeightGainImportant,
+                                  style: CustomTextStyle.medium(16, height: 1.75),
+                                ),
+                                SizedBox(height: 15),
                               ],
                             ),
                           ),
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(
-                    Icons.help,
-                    size: 20,
-                    color: AppColors.black.withOpacity(0.4),
-                  ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                icon: Icon(
+                  Icons.help,
+                  size: 20,
+                  color: AppColors.black.withOpacity(0.4),
                 ),
-              ],
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: AppColors.white,
-          surfaceTintColor: AppColors.white,
-          elevation: 4,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.popUntil(context, ModalRoute.withName('/navigation-menu'));
-            },
+              ),
+            ],
           ),
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          label: Text(
-            AppLocalizations.of(context)!.add,
-            style: CustomTextStyle.bold(14, color: AppColors.white),
-          ),
-          icon: Icon(Icons.add),
-          elevation: 0.0,
-          tooltip: AppLocalizations.of(context)!.addNewWeightGain,
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (BuildContext context) {
-                  return Obx(
+            Navigator.popUntil(context, ModalRoute.withName('/navigation-menu'));
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text(
+          AppLocalizations.of(context)!.add,
+          style: CustomTextStyle.bold(14, color: AppColors.white),
+        ),
+        icon: Icon(Icons.add),
+        elevation: 0.0,
+        tooltip: AppLocalizations.of(context)!.addNewWeightGain,
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (BuildContext context) {
+                return SafeArea(
+                  child: Obx(
                     () => Container(
                       padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
-                      height: Get.height * 0.97,
                       width: Get.width,
                       child: Stack(
                         children: [
@@ -315,13 +314,15 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                         ],
                       ),
                     ),
-                  );
-                }).then((value) {
-              controller.resetValue();
-            });
-          },
-        ),
-        body: FutureBuilder(
+                  ),
+                );
+              }).then((value) {
+            controller.resetValue();
+          });
+        },
+      ),
+      body: SafeArea(
+        child: FutureBuilder(
           future: controller.weightGainIndexData,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -354,7 +355,6 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                               tooltipAlignment: ChartAlignment.center,
                               shouldAlwaysShow: true,
                             ),
-                            // backgroundColor: Colors.white,
                             primaryXAxis: NumericAxis(
                               minimum: 0,
                               maximum: 40,
@@ -477,7 +477,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                               children: [
                                 Text(
                                   AppLocalizations.of(context)!.recommendedWeightGain,
-                                  style: CustomTextStyle.extraBold(18, height: 1.5),
+                                  style: CustomTextStyle.extraBold(16, height: 1.5),
                                 ),
                                 SizedBox(height: 10),
                                 Row(
@@ -683,165 +683,166 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                                                         context: context,
                                                                         isScrollControlled: true,
                                                                         builder: (BuildContext context) {
-                                                                          return Obx(
-                                                                            () => Container(
-                                                                              padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
-                                                                              height: Get.height * 0.97,
-                                                                              width: Get.width,
-                                                                              child: Stack(
-                                                                                children: [
-                                                                                  Column(
-                                                                                    children: [
-                                                                                      Row(
-                                                                                        children: [
-                                                                                          Expanded(
-                                                                                            child: Text(
-                                                                                              AppLocalizations.of(context)!.editWeight,
-                                                                                              style: CustomTextStyle.extraBold(20, height: 1.5),
-                                                                                              textAlign: TextAlign.center,
-                                                                                            ),
-                                                                                          ),
-                                                                                          IconButton(
-                                                                                            icon: Icon(Icons.close),
-                                                                                            onPressed: () {
-                                                                                              controller.resetValue();
-                                                                                              Get.back();
-                                                                                            },
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
-                                                                                      Container(
-                                                                                        decoration: BoxDecoration(
-                                                                                          borderRadius: BorderRadius.circular(10),
-                                                                                        ),
-                                                                                        child: CustomExpandedCalendar(
-                                                                                          firstDay: controller.tanggalAwalMinggu.first,
-                                                                                          lastDay: DateTime.now(),
-                                                                                          focusedDay: controller.getFocusedDate,
-                                                                                          onDaySelected: (selectedDay, focusedDay) {},
-                                                                                          onPageChanged: (focusedDay) {
-                                                                                            controller.setFocusedDate(focusedDay);
-                                                                                          },
-                                                                                          selectedDayPredicate: (day) => isSameDay(
-                                                                                            controller.selectedDate,
-                                                                                            day,
-                                                                                          ),
-                                                                                          calendarFormat: CalendarFormat.month,
-                                                                                          markerBuilder: (context, day, events) {
-                                                                                            for (var i = 0; i < controller.tanggalAwalMinggu.length; i++) {
-                                                                                              var weekDatePregnancy = controller.tanggalAwalMinggu[i];
-                                                                                              if (day.isAtSameMomentAs(weekDatePregnancy)) {
-                                                                                                return Align(
-                                                                                                  alignment: Alignment.bottomRight,
-                                                                                                  child: Container(
-                                                                                                    width: 20.0,
-                                                                                                    height: 20.0,
-                                                                                                    alignment: Alignment.center,
-                                                                                                    decoration: BoxDecoration(
-                                                                                                      color: Colors.blue,
-                                                                                                      shape: BoxShape.circle,
-                                                                                                    ),
-                                                                                                    child: Text(
-                                                                                                      '${i + 1}',
-                                                                                                      style: CustomTextStyle.bold(12, color: Colors.white),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                );
-                                                                                              }
-                                                                                            }
-                                                                                            return SizedBox();
-                                                                                          },
-                                                                                        ),
-                                                                                      ),
-                                                                                      SizedBox(height: 10),
-                                                                                      Padding(
-                                                                                        padding: const EdgeInsets.all(8.0),
-                                                                                        child: Row(
-                                                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                          return SafeArea(
+                                                                            child: Obx(
+                                                                              () => Container(
+                                                                                padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
+                                                                                width: Get.width,
+                                                                                child: Stack(
+                                                                                  children: [
+                                                                                    Column(
+                                                                                      children: [
+                                                                                        Row(
                                                                                           children: [
-                                                                                            Text(
-                                                                                              AppLocalizations.of(context)!.selectedDate,
-                                                                                              style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
+                                                                                            Expanded(
+                                                                                              child: Text(
+                                                                                                AppLocalizations.of(context)!.editWeight,
+                                                                                                style: CustomTextStyle.extraBold(20, height: 1.5),
+                                                                                                textAlign: TextAlign.center,
+                                                                                              ),
                                                                                             ),
-                                                                                            Text(
-                                                                                              "${formatDate(controller.selectedDate ?? DateTime.now())}",
-                                                                                              style: CustomTextStyle.bold(16),
-                                                                                            )
+                                                                                            IconButton(
+                                                                                              icon: Icon(Icons.close),
+                                                                                              onPressed: () {
+                                                                                                controller.resetValue();
+                                                                                                Get.back();
+                                                                                              },
+                                                                                            ),
                                                                                           ],
                                                                                         ),
-                                                                                      ),
-                                                                                      Obx(() => Padding(
-                                                                                            padding: const EdgeInsets.all(8.0),
-                                                                                            child: Row(
-                                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                              children: [
-                                                                                                Text(
-                                                                                                  AppLocalizations.of(context)!.pregnancyWeek,
-                                                                                                  style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
+                                                                                        Container(
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(10),
+                                                                                          ),
+                                                                                          child: CustomExpandedCalendar(
+                                                                                            firstDay: controller.tanggalAwalMinggu.first,
+                                                                                            lastDay: DateTime.now(),
+                                                                                            focusedDay: controller.getFocusedDate,
+                                                                                            onDaySelected: (selectedDay, focusedDay) {},
+                                                                                            onPageChanged: (focusedDay) {
+                                                                                              controller.setFocusedDate(focusedDay);
+                                                                                            },
+                                                                                            selectedDayPredicate: (day) => isSameDay(
+                                                                                              controller.selectedDate,
+                                                                                              day,
+                                                                                            ),
+                                                                                            calendarFormat: CalendarFormat.month,
+                                                                                            markerBuilder: (context, day, events) {
+                                                                                              for (var i = 0; i < controller.tanggalAwalMinggu.length; i++) {
+                                                                                                var weekDatePregnancy = controller.tanggalAwalMinggu[i];
+                                                                                                if (day.isAtSameMomentAs(weekDatePregnancy)) {
+                                                                                                  return Align(
+                                                                                                    alignment: Alignment.bottomRight,
+                                                                                                    child: Container(
+                                                                                                      width: 20.0,
+                                                                                                      height: 20.0,
+                                                                                                      alignment: Alignment.center,
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        color: Colors.blue,
+                                                                                                        shape: BoxShape.circle,
+                                                                                                      ),
+                                                                                                      child: Text(
+                                                                                                        '${i + 1}',
+                                                                                                        style: CustomTextStyle.bold(12, color: Colors.white),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                }
+                                                                                              }
+                                                                                              return SizedBox();
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                        SizedBox(height: 10),
+                                                                                        Padding(
+                                                                                          padding: const EdgeInsets.all(8.0),
+                                                                                          child: Row(
+                                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                            children: [
+                                                                                              Text(
+                                                                                                AppLocalizations.of(context)!.selectedDate,
+                                                                                                style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
+                                                                                              ),
+                                                                                              Text(
+                                                                                                "${formatDate(controller.selectedDate ?? DateTime.now())}",
+                                                                                                style: CustomTextStyle.bold(16),
+                                                                                              )
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                        Obx(() => Padding(
+                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                              child: Row(
+                                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                                children: [
+                                                                                                  Text(
+                                                                                                    AppLocalizations.of(context)!.pregnancyWeek,
+                                                                                                    style: CustomTextStyle.medium(14, color: Colors.black.withOpacity(0.5)),
+                                                                                                  ),
+                                                                                                  Text(
+                                                                                                    "${controller.selectedWeek}",
+                                                                                                    style: CustomTextStyle.bold(16),
+                                                                                                  )
+                                                                                                ],
+                                                                                              ),
+                                                                                            )),
+                                                                                        Row(
+                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                          children: [
+                                                                                            NumberPicker(
+                                                                                              minValue: 30,
+                                                                                              maxValue: 150,
+                                                                                              value: controller.selectedWeight,
+                                                                                              onChanged: controller.setSelectedWeight,
+                                                                                              textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                                                              selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
+                                                                                              infiniteLoop: true,
+                                                                                              decoration: BoxDecoration(
+                                                                                                border: Border(
+                                                                                                  top: BorderSide(color: Colors.black),
+                                                                                                  bottom: BorderSide(color: Colors.black),
                                                                                                 ),
-                                                                                                Text(
-                                                                                                  "${controller.selectedWeek}",
-                                                                                                  style: CustomTextStyle.bold(16),
-                                                                                                )
-                                                                                              ],
-                                                                                            ),
-                                                                                          )),
-                                                                                      Row(
-                                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                                        children: [
-                                                                                          NumberPicker(
-                                                                                            minValue: 30,
-                                                                                            maxValue: 150,
-                                                                                            value: controller.selectedWeight,
-                                                                                            onChanged: controller.setSelectedWeight,
-                                                                                            textStyle: CustomTextStyle.light(18, color: Colors.grey),
-                                                                                            selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
-                                                                                            infiniteLoop: true,
-                                                                                            decoration: BoxDecoration(
-                                                                                              border: Border(
-                                                                                                top: BorderSide(color: Colors.black),
-                                                                                                bottom: BorderSide(color: Colors.black),
                                                                                               ),
                                                                                             ),
-                                                                                          ),
-                                                                                          Text(
-                                                                                            ".",
-                                                                                            style: CustomTextStyle.extraBold(20, color: AppColors.primary),
-                                                                                          ),
-                                                                                          NumberPicker(
-                                                                                            minValue: 0,
-                                                                                            maxValue: 9,
-                                                                                            value: controller.selectedWeightDecimal,
-                                                                                            onChanged: controller.setSelectedWeightDecimal,
-                                                                                            textStyle: CustomTextStyle.light(18, color: Colors.grey),
-                                                                                            selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
-                                                                                            infiniteLoop: true,
-                                                                                            decoration: BoxDecoration(
-                                                                                              border: Border(
-                                                                                                top: BorderSide(color: Colors.black),
-                                                                                                bottom: BorderSide(color: Colors.black),
+                                                                                            Text(
+                                                                                              ".",
+                                                                                              style: CustomTextStyle.extraBold(20, color: AppColors.primary),
+                                                                                            ),
+                                                                                            NumberPicker(
+                                                                                              minValue: 0,
+                                                                                              maxValue: 9,
+                                                                                              value: controller.selectedWeightDecimal,
+                                                                                              onChanged: controller.setSelectedWeightDecimal,
+                                                                                              textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                                                              selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
+                                                                                              infiniteLoop: true,
+                                                                                              decoration: BoxDecoration(
+                                                                                                border: Border(
+                                                                                                  top: BorderSide(color: Colors.black),
+                                                                                                  bottom: BorderSide(color: Colors.black),
+                                                                                                ),
                                                                                               ),
                                                                                             ),
-                                                                                          ),
-                                                                                          SizedBox(width: 10),
-                                                                                          Text(
-                                                                                            "Kg",
-                                                                                            style: CustomTextStyle.extraBold(20, color: AppColors.primary),
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                  Positioned(
-                                                                                    bottom: 15,
-                                                                                    left: 0,
-                                                                                    right: 0,
-                                                                                    child: CustomButton(
-                                                                                      text: AppLocalizations.of(context)!.save,
-                                                                                      onPressed: () => controller.weeklyWeightGain(context),
+                                                                                            SizedBox(width: 10),
+                                                                                            Text(
+                                                                                              "Kg",
+                                                                                              style: CustomTextStyle.extraBold(20, color: AppColors.primary),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ],
                                                                                     ),
-                                                                                  )
-                                                                                ],
+                                                                                    Positioned(
+                                                                                      bottom: 15,
+                                                                                      left: 0,
+                                                                                      right: 0,
+                                                                                      child: CustomButton(
+                                                                                        text: AppLocalizations.of(context)!.save,
+                                                                                        onPressed: () => controller.weeklyWeightGain(context),
+                                                                                      ),
+                                                                                    )
+                                                                                  ],
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           );

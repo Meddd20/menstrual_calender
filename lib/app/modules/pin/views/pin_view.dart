@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/modules/navigation_menu/views/navigation_menu_view.dart';
-
 import '../controllers/pin_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -98,7 +95,7 @@ class PinView extends GetView<PinController> {
                           null;
                         }
                         controller.storageService.currentPin('');
-                        Get.off(() => NavigationMenuView());
+                        Get.back();
                       },
                       style: ElevatedButton.styleFrom(
                         shape: CircleBorder(),

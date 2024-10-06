@@ -186,11 +186,13 @@ class ProfileController extends GetxController {
       }
 
       storageService.storeIsPregnant("1");
-      Get.offAllNamed(Routes.NAVIGATION_MENU);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyStartedSuccess));
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyStartFailed));
+      return;
     }
+
+    Get.offAllNamed(Routes.NAVIGATION_MENU);
   }
 
   Future<void> _syncPregnancyBegin() async {
@@ -323,10 +325,11 @@ class ProfileController extends GetxController {
       try {
         await _periodHistoryService.addPeriod(newPeriod?[0].id ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
         Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.periodAddedSuccess));
-        Get.offAllNamed(Routes.NAVIGATION_MENU);
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodAddFailed));
+        return;
       }
+      await Get.offAllNamed(Routes.NAVIGATION_MENU);
     } else {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.selectPeriodStartDate));
     }

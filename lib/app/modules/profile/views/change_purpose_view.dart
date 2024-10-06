@@ -25,27 +25,27 @@ class ChangePurposeView extends GetView<ProfileController> {
 
   Widget changePurposeToPregnancy(BuildContext context) {
     HomeMenstruationController homeMenstruationController = Get.find<HomeMenstruationController>();
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Text(
-              AppLocalizations.of(context)!.changePurpose,
-              style: CustomTextStyle.extraBold(22),
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: AppColors.white,
-          surfaceTintColor: AppColors.white,
-          elevation: 4,
-          leading: BackButton(
-            onPressed: () {
-              Get.back();
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            AppLocalizations.of(context)!.changePurpose,
+            style: CustomTextStyle.extraBold(22),
           ),
         ),
-        body: Padding(
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
+        leading: BackButton(
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
           padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
           child: Obx(
             () => Stack(
@@ -151,27 +151,27 @@ class ChangePurposeView extends GetView<ProfileController> {
   }
 
   Widget changePurposeToPeriod(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Text(
-              AppLocalizations.of(context)!.changePurpose,
-              style: CustomTextStyle.extraBold(22),
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: AppColors.white,
-          surfaceTintColor: AppColors.white,
-          elevation: 4,
-          leading: BackButton(
-            onPressed: () {
-              Get.back();
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            AppLocalizations.of(context)!.changePurpose,
+            style: CustomTextStyle.extraBold(22),
           ),
         ),
-        body: Padding(
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
+        leading: BackButton(
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
           padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
           child: Container(
             height: Get.height,

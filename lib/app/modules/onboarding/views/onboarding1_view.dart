@@ -78,7 +78,7 @@ class Onboarding1View extends GetView<OnboardingController> {
               child: CustomButton(
                 text: AppLocalizations.of(context)!.next,
                 onPressed: () {
-                  controller.validateBirthday();
+                  controller.validateBirthday(context);
                 },
               ),
             )

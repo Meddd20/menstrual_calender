@@ -26,26 +26,25 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     final storageService = StorageService();
-    // Get.put(RegisterController());
     Get.put(OnboardingController());
     Get.put(ProfileController());
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Text(
-              AppLocalizations.of(context)!.profile,
-              style: CustomTextStyle.extraBold(22),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            AppLocalizations.of(context)!.profile,
+            style: CustomTextStyle.extraBold(22),
           ),
-          centerTitle: true,
-          backgroundColor: AppColors.white,
-          surfaceTintColor: AppColors.white,
-          elevation: 4,
-          automaticallyImplyLeading: false,
         ),
-        body: FutureBuilder<User?>(
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        elevation: 4,
+        automaticallyImplyLeading: false,
+      ),
+      body: SafeArea(
+        child: FutureBuilder<User?>(
           future: controller.profileUser,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
@@ -291,7 +290,7 @@ class ProfileView extends GetView<ProfileController> {
                                     children: [
                                       Image.asset(
                                         "assets/icon/newborns.png",
-                                        height: 100,
+                                        height: 90,
                                       ),
                                       SizedBox(width: 15),
                                       Expanded(
@@ -425,7 +424,7 @@ class ProfileView extends GetView<ProfileController> {
                                                               alignment: Alignment.centerLeft,
                                                               child: Text(
                                                                 AppLocalizations.of(context)!.trackPeriodGoal,
-                                                                style: CustomTextStyle.extraBold(18, color: Colors.white),
+                                                                style: CustomTextStyle.extraBold(17, color: Colors.white),
                                                                 textAlign: TextAlign.left,
                                                               ),
                                                             ),
@@ -535,7 +534,7 @@ class ProfileView extends GetView<ProfileController> {
                                                               alignment: Alignment.centerLeft,
                                                               child: Text(
                                                                 AppLocalizations.of(context)!.pregnancyGoal,
-                                                                style: CustomTextStyle.extraBold(18, color: Colors.white),
+                                                                style: CustomTextStyle.extraBold(17, color: Colors.white),
                                                                 textAlign: TextAlign.left,
                                                               ),
                                                             ),

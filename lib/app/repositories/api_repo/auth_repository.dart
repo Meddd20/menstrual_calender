@@ -16,11 +16,8 @@ class AuthRepository {
   Future<User?> login(String email, String password) async {
     http.Response response = await apiService.login(email, password);
 
-    print(response.body.toString());
-
     if (response.statusCode == 200) {
       Get.showSnackbar(Ui.SuccessSnackBar(message: jsonDecode(response.body)["message"]));
-
       Profile profile = Profile.fromJson(jsonDecode(response.body));
       return profile.user;
     } else {
@@ -52,7 +49,7 @@ class AuthRepository {
     } else {
       var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
       Get.showSnackbar(Ui.ErrorSnackBar(message: "An error occurred. Please try again later."));
-     _logger.e('[API ERROR] $errorMessage');
+      _logger.e('[API ERROR] $errorMessage');
       throw Exception(errorMessage);
     }
   }

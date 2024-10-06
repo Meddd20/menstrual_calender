@@ -21,22 +21,21 @@ class DetailPregnancyView extends GetView {
     document.querySelectorAll('h2').forEach((element) => element.remove());
     final filteredHtml = document.outerHtml;
 
-    return SafeArea(
-      child: Scaffold(
-        body: CustomScrollView(
+    return Scaffold(
+      body: SafeArea(
+        child: CustomScrollView(
           slivers: [
             SliverAppBar.large(
-              title: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  extractedTitle,
-                  style: CustomTextStyle.extraBold(22, height: 1.5),
-                ),
+              title: Text(
+                extractedTitle,
+                style: CustomTextStyle.extraBold(20, height: 1.5),
               ),
+              titleSpacing: 0,
               centerTitle: true,
               backgroundColor: AppColors.white,
               surfaceTintColor: AppColors.white,
               elevation: 4,
+              stretchTriggerOffset: 50,
             ),
             SliverToBoxAdapter(
               child: Column(

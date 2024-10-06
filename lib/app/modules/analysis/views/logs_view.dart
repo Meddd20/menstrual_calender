@@ -40,47 +40,49 @@ class LogsView extends GetView<LogsController> {
             },
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
-          child: Column(
-            children: [
-              if (controller.selectedDataTags != "pregnancy_symptoms") ...[
-                CustomTabBar(
-                  controller: controller.tabController,
-                  onTap: (index) {
-                    _pageController.animateToPage(
-                      index,
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.ease,
-                    );
-                    controller.updateTabBar(index);
-                  },
-                ),
-                Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (index) {
-                      controller.tabController.animateTo(index);
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
+            child: Column(
+              children: [
+                if (controller.selectedDataTags != "pregnancy_symptoms") ...[
+                  CustomTabBar(
+                    controller: controller.tabController,
+                    onTap: (index) {
+                      _pageController.animateToPage(
+                        index,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
                       controller.updateTabBar(index);
                     },
-                    children: [
-                      _buildChart(context),
-                      _buildChart(context),
-                      _buildChart(context),
-                      _buildChart(context),
-                    ],
                   ),
-                ),
-              ] else ...[
-                Expanded(
-                  child: PageView(
-                    children: [
-                      _buildChart(context),
-                    ],
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (index) {
+                        controller.tabController.animateTo(index);
+                        controller.updateTabBar(index);
+                      },
+                      children: [
+                        _buildChart(context),
+                        _buildChart(context),
+                        _buildChart(context),
+                        _buildChart(context),
+                      ],
+                    ),
                   ),
-                ),
-              ]
-            ],
+                ] else ...[
+                  Expanded(
+                    child: PageView(
+                      children: [
+                        _buildChart(context),
+                      ],
+                    ),
+                  ),
+                ]
+              ],
+            ),
           ),
         ),
       ),

@@ -140,13 +140,13 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(tool['icon'] ?? "", height: 80, width: 80),
+                      Image.asset(tool['icon'] ?? "", height: 70, width: 70),
                       SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           tool['name'] ?? "",
-                          style: CustomTextStyle.semiBold(15, height: 1.5),
+                          style: CustomTextStyle.semiBold(14, height: 1.5),
                           textAlign: TextAlign.center,
                         ),
                       ),
