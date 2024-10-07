@@ -103,7 +103,7 @@ class StorageService {
 
   bool isDataSync() {
     bool isDataSync = box.read("hasSyncData");
-    if (isDataSync.toString() == "null") {
+    if (isDataSync.toString().isEmpty) {
       setHasSyncData(false);
       return false;
     }

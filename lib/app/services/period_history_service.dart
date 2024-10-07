@@ -34,12 +34,14 @@ class PeriodHistoryService {
       List<PeriodHistory> isNotActualPeriodHistories = getAllPeriodHistory.where((period) => period.isActual == "0").toList();
 
       User? userProfile = await _localProfileRepository.getProfile();
-      User updateUserProfile = userProfile!.copyWith(
-        isPregnant: "0",
-        updatedAt: DateTime.now().toString(),
-      );
-      await _localProfileRepository.updateProfile(updateUserProfile);
-      storageService.storeIsPregnant("0");
+      if (userProfile != null) {
+        User updateUserProfile = userProfile.copyWith(
+          isPregnant: "0",
+          updatedAt: DateTime.now().toString(),
+        );
+        await _localProfileRepository.updateProfile(updateUserProfile);
+        storageService.storeIsPregnant("0");
+      }
 
       for (var period in isActualPeriodHistories) {
         if ((haidAwal.isBefore(period.haidAkhir!) || haidAwal.isAtSameMomentAs(period.haidAkhir!)) && (haidAkhir.isAfter(period.haidAwal!) || haidAkhir.isAtSameMomentAs(period.haidAwal!))) {

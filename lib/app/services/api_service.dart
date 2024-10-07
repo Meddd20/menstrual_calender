@@ -30,6 +30,11 @@ class ApiService {
     }
   }
 
+  Future<http.Response> checkAPIConnection() async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.connection);
+    return await http.get(url, headers: generalHeaders);
+  }
+
   Future<http.Response> getSycDataApi() async {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.getSycData);
     return await http.get(url, headers: loginHeaders);

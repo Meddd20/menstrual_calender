@@ -5,6 +5,7 @@ class ApiEndPoints {
 }
 
 class _AuthEndPoints {
+  final String connection = 'connection';
   final String storeFcmToken = 'notifications/token';
 
   final String login = 'login';

@@ -1,27 +1,25 @@
-import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
-// import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
+import 'dart:async';
+import 'package:periodnpregnancycalender/app/services/api_service.dart';
 
 class CheckConnectivity {
+  final ApiService apiService = ApiService();
   Future<bool> isConnectedToInternet() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
-      return false;
-    } else {
-      return await _hasInternetAccess();
-    }
+    return await _hasInternetAccess();
   }
 
   Future<bool> _hasInternetAccess() async {
     try {
-      final result = await InternetAddress.lookup(ApiEndPoints.apiUrl + 'connection');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      final response = await apiService.checkAPIConnection();
+      if (response.statusCode == 200) {
         return true;
       } else {
         return false;
       }
-    } on SocketException catch (_) {
+    } on TimeoutException {
+      print('Koneksi timeout');
+      return false;
+    } catch (e) {
+      print('Error: $e');
       return false;
     }
   }
