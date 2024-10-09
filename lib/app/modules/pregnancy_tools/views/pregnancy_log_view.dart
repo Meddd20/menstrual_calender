@@ -458,41 +458,55 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                                     builder: (BuildContext context) {
                                       return Wrap(
                                         children: [
-                                          Container(
-                                            padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
-                                            child: Column(
-                                              children: [
-                                                Icon(
-                                                  Iconsax.edit_24,
-                                                  size: 35,
-                                                  color: Color(0xFFFF6868),
-                                                ),
-                                                SizedBox(height: 10.h),
-                                                Text(
-                                                  AppLocalizations.of(context)!.dailyNotes,
-                                                  style: CustomTextStyle.bold(20, height: 1.5),
-                                                ),
-                                                SizedBox(height: 20.h),
-                                                TextFormField(
-                                                  minLines: 7,
-                                                  maxLines: 7,
-                                                  style: CustomTextStyle.medium(15, height: 1.5),
-                                                  onChanged: controller.updateNotes,
-                                                  initialValue: controller.getNotes(),
-                                                  decoration: InputDecoration(
-                                                    border: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(10.0),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                                            ),
+                                            child: Container(
+                                              padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  FocusScopeNode currentFocus = FocusScope.of(context);
+                                                  if (!currentFocus.hasPrimaryFocus) {
+                                                    currentFocus.unfocus();
+                                                  }
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    Icon(
+                                                      Iconsax.edit_24,
+                                                      size: 35,
+                                                      color: Color(0xFFFF6868),
                                                     ),
-                                                  ),
+                                                    SizedBox(height: 10.h),
+                                                    Text(
+                                                      AppLocalizations.of(context)!.dailyNotes,
+                                                      style: CustomTextStyle.bold(20, height: 1.5),
+                                                    ),
+                                                    SizedBox(height: 20.h),
+                                                    TextFormField(
+                                                      minLines: 7,
+                                                      maxLines: 7,
+                                                      style: CustomTextStyle.medium(15, height: 1.5),
+                                                      onChanged: controller.updateNotes,
+                                                      initialValue: controller.getNotes(),
+                                                      decoration: InputDecoration(
+                                                        border: OutlineInputBorder(
+                                                          borderRadius: BorderRadius.circular(10.0),
+                                                        ),
+                                                      ),
+                                                      textInputAction: TextInputAction.done,
+                                                    ),
+                                                    SizedBox(height: 25.h),
+                                                    CustomButton(
+                                                      text: AppLocalizations.of(context)!.saveNotes,
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
                                                 ),
-                                                SizedBox(height: 25.h),
-                                                CustomButton(
-                                                  text: AppLocalizations.of(context)!.saveNotes,
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ],

@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-// import 'package:device_preview/device_preview.dart';
+import 'package:device_preview/device_preview.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +26,7 @@ Future<void> main() async {
   await FirebaseNotificationService.initNotifications();
 
   await LocalNotificationService().requestNotificationPermission();
+  await LocalNotificationService().requestExactAlarmPermission();
   // runApp(DevicePreview(
   //   // enabled: !kReleaseMode,
   //   builder: (context) => MyApp(),
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
           initialRoute: initialRoute,
           getPages: AppPages.routes,
           supportedLocales: L10n.all,
-          locale: Locale('id'),
+          locale: Locale(StorageService().getLanguage()),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
         );
       },

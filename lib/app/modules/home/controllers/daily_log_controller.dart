@@ -14,6 +14,7 @@ import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
 import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class DailyLogController extends GetxController {
   final apiService = ApiService();
@@ -264,6 +265,12 @@ class DailyLogController extends GetxController {
       "Cycling": AppLocalizations.of(context)!.cycling,
       "Walking": AppLocalizations.of(context)!.walking,
     };
+  }
+
+  Rx<CalendarFormat> format = Rx<CalendarFormat>(CalendarFormat.week);
+  CalendarFormat get getFormat => format.value;
+  void setFormat(CalendarFormat newFormat) {
+    format.value = newFormat;
   }
 
   DateTime get selectedDate => _selectedDate.value;

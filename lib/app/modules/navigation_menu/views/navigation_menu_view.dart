@@ -36,7 +36,7 @@ class NavigationMenuView extends GetView<NavigationMenuController> {
                   ),
                   NavigationDestination(
                     icon: Icon(Iconsax.category),
-                    label: AppLocalizations.of(context)!.analysis,
+                    label: controller.storageService.getIsPregnant() == "0" ? AppLocalizations.of(context)!.analysis : AppLocalizations.of(context)!.tools,
                   ),
                   NavigationDestination(
                     icon: Icon(Iconsax.messages),

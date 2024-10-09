@@ -186,189 +186,87 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                                 ),
                               ],
                             ),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //   crossAxisAlignment: CrossAxisAlignment.start,
-                            //   children: [
-                            //     Column(
-                            //       children: [
-                            //         Container(
-                            //           height: 110.h,
-                            //           width: 155,
-                            //           decoration: BoxDecoration(
-                            //             borderRadius: BorderRadius.circular(12),
-                            //             color: Color(0xFFFFD7DF),
-                            //             border: Border.all(
-                            //               color: AppColors.primary,
-                            //               width: 0.5,
-                            //             ),
-                            //           ),
-                            //           child: Padding(
-                            //             padding: const EdgeInsets.all(16.0),
-                            //             child: Column(
-                            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //               crossAxisAlignment: CrossAxisAlignment.center,
-                            //               children: [
-                            //                 Text(
-                            //                   AppLocalizations.of(context)!.averageCycleLength,
-                            //                   style: CustomTextStyle.extraBold(15, color: AppColors.primary),
-                            //                   maxLines: 2,
-                            //                   overflow: TextOverflow.ellipsis,
-                            //                 ),
-                            //                 SizedBox(height: 5),
-                            //                 RichText(
-                            //                   text: TextSpan(
-                            //                     children: [
-                            //                       TextSpan(
-                            //                         text: "${homeController.data?.avgPeriodCycle}",
-                            //                         style: CustomTextStyle.extraBold(23),
-                            //                       ),
-                            //                       TextSpan(
-                            //                         text: AppLocalizations.of(context)!.daysPrefix,
-                            //                         style: CustomTextStyle.semiBold(14),
-                            //                       ),
-                            //                     ],
-                            //                   ),
-                            //                 )
-                            //               ],
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //     Column(
-                            //       children: [
-                            //         Container(
-                            //           height: 110.h,
-                            //           width: 155,
-                            //           decoration: BoxDecoration(
-                            //             borderRadius: BorderRadius.circular(12),
-                            //             border: Border.all(
-                            //               color: Color(0xFFFD9414),
-                            //               width: 0.5,
-                            //             ),
-                            //             color: Color(0xFFFFE69E),
-                            //           ),
-                            //           child: Padding(
-                            //             padding: const EdgeInsets.all(16.0),
-                            //             child: Column(
-                            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //               crossAxisAlignment: CrossAxisAlignment.center,
-                            //               children: [
-                            //                 Text(
-                            //                   AppLocalizations.of(context)!.averagePeriodLength,
-                            //                   style: CustomTextStyle.extraBold(15, color: Color(0xFFFD9414)),
-                            //                   maxLines: 2,
-                            //                   overflow: TextOverflow.ellipsis,
-                            //                 ),
-                            //                 SizedBox(height: 5),
-                            //                 RichText(
-                            //                   text: TextSpan(
-                            //                     children: [
-                            //                       TextSpan(
-                            //                         text: "${homeController.data?.avgPeriodDuration}",
-                            //                         style: CustomTextStyle.extraBold(23),
-                            //                       ),
-                            //                       TextSpan(
-                            //                         text: AppLocalizations.of(context)!.daysPrefix,
-                            //                         style: CustomTextStyle.semiBold(14),
-                            //                       ),
-                            //                     ],
-                            //                   ),
-                            //                 )
-                            //               ],
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ],
-                            // ),
                           ],
                         ),
                       ),
                     ),
                   ),
                   SizedBox(height: 15.h),
-                  Wrap(
-                    children: [
-                      Container(
-                        width: Get.width,
-                        height: 515,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
+                  Container(
+                    width: Get.width,
+                    height: 515.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+                      child: GridView(
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 6,
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
-                          child: GridView(
-                            physics: NeverScrollableScrollPhysics(),
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 20,
-                              crossAxisSpacing: 6,
-                            ),
-                            children: [
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/bleed.png',
-                                text: AppLocalizations.of(context)!.bleedingFlow,
-                                onTap: () => Get.to(() => LogsView(), arguments: "bleeding_flow"),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/sex.png',
-                                text: AppLocalizations.of(context)!.sexActivity,
-                                onTap: () => Get.to(() => LogsView(), arguments: "sex_activity"),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/acne.png',
-                                text: AppLocalizations.of(context)!.symptoms,
-                                onTap: () => Get.to(() => LogsView(), arguments: "symptoms"),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/raining.png',
-                                text: AppLocalizations.of(context)!.vaginalDischarge,
-                                onTap: () => Get.to(() => LogsView(), arguments: "vaginal_discharge"),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/mood-changes.png',
-                                text: AppLocalizations.of(context)!.moods,
-                                onTap: () => Get.to(() => LogsView(), arguments: "moods"),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/passport.png',
-                                text: AppLocalizations.of(context)!.others,
-                                onTap: () => Get.to(() => LogsView(), arguments: "others"),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/yoga.png',
-                                text: AppLocalizations.of(context)!.physicalActivity,
-                                onTap: () => Get.to(() => LogsView(), arguments: "physical_activity"),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/temperature.png',
-                                text: AppLocalizations.of(context)!.temperature,
-                                onTap: () => Get.to(() => TemperatureView()),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/weighing-machine.png',
-                                text: AppLocalizations.of(context)!.weight,
-                                onTap: () => Get.to(() => WeightView()),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/alarm.png',
-                                text: AppLocalizations.of(context)!.reminder,
-                                onTap: () => Get.to(() => ReminderView()),
-                              ),
-                              CustomCircularCard(
-                                iconPath: 'assets/icon/notes.png',
-                                text: AppLocalizations.of(context)!.notes,
-                                onTap: () => Get.to(() => NotesView()),
-                              ),
-                            ],
+                        children: [
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/bleed.png',
+                            text: AppLocalizations.of(context)!.bleedingFlow,
+                            onTap: () => Get.to(() => LogsView(), arguments: "bleeding_flow"),
                           ),
-                        ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/sex.png',
+                            text: AppLocalizations.of(context)!.sexActivity,
+                            onTap: () => Get.to(() => LogsView(), arguments: "sex_activity"),
+                          ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/acne.png',
+                            text: AppLocalizations.of(context)!.symptoms,
+                            onTap: () => Get.to(() => LogsView(), arguments: "symptoms"),
+                          ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/raining.png',
+                            text: AppLocalizations.of(context)!.vaginalDischarge,
+                            onTap: () => Get.to(() => LogsView(), arguments: "vaginal_discharge"),
+                          ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/mood-changes.png',
+                            text: AppLocalizations.of(context)!.moods,
+                            onTap: () => Get.to(() => LogsView(), arguments: "moods"),
+                          ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/passport.png',
+                            text: AppLocalizations.of(context)!.others,
+                            onTap: () => Get.to(() => LogsView(), arguments: "others"),
+                          ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/yoga.png',
+                            text: AppLocalizations.of(context)!.physicalActivity,
+                            onTap: () => Get.to(() => LogsView(), arguments: "physical_activity"),
+                          ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/temperature.png',
+                            text: AppLocalizations.of(context)!.temperature,
+                            onTap: () => Get.to(() => TemperatureView()),
+                          ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/weighing-machine.png',
+                            text: AppLocalizations.of(context)!.weight,
+                            onTap: () => Get.to(() => WeightView()),
+                          ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/alarm.png',
+                            text: AppLocalizations.of(context)!.reminder,
+                            onTap: () => Get.to(() => ReminderView()),
+                          ),
+                          CustomCircularCard(
+                            iconPath: 'assets/icon/notes.png',
+                            text: AppLocalizations.of(context)!.notes,
+                            onTap: () => Get.to(() => NotesView()),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                   SizedBox(height: 15.h),
                 ],

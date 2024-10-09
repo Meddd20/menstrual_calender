@@ -172,14 +172,12 @@ class PregnancyHistoryService {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
-
       List<MasterPregnancy> masterDataKehamilan = await _masterKehamilanRepository.getAllPregnancyData();
 
       if (currentPregnancyData != null) {
         DateTime hariPertamaHaidTerakhir = DateTime.parse(currentPregnancyData.hariPertamaHaidTerakhir ?? "");
         Duration differenceDays = DateTime.now().difference(hariPertamaHaidTerakhir);
-
-        int weeksPregnant = (differenceDays.inDays / 7).ceil();
+        int weeksPregnant = (differenceDays.inDays / 7).ceil() + 1;
         List<WeeklyData>? weeklyData = [];
 
         for (var minggu = 1; minggu <= 40; minggu++) {

@@ -65,9 +65,9 @@ class HomePregnancyController extends GetxController {
     var result = await _pregnancyHistoryService.getCurrentPregnancyData("id");
     currentlyPregnantData.value = result!;
     weeklyData.assignAll(currentlyPregnantData.value.weeklyData!);
-    currentPregnancyWeekIndex.value = (currentlyPregnantData.value.usiaKehamilan ?? 0) - 1;
-    setSelectedDate(DateTime.parse(currentlyPregnantData.value.hariPertamaHaidTerakhir ?? "${DateTime.now()}"));
-    setFocusedDate(DateTime.parse(currentlyPregnantData.value.hariPertamaHaidTerakhir ?? "${DateTime.now()}"));
+    // currentPregnancyWeekIndex.value = (currentlyPregnantData.value.usiaKehamilan ?? 0) - 1;
+    // setSelectedDate(DateTime.parse(currentlyPregnantData.value.hariPertamaHaidTerakhir ?? "${DateTime.now()}"));
+    // setFocusedDate(DateTime.parse(currentlyPregnantData.value.hariPertamaHaidTerakhir ?? "${DateTime.now()}"));
     update();
   }
 

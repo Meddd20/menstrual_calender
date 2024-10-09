@@ -84,7 +84,7 @@ class CustomExpandedCalendar extends StatelessWidget {
         headerMargin: EdgeInsets.only(bottom: 10),
         formatButtonDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.red,
+          color: Colors.white,
         ),
         formatButtonTextStyle: CustomTextStyle.bold(14),
         formatButtonPadding: EdgeInsets.all(6.0),

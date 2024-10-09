@@ -138,151 +138,163 @@ class DailyLogView extends GetView<DailyLogController> {
                           children: [
                             Obx(
                               () => Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.white,
-                                    borderRadius: BorderRadius.circular(10),
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: CustomExpandedCalendar(
+                                  firstDay: DateTime.utc(2010, 10, 16),
+                                  lastDay: DateTime.now(),
+                                  focusedDay: controller.getFocusedDate,
+                                  onDaySelected: (selectedDay, focusedDay) {
+                                    controller.setSelectedDate(selectedDay);
+                                    controller.setFocusedDate(focusedDay);
+                                    controller.fetchLog(selectedDay);
+                                  },
+                                  onPageChanged: (focusedDay) {
+                                    controller.setFocusedDate(focusedDay);
+                                  },
+                                  selectedDayPredicate: (day) => isSameDay(
+                                    controller.selectedDate,
+                                    day,
                                   ),
-                                  child: CustomExpandedCalendar(
-                                    firstDay: DateTime.utc(2010, 10, 16),
-                                    lastDay: DateTime.now(),
-                                    focusedDay: controller.getFocusedDate,
-                                    onDaySelected: (selectedDay, focusedDay) {
-                                      controller.setSelectedDate(selectedDay);
-                                      controller.setFocusedDate(focusedDay);
-                                      controller.fetchLog(selectedDay);
-                                    },
-                                    onPageChanged: (focusedDay) {
-                                      controller.setFocusedDate(focusedDay);
-                                    },
-                                    selectedDayPredicate: (day) => isSameDay(
-                                      controller.selectedDate,
-                                      day,
+                                  onFormatChanged: (newFormat) {
+                                    controller.setFormat(newFormat);
+                                  },
+                                  headerStyle: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
                                     ),
-                                    defaultBuilder: (context, day, focusedDay) {
-                                      for (int i = 0; i < homeController.haidAwalList.length; i++) {
-                                        if (day.isAtSameMomentAs(homeController.haidAwalList[i]) || day.isAfter(homeController.haidAwalList[i]) && day.isBefore(homeController.haidAkhirList[i]) || day.isAtSameMomentAs(homeController.haidAkhirList[i]))
-                                          return Container(
-                                            margin: EdgeInsets.all(6),
-                                            decoration: BoxDecoration(
-                                              color: Colors.red,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                '${day.day}',
-                                                style: CustomTextStyle.bold(16, color: Colors.white),
-                                              ),
-                                            ),
-                                          );
-                                      }
-
-                                      for (int j = 0; j < homeController.ovulasiList.length; j++) {
-                                        if (day.isAtSameMomentAs(homeController.ovulasiList[j])) {
-                                          return Container(
-                                            margin: EdgeInsets.all(6),
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                '${day.day}',
-                                                style: CustomTextStyle.bold(16, color: Colors.white),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      }
-
-                                      for (int i = 0; i < homeController.masaSuburAwalList.length; i++) {
-                                        if (day.isAtSameMomentAs(homeController.masaSuburAwalList[i]) || day.isAfter(homeController.masaSuburAwalList[i]) && day.isBefore(homeController.masaSuburAkhirList[i]) || day.isAtSameMomentAs(homeController.masaSuburAkhirList[i])) {
-                                          return Container(
-                                            margin: EdgeInsets.all(6),
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                '${day.day}',
-                                                style: CustomTextStyle.bold(16, color: Colors.white),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      }
-
-                                      for (int i = 0; i < homeController.predictHaidAwalList.length; i++) {
-                                        if ((day.isAtSameMomentAs(homeController.predictHaidAwalList[i]) || day.isAfter(homeController.predictHaidAwalList[i]) && day.isBefore(homeController.predictHaidAkhirList[i]) || day.isAtSameMomentAs(homeController.predictHaidAkhirList[i]))) {
-                                          return Container(
-                                            margin: EdgeInsets.all(8),
-                                            child: DottedBorder(
-                                              borderType: BorderType.Circle,
-                                              dashPattern: [8, 2, 1, 4],
-                                              color: Colors.pink,
-                                              strokeWidth: 2.0,
-                                              child: Center(
-                                                child: Text(
-                                                  '${day.day}',
-                                                  style: CustomTextStyle.bold(16),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      }
-
-                                      for (int j = 0; j < homeController.predictOvulasiList.length; j++) {
-                                        if (day.isAtSameMomentAs(homeController.predictOvulasiList[j])) {
-                                          return Container(
-                                            margin: EdgeInsets.all(8),
-                                            child: DottedBorder(
-                                              borderType: BorderType.Circle,
-                                              dashPattern: [8, 2, 1, 4],
-                                              color: Colors.blue,
-                                              strokeWidth: 2.0,
-                                              child: Center(
-                                                child: Text(
-                                                  '${day.day}',
-                                                  style: CustomTextStyle.bold(16),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      }
-
-                                      for (int i = 0; i < homeController.predictMasaSuburAwalList.length; i++) {
-                                        if ((day.isAtSameMomentAs(homeController.predictMasaSuburAwalList[i]) || day.isAfter(homeController.predictMasaSuburAwalList[i]) && day.isBefore(homeController.predictMasaSuburAkhirList[i]) || day.isAtSameMomentAs(homeController.predictMasaSuburAkhirList[i]))) {
-                                          return Container(
-                                            margin: EdgeInsets.all(8),
-                                            child: DottedBorder(
-                                              borderType: BorderType.Circle,
-                                              dashPattern: [8, 2, 1, 4],
-                                              color: Colors.green,
-                                              strokeWidth: 2.0,
-                                              child: Center(
-                                                child: Text(
-                                                  '${day.day}',
-                                                  style: CustomTextStyle.bold(16),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      }
-
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                            '${day.day}',
-                                            style: CustomTextStyle.bold(16),
+                                    color: AppColors.contrast,
+                                  ),
+                                  calendarFormat: controller.getFormat,
+                                  formatButtonVisible: true,
+                                  defaultBuilder: (context, day, focusedDay) {
+                                    for (int i = 0; i < homeController.haidAwalList.length; i++) {
+                                      if (day.isAtSameMomentAs(homeController.haidAwalList[i]) || day.isAfter(homeController.haidAwalList[i]) && day.isBefore(homeController.haidAkhirList[i]) || day.isAtSameMomentAs(homeController.haidAkhirList[i]))
+                                        return Container(
+                                          margin: EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
                                           ),
+                                          child: Center(
+                                            child: Text(
+                                              '${day.day}',
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
+                                            ),
+                                          ),
+                                        );
+                                    }
+
+                                    for (int j = 0; j < homeController.ovulasiList.length; j++) {
+                                      if (day.isAtSameMomentAs(homeController.ovulasiList[j])) {
+                                        return Container(
+                                          margin: EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${day.day}',
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    for (int i = 0; i < homeController.masaSuburAwalList.length; i++) {
+                                      if (day.isAtSameMomentAs(homeController.masaSuburAwalList[i]) || day.isAfter(homeController.masaSuburAwalList[i]) && day.isBefore(homeController.masaSuburAkhirList[i]) || day.isAtSameMomentAs(homeController.masaSuburAkhirList[i])) {
+                                        return Container(
+                                          margin: EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${day.day}',
+                                              style: CustomTextStyle.bold(16, color: Colors.white),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    for (int i = 0; i < homeController.predictHaidAwalList.length; i++) {
+                                      if ((day.isAtSameMomentAs(homeController.predictHaidAwalList[i]) || day.isAfter(homeController.predictHaidAwalList[i]) && day.isBefore(homeController.predictHaidAkhirList[i]) || day.isAtSameMomentAs(homeController.predictHaidAkhirList[i]))) {
+                                        return Container(
+                                          margin: EdgeInsets.all(8),
+                                          child: DottedBorder(
+                                            borderType: BorderType.Circle,
+                                            dashPattern: [8, 2, 1, 4],
+                                            color: Colors.pink,
+                                            strokeWidth: 2.0,
+                                            child: Center(
+                                              child: Text(
+                                                '${day.day}',
+                                                style: CustomTextStyle.bold(16),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    for (int j = 0; j < homeController.predictOvulasiList.length; j++) {
+                                      if (day.isAtSameMomentAs(homeController.predictOvulasiList[j])) {
+                                        return Container(
+                                          margin: EdgeInsets.all(8),
+                                          child: DottedBorder(
+                                            borderType: BorderType.Circle,
+                                            dashPattern: [8, 2, 1, 4],
+                                            color: Colors.blue,
+                                            strokeWidth: 2.0,
+                                            child: Center(
+                                              child: Text(
+                                                '${day.day}',
+                                                style: CustomTextStyle.bold(16),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    for (int i = 0; i < homeController.predictMasaSuburAwalList.length; i++) {
+                                      if ((day.isAtSameMomentAs(homeController.predictMasaSuburAwalList[i]) || day.isAfter(homeController.predictMasaSuburAwalList[i]) && day.isBefore(homeController.predictMasaSuburAkhirList[i]) || day.isAtSameMomentAs(homeController.predictMasaSuburAkhirList[i]))) {
+                                        return Container(
+                                          margin: EdgeInsets.all(8),
+                                          child: DottedBorder(
+                                            borderType: BorderType.Circle,
+                                            dashPattern: [8, 2, 1, 4],
+                                            color: Colors.green,
+                                            strokeWidth: 2.0,
+                                            child: Center(
+                                              child: Text(
+                                                '${day.day}',
+                                                style: CustomTextStyle.bold(16),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+
+                                    return Container(
+                                      child: Center(
+                                        child: Text(
+                                          '${day.day}',
+                                          style: CustomTextStyle.bold(16),
                                         ),
-                                      );
-                                    },
-                                    calendarFormat: CalendarFormat.week,
-                                  )),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
                             SizedBox(height: 16.h),
                             Wrap(
@@ -975,41 +987,54 @@ class DailyLogView extends GetView<DailyLogController> {
                                       builder: (BuildContext context) {
                                         return Wrap(
                                           children: [
-                                            Container(
-                                              padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
-                                              child: Column(
-                                                children: [
-                                                  Icon(
-                                                    Iconsax.edit_24,
-                                                    size: 35,
-                                                    color: Color(0xFFFF6868),
-                                                  ),
-                                                  SizedBox(height: 10.h),
-                                                  Text(
-                                                    AppLocalizations.of(context)!.dailyNotes,
-                                                    style: CustomTextStyle.bold(20, height: 1.5),
-                                                  ),
-                                                  SizedBox(height: 20.h),
-                                                  TextFormField(
-                                                    minLines: 7,
-                                                    maxLines: 7,
-                                                    style: CustomTextStyle.medium(15, height: 1.5),
-                                                    onChanged: controller.updateNotes,
-                                                    initialValue: controller.getNotes(),
-                                                    decoration: InputDecoration(
-                                                      border: OutlineInputBorder(
-                                                        borderRadius: BorderRadius.circular(10.0),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context).viewInsets.bottom,
+                                              ),
+                                              child: Container(
+                                                padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    FocusScopeNode currentFocus = FocusScope.of(context);
+                                                    if (!currentFocus.hasPrimaryFocus) {
+                                                      currentFocus.unfocus();
+                                                    }
+                                                  },
+                                                  child: Column(
+                                                    children: [
+                                                      Icon(
+                                                        Iconsax.edit_24,
+                                                        size: 35,
+                                                        color: Color(0xFFFF6868),
                                                       ),
-                                                    ),
+                                                      SizedBox(height: 10.h),
+                                                      Text(
+                                                        AppLocalizations.of(context)!.dailyNotes,
+                                                        style: CustomTextStyle.bold(20, height: 1.5),
+                                                      ),
+                                                      SizedBox(height: 20.h),
+                                                      TextFormField(
+                                                        minLines: 7,
+                                                        maxLines: 7,
+                                                        style: CustomTextStyle.medium(15, height: 1.5),
+                                                        onChanged: controller.updateNotes,
+                                                        initialValue: controller.getNotes(),
+                                                        decoration: InputDecoration(
+                                                          border: OutlineInputBorder(
+                                                            borderRadius: BorderRadius.circular(10.0),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 25.h),
+                                                      CustomButton(
+                                                        text: AppLocalizations.of(context)!.saveNotes,
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                      ),
+                                                    ],
                                                   ),
-                                                  SizedBox(height: 25.h),
-                                                  CustomButton(
-                                                    text: AppLocalizations.of(context)!.saveNotes,
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                  ),
-                                                ],
+                                                ),
                                               ),
                                             ),
                                           ],

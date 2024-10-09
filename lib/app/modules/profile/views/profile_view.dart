@@ -420,11 +420,10 @@ class ProfileView extends GetView<ProfileController> {
                                                         children: [
                                                           Expanded(
                                                             child: Container(
-                                                              padding: EdgeInsets.only(left: 8),
                                                               alignment: Alignment.centerLeft,
                                                               child: Text(
                                                                 AppLocalizations.of(context)!.trackPeriodGoal,
-                                                                style: CustomTextStyle.extraBold(17, color: Colors.white),
+                                                                style: CustomTextStyle.extraBold(16.sp, color: Colors.white),
                                                                 textAlign: TextAlign.left,
                                                               ),
                                                             ),
@@ -530,11 +529,10 @@ class ProfileView extends GetView<ProfileController> {
                                                           Expanded(
                                                             flex: 2,
                                                             child: Container(
-                                                              padding: EdgeInsets.only(left: 8),
                                                               alignment: Alignment.centerLeft,
                                                               child: Text(
                                                                 AppLocalizations.of(context)!.pregnancyGoal,
-                                                                style: CustomTextStyle.extraBold(17, color: Colors.white),
+                                                                style: CustomTextStyle.extraBold(16.sp, color: Colors.white),
                                                                 textAlign: TextAlign.left,
                                                               ),
                                                             ),

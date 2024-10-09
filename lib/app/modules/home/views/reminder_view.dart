@@ -33,14 +33,22 @@ class ReminderView extends GetView<ReminderController> {
               context: context,
               builder: (BuildContext context) {
                 return SafeArea(
-                  child: Wrap(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
-                        child: SizedBox(
-                          height: Get.height,
-                          width: Get.width,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom + 20.0,
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0.h),
+                      child: GestureDetector(
+                        onTap: () {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                        },
+                        child: SingleChildScrollView(
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,14 +175,14 @@ class ReminderView extends GetView<ReminderController> {
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 );
               },
             ).then((value) {
               controller.cancelEdit();
             });
-          } else if (await Permission.notification.isPermanentlyDenied || await Permission.scheduleExactAlarm.isPermanentlyDenied) {
+          } else {
             showDialog(
               context: context,
               builder: (context) {
@@ -217,17 +225,6 @@ class ReminderView extends GetView<ReminderController> {
                 );
               },
             );
-          } else {
-            bool isGranted = await controller.localNotificationService.requestNotificationPermission();
-            if (!isGranted) {
-              Get.snackbar(
-                AppLocalizations.of(context)!.permissionDenied,
-                AppLocalizations.of(context)!.allowNotifications,
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.red,
-                colorText: Colors.white,
-              );
-            }
           }
         },
       ),
@@ -341,15 +338,23 @@ class ReminderView extends GetView<ReminderController> {
                                   isScrollControlled: true,
                                   context: context,
                                   builder: (BuildContext context) {
-                                    return Wrap(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0),
-                                          child: SizedBox(
-                                            height: Get.height,
-                                            width: Get.width,
-                                            child: Center(
+                                    return SafeArea(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context).viewInsets.bottom + 20.0,
+                                        ),
+                                        child: Container(
+                                          padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 0),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              FocusScopeNode currentFocus = FocusScope.of(context);
+                                              if (!currentFocus.hasPrimaryFocus) {
+                                                currentFocus.unfocus();
+                                              }
+                                            },
+                                            child: SingleChildScrollView(
                                               child: Column(
+                                                mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -474,13 +479,13 @@ class ReminderView extends GetView<ReminderController> {
                                                     onPressed: () {
                                                       controller.editReminder(reminder.id ?? "", reminder.title ?? "", reminder.description ?? "", reminder.datetime ?? "", context);
                                                     },
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     );
                                   },
                                 ).then((value) {

@@ -15,9 +15,6 @@ class CheckConnectivity {
       } else {
         return false;
       }
-    } on TimeoutException {
-      print('Koneksi timeout');
-      return false;
     } catch (e) {
       print('Error: $e');
       return false;

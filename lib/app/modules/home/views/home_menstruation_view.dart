@@ -267,7 +267,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                 ),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                padding: EdgeInsets.all(20),
                                 child: Wrap(
                                   alignment: WrapAlignment.start,
                                   crossAxisAlignment: WrapCrossAlignment.center,
@@ -277,11 +277,11 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       children: [
                                         Text(
                                           "${controller.eventDatas.value.event}",
-                                          style: CustomTextStyle.extraBold(18),
+                                          style: CustomTextStyle.extraBold(16.sp),
                                         ),
                                         Text(
                                           "${formatMonthDayYear(controller.selectedDate!.toString())}",
-                                          style: CustomTextStyle.medium(15),
+                                          style: CustomTextStyle.medium(13.sp),
                                         ),
                                       ],
                                     ),
@@ -291,32 +291,56 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                       style: CustomTextStyle.medium(14, height: 1.5),
                                     ),
                                     SizedBox(height: 15.h),
-                                    Container(
-                                      width: Get.width,
-                                      child: Text.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: "${controller.eventDatas.value.cycleDay ?? 'null'}",
-                                              style: CustomTextStyle.bold(24),
-                                            ),
-                                            WidgetSpan(
-                                              child: Transform.translate(
-                                                offset: const Offset(0, -8),
-                                                child: Text(
-                                                  controller.getOrdinalSuffix(controller.eventDatas.value.cycleDay ?? 0),
-                                                  style: CustomTextStyle.bold(14),
+                                    if (controller.storageService.getLanguage() == "en") ...[
+                                      Container(
+                                        width: Get.width,
+                                        child: Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: "${controller.eventDatas.value.cycleDay ?? 'null'}",
+                                                style: CustomTextStyle.bold(20),
+                                              ),
+                                              WidgetSpan(
+                                                child: Transform.translate(
+                                                  offset: const Offset(0, -8),
+                                                  child: Text(
+                                                    controller.getOrdinalSuffix(controller.eventDatas.value.cycleDay ?? 0),
+                                                    style: CustomTextStyle.bold(12),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            TextSpan(
-                                              text: AppLocalizations.of(context)!.dayOfTheCycle,
-                                              style: CustomTextStyle.medium(20),
-                                            ),
-                                          ],
+                                              TextSpan(
+                                                text: AppLocalizations.of(context)!.dayOfTheCycle,
+                                                style: CustomTextStyle.medium(16),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                    ] else ...[
+                                      Container(
+                                        width: Get.width,
+                                        child: Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: AppLocalizations.of(context)!.dayOfTheCycle,
+                                                style: CustomTextStyle.medium(16),
+                                              ),
+                                              TextSpan(
+                                                text: "${controller.eventDatas.value.cycleDay ?? 'null'}",
+                                                style: CustomTextStyle.bold(20),
+                                              ),
+                                              TextSpan(
+                                                text: " " + AppLocalizations.of(context)!.dayOfTheCycleNext,
+                                                style: CustomTextStyle.medium(16),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                     SizedBox(height: 20.h),
                                     Text(
                                       AppLocalizations.of(context)!.pregnancyChances("${controller.eventDatas.value.pregnancyChances}"),
@@ -552,7 +576,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                     AppLocalizations.of(context)!.trackYourPeriodCycle,
                                                     style: CustomTextStyle.medium(13, height: 1.5),
                                                   ),
-                                                  SizedBox(height: 10),
+                                                  const SizedBox(height: 15),
                                                   CustomButton(
                                                     text: AppLocalizations.of(context)!.reminder,
                                                     textColor: Colors.black,
@@ -602,7 +626,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                                     AppLocalizations.of(context)!.logYourBodyChanges,
                                                     style: CustomTextStyle.medium(13, height: 1.5),
                                                   ),
-                                                  const SizedBox(height: 32),
+                                                  const SizedBox(height: 15),
                                                   CustomButton(
                                                     text: AppLocalizations.of(context)!.dailyLog,
                                                     textColor: Colors.black,
@@ -644,79 +668,83 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(20.0),
-                                      child: Row(
+                                      child: Column(
                                         children: [
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                          Row(
                                             children: [
-                                              SvgPicture.asset(
-                                                '${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? 'assets/image/baby-girl.svg' : 'assets/image/baby-boy.svg'}',
-                                                height: 120,
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    '${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? 'assets/image/baby-girl.svg' : 'assets/image/baby-boy.svg'}',
+                                                    height: 120,
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Text(
+                                                    "${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? AppLocalizations.of(context)!.girl : AppLocalizations.of(context)!.boy}",
+                                                    style: CustomTextStyle.bold(18, height: 1.5),
+                                                  )
+                                                ],
                                               ),
-                                              SizedBox(height: 10),
-                                              Text(
-                                                "${controller.eventDatas.value.chineseGenderPrediction?.genderPrediction == 'f' ? AppLocalizations.of(context)!.girl : AppLocalizations.of(context)!.boy}",
-                                                style: CustomTextStyle.bold(18, height: 1.5),
-                                              )
+                                              SizedBox(width: 20),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      width: Get.width,
+                                                      child: Text(
+                                                        AppLocalizations.of(context)!.chineseGenderCalendar,
+                                                        style: CustomTextStyle.extraBold(16, height: 1.5, color: AppColors.black.withOpacity(0.4)),
+                                                        textAlign: TextAlign.right,
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: Get.width,
+                                                      child: Text(
+                                                        AppLocalizations.of(context)!.didYouKnow,
+                                                        style: CustomTextStyle.extraBold(26, height: 1.5),
+                                                        textAlign: TextAlign.right,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    Divider(
+                                                      thickness: 1,
+                                                      height: 1.0,
+                                                      color: AppColors.white,
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    RichText(
+                                                      text: TextSpan(
+                                                        style: CustomTextStyle.medium(15, height: 1.5),
+                                                        children: [
+                                                          TextSpan(
+                                                            text: AppLocalizations.of(context)!.accordingTo,
+                                                            style: CustomTextStyle.medium(15, height: 1.5),
+                                                          ),
+                                                          TextSpan(
+                                                            text: AppLocalizations.of(context)!.ancientChineseGenderChart,
+                                                            style: CustomTextStyle.extraBold(16, height: 1.5),
+                                                          ),
+                                                          TextSpan(
+                                                            text: AppLocalizations.of(context)!.genderPrediction,
+                                                            style: CustomTextStyle.medium(15, height: 1.5),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      textAlign: TextAlign.right,
+                                                    ),
+                                                    SizedBox(height: 15),
+                                                  ],
+                                                ),
+                                              ),
                                             ],
                                           ),
-                                          SizedBox(width: 20),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  width: Get.width,
-                                                  child: Text(
-                                                    AppLocalizations.of(context)!.chineseGenderCalendar,
-                                                    style: CustomTextStyle.extraBold(16, height: 1.75, color: AppColors.black.withOpacity(0.4)),
-                                                    textAlign: TextAlign.right,
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: Get.width,
-                                                  child: Text(
-                                                    AppLocalizations.of(context)!.didYouKnow,
-                                                    style: CustomTextStyle.extraBold(26, height: 1.75),
-                                                    textAlign: TextAlign.right,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Divider(
-                                                  thickness: 1,
-                                                  height: 1.0,
-                                                  color: AppColors.white,
-                                                ),
-                                                SizedBox(height: 5),
-                                                RichText(
-                                                  text: TextSpan(
-                                                    style: CustomTextStyle.medium(15, height: 1.5),
-                                                    children: [
-                                                      TextSpan(
-                                                        text: AppLocalizations.of(context)!.accordingTo,
-                                                        style: CustomTextStyle.medium(15, height: 1.5),
-                                                      ),
-                                                      TextSpan(
-                                                        text: AppLocalizations.of(context)!.ancientChineseGenderChart,
-                                                        style: CustomTextStyle.extraBold(16, height: 1.5),
-                                                      ),
-                                                      TextSpan(
-                                                        text: AppLocalizations.of(context)!.genderPrediction,
-                                                        style: CustomTextStyle.medium(15, height: 1.5),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  textAlign: TextAlign.right,
-                                                ),
-                                                SizedBox(height: 15),
-                                                CustomButton(
-                                                  text: AppLocalizations.of(context)!.learnMore,
-                                                  textColor: AppColors.white,
-                                                  backgroundColor: AppColors.primary,
-                                                  onPressed: () => Get.to(() => ChinesePredDetailView(), arguments: controller.eventDatas.value.chineseGenderPrediction),
-                                                ),
-                                              ],
-                                            ),
+                                          CustomButton(
+                                            text: AppLocalizations.of(context)!.learnMore,
+                                            textColor: AppColors.white,
+                                            backgroundColor: AppColors.primary,
+                                            onPressed: () => Get.to(() => ChinesePredDetailView(), arguments: controller.eventDatas.value.chineseGenderPrediction),
                                           ),
                                         ],
                                       ),
@@ -743,7 +771,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                                         children: [
                                           Text(
                                             AppLocalizations.of(context)!.theShettlesMethod,
-                                            style: CustomTextStyle.extraBold(16, height: 1.75, color: AppColors.black.withOpacity(0.4)),
+                                            style: CustomTextStyle.extraBold(16, height: 1.5, color: AppColors.black.withOpacity(0.4)),
                                             textAlign: TextAlign.left,
                                           ),
                                           Text(

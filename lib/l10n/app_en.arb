@@ -477,6 +477,7 @@
     "week": "Week",
     "currentCycle": "Current cycle",
     "dayOfTheCycle": " day of the cycle",
+    "dayOfTheCycleNext": "of the cycle",
     "pregnancyChances": "{pregnancyChance} chances of getting pregnant",
     "@pregnancyChances" : {
         "placeholders": {
@@ -498,7 +499,7 @@
     "ovulation": "Ovulation",
     "safeDays": "Safe days",
     "manageYourPeriodEvents": "Manage Your Period Events",
-    "trackYourPeriodCycle": "Track your period cycle and other related events",
+    "trackYourPeriodCycle": "Set reminders for every important activity.",
     "remarkYourBodyChanges": "Remark your body changes",
     "logYourBodyChanges": "Log your body changes in every cycle",
     "dailyLog": "Daily Log",
@@ -548,7 +549,7 @@
 
     "home": "Home",
     "analysis": "Analysis",
-    "tools": "tools",
+    "tools": "Tools",
     "insight": "Insight",
     "profile": "Profile",
 

@@ -32,7 +32,7 @@ class WeeklyInfo extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(8.0, 8.0, 2.0, 8.0),
                   child: Text(
                     title,
-                    style: CustomTextStyle.bold(13, height: 1.5),
+                    style: CustomTextStyle.bold(12, height: 1.5),
                   ),
                 ),
               ),
