@@ -62,4 +62,38 @@ class ProfileRepository {
       _logger.e('[API ERROR] $errorMessage');
     }
   }
+
+  Future<DataCategoryByTable?> resyncData(Map<String, dynamic> userData) async {
+    http.Response response = await apiService.resyncData(userData);
+
+    if (response.statusCode == 200) {
+      var decodedJson = json.decode(response.body);
+      var syncData = DataCategoryByTable.fromJson(decodedJson['data']);
+      return syncData;
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
+      return null;
+    } else {
+      var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
+      _logger.e('[API ERROR] $errorMessage');
+      return null;
+    }
+  }
+
+  Future<DataCategoryByTable?> resyncPendingData(Map<String, dynamic> userData) async {
+    http.Response response = await apiService.resyncPendingData(userData);
+
+    if (response.statusCode == 200) {
+      var decodedJson = json.decode(response.body);
+      var syncData = DataCategoryByTable.fromJson(decodedJson['data']);
+      return syncData;
+    } else if (response.statusCode == 401) {
+      Get.to(() => UnauthorizedErrorView());
+      return null;
+    } else {
+      var errorMessage = jsonDecode(response.body)["message"] ?? "Unknown error occurred";
+      _logger.e('[API ERROR] $errorMessage');
+      return null;
+    }
+  }
 }

@@ -11,6 +11,8 @@
     "askGoalDesc": "Pick the goal that best fits you. All features are available for you to explore!",
     "trackPeriodGoal": "Tracking my period",
     "pregnancyGoal": "Follow my pregnancy",
+    "menstrualTracking": "Track and predict your menstrual cycle",
+    "pregnancyTracking": "Monitor your pregnancy progress",
 
     "askMenstrualCycle": "How Long is Your Average Menstrual Cycle?",
     "askMenstrualCycleDesc": "We'll use this to help predict your next period based on your last one.",
@@ -451,6 +453,7 @@
     "tomorrow": "Tomorrow",
 
     "pregnancyMode": "Pregnancy Mode",
+    "recoveryMode": "Recovery Mode",
     "weeksPregnant": "{weeks} Weeks Pregnant",
     "@weeksPregnant" : {
         "placeholders": {

@@ -19,7 +19,7 @@ class PregnancyHistoryService {
   late final PeriodHistoryRepository _periodHistoryRepository = PeriodHistoryRepository();
   late final LocalProfileRepository _localProfileRepository = LocalProfileRepository();
 
-  Future<void> beginPregnancy(DateTime hariPertamaHaidTerakhir, int? remoteId) async {
+  Future<PregnancyHistory?> beginPregnancy(DateTime hariPertamaHaidTerakhir, int? remoteId) async {
     try {
       int userId = storageService.getAccountLocalId();
       User? userProfile = await _localProfileRepository.getProfile();
@@ -100,13 +100,18 @@ class PregnancyHistoryService {
         await _localProfileRepository.updateProfile(updateUserProfile);
       }
 
+      PregnancyHistory? getUpdatedPregnancyHistory = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+
       LocalNotificationService().scheduleNotificationReminder(hariPertamaHaidTerakhir);
+
+      return getUpdatedPregnancyHistory;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
-  Future<void> endPregnancy(DateTime kehamilanAkhir, String babyGender) async {
+  Future<PregnancyHistory?> endPregnancy(DateTime kehamilanAkhir, String babyGender) async {
     try {
       int userId = storageService.getAccountLocalId();
       if (babyGender != "Boy" && babyGender != "Girl") {
@@ -138,15 +143,18 @@ class PregnancyHistoryService {
         await _localProfileRepository.updateProfile(updateUserProfile);
 
         LocalNotificationService().cancelAllPregnancyNotifications(userId);
+
+        return updatedPregnancyData;
       } else {
         throw Exception('Data kehamilan tidak ditemukan');
       }
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
-  Future<void> deletePregnancy() async {
+  Future<PregnancyHistory?> deletePregnancy() async {
     try {
       int userId = storageService.getAccountLocalId();
       User? userProfile = await _localProfileRepository.getProfile();
@@ -156,10 +164,13 @@ class PregnancyHistoryService {
         updatedAt: DateTime.now().toString(),
       );
 
+      PregnancyHistory? currentPregnancy = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
       await _localProfileRepository.updateProfile(updateUserProfile);
       await _pregnancyHistoryRepository.deleteCurrentPregnancy(userId);
+      return currentPregnancy;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 

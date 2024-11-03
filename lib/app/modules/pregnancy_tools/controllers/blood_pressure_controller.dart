@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
@@ -165,6 +164,7 @@ class BloodPressureController extends GetxController {
     bool localSuccess = false;
     var uuid = Uuid();
     var id = uuid.v4();
+    PregnancyDailyLog? pregnancyDailyLog;
 
     BloodPressure bloodPressure = BloodPressure(
       id: id,
@@ -175,19 +175,13 @@ class BloodPressureController extends GetxController {
     );
 
     try {
-      await _pregnancyLogService.addBloodPressure(bloodPressure);
+      pregnancyDailyLog = await _pregnancyLogService.addBloodPressure(bloodPressure);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.bloodPressureAddedSuccess));
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.bloodPressureAddFailed));
+      return;
     }
-
-    await fetchAllBloodPressure();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => BloodPressureView()),
-      (Route<dynamic> route) => route.isFirst,
-    );
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
@@ -199,30 +193,28 @@ class BloodPressureController extends GetxController {
           combinedDateTime,
         );
       } catch (e) {
-        await syncAddBloodPressure(id, combinedDateTime);
+        await syncAddBloodPressure(id, pregnancyDailyLog?.id ?? 0);
       }
-    } else if (localSuccess) {
-      await syncAddBloodPressure(id, combinedDateTime);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await syncAddBloodPressure(id, pregnancyDailyLog?.id ?? 0);
     }
 
+    await fetchAllBloodPressure();
     resetBloodPressure();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => BloodPressureView()),
+      (Route<dynamic> route) => route.isFirst,
+    );
   }
 
-  Future<void> syncAddBloodPressure(String id, DateTime datetime) async {
-    Map<String, dynamic> data = {
-      'id': id,
-      'tekananSistolik': getSystolicPressure ?? 80,
-      'tekananDiastolik': getDiastolicPressure ?? 120,
-      'detakJantung': getPulse ?? 60,
-      'datetime': formatDateTime(datetime),
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncAddBloodPressure(String id, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian_kehamilan',
-      operation: 'addBloodPressure',
-      data: jsonData,
+      tableName: 'blood_pressure',
+      operation: 'create',
+      dataId: pregnancylog_id,
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 
@@ -232,6 +224,7 @@ class BloodPressureController extends GetxController {
   Future<void> editBloodPressure(context, String id) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
+    PregnancyDailyLog? pregnancyDailyLog;
 
     BloodPressure bloodPressure = BloodPressure(
       id: id,
@@ -242,19 +235,13 @@ class BloodPressureController extends GetxController {
     );
 
     try {
-      await _pregnancyLogService.editBloodPressure(bloodPressure);
+      pregnancyDailyLog = await _pregnancyLogService.editBloodPressure(bloodPressure);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.bloodPressureEditedSuccess));
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.bloodPressureEditFailed));
+      return;
     }
-
-    await fetchAllBloodPressure();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => BloodPressureView()),
-      (Route<dynamic> route) => route.isFirst,
-    );
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
@@ -266,30 +253,28 @@ class BloodPressureController extends GetxController {
           combinedDateTime,
         );
       } catch (e) {
-        await syncEditBloodPressure(id, combinedDateTime);
+        await syncEditBloodPressure(id, pregnancyDailyLog?.id ?? 0);
       }
-    } else if (localSuccess) {
-      await syncEditBloodPressure(id, combinedDateTime);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await syncEditBloodPressure(id, pregnancyDailyLog?.id ?? 0);
     }
 
+    await fetchAllBloodPressure();
     resetBloodPressure();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => BloodPressureView()),
+      (Route<dynamic> route) => route.isFirst,
+    );
   }
 
-  Future<void> syncEditBloodPressure(String id, DateTime datetime) async {
-    Map<String, dynamic> data = {
-      'id': id,
-      'tekananSistolik': getSystolicPressure ?? 80,
-      'tekananDiastolik': getDiastolicPressure ?? 120,
-      'detakJantung': getPulse ?? 60,
-      'datetime': formatDateTime(datetime),
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncEditBloodPressure(String id, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian_kehamilan',
-      operation: 'editBloodPressure',
-      data: jsonData,
+      tableName: 'blood_pressure',
+      operation: 'edit',
+      dataId: pregnancylog_id,
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 
@@ -299,13 +284,15 @@ class BloodPressureController extends GetxController {
   Future<void> deleteBloodPressure(context, String id) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
+    PregnancyDailyLog? pregnancyDailyLog;
 
     try {
-      await _pregnancyLogService.deleteBloodPressure(id);
+      pregnancyDailyLog = await _pregnancyLogService.deleteBloodPressure(id);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.bloodPressureDeletedSuccess));
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.bloodPressureDeleteFailed));
+      return;
     }
 
     await fetchAllBloodPressure();
@@ -319,22 +306,19 @@ class BloodPressureController extends GetxController {
       try {
         await pregnancyLogAPIRepository.deleteBloodPressure(id);
       } catch (e) {
-        await syncDeleteBloodPressure(id);
+        await syncDeleteBloodPressure(id, pregnancyDailyLog?.id ?? 0);
       }
-    } else if (localSuccess) {
-      await syncDeleteBloodPressure(id);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await syncDeleteBloodPressure(id, pregnancyDailyLog?.id ?? 0);
     }
   }
 
-  Future<void> syncDeleteBloodPressure(String id) async {
-    Map<String, dynamic> data = {'id': id};
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncDeleteBloodPressure(String id, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian_kehamilan',
-      operation: 'deleteBloodPressure',
-      data: jsonData,
+      tableName: 'blood_pressure',
+      operation: 'delete',
+      dataId: pregnancylog_id,
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 

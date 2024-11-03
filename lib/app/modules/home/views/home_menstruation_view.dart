@@ -53,6 +53,8 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                 return Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 return Text("Error: ${snapshot.error}");
+              } else if (controller.data?.actualPeriod == null || (controller.data?.actualPeriod?.length ?? 0) < 1) {
+                return Text("Error: ${snapshot.error}");
               } else {
                 return Obx(
                   () => Padding(
@@ -875,7 +877,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
                               ),
                             ),
                             addPeriodOnPressedButton: () async {
-                              controller.addPeriod(context, controller.data?.avgPeriodDuration ?? 7, controller.data?.avgPeriodCycle ?? 28);
+                              controller.addPeriod(controller.data?.avgPeriodDuration ?? 7, controller.data?.avgPeriodCycle ?? 28, context);
                             },
                             calenderValue: [controller.startDate.value, controller.endDate.value],
                             calenderOnValueChanged: (dates) {

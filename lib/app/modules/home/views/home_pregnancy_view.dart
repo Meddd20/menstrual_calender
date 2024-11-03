@@ -508,7 +508,7 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              AppLocalizations.of(context)!.pregnancyMode,
+              AppLocalizations.of(context)!.recoveryMode,
               style: CustomTextStyle.extraBold(22),
             ),
           ),

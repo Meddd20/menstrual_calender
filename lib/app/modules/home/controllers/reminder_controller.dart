@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
@@ -170,6 +169,17 @@ class ReminderController extends GetxController {
         localSuccess = true;
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.reminderAddFailed));
+        return;
+      }
+
+      if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        try {
+          await logRepository.storeReminder(id, getReminderTitle(), getReminderDescription(), '$selectedDate $formattedSelectedTime');
+        } catch (e) {
+          await saveAddSyncReminder(id);
+        }
+      } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        await saveAddSyncReminder(id);
       }
 
       await fetchAllReminder();
@@ -179,34 +189,15 @@ class ReminderController extends GetxController {
         (Route<dynamic> route) => route.isFirst,
       );
 
-      if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-        try {
-          await logRepository.storeReminder(id, getReminderTitle(), getReminderDescription(), '$selectedDate $formattedSelectedTime');
-        } catch (e) {
-          await saveAddSyncReminder(id, selectedDate);
-        }
-      } else if (localSuccess) {
-        await saveAddSyncReminder(id, selectedDate);
-      }
-
       cancelEdit();
     }
   }
 
-  Future<void> saveAddSyncReminder(String id, String selectedDate) async {
-    Map<String, dynamic> data = {
-      'id': id,
-      'title': getReminderTitle(),
-      'description': getReminderDescription(),
-      'datetime': '$selectedDate $formattedSelectedTime',
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> saveAddSyncReminder(String id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian',
-      operation: 'addReminder',
-      data: jsonData,
+      tableName: 'reminder',
+      operation: 'create',
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 
@@ -238,6 +229,17 @@ class ReminderController extends GetxController {
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.reminderEditFailed));
+      return;
+    }
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await logRepository.editReminder(id, editedTitle, editedDescription, editedDateTime ?? "${DateTime.now()}");
+      } catch (e) {
+        await saveEditSyncReminder(id);
+      }
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await saveEditSyncReminder(id);
     }
 
     await fetchAllReminder();
@@ -247,33 +249,14 @@ class ReminderController extends GetxController {
       (Route<dynamic> route) => route.isFirst,
     );
 
-    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      try {
-        await logRepository.editReminder(id, editedTitle, editedDescription, editedDateTime ?? "${DateTime.now()}");
-      } catch (e) {
-        await saveEditSyncReminder(id, editedTitle, editedDescription, editedDateTime);
-      }
-    } else if (localSuccess) {
-      await saveEditSyncReminder(id, editedTitle, editedDescription, editedDateTime);
-    }
-
     cancelEdit();
   }
 
-  Future<void> saveEditSyncReminder(String id, String? editedTitle, String? editedDescription, String? editedDateTime) async {
-    Map<String, dynamic> data = {
-      'id': id,
-      'title': editedTitle,
-      'description': editedDescription,
-      'datetime': editedDateTime,
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> saveEditSyncReminder(String id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian',
-      operation: 'editReminder',
-      data: jsonData,
+      tableName: 'reminder',
+      operation: 'edit',
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 
@@ -290,10 +273,8 @@ class ReminderController extends GetxController {
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.reminderDeletedSuccess));
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.reminderDeleteFailed));
+      return;
     }
-
-    await fetchAllReminder();
-    update();
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
@@ -301,22 +282,19 @@ class ReminderController extends GetxController {
       } catch (e) {
         await deleteSyncReminder(id);
       }
-    } else {
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       await deleteSyncReminder(id);
     }
+
+    await fetchAllReminder();
+    update();
   }
 
   Future<void> deleteSyncReminder(String id) async {
-    Map<String, dynamic> data = {
-      'id': id,
-    };
-
-    String jsonData = jsonEncode(data);
-
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian',
-      operation: 'deleteReminder',
-      data: jsonData,
+      tableName: 'reminder',
+      operation: 'delete',
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 

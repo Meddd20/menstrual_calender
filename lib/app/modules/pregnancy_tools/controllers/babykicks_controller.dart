@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
@@ -50,9 +49,10 @@ class BabykicksController extends GetxController {
     bool localSuccess = false;
     var uuid = Uuid();
     var id = uuid.v4();
+    PregnancyDailyLog? pregnancyDailyLog;
 
     try {
-      await _pregnancyLogService.addKicksCounter(id, DateTime.now().toString());
+      pregnancyDailyLog = await _pregnancyLogService.addKicksCounter(id, DateTime.now().toString());
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.babyKickAddFailed));
@@ -64,25 +64,19 @@ class BabykicksController extends GetxController {
       try {
         await pregnancyLogAPIRepository.addKickCounter(id, DateTime.now());
       } catch (e) {
-        await syncAddKickCounter(id);
+        await syncAddKickCounter(id, pregnancyDailyLog?.id ?? 0);
       }
-    } else if (localSuccess) {
-      await syncAddKickCounter(id);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await syncAddKickCounter(id, pregnancyDailyLog?.id ?? 0);
     }
   }
 
-  Future<void> syncAddKickCounter(String id) async {
-    Map<String, dynamic> data = {
-      'id': id,
-      'datetime': DateTime.now().toString(),
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncAddKickCounter(String id, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian_kehamilan',
-      operation: 'addKickCounter',
-      data: jsonData,
+      tableName: 'baby_kicks',
+      operation: 'create',
+      dataId: pregnancylog_id,
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 
@@ -92,9 +86,10 @@ class BabykicksController extends GetxController {
   Future<void> deleteKickCounter(context, String id) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
+    PregnancyDailyLog? pregnancyDailyLog;
 
     try {
-      await _pregnancyLogService.deleteKicksCounter(id);
+      pregnancyDailyLog = await _pregnancyLogService.deleteKicksCounter(id);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.kickDataDeletedSuccess));
       localSuccess = true;
     } catch (e) {
@@ -107,22 +102,19 @@ class BabykicksController extends GetxController {
       try {
         await pregnancyLogAPIRepository.deleteKickCounter(id);
       } catch (e) {
-        await syncDeleteKickCounter(id);
+        await syncDeleteKickCounter(id, pregnancyDailyLog?.id ?? 0);
       }
-    } else if (localSuccess) {
-      await syncDeleteKickCounter(id);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await syncDeleteKickCounter(id, pregnancyDailyLog?.id ?? 0);
     }
   }
 
-  Future<void> syncDeleteKickCounter(String id) async {
-    Map<String, dynamic> data = {'id': id};
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncDeleteKickCounter(String id, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian_kehamilan',
-      operation: 'deleteKickCounter',
-      data: jsonData,
+      tableName: 'baby_kicks',
+      operation: 'delete',
+      dataId: pregnancylog_id,
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 

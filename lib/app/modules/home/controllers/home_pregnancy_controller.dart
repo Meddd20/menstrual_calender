@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
@@ -72,43 +71,38 @@ class HomePregnancyController extends GetxController {
   }
 
   Future<void> editPregnancyStartDate(context) async {
-    bool localSuccess = false;
-
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     String formattedDate = formatDate(selectedDate!);
+    bool localSuccess = false;
+    PregnancyHistory? updatedPregnancy;
 
     try {
-      await _pregnancyHistoryService.beginPregnancy(selectedDate!, null);
+      updatedPregnancy = await _pregnancyHistoryService.beginPregnancy(selectedDate!, null);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.firstDayOfLastPeriodEditedSuccess));
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.firstDayOfLastPeriodEditFailed));
+      return;
     }
-
-    Get.offAll(() => NavigationMenuView());
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
         await pregnancyRepository.pregnancyBegin(formattedDate, null);
       } catch (e) {
-        await _syncPregnancyBegin(formattedDate);
+        await _syncPregnancyBegin(updatedPregnancy?.id ?? 0);
       }
-    } else if (localSuccess) {
-      await _syncPregnancyBegin(formattedDate);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await _syncPregnancyBegin(updatedPregnancy?.id ?? 0);
     }
+
+    Get.offAll(() => NavigationMenuView());
   }
 
-  Future<void> _syncPregnancyBegin(String selectedDate) async {
-    Map<String, dynamic> data = {
-      "firstDayLastMenstruation": selectedDate,
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> _syncPregnancyBegin(int id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_kehamilan',
-      operation: 'beginPregnancy',
-      data: jsonData,
+      tableName: 'pregnancy',
+      operation: 'update',
+      dataId: id,
       createdAt: DateTime.now().toString(),
     );
 

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
@@ -66,6 +65,8 @@ class PeriodCycleController extends GetxController {
 
   void addPeriod(int avgPeriodDuration, int avgPeriodCycle, context) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool remoteSuccess = false;
+    var periodStoredRemote;
 
     if (startDate.value != null) {
       if (formattedStartDate == formattedEndDate || endDate.value == null) {
@@ -79,48 +80,56 @@ class PeriodCycleController extends GetxController {
         }
       ];
 
-      var newPeriod;
       if (isConnected && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-        try {
-          newPeriod = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
-        } catch (e) {
-          await syncAddedPeriod(periods, avgPeriodCycle);
-        }
-      } else {
-        await syncAddedPeriod(periods, avgPeriodCycle);
+        periodStoredRemote = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
+        remoteSuccess = true;
       }
 
       try {
-        await _periodHistoryService.addPeriod(newPeriod?[0].id ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
+        if (remoteSuccess) {
+          await _periodHistoryService.addPeriod(
+            periodStoredRemote?[0].id,
+            DateTime.parse(formattedStartDate),
+            DateTime.parse(formattedEndDate),
+            avgPeriodCycle,
+          );
+        } else {
+          PeriodHistory? addedPeriod = await _periodHistoryService.addPeriod(
+            null,
+            DateTime.parse(formattedStartDate),
+            DateTime.parse(formattedEndDate),
+            avgPeriodCycle,
+          );
+          await syncAddedPeriod(addedPeriod?.id ?? 0);
+        }
+
         Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.periodAddedSuccess));
+
+        await fetchPeriod();
+        cancelEdit();
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => PeriodCycleView()),
+          (Route<dynamic> route) => route.isFirst,
+        );
+
+        update();
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodAddFailed));
         return;
       }
-
-      await fetchPeriod();
-      cancelEdit();
-      update();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => PeriodCycleView()),
-      );
     } else {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.selectPeriodStartDate));
+      return;
     }
   }
 
-  Future<void> syncAddedPeriod(List<Map<String, dynamic>> periods, int periodCycle) async {
-    Map<String, dynamic> data = {
-      "periods": periods,
-      "periodCycle": periodCycle,
-    };
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncAddedPeriod(int period_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_mens',
-      operation: 'addPeriod',
-      data: jsonData,
+      tableName: 'period',
+      operation: 'create',
+      dataId: period_id,
       createdAt: DateTime.now().toString(),
     );
 
@@ -142,44 +151,40 @@ class PeriodCycleController extends GetxController {
         localSuccess = true;
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodEditFailed));
+        return;
       }
 
       if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
         try {
           await periodRepository.updatePeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
         } catch (e) {
-          await syncEditPeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
+          await syncEditPeriod(periodId, remoteId);
         }
-      } else {
-        await syncEditPeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
+      } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        await syncEditPeriod(periodId, remoteId);
       }
 
       await fetchPeriod();
       cancelEdit();
       update();
-      Navigator.pushReplacement(
+
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => PeriodCycleView()),
+        (Route<dynamic> route) => route.isFirst,
       );
     } else {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.selectPeriodStartDate));
+      return;
     }
   }
 
-  Future<void> syncEditPeriod(int remoteId, String firstPeriod, String lastPeriod, int periodCycle) async {
-    Map<String, dynamic> data = {
-      "periodId": remoteId.toInt(),
-      "firstPeriod": firstPeriod,
-      "lastPeriod": lastPeriod,
-      "periodCycle": periodCycle,
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncEditPeriod(int period_id, int? remote_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_mens',
-      operation: 'updatePeriod',
-      data: jsonData,
+      tableName: 'period',
+      operation: 'update',
+      dataId: period_id,
+      optionalId: remote_id != null ? remote_id.toString() : null,
       createdAt: DateTime.now().toString(),
     );
 

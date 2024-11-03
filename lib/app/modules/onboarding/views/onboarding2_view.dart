@@ -68,10 +68,20 @@ class Onboarding2View extends GetView<OnboardingController> {
                           child: Row(
                             children: [
                               Expanded(
-                                child: Text(
-                                  AppLocalizations.of(context)!.trackPeriodGoal,
-                                  style: CustomTextStyle.extraBold(20, color: Colors.white),
-                                  textAlign: TextAlign.left,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.trackPeriodGoal,
+                                      style: CustomTextStyle.extraBold(20, color: Colors.white),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      AppLocalizations.of(context)!.menstrualTracking,
+                                      style: CustomTextStyle.medium(12, color: Colors.white),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ],
                                 ),
                               ),
                               Expanded(
@@ -105,10 +115,20 @@ class Onboarding2View extends GetView<OnboardingController> {
                           child: Row(
                             children: [
                               Expanded(
-                                child: Text(
-                                  AppLocalizations.of(context)!.pregnancyGoal,
-                                  style: CustomTextStyle.extraBold(20, color: Colors.white),
-                                  textAlign: TextAlign.left,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.pregnancyGoal,
+                                      style: CustomTextStyle.extraBold(20, color: Colors.white),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      AppLocalizations.of(context)!.pregnancyTracking,
+                                      style: CustomTextStyle.medium(12, color: Colors.white),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ],
                                 ),
                               ),
                               Expanded(

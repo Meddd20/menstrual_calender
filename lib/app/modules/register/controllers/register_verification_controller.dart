@@ -84,7 +84,7 @@ class RegisterVerificationController extends GetxController {
             storageService.storeCredentialToken(user.token!);
             storageService.storeIsAuth(true);
             storageService.storeAccountId(user.id!);
-            storageService.storeIsBackup(true);
+            storageService.storeIsBackup(false);
             Get.offAllNamed(Routes.NAVIGATION_MENU);
           }
         }

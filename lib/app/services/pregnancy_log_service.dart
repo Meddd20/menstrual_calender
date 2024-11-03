@@ -17,14 +17,15 @@ class PregnancyLogService {
   late final PregnancyLogRepository _pregnancyLogRepository = PregnancyLogRepository();
   late final PregnancyHistoryRepository _pregnancyHistoryRepository = PregnancyHistoryRepository();
 
-  Future<void> upsertPregnancyDailyLog(DateTime date, Map<String, dynamic>? pregnancySymptoms, double? temperature, String? notes) async {
+  Future<PregnancyDailyLog?> upsertPregnancyDailyLog(DateTime date, Map<String, dynamic>? pregnancySymptoms, double? temperature, String? notes) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      PregnancyDailyLog newPregnancyLog;
 
       if (currentPregnancyData == null) {
         _logger.e('Current pregnancy data is null');
-        return;
+        return null;
       }
 
       DataHarianKehamilan newPregnancyDailyLog = DataHarianKehamilan(
@@ -52,8 +53,9 @@ class PregnancyLogService {
         );
 
         await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
+        newPregnancyLog = updatedPregnancyLog;
       } else {
-        PregnancyDailyLog newPregnancyLog = PregnancyDailyLog(
+        newPregnancyLog = PregnancyDailyLog(
           userId: userId,
           riwayatKehamilanId: currentPregnancyData.id!,
           dataHarianKehamilan: [newPregnancyDailyLog],
@@ -63,26 +65,29 @@ class PregnancyLogService {
 
         await _pregnancyLogRepository.upsertPregnancyDailyLog(newPregnancyLog);
       }
+
+      return newPregnancyLog;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
-  Future<void> deletePregnancyDailyLog(String date) async {
+  Future<PregnancyDailyLog?> deletePregnancyDailyLog(String date) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
 
       if (currentPregnancyData == null) {
         _logger.e('Current pregnancy data is null');
-        return;
+        return null;
       }
 
       PregnancyDailyLog? existingPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
 
       if (existingPregnancyLog == null) {
         _logger.e('Pregnancy log data is null');
-        return;
+        return null;
       }
 
       List<DataHarianKehamilan> updatedDataHarianKehamilan = existingPregnancyLog.dataHarianKehamilan!.where((item) => formatDateStr(item.date) != formatDateStr(date)).toList();
@@ -93,8 +98,11 @@ class PregnancyLogService {
       );
 
       await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
+
+      return updatedPregnancyLog;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
@@ -200,7 +208,6 @@ class PregnancyLogService {
       var translatedPercentage6Months = percentage6Months.map((key, value) => MapEntry(getTranslationKey(context, key), value));
       var translatedPercentage1Year = percentage1Year.map((key, value) => MapEntry(getTranslationKey(context, key), value));
 
-
       return DailyLogTagsData(
         tags: tags,
         logs: translatedLogs,
@@ -240,10 +247,11 @@ class PregnancyLogService {
     return occurrences;
   }
 
-  Future<void> addBloodPressure(BloodPressure bloodPressure) async {
+  Future<PregnancyDailyLog?> addBloodPressure(BloodPressure bloodPressure) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      PregnancyDailyLog newPregnancyLog;
 
       if (currentPregnancyData == null) {
         _logger.e('Current pregnancy data is null');
@@ -259,8 +267,9 @@ class PregnancyLogService {
           updatedAt: DateTime.now().toString(),
         );
         await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
+        newPregnancyLog = updatedPregnancyLog;
       } else {
-        PregnancyDailyLog newPregnancyLog = PregnancyDailyLog(
+        newPregnancyLog = PregnancyDailyLog(
           userId: userId,
           riwayatKehamilanId: currentPregnancyData.id!,
           tekananDarah: [bloodPressure],
@@ -269,61 +278,78 @@ class PregnancyLogService {
         );
         await _pregnancyLogRepository.upsertPregnancyDailyLog(newPregnancyLog);
       }
+
+      return newPregnancyLog;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
-  Future<void> editBloodPressure(BloodPressure bloodPressure) async {
+  Future<PregnancyDailyLog?> editBloodPressure(BloodPressure bloodPressure) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
 
       if (currentPregnancyData == null) {
         _logger.e('Current pregnancy data is null');
-        throw Exception("Current pregnancy data is null");
+        return null;
       }
+
       PregnancyDailyLog? existingPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
       List<BloodPressure>? tekananDarah = existingPregnancyLog?.tekananDarah ?? [];
 
-      if (existingPregnancyLog != null) {
-        int index = tekananDarah.indexWhere((element) => element.id == bloodPressure.id);
-        if (index != -1) {
-          tekananDarah[index] = bloodPressure;
-          PregnancyDailyLog updatedPregnancyLog = existingPregnancyLog.copyWith(
-            tekananDarah: tekananDarah,
-            updatedAt: DateTime.now().toString(),
-          );
-          await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
-        }
+      if (existingPregnancyLog == null) {
+        _logger.e('Contraction data not found');
+        return null;
       }
-    } catch (e) {
-      _logger.e('[LOCAL ERROR] $e');
-    }
-  }
 
-  Future<void> deleteBloodPressure(String id) async {
-    try {
-      int userId = storageService.getAccountLocalId();
-      PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
-
-      if (currentPregnancyData == null) {
-        _logger.e('Current pregnancy data is null');
-        throw Exception("Current pregnancy data is null");
-      }
-      PregnancyDailyLog? existingPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
-      List<BloodPressure>? tekananDarah = existingPregnancyLog?.tekananDarah ?? [];
-
-      if (existingPregnancyLog != null) {
-        tekananDarah.removeWhere((element) => element.id == id);
+      int index = tekananDarah.indexWhere((element) => element.id == bloodPressure.id);
+      if (index != -1) {
+        tekananDarah[index] = bloodPressure;
         PregnancyDailyLog updatedPregnancyLog = existingPregnancyLog.copyWith(
           tekananDarah: tekananDarah,
           updatedAt: DateTime.now().toString(),
         );
         await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
       }
+
+      return existingPregnancyLog;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
+    }
+  }
+
+  Future<PregnancyDailyLog?> deleteBloodPressure(String id) async {
+    try {
+      int userId = storageService.getAccountLocalId();
+      PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+
+      if (currentPregnancyData == null) {
+        _logger.e('Current pregnancy data is null');
+        return null;
+      }
+
+      PregnancyDailyLog? existingPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
+      List<BloodPressure>? tekananDarah = existingPregnancyLog?.tekananDarah ?? [];
+
+      if (existingPregnancyLog == null) {
+        _logger.e('Contraction data not found');
+        return null;
+      }
+
+      tekananDarah.removeWhere((element) => element.id == id);
+      PregnancyDailyLog updatedPregnancyLog = existingPregnancyLog.copyWith(
+        tekananDarah: tekananDarah,
+        updatedAt: DateTime.now().toString(),
+      );
+      await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
+
+      return updatedPregnancyLog;
+    } catch (e) {
+      _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
@@ -341,15 +367,17 @@ class PregnancyLogService {
     return tekananDarah;
   }
 
-  Future<void> addContractionTimer(String id, String waktuMulai, int durasi) async {
+  Future<PregnancyDailyLog?> addContractionTimer(String id, String waktuMulai, int durasi) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      PregnancyDailyLog newPregnancyLog;
 
       if (currentPregnancyData == null) {
         _logger.e('Current pregnancy data is null');
-        throw Exception("Current pregnancy data is null");
+        return null;
       }
+
       PregnancyDailyLog? existingPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
       List<ContractionTimer>? timerKontraksi = existingPregnancyLog?.timerKontraksi ?? [];
       DateTime time = DateTime.parse(waktuMulai);
@@ -359,6 +387,7 @@ class PregnancyLogService {
         DateTime contractionTimeStart = DateTime.parse(contraction.timeStart);
         return contractionTimeStart.isAfter(oneHourAgo) && contractionTimeStart.isBefore(time);
       }).toList();
+
       timerKontraksiWithin1Hour.sort((a, b) => b.timeStart.compareTo(a.timeStart));
       ContractionTimer? contractionTimerWithin1Hour = timerKontraksiWithin1Hour.isNotEmpty ? timerKontraksiWithin1Hour.first : null;
 
@@ -387,8 +416,9 @@ class PregnancyLogService {
           updatedAt: DateTime.now().toString(),
         );
         await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
+        newPregnancyLog = updatedPregnancyLog;
       } else {
-        PregnancyDailyLog newPregnancyLog = PregnancyDailyLog(
+        newPregnancyLog = PregnancyDailyLog(
           userId: userId,
           riwayatKehamilanId: currentPregnancyData.id!,
           timerKontraksi: [latestContractionData],
@@ -397,22 +427,31 @@ class PregnancyLogService {
         );
         await _pregnancyLogRepository.upsertPregnancyDailyLog(newPregnancyLog);
       }
+
+      return newPregnancyLog;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
-  Future<void> deleteContractionTimer(String id) async {
+  Future<PregnancyDailyLog?> deleteContractionTimer(String id) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
 
       if (currentPregnancyData == null) {
         _logger.e('Current pregnancy data is null');
-        throw Exception("Current pregnancy data is null");
+        return null;
       }
+
       PregnancyDailyLog? existingPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
       List<ContractionTimer>? timerKontraksi = existingPregnancyLog?.timerKontraksi ?? [];
+
+      if (existingPregnancyLog == null) {
+        _logger.e('Contraction data not found');
+        return null;
+      }
 
       ContractionTimer? deletedContraction = timerKontraksi.firstWhereOrNull((contraction) => contraction.id == id);
       int deletedContractionIndex = timerKontraksi.indexWhere((contraction) => contraction.id == id);
@@ -430,16 +469,16 @@ class PregnancyLogService {
         timerKontraksi[deletedContractionIndex + 1] = nextContraction.copyWith(interval: intervalInSeconds);
       }
 
-      if (existingPregnancyLog != null) {
-        timerKontraksi.removeWhere((element) => element.id == id);
-        PregnancyDailyLog updatedPregnancyLog = existingPregnancyLog.copyWith(
-          timerKontraksi: timerKontraksi,
-          updatedAt: DateTime.now().toString(),
-        );
-        await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
-      }
+      timerKontraksi.removeWhere((element) => element.id == id);
+      PregnancyDailyLog updatedPregnancyLog = existingPregnancyLog.copyWith(
+        timerKontraksi: timerKontraksi,
+        updatedAt: DateTime.now().toString(),
+      );
+      await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
+      return updatedPregnancyLog;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
@@ -457,14 +496,15 @@ class PregnancyLogService {
     return timerKontraksi;
   }
 
-  Future<void> addKicksCounter(String id, String datetime) async {
+  Future<PregnancyDailyLog?> addKicksCounter(String id, String datetime) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      PregnancyDailyLog updatedPregnancyLog;
 
       if (currentPregnancyData == null) {
         _logger.e('Current pregnancy data is null');
-        throw Exception("Current pregnancy data is null");
+        return null;
       }
 
       PregnancyDailyLog? existingPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
@@ -503,7 +543,7 @@ class PregnancyLogService {
         gerakanBayi.add(newKick);
       }
 
-      PregnancyDailyLog updatedPregnancyLog = existingPregnancyLog?.copyWith(
+      updatedPregnancyLog = existingPregnancyLog?.copyWith(
             gerakanBayi: gerakanBayi,
             updatedAt: DateTime.now().toString(),
           ) ??
@@ -516,8 +556,11 @@ class PregnancyLogService {
           );
 
       await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
+
+      return updatedPregnancyLog;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
@@ -558,10 +601,11 @@ class PregnancyLogService {
     }
   }
 
-  Future<void> deleteKicksCounter(String id) async {
+  Future<PregnancyDailyLog?> deleteKicksCounter(String id) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
+      PregnancyDailyLog updatedPregnancyLog;
 
       if (currentPregnancyData == null) {
         _logger.e('Current pregnancy data is null');
@@ -570,16 +614,22 @@ class PregnancyLogService {
       PregnancyDailyLog? existingPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
       List<BabyKicks>? gerakanBayi = existingPregnancyLog?.gerakanBayi ?? [];
 
-      if (existingPregnancyLog != null) {
-        gerakanBayi.removeWhere((element) => element.id == id);
-        PregnancyDailyLog updatedPregnancyLog = existingPregnancyLog.copyWith(
-          gerakanBayi: gerakanBayi,
-          updatedAt: DateTime.now().toString(),
-        );
-        await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
+      if (existingPregnancyLog == null) {
+        _logger.e('Contraction data not found');
+        return null;
       }
+
+      gerakanBayi.removeWhere((element) => element.id == id);
+      updatedPregnancyLog = existingPregnancyLog.copyWith(
+        gerakanBayi: gerakanBayi,
+        updatedAt: DateTime.now().toString(),
+      );
+      await _pregnancyLogRepository.upsertPregnancyDailyLog(updatedPregnancyLog);
+
+      return updatedPregnancyLog;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 

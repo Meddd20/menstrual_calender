@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
+import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_log_repository.dart';
@@ -178,9 +177,10 @@ class PregnancyLogController extends GetxController {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
     String formattedDate = formatDate(selectedDate);
+    PregnancyDailyLog? pregnancyDailyLog;
 
     try {
-      await _pregnancyLogService.upsertPregnancyDailyLog(selectedDate, getUpdatedSymptoms(), getTemperature(), getNotes());
+      pregnancyDailyLog = await _pregnancyLogService.upsertPregnancyDailyLog(selectedDate, getUpdatedSymptoms(), getTemperature(), getNotes());
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyLogSavedSuccess));
 
       localSuccess = true;
@@ -188,33 +188,26 @@ class PregnancyLogController extends GetxController {
       fetchPregnancyLog(selectedDate);
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyLogSaveFailed));
+      return;
     }
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
         await pregnancyLogAPIRepository.storePregnancyLog(selectedDate, getUpdatedSymptoms(), getTemperature(), getNotes());
       } catch (e) {
-        saveSyncPregnancyLog(formattedDate);
+        saveSyncPregnancyLog(formattedDate, pregnancyDailyLog?.id ?? 0);
       }
-    } else if (localSuccess) {
-      saveSyncPregnancyLog(formattedDate);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      saveSyncPregnancyLog(formattedDate, pregnancyDailyLog?.id ?? 0);
     }
   }
 
-  Future<void> saveSyncPregnancyLog(String formattedDate) async {
-    Map<String, dynamic> data = {
-      "date": formattedDate,
-      "pregnancySymptoms": getUpdatedSymptoms(),
-      "temperature": getTemperature().toString(),
-      "notes": getNotes(),
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> saveSyncPregnancyLog(String formattedDate, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian_kehamilan',
-      operation: 'upsertPregnancyDailyLog',
-      data: jsonData,
+      tableName: 'pregnancy_log',
+      operation: 'create',
+      dataId: pregnancylog_id,
+      optionalId: formattedDate,
       createdAt: DateTime.now().toString(),
     );
 
@@ -225,9 +218,10 @@ class PregnancyLogController extends GetxController {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
     String formattedDate = formatDate(date);
+    PregnancyDailyLog? pregnancyDailyLog;
 
     try {
-      await _pregnancyLogService.deletePregnancyDailyLog(formattedDate);
+      pregnancyDailyLog = await _pregnancyLogService.deletePregnancyDailyLog(formattedDate);
 
       localSuccess = true;
       isChanged.value = false;
@@ -235,29 +229,26 @@ class PregnancyLogController extends GetxController {
       update();
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyLogResetFailed));
+      return;
     }
+
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
         await pregnancyLogAPIRepository.deletePregnancyLog(date);
       } catch (e) {
-        syncDeletePregnancyLog(formattedDate);
+        syncDeletePregnancyLog(formattedDate, pregnancyDailyLog?.id ?? 0);
       }
-    } else {
-      syncDeletePregnancyLog(formattedDate);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      syncDeletePregnancyLog(formattedDate, pregnancyDailyLog?.id ?? 0);
     }
   }
 
-  Future<void> syncDeletePregnancyLog(String formattedDate) async {
-    Map<String, dynamic> data = {
-      "date": formattedDate,
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncDeletePregnancyLog(String formattedDate, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian_kehamilan',
-      operation: 'deletePregnancyDailyLog',
-      data: jsonData,
+      tableName: 'pregnancy_log',
+      operation: 'delete',
+      dataId: pregnancylog_id,
+      optionalId: formattedDate,
       createdAt: DateTime.now().toString(),
     );
 

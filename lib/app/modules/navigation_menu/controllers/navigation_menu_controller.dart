@@ -37,6 +37,11 @@ class NavigationMenuController extends GetxController {
       if (isConnected) {
         await _syncDataService.pendingDataChange();
 
+        if (!storageService.getIsBackup()) {
+          await _syncDataService.rebackupData();
+          storageService.storeIsBackup(true);
+        }
+
         if (!storageService.isDataSync()) {
           await _syncDataService.syncData();
           storageService.setHasSyncData(true);

@@ -11,6 +11,8 @@
     "askGoalDesc": "Pilih tujuan yang paling sesuai untuk Anda. Semua fitur tersedia untuk Anda jelajahi!",
     "trackPeriodGoal": "Melacak siklus menstruasi",
     "pregnancyGoal": "Melacak kehamilan",
+    "menstrualTracking": "Lacak dan prediksi siklus menstruasi Anda",
+    "pregnancyTracking": "Pantau perkembangan kehamilan Anda",
 
     "askMenstrualCycle": "Berapa Lama Siklus Menstruasi Anda?",
     "askMenstrualCycleDesc": "Kami akan menggunakan informasi ini untuk membantu memprediksi periode menstruasi Anda berikutnya.",
@@ -368,6 +370,7 @@
     "tomorrow": "Besok",
 
     "pregnancyMode": "Mode Kehamilan",
+    "recoveryMode": "Mode Pemulihan",
     "weeksPregnant": "{weeks} Minggu Hamil",
     "dueDate": "Tanggal Perkiraan",
     "weekDue": "Sisa Minggu Kehamilan",

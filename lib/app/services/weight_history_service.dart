@@ -15,7 +15,7 @@ class WeightHistoryService {
   late final WeightHistoryRepository _weightHistoryRepository = WeightHistoryRepository();
   late final PregnancyHistoryRepository _pregnancyHistoryRepository = PregnancyHistoryRepository();
 
-  Future<void> initWeightGain(double tinggiBadan, double beratPrakehamilan, int isTwin) async {
+  Future<WeightHistory?> initWeightGain(double tinggiBadan, double beratPrakehamilan, int isTwin) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
@@ -90,15 +90,19 @@ class WeightHistoryService {
 
           await _weightHistoryRepository.addWeightHistory(newWeightData);
         }
+
+        List<WeightHistory?> updatedWeightDataOnThisPregnancy = weightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData.id).toList();
+        return updatedWeightDataOnThisPregnancy.firstWhere((weight) => weight?.mingguKehamilan == 0);
       } else {
         throw Exception('Data tidak lengkap');
       }
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
-  Future<void> addWeeklyWeightGain(DateTime tanggalPencatatan, double beratBadan, int mingguKehamilan) async {
+  Future<WeightHistory?> addWeeklyWeightGain(DateTime tanggalPencatatan, double beratBadan, int mingguKehamilan) async {
     try {
       String formattedDate = formatDate(tanggalPencatatan);
 
@@ -181,6 +185,8 @@ class WeightHistoryService {
 
               await _weightHistoryRepository.editWeightHistory(updatedCurrentIndexWeightData);
             }
+
+            return matchingNewTanggalPencatatan;
           } else {
             throw Exception("Data Weight History tidak ditemukan");
           }
@@ -192,10 +198,11 @@ class WeightHistoryService {
       }
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 
-  Future<void> deleteWeeklyWeightGain(String tanggalPencatatan) async {
+  Future<WeightHistory?> deleteWeeklyWeightGain(String tanggalPencatatan) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
@@ -226,11 +233,14 @@ class WeightHistoryService {
         } else {
           throw Exception("Data Weight History tidak ditemukan");
         }
+
+        return matchingDataById;
       } else {
         throw Exception("Data Weight History tidak ditemukan");
       }
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 

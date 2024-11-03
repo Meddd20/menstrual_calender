@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
@@ -222,16 +221,27 @@ class WeightTrackerController extends GetxController {
   }
 
   Future<void> initializeWeightGain(context) async {
-    bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool localSuccess = false;
+    WeightHistory? initializedWeightHistory;
 
     try {
-      await _weightHistoryService.initWeightGain(getHeight(), getWeight(), (isTwin.value == false) ? 0 : 1);
+      initializedWeightHistory = await _weightHistoryService.initWeightGain(getHeight(), getWeight(), (isTwin.value == false) ? 0 : 1);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.weightGainInitializedSuccess));
       localSuccess = true;
     } catch (e) {
-      await _syncInitializedWeightData();
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.weightGainInitializeFailed));
+      return;
+    }
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await pregnancyRepository.initializeWeightGain(getHeight(), getWeight(), (isTwin.value == false) ? 0 : 1);
+      } catch (e) {
+        await _syncInitializedWeightData(initializedWeightHistory?.id ?? 0);
+      }
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await _syncInitializedWeightData(initializedWeightHistory?.id ?? 0);
     }
 
     await fetchWeightGainIndex();
@@ -240,31 +250,13 @@ class WeightTrackerController extends GetxController {
       MaterialPageRoute(builder: (context) => WeightGainTrackerView()),
       (Route<dynamic> route) => route.isFirst,
     );
-
-    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      try {
-        await pregnancyRepository.initializeWeightGain(getHeight(), getWeight(), (isTwin.value == false) ? 0 : 1);
-      } catch (e) {
-        await _syncInitializedWeightData();
-      }
-    } else if (localSuccess) {
-      await _syncInitializedWeightData();
-    }
   }
 
-  Future<void> _syncInitializedWeightData() async {
-    Map<String, dynamic> data = {
-      'tinggiBadan': getHeight(),
-      'beratBadan': getWeight(),
-      'isTwin': (isTwin.value == false) ? 0 : 1,
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> _syncInitializedWeightData(int weight_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_berat_badan_kehamilan',
-      operation: 'initWeightGain',
-      data: jsonData,
+      tableName: 'weight_gain',
+      operation: 'init',
+      dataId: weight_id,
       createdAt: DateTime.now().toString(),
     );
 
@@ -274,14 +266,26 @@ class WeightTrackerController extends GetxController {
   Future<void> weeklyWeightGain(context) async {
     bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    WeightHistory? weightHistory;
 
     if (selectedDate != null) {
       try {
-        await _weightHistoryService.addWeeklyWeightGain(DateTime.parse(formatDate(selectedDate!)), getWeight(), selectedWeek);
+        weightHistory = await _weightHistoryService.addWeeklyWeightGain(DateTime.parse(formatDate(selectedDate!)), getWeight(), selectedWeek);
         Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.weightGainAddedSuccess));
         localSuccess = true;
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.weightGainAddFailed));
+        return;
+      }
+
+      if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        try {
+          await pregnancyRepository.weeklyWeightGain(getWeight(), selectedWeek, formatDate(selectedDate!));
+        } catch (e) {
+          await _syncAddWeeklyWeightData(formatDate(selectedDate!), weightHistory?.riwayatKehamilanId ?? 0);
+        }
+      } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        await _syncAddWeeklyWeightData(formatDate(selectedDate!), weightHistory?.riwayatKehamilanId ?? 0);
       }
 
       await fetchWeightGainIndex();
@@ -291,32 +295,16 @@ class WeightTrackerController extends GetxController {
         (Route<dynamic> route) => route.isFirst,
       );
 
-      if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-        try {
-          await pregnancyRepository.weeklyWeightGain(getWeight(), selectedWeek, formatDate(selectedDate!));
-        } catch (e) {
-          await _syncAddWeeklyWeightData();
-        }
-      } else if (localSuccess) {
-        await _syncAddWeeklyWeightData();
-      }
       resetValue();
     }
   }
 
-  Future<void> _syncAddWeeklyWeightData() async {
-    Map<String, dynamic> data = {
-      'dateRecord': formatDate(selectedDate!),
-      'beratBadan': getWeight(),
-      'mingguKehamilan': selectedWeek,
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> _syncAddWeeklyWeightData(String dateEntered, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_berat_badan_kehamilan',
-      operation: 'addWeeklyWeightGain',
-      data: jsonData,
+      tableName: 'weight_gain',
+      operation: 'create',
+      dataId: pregnancylog_id,
+      optionalId: dateEntered,
       createdAt: DateTime.now().toString(),
     );
 
@@ -327,13 +315,25 @@ class WeightTrackerController extends GetxController {
     bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     var deletedWeeklyWeightDate = formatDate(selectedDate);
+    WeightHistory? weightHistory;
 
     try {
-      await _weightHistoryService.deleteWeeklyWeightGain(deletedWeeklyWeightDate);
+      weightHistory = await _weightHistoryService.deleteWeeklyWeightGain(deletedWeeklyWeightDate);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.weightGainDeletedSuccess));
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.weightGainDeleteFailed));
+      return;
+    }
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await pregnancyRepository.deleteWeeklyWeightGain(deletedWeeklyWeightDate);
+      } catch (e) {
+        await _syncDeleteWeightData(deletedWeeklyWeightDate, weightHistory?.riwayatKehamilanId ?? 0);
+      }
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await _syncDeleteWeightData(deletedWeeklyWeightDate, weightHistory?.riwayatKehamilanId ?? 0);
     }
 
     await fetchWeightGainIndex();
@@ -342,29 +342,14 @@ class WeightTrackerController extends GetxController {
       MaterialPageRoute(builder: (context) => WeightGainTrackerView()),
       (Route<dynamic> route) => route.isFirst,
     );
-
-    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      try {
-        await pregnancyRepository.deleteWeeklyWeightGain(deletedWeeklyWeightDate);
-      } catch (e) {
-        await _syncDeleteWeightData();
-      }
-    } else if (localSuccess) {
-      await _syncDeleteWeightData();
-    }
   }
 
-  Future<void> _syncDeleteWeightData() async {
-    Map<String, dynamic> data = {
-      'tanggalPencatatan': formatDate(selectedDate!),
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> _syncDeleteWeightData(String formattedDate, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_berat_badan_kehamilan',
-      operation: 'deleteWeeklyWeightGain',
-      data: jsonData,
+      tableName: 'weight_gain',
+      operation: 'delete',
+      dataId: pregnancylog_id,
+      optionalId: formattedDate,
       createdAt: DateTime.now().toString(),
     );
 

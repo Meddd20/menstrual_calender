@@ -118,9 +118,17 @@ class ApiService {
 
   Future<http.Response> deleteData() async {
     var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.deleteData);
-    print(url);
-    print(loginHeaders);
     return await http.delete(url, headers: loginHeaders);
+  }
+
+  Future<http.Response> resyncData(Map<String, dynamic> userData) async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.resycData);
+    return await http.post(url, headers: loginHeaders, body: userData);
+  }
+
+  Future<http.Response> resyncPendingData(Map<String, dynamic> userData) async {
+    var url = Uri.parse(ApiEndPoints.apiUrl + ApiEndPoints.authEndPoints.resycPendingData);
+    return await http.post(url, headers: loginHeaders, body: userData);
   }
 
   Future<http.Response> getAllArticle(String? tags) async {

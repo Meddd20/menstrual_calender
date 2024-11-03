@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
@@ -9,7 +8,6 @@ import 'package:periodnpregnancycalender/app/repositories/local/sync_data_reposi
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
 import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -102,12 +100,14 @@ class ContractionTimerController extends GetxController {
     bool localSuccess = false;
     var uuid = Uuid();
     var id = uuid.v4();
+    PregnancyDailyLog? pregnancyDailyLog;
 
     try {
-      await _pregnancyLogService.addContractionTimer(id, selectedDate.toString(), duration);
+      pregnancyDailyLog = await _pregnancyLogService.addContractionTimer(id, selectedDate.toString(), duration);
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.contractionAddFailed));
+      return;
     }
 
     await fetchAllContraction();
@@ -116,28 +116,19 @@ class ContractionTimerController extends GetxController {
       try {
         await pregnancyLogAPIRepository.addContractionTimer(id, selectedDate, duration);
       } catch (e) {
-        await syncAddContraction(id, duration);
+        await syncAddContraction(id, pregnancyDailyLog?.id ?? 0);
       }
-    } else if (localSuccess) {
-      await syncAddContraction(id, duration);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await syncAddContraction(id, pregnancyDailyLog?.id ?? 0);
     }
   }
 
-  Future<void> syncAddContraction(String id, int duration) async {
-    Map<String, dynamic> data = {
-      'id': id,
-      'startDate': formatDateTime(selectedDate),
-      'duration': duration,
-    };
-
-    print(data.toString());
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncAddContraction(String id, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian_kehamilan',
-      operation: 'addContractionTimer',
-      data: jsonData,
+      tableName: 'contraction_timer',
+      operation: 'create',
+      dataId: pregnancylog_id,
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 
@@ -147,12 +138,14 @@ class ContractionTimerController extends GetxController {
   Future<void> deleteContraction(context, String id) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
     bool localSuccess = false;
+    PregnancyDailyLog? pregnancyDailyLog;
 
     try {
-      await _pregnancyLogService.deleteContractionTimer(id);
+      pregnancyDailyLog = await _pregnancyLogService.deleteContractionTimer(id);
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.contractionDeleteFailed));
+      return;
     }
 
     await fetchAllContraction();
@@ -161,22 +154,19 @@ class ContractionTimerController extends GetxController {
       try {
         await pregnancyLogAPIRepository.deleteContractionTimer(id);
       } catch (e) {
-        await syncDeleteContraction(id);
+        await syncDeleteContraction(id, pregnancyDailyLog?.id ?? 0);
       }
-    } else if (localSuccess) {
-      await syncDeleteContraction(id);
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await syncDeleteContraction(id, pregnancyDailyLog?.id ?? 0);
     }
   }
 
-  Future<void> syncDeleteContraction(String id) async {
-    Map<String, dynamic> data = {'id': id};
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncDeleteContraction(String id, int pregnancylog_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian_kehamilan',
-      operation: 'deleteContractionTimer',
-      data: jsonData,
+      tableName: 'contraction_timer',
+      operation: 'delete',
+      dataId: pregnancylog_id,
+      optionalId: id,
       createdAt: DateTime.now().toString(),
     );
 

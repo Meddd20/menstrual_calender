@@ -20,9 +20,9 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, fileName);
 
-    // if (await databaseExists(path)) {
-    //   await deleteDatabase(path);
-    // }
+    if (await databaseExists(path)) {
+      await deleteDatabase(path);
+    }
 
     return await openDatabase(
       path,
@@ -221,7 +221,8 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         table_name TEXT NOT NULL,
         operation TEXT NOT NULL,
-        data TEXT,
+        data_id INTEGER,
+        optional_id TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   ''';

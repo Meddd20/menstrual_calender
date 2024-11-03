@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
@@ -73,8 +72,8 @@ class DetailprofileController extends GetxController {
   }
 
   void updateProfile(context) async {
-    bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool localSuccess = false;
 
     if (namaC.text != originalNama || birthdayC.text != originalBirthday) {
       try {
@@ -83,36 +82,30 @@ class DetailprofileController extends GetxController {
         localSuccess = true;
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.profileEditFailed));
+        return;
       }
-
-      Get.offAllNamed(Routes.NAVIGATION_MENU);
 
       if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
         try {
           await profileRepository.editProfile(namaC.text, birthdayC.text);
         } catch (e) {
-          await _syncEditProfile();
+          await _syncEditProfile(storageService.getAccountLocalId());
         }
-      } else if (localSuccess) {
-        await _syncEditProfile();
+      } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        await _syncEditProfile(storageService.getAccountLocalId());
       }
+
+      Get.offAllNamed(Routes.NAVIGATION_MENU);
     } else {
       return;
     }
   }
 
-  Future<void> _syncEditProfile() async {
-    Map<String, dynamic> data = {
-      "nama": namaC.text,
-      "tanggalLahir": birthdayC.text,
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> _syncEditProfile(int user_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_user',
-      operation: 'updateProfile',
-      data: jsonData,
+      tableName: 'user',
+      operation: 'update',
+      dataId: user_id,
       createdAt: DateTime.now().toString(),
     );
 

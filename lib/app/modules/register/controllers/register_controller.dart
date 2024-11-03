@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
-import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
@@ -24,7 +20,6 @@ class RegisterController extends GetxController {
   final ApiService apiService = ApiService();
   late final AuthRepository authRepository = AuthRepository(apiService);
   final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
-  late final SyncDataRepository _syncDataRepository;
   late final LocalProfileRepository _localProfileRepository;
   final StorageService storageService = StorageService();
   TextEditingController usernameC = TextEditingController();
@@ -37,7 +32,6 @@ class RegisterController extends GetxController {
 
   @override
   void onInit() {
-    _syncDataRepository = SyncDataRepository();
     _profileService = ProfileService();
     _localProfileRepository = LocalProfileRepository();
     _periodHistoryService = PeriodHistoryService();
@@ -123,52 +117,15 @@ class RegisterController extends GetxController {
             DateTime haidAkhir = DateTime.parse(period['last_period']);
             await _periodHistoryService.addPeriod(null, haidAwal, haidAkhir, lamaSiklus);
           }
-          await syncAddedPeriod(periods, lamaSiklus);
         } else {
           String formattedDate = formatDate(onboardingController.lastPeriodDate.value!);
           await _pregnancyHistoryService.beginPregnancy(DateTime.parse(formattedDate), null);
-          await _syncPregnancyBegin(formattedDate);
         }
         storageService.storeIsAuth(true);
         await Future.delayed(Duration(seconds: 2));
         Get.offAllNamed(Routes.NAVIGATION_MENU);
       }
     }
-  }
-
-  Future<void> syncAddedPeriod(List<Map<String, dynamic>> periods, int periodCycle) async {
-    Map<String, dynamic> data = {
-      "periods": periods,
-      "periodCycle": periodCycle,
-    };
-
-    String jsonData = jsonEncode(data);
-
-    SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_mens',
-      operation: 'addPeriod',
-      data: jsonData,
-      createdAt: DateTime.now().toString(),
-    );
-
-    await _syncDataRepository.addSyncLogData(syncLog);
-  }
-
-  Future<void> _syncPregnancyBegin(String selectedDate) async {
-    Map<String, dynamic> data = {
-      "firstDayLastMenstruation": selectedDate,
-    };
-
-    String jsonData = jsonEncode(data);
-
-    SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_kehamilan',
-      operation: 'beginPregnancy',
-      data: jsonData,
-      createdAt: DateTime.now().toString(),
-    );
-
-    await _syncDataRepository.addSyncLogData(syncLog);
   }
 
   void checkRegister() async {

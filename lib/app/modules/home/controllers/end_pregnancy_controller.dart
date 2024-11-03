@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
@@ -95,45 +93,41 @@ class EndPregnancyController extends GetxController {
   }
 
   Future<void> endPregnancy(context) async {
-    bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool localSuccess = false;
+    PregnancyHistory? updatedPregnancy;
 
     try {
-      await _pregnancyHistoryService.endPregnancy(selectedDate!, gender.value);
+      updatedPregnancy = await _pregnancyHistoryService.endPregnancy(selectedDate!, gender.value);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyEndedSuccess));
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyEndFailed));
+      return;
+    }
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await pregnancyRepository.pregnancyEnded(selectedDate.toString(), gender.value);
+      } catch (e) {
+        await _syncPregnancyEnded(updatedPregnancy?.id ?? 0, updatedPregnancy?.remoteId ?? 0);
+      }
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await _syncPregnancyEnded(updatedPregnancy?.id ?? 0, updatedPregnancy?.remoteId ?? 0);
     }
 
     storageService.storeIsPregnant("2");
     storageService.storeIsBirthSuccess(true);
     LocalNotificationService().cancelAllPregnancyNotifications(storageService.getAccountLocalId());
     Get.offAllNamed(Routes.NAVIGATION_MENU);
-
-    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      try {
-        await pregnancyRepository.pregnancyEnded(selectedDate.toString(), gender.value);
-      } catch (e) {
-        await _syncPregnancyEnded();
-      }
-    } else if (localSuccess) {
-      await _syncPregnancyEnded();
-    }
   }
 
-  Future<void> _syncPregnancyEnded() async {
-    Map<String, dynamic> data = {
-      "pregnancyEndDate": selectedDate.toString(),
-      "gender": gender.value,
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> _syncPregnancyEnded(int pregnancy_id, int remote_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_kehamilan',
-      operation: 'endPregnancy',
-      data: jsonData,
+      tableName: 'pregnancy',
+      operation: 'update',
+      dataId: pregnancy_id,
+      optionalId: remote_id.toString(),
       createdAt: DateTime.now().toString(),
     );
 
@@ -141,38 +135,41 @@ class EndPregnancyController extends GetxController {
   }
 
   Future<void> deletePregnancy(context) async {
-    bool localSuccess = false;
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool localSuccess = false;
+    PregnancyHistory? deletedPregnancy;
 
     try {
-      await _pregnancyHistoryService.deletePregnancy();
+      deletedPregnancy = await _pregnancyHistoryService.deletePregnancy();
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.pregnancyDeletedSuccess));
       localSuccess = true;
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.pregnancyDeleteFailed));
+      return;
+    }
+
+    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      try {
+        await pregnancyRepository.deletePregnancy();
+      } catch (e) {
+        await _syncPregnancyDelete(deletedPregnancy?.id ?? 0, deletedPregnancy?.remoteId ?? 0);
+      }
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+      await _syncPregnancyDelete(deletedPregnancy?.id ?? 0, deletedPregnancy?.remoteId ?? 0);
     }
 
     storageService.storeIsPregnant("2");
     storageService.storeIsBirthSuccess(false);
     LocalNotificationService().cancelAllPregnancyNotifications(storageService.getAccountLocalId());
     Get.offAllNamed(Routes.NAVIGATION_MENU);
-
-    if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      try {
-        await pregnancyRepository.deletePregnancy();
-      } catch (e) {
-        await _syncPregnancyDelete();
-      }
-    } else if (localSuccess) {
-      await _syncPregnancyDelete();
-    }
   }
 
-  Future<void> _syncPregnancyDelete() async {
+  Future<void> _syncPregnancyDelete(int pregnancy_id, int remote_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_kehamilan',
-      operation: 'deletePregnancy',
-      data: '{}',
+      tableName: 'pregnancy',
+      operation: 'delete',
+      dataId: pregnancy_id,
+      optionalId: remote_id.toString(),
       createdAt: DateTime.now().toString(),
     );
 

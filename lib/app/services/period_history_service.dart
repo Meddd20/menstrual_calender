@@ -24,7 +24,7 @@ class PeriodHistoryService {
   late final MasterNewmoonRepository _masterNewmoonRepository = MasterNewmoonRepository();
   late final MasterGenderRepository _masterGenderRepository = MasterGenderRepository();
 
-  Future<void> addPeriod(int? remoteId, DateTime haidAwal, DateTime haidAkhir, int? lamaSiklus) async {
+  Future<PeriodHistory?> addPeriod(int? remoteId, DateTime haidAwal, DateTime haidAkhir, int? lamaSiklus) async {
     try {
       int userId = storageService.getAccountLocalId();
 
@@ -32,16 +32,6 @@ class PeriodHistoryService {
       List<PeriodHistory> getAllPeriodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
       List<PeriodHistory> isActualPeriodHistories = getAllPeriodHistory.where((period) => period.isActual == "1").toList();
       List<PeriodHistory> isNotActualPeriodHistories = getAllPeriodHistory.where((period) => period.isActual == "0").toList();
-
-      User? userProfile = await _localProfileRepository.getProfile();
-      if (userProfile != null) {
-        User updateUserProfile = userProfile.copyWith(
-          isPregnant: "0",
-          updatedAt: DateTime.now().toString(),
-        );
-        await _localProfileRepository.updateProfile(updateUserProfile);
-        storageService.storeIsPregnant("0");
-      }
 
       for (var period in isActualPeriodHistories) {
         if ((haidAwal.isBefore(period.haidAkhir!) || haidAwal.isAtSameMomentAs(period.haidAkhir!)) && (haidAkhir.isAfter(period.haidAwal!) || haidAkhir.isAtSameMomentAs(period.haidAwal!))) {
@@ -161,8 +151,8 @@ class PeriodHistoryService {
       }
 
       List<PeriodHistory> getUpdatedPeriodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
-
       PeriodHistory lastUpdatedPeriodHistory = getUpdatedPeriodHistory.last;
+      PeriodHistory addedPeriodHistory = getUpdatedPeriodHistory.firstWhere((period) => period.haidAwal == newPeriodHistory.haidAwal && period.haidAkhir == newPeriodHistory.haidAkhir);
 
       LocalNotificationService().scheduleNotificationPeriod(lastUpdatedPeriodHistory);
 
@@ -174,8 +164,21 @@ class PeriodHistoryService {
           userId,
         );
       }
+
+      User? userProfile = await _localProfileRepository.getProfile();
+      if (userProfile != null) {
+        User updateUserProfile = userProfile.copyWith(
+          isPregnant: "0",
+          updatedAt: DateTime.now().toString(),
+        );
+        await _localProfileRepository.updateProfile(updateUserProfile);
+        storageService.storeIsPregnant("0");
+      }
+
+      return addedPeriodHistory;
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
+      rethrow;
     }
   }
 

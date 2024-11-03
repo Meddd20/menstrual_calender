@@ -18,6 +18,8 @@ class _AuthEndPoints {
   final String profile = 'get-profile';
   final String editProfile = 'update-profile';
   final String getSycData = 'sync-data';
+  final String resycData = 'resync-data';
+  final String resycPendingData = 'resync-pending-data';
   final String getSycMasterData = 'sync-master-data';
   final String deleteData = 'delete-data';
 

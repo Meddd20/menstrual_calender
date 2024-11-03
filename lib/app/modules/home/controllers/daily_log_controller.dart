@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
@@ -547,6 +546,7 @@ class DailyLogController extends GetxController {
       update();
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.dailyLogSaveFailed));
+      return;
     }
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
@@ -567,32 +567,16 @@ class DailyLogController extends GetxController {
       } catch (e) {
         saveSyncLog(formattedDate);
       }
-    } else if (localSuccess) {
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       saveSyncLog(formattedDate);
     }
   }
 
   Future<void> saveSyncLog(String formattedDate) async {
-    Map<String, dynamic> data = {
-      "date": formattedDate,
-      "sexActivity": getSelectedSexActivity(),
-      "bleedingFlow": getSelectedBleedingFlow(),
-      "symptoms": getUpdatedSymptoms(),
-      "vaginalDischarge": getSelectedVaginalDischarge(),
-      "moods": getUpdatedMoods(),
-      "others": getUpdatedOthers(),
-      "physicalActivity": getUpdatedPhysicalActivity(),
-      "temperature": getTemperature().toString(),
-      "weight": getWeight().toString(),
-      "notes": getNotes(),
-    };
-
-    String jsonData = jsonEncode(data);
-
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian',
-      operation: 'upsertDailyLog',
-      data: jsonData,
+      tableName: 'daily_log',
+      operation: 'create',
+      optionalId: formattedDate,
       createdAt: DateTime.now().toString(),
     );
 
@@ -630,6 +614,7 @@ class DailyLogController extends GetxController {
       update();
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.dailyLogSaveFailed));
+      return;
     }
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
@@ -638,44 +623,19 @@ class DailyLogController extends GetxController {
       } catch (e) {
         syncDeleteLog(formattedDate);
       }
-    } else if (localSuccess) {
+    } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       syncDeleteLog(formattedDate);
     }
   }
 
   Future<void> syncDeleteLog(String formattedDate) async {
-    Map<String, dynamic> data = {"date": formattedDate};
-
-    String jsonData = jsonEncode(data);
-
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_data_harian',
-      operation: 'deleteDailyLog',
-      data: jsonData,
+      tableName: 'daily_log',
+      operation: 'delete',
+      optionalId: formattedDate,
       createdAt: DateTime.now().toString(),
     );
 
     await _syncDataRepository.addSyncLogData(syncLog);
-  }
-
-  Future<void> resetLog() async {
-    try {
-      setSelectedSexActivity("");
-      setSelectedBleedingFlow("");
-      setSelectedSymptoms([]);
-      setSelectedVaginalDischarge("");
-      setSelectedMoods([]);
-      setSelectedOthers([]);
-      setSelectedPhysicalActivity([]);
-      temperature.value = 0;
-      weights.value = 0.0;
-      notes.value = "";
-      isChanged.value = false;
-
-      await saveLog(Get.context);
-      update();
-    } catch (e) {
-      print("Error resetting log: $e");
-    }
   }
 }

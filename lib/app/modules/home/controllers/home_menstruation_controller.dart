@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart' as PeriodCycleModel;
@@ -119,7 +118,6 @@ class HomeMenstruationController extends GetxController {
   Future<PeriodCycleModel.PeriodCycleIndex?> fetchCycleData() async {
     try {
       data = await _periodHistoryService.getPeriodIndex();
-      print(data?.actualPeriod?.length);
 
       if (data != null) {
         data?.actualPeriod?.forEach((history) {
@@ -204,8 +202,10 @@ class HomeMenstruationController extends GetxController {
 
   String get formattedEndDate => endDate.value != null ? formatDate(endDate.value!) : formatDate(DateTime.now());
 
-  void addPeriod(context, int avgPeriodDuration, int avgPeriodCycle) async {
+  void addPeriod(int avgPeriodDuration, int avgPeriodCycle, context) async {
     bool isConnected = await CheckConnectivity().isConnectedToInternet();
+    bool remoteSuccess = false;
+    var periodStoredRemote;
 
     if (startDate.value != null) {
       if (formattedStartDate == formattedEndDate || endDate.value == null) {
@@ -219,45 +219,50 @@ class HomeMenstruationController extends GetxController {
         }
       ];
 
-      var newPeriod;
       if (isConnected && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-        try {
-          newPeriod = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
-        } catch (e) {
-          await syncAddedPeriod(periods, avgPeriodCycle);
-        }
-      } else {
-        await syncAddedPeriod(periods, avgPeriodCycle);
+        periodStoredRemote = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
+        remoteSuccess = true;
       }
 
       try {
-        await _periodHistoryService.addPeriod(newPeriod?[0].id ?? null, DateTime.parse(formattedStartDate), DateTime.parse(formattedEndDate), avgPeriodCycle);
+        if (remoteSuccess) {
+          await _periodHistoryService.addPeriod(
+            periodStoredRemote?[0].id,
+            DateTime.parse(formattedStartDate),
+            DateTime.parse(formattedEndDate),
+            avgPeriodCycle,
+          );
+        } else {
+          PeriodCycleModel.PeriodHistory? addedPeriod = await _periodHistoryService.addPeriod(
+            null,
+            DateTime.parse(formattedStartDate),
+            DateTime.parse(formattedEndDate),
+            avgPeriodCycle,
+          );
+          await syncAddedPeriod(addedPeriod?.id ?? 0);
+        }
+
         Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.periodAddedSuccess));
 
         cancelEdit();
+
         await fetchCycleData();
-        dateSelectedEvent(DateTime.now());
-        Get.offAllNamed(Routes.NAVIGATION_MENU);
+        await Get.offAllNamed(Routes.NAVIGATION_MENU);
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.periodAddFailed));
+        return;
       }
     } else {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.selectPeriodStartDate));
+      return;
     }
   }
 
-  Future<void> syncAddedPeriod(List<Map<String, dynamic>> periods, int periodCycle) async {
-    Map<String, dynamic> data = {
-      "periods": periods,
-      "periodCycle": periodCycle,
-    };
-
-    String jsonData = jsonEncode(data);
-
+  Future<void> syncAddedPeriod(int period_id) async {
     SyncLog syncLog = SyncLog(
-      tableName: 'tb_riwayat_mens',
-      operation: 'addPeriod',
-      data: jsonData,
+      tableName: 'period',
+      operation: 'create',
+      dataId: period_id,
       createdAt: DateTime.now().toString(),
     );
 
