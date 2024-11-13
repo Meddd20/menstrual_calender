@@ -6,6 +6,7 @@ import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart
 import 'package:periodnpregnancycalender/app/models/master_data_version_model.dart';
 import 'package:periodnpregnancycalender/app/models/sync_data_model.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/views/unauthorized_error_view.dart';
+import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/services/api_service.dart';
 
 class ProfileRepository {
@@ -84,6 +85,7 @@ class ProfileRepository {
     http.Response response = await apiService.resyncPendingData(userData);
 
     if (response.statusCode == 200) {
+      // SyncDataRepository().deleteAllSyncLogData();
       var decodedJson = json.decode(response.body);
       var syncData = DataCategoryByTable.fromJson(decodedJson['data']);
       return syncData;

@@ -129,4 +129,14 @@ class SyncDataRepository {
       rethrow;
     }
   }
+
+  Future<void> deleteAllSyncLogData() async {
+    final db = await _databaseHelper.database;
+    try {
+      await db.delete("sync_log");
+    } catch (e) {
+      _logger.e("Error during delete sycnlog data: $e");
+      rethrow;
+    }
+  }
 }

@@ -115,75 +115,74 @@ class BabykicksView extends GetView<BabykicksController> {
                 if (controller.allKicks.length > 0) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Container(
-                      width: Get.width,
-                      height: 100,
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
+                    child: Wrap(
+                      children: [
+                        Container(
+                          width: Get.width,
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                child: Center(
-                                  child: Text(
+                              Column(
+                                children: [
+                                  Text(
                                     AppLocalizations.of(context)!.dates,
                                     style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
                                   ),
-                                ),
+                                  SizedBox(height: 7),
+                                  Text(
+                                    controller.isLastDateIsInWithin2Hours(controller.allKicks.first.datetimeStart) ? formatShortDate(controller.allKicks.last.datetimeStart) : "-",
+                                    style: CustomTextStyle.semiBold(14, height: 1.5),
+                                  ),
+                                ],
                               ),
-                              SizedBox(height: 7),
-                              Text(
-                                controller.isLastDateIsInWithin2Hours(controller.allKicks.first.datetimeStart) ? formatShortDate(controller.allKicks.last.datetimeStart) : "-",
-                                style: CustomTextStyle.semiBold(14, height: 1.5),
+                              Column(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.firstKick,
+                                    style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                  ),
+                                  SizedBox(height: 7),
+                                  Text(
+                                    controller.isLastDateIsInWithin2Hours(controller.allKicks.first.datetimeStart) ? formatHourMinuteSecond(controller.allKicks.first.datetimeStart) : "-",
+                                    style: CustomTextStyle.semiBold(14, height: 1.5),
+                                  ),
+                                ],
                               ),
+                              Column(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.lastKick,
+                                    style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                  ),
+                                  SizedBox(height: 7),
+                                  Text(
+                                    controller.isLastDateIsInWithin2Hours(controller.allKicks.first.datetimeStart) ? formatHourMinuteSecond(controller.allKicks.first.datetimeEnd) : "-",
+                                    style: CustomTextStyle.semiBold(14, height: 1.5),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.kickCount,
+                                    style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                  ),
+                                  SizedBox(height: 7),
+                                  Text(
+                                    controller.isLastDateIsInWithin2Hours(controller.allKicks.first.datetimeStart) ? controller.allKicks.first.totalKicks.toString() : "-",
+                                    style: CustomTextStyle.semiBold(14, height: 1.5),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
-                          Column(
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.firstKick,
-                                style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                              ),
-                              SizedBox(height: 7),
-                              Text(
-                                controller.isLastDateIsInWithin2Hours(controller.allKicks.first.datetimeStart) ? formatHourMinuteSecond(controller.allKicks.first.datetimeStart) : "-",
-                                style: CustomTextStyle.semiBold(14, height: 1.5),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.lastKick,
-                                style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                              ),
-                              SizedBox(height: 7),
-                              Text(
-                                controller.isLastDateIsInWithin2Hours(controller.allKicks.first.datetimeStart) ? formatHourMinuteSecond(controller.allKicks.first.datetimeEnd) : "-",
-                                style: CustomTextStyle.semiBold(14, height: 1.5),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.kickCount,
-                                style: CustomTextStyle.medium(13, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                              ),
-                              SizedBox(height: 7),
-                              Text(
-                                controller.isLastDateIsInWithin2Hours(controller.allKicks.first.datetimeStart) ? controller.allKicks.first.totalKicks.toString() : "-",
-                                style: CustomTextStyle.semiBold(14, height: 1.5),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

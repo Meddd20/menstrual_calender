@@ -219,7 +219,7 @@ class PeriodCycleView extends GetView<PeriodCycleController> {
                                             ),
                                             addPeriodOnPressedButton: () {
                                               if (actualPeriodHistory?.id != null) {
-                                                controller.editPeriod(context, actualPeriodHistory!.id!, actualPeriodHistory.remoteId!, periodHistory?.avgPeriodCycle ?? 28, periodHistoryList!.avgPeriodDuration!);
+                                                controller.editPeriod(context, actualPeriodHistory?.id ?? 0, actualPeriodHistory?.remoteId ?? 0, periodHistory?.avgPeriodCycle ?? 28, periodHistoryList!.avgPeriodDuration!);
                                               }
                                             },
                                             calenderValue: [

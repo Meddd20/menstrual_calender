@@ -32,7 +32,7 @@ class SyncLog {
       'table_name': tableName,
       'operation': operation,
       'data_id': dataId,
-      'optional_id': dataId,
+      'optional_id': optionalId,
       'created_at': createdAt,
     };
   }

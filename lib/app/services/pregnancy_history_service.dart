@@ -62,11 +62,12 @@ class PregnancyHistoryService {
 
       if (getAllPregnancyData.length > 0) {
         for (var pregnancy in getAllPregnancyData) {
-          DateTime hariPertamaHaidTerakhir = DateTime.parse(pregnancy.hariPertamaHaidTerakhir!);
-          DateTime kehamilanAkhir = DateTime.parse(pregnancy.kehamilanAkhir!);
-
-          if ((hariPertamaHaidTerakhir.isAtSameMomentAs(hariPertamaHaidTerakhir) || (hariPertamaHaidTerakhir.isAfter(hariPertamaHaidTerakhir)) && (hariPertamaHaidTerakhir.isBefore(kehamilanAkhir)) || hariPertamaHaidTerakhir.isAtSameMomentAs(kehamilanAkhir))) {
-            throw Exception('Tanggal hari pertama siklus menstruasi overlap kehamilan anda sebelumnya.');
+          if (pregnancy.kehamilanAkhir != null) {
+            DateTime hariPertamaKehamilanTerakhir = DateTime.parse(pregnancy.hariPertamaHaidTerakhir!);
+            DateTime tanggalKehamilanTerakhir = DateTime.parse(pregnancy.kehamilanAkhir!);
+            if ((hariPertamaHaidTerakhir.isAtSameMomentAs(hariPertamaKehamilanTerakhir) || ((hariPertamaHaidTerakhir.isAfter(hariPertamaKehamilanTerakhir)) && (hariPertamaHaidTerakhir.isBefore(tanggalKehamilanTerakhir))) || hariPertamaHaidTerakhir.isAtSameMomentAs(tanggalKehamilanTerakhir))) {
+              throw Exception('Tanggal hari pertama siklus menstruasi overlap kehamilan anda sebelumnya.');
+            }
           }
         }
       }
@@ -91,13 +92,15 @@ class PregnancyHistoryService {
         );
         await _pregnancyHistoryRepository.beginPregnancy(newPregnancyData);
 
-        User updateUserProfile = userProfile!.copyWith(
+        User? updateUserProfile = userProfile?.copyWith(
           isPregnant: "1",
           updatedAt: DateTime.now().toString(),
         );
-        storageService.storeIsPregnant("1");
 
-        await _localProfileRepository.updateProfile(updateUserProfile);
+        if (updateUserProfile != null) {
+          storageService.storeIsPregnant("1");
+          await _localProfileRepository.updateProfile(updateUserProfile);
+        }
       }
 
       PregnancyHistory? getUpdatedPregnancyHistory = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
@@ -135,14 +138,15 @@ class PregnancyHistoryService {
 
         await _pregnancyHistoryRepository.editPregnancy(updatedPregnancyData);
 
-        User updateUserProfile = userProfile!.copyWith(
+        User? updateUserProfile = userProfile?.copyWith(
           isPregnant: "2",
           updatedAt: DateTime.now().toString(),
         );
 
-        await _localProfileRepository.updateProfile(updateUserProfile);
-
-        LocalNotificationService().cancelAllPregnancyNotifications(userId);
+        if (updateUserProfile != null) {
+          await _localProfileRepository.updateProfile(updateUserProfile);
+          LocalNotificationService().cancelAllPregnancyNotifications(userId);
+        }
 
         return updatedPregnancyData;
       } else {

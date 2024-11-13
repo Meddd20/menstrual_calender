@@ -38,6 +38,7 @@ import 'package:periodnpregnancycalender/app/services/period_history_service.dar
 import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
 import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
 import 'package:periodnpregnancycalender/app/services/weight_history_service.dart';
+import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 class SyncDataService {
@@ -745,36 +746,39 @@ class SyncDataService {
                   operationListMap[key] = [];
                 }
 
-                operationListMap[dataId]!.add(operation);
+                operationListMap[key]?.add(operation);
               }
             }
           }
 
           if (table == 'user') {
-            var profileData = {
-              'name': profile?.nama,
-              'birthday': profile?.tanggalLahir,
-              'isPregnant': profile?.isPregnant,
-            };
-            syncData['data'][table]['update'].add(profileData);
+            syncData['data']['user'] ??= {};
+            syncData['data']['user']['update'] ??= [];
+
+            var alreadyInUpdate = syncData['data']['user']['update'].any((userData) => userData.id == profile?.id);
+
+            if (alreadyInUpdate) {
+              syncData['data']['user']['update'][0] = profile?.toJson();
+            } else {
+              syncData['data'][table]['update'].add(profile?.toJson());
+            }
           } else if (table == 'period') {
             for (var uniqueKey in operationListMap.keys) {
               var operations = operationListMap[uniqueKey]!;
-              PeriodHistory? periodHistory = periodHistories.firstWhereOrNull((period) => period.id == uniqueKey);
-              var periodData = {
-                'period_id': periodHistory?.remoteId,
-                'first_period': periodHistory?.haidAwal,
-                'last_period': periodHistory?.haidAkhir,
-                'period_cycle': periodHistory?.lamaSiklus,
-              };
+              PeriodHistory? periodHistory = periodHistories.firstWhereOrNull((period) => period.id == int.tryParse(uniqueKey));
+              var periodData = periodHistory?.toJson();
 
               String finalOperation = '';
+              bool hasCreate = false;
 
               for (var operation in operations) {
-                if (operation == 'update') {
-                  finalOperation = 'update';
-                } else if (finalOperation != 'update' && operation == 'create') {
+                if (operation == 'create') {
+                  hasCreate = true;
                   finalOperation = 'create';
+                } else if (operation == 'update') {
+                  if (!hasCreate) {
+                    finalOperation = 'update';
+                  }
                 }
               }
 
@@ -790,39 +794,20 @@ class SyncDataService {
             }
           } else if (table == 'daily_log') {
             for (var uniqueKey in operationListMap.keys) {
+              DataHarian? logByDate = dailyLogs?.firstWhereOrNull(
+                (log) => log.date != null && DateTime.parse(log.date!).isAtSameMomentAs(DateTime.parse(uniqueKey)),
+              );
               var operations = operationListMap[uniqueKey]!;
 
               String finalOperation = '';
 
               for (var operation in operations) {
-                if (operation == 'create') {
-                  finalOperation = 'create';
-                } else if (operation == 'delete') {
-                  finalOperation = 'delete';
-                }
+                finalOperation = operation;
               }
 
               if (finalOperation == 'create') {
-                DataHarian? logByDate = dailyLogs!.firstWhereOrNull(
-                  (log) => log.date != null && DateTime.parse(log.date!).isAtSameMomentAs(DateTime.parse(uniqueKey)),
-                );
-
                 if (logByDate != null) {
-                  var logData = {
-                    'date': logByDate.date,
-                    'sex_activity': logByDate.sexActivity,
-                    'bleeding_flow': logByDate.bleedingFlow,
-                    'symptoms': logByDate.symptoms?.toJson(),
-                    'vaginal_discharge': logByDate.vaginalDischarge,
-                    'moods': logByDate.moods?.toJson(),
-                    'others': logByDate.others?.toJson(),
-                    'physical_activity': logByDate.physicalActivity?.toJson(),
-                    'temperature': logByDate.temperature,
-                    'weight': logByDate.weight,
-                    'notes': logByDate.notes,
-                  };
-
-                  syncData['data'][table]['create'].add(logData);
+                  syncData['data'][table]['create'].add(logByDate);
                 }
               } else if (finalOperation == 'delete') {
                 syncData['data'][table]['delete'].add({'date': uniqueKey});
@@ -830,53 +815,90 @@ class SyncDataService {
             }
           } else if (table == 'reminder') {
             for (var uniqueKey in operationListMap.keys) {
-              Reminders? data = reminders?.firstWhereOrNull((reminder) => reminder.id == uniqueKey);
               var operations = operationListMap[uniqueKey]!;
+              Reminders? reminder = reminders?.firstWhereOrNull((reminder) => reminder.id == uniqueKey);
+              var reminderData = reminder?.toJson();
 
               String finalOperation = '';
 
+              bool hasCreate = false;
+              bool hasDelete = false;
+              bool hasUpdate = false;
+
               for (var operation in operations) {
-                if (finalOperation == 'create' && operation == 'delete') {
-                  finalOperation = '';
-                  break;
-                } else if (finalOperation == 'update' && operation == 'delete') {
-                  finalOperation = 'delete';
-                } else if (finalOperation == 'create' && operation == 'update') {
-                  continue;
-                } else {
-                  finalOperation = operation;
+                if (operation == 'create') {
+                  hasCreate = true;
+                  finalOperation = 'create';
+                } else if (operation == 'update') {
+                  hasUpdate = true;
+                  if (!hasCreate) {
+                    finalOperation = 'update';
+                  }
+                } else if (operation == 'delete') {
+                  hasDelete = true;
+                  if (hasCreate) {
+                    finalOperation = '';
+                    break;
+                  } else {
+                    finalOperation = 'delete';
+                  }
                 }
+              }
+
+              if (hasCreate && hasUpdate && !hasDelete) {
+                finalOperation = 'create';
               }
 
               if (finalOperation == 'delete') {
                 syncData['data'][table]['delete'].add({'id': uniqueKey});
               } else if (finalOperation == 'create') {
-                syncData['data'][table]['create'].add(data);
+                if (reminderData != null) {
+                  syncData['data'][table]['create'].add(reminderData);
+                }
               } else if (finalOperation == 'update') {
-                syncData['data'][table]['update'].add(data);
+                if (reminderData != null) {
+                  syncData['data'][table]['update'].add(reminderData);
+                }
               }
             }
           } else if (table == 'pregnancy') {
             for (var uniqueKey in operationListMap.keys) {
-              PregnancyHistory? pregnancy = pregnancyHistories.firstWhereOrNull((pregnancy) => pregnancy.id == uniqueKey);
+              var dataSyncLog = syncLogs.firstWhereOrNull((syncLog) => syncLog.tableName == 'pregnancy' && syncLog.dataId == int.parse(uniqueKey));
+              PregnancyHistory? pregnancy = pregnancyHistories.firstWhereOrNull((pregnancy) => pregnancy.id == dataSyncLog?.dataId);
               User? profile = await _localProfileRepository.getProfile();
-              var pregnancyData = pregnancy?.toJson();
-              pregnancyData?['isPregnant'] = profile?.isPregnant;
+
               var operations = operationListMap[uniqueKey]!;
+              var pregnancyData = pregnancy?.toJson();
+              pregnancyData?['is_pregnant'] = profile?.isPregnant;
 
               String finalOperation = '';
 
+              bool hasCreate = false;
+              bool hasDelete = false;
+              bool hasUpdate = false;
+
               for (var operation in operations) {
-                if (finalOperation == 'create' && operation == 'delete') {
-                  finalOperation = '';
-                  break;
-                } else if (finalOperation == 'update' && operation == 'delete') {
-                  finalOperation = 'delete';
-                } else if (finalOperation == 'create' && operation == 'update') {
-                  continue;
-                } else {
-                  finalOperation = operation;
+                if (operation == 'create') {
+                  hasCreate = true;
+                  finalOperation = 'create';
+                } else if (operation == 'update') {
+                  hasUpdate = true;
+                  if (!hasCreate) {
+                    finalOperation = 'update';
+                  }
+                } else if (operation == 'delete') {
+                  hasDelete = true;
+                  if (hasCreate) {
+                    finalOperation = '';
+                    break;
+                  } else {
+                    finalOperation = 'delete';
+                  }
                 }
+              }
+
+              if (hasCreate && hasUpdate && !hasDelete) {
+                finalOperation = 'create';
               }
 
               if (finalOperation == 'delete') {
@@ -889,10 +911,20 @@ class SyncDataService {
             }
           } else if (table == 'weight_gain') {
             for (var uniqueKey in operationListMap.keys) {
-              var dataSyncLog = syncLogs.firstWhereOrNull((syncLog) => syncLog.tableName == 'pregnancy_log' && syncLog.optionalId == uniqueKey);
+              var dataSyncLog;
+
+              if (uniqueKey != null) {
+                dataSyncLog = syncLogs.firstWhereOrNull((syncLog) => syncLog.tableName == 'weight_gain' && syncLog.dataId != null && syncLog.optionalId == null);
+              } else {
+                dataSyncLog = syncLogs.firstWhereOrNull((syncLog) => syncLog.tableName == 'weight_gain' && DateTime.parse(syncLog.optionalId ?? "") == DateTime.parse(uniqueKey));
+              }
               PregnancyHistory? weightPregnancy = pregnancyHistories.firstWhereOrNull((pregnancy) => pregnancy.id == dataSyncLog?.dataId);
-              WeightHistory? data = weightHistories.firstWhereOrNull((weight) => weight.tanggalPencatatan == uniqueKey);
-              if (data == null) {
+
+              WeightHistory? weightHistory = weightHistories.firstWhereOrNull((weight) => weight.tanggalPencatatan == uniqueKey);
+              var weightHistoryData = weightHistory?.toJson();
+              weightHistoryData?['first_date_last_period'] = weightPregnancy?.hariPertamaHaidTerakhir;
+
+              if (weightHistory == null) {
                 continue;
               }
               var operations = operationListMap[uniqueKey]!;
@@ -900,34 +932,26 @@ class SyncDataService {
               String finalOperation = '';
 
               for (var operation in operations) {
-                if (finalOperation == 'create' && operation == 'delete') {
-                  finalOperation = '';
-                  break;
-                } else {
-                  finalOperation = operation;
-                }
+                finalOperation = operation;
               }
 
               if (finalOperation == 'delete') {
                 syncData['data'][table]['delete'].add({'tanggal_pencatatan': uniqueKey});
               } else if (finalOperation == 'create' || finalOperation == 'init') {
-                var pregnancyLog = {
-                  'berat_badan': data.beratBadan,
-                  'minggu_kehamilan': data.mingguKehamilan,
-                  'tanggal_pencatatan': data.tanggalPencatatan,
-                  'weight_gain': data.pertambahanBerat,
-                  'first_date_last_period': weightPregnancy?.hariPertamaHaidTerakhir,
-                };
+                syncData['data'][table]['create'].add(weightHistoryData);
 
-                syncData['data'][table]['create'].add(pregnancyLog);
+                var pregnancy = pregnancyHistories.firstWhereOrNull((pregnancy) => pregnancy.id == weightHistory.riwayatKehamilanId);
 
-                var pregnancy = pregnancyHistories.firstWhereOrNull((pregnancy) => pregnancy.id == data.riwayatKehamilanId);
+                syncData['data']['pregnancy'] ??= {};
+                syncData['data']['pregnancy']['update'] ??= [];
+                syncData['data']['pregnancy']['create'] ??= [];
 
                 if (pregnancy != null) {
-                  var alreadyInUpdateOrCreate = syncData['data']['pregnancy']['update'].any((existingPregnancy) => existingPregnancy.id == pregnancy.id) || syncData['data']['pregnancy']['create'].any((existingPregnancy) => existingPregnancy.id == pregnancy.id);
+                  var pregnancyMap = pregnancy.toJson();
+                  bool alreadyInUpdateOrCreate = syncData['data']['pregnancy']['update'].any((existingPregnancy) => existingPregnancy['id'] == pregnancyMap['id']) || syncData['data']['pregnancy']['create'].any((existingPregnancy) => existingPregnancy['id'] == pregnancyMap['id']);
 
                   if (!alreadyInUpdateOrCreate) {
-                    syncData['data']['pregnancy']['update'].add(pregnancy);
+                    syncData['data']['pregnancy']['update'].add(pregnancyMap);
                   }
                 }
               }
@@ -936,38 +960,30 @@ class SyncDataService {
             for (var uniqueKey in operationListMap.keys) {
               var dataSyncLog = syncLogs.firstWhereOrNull((syncLog) => syncLog.tableName == 'pregnancy_log' && syncLog.optionalId == uniqueKey);
               PregnancyHistory? pregnancy = pregnancyHistories.firstWhereOrNull((pregnancy) => pregnancy.id == dataSyncLog?.dataId);
-              PregnancyDailyLog? pregnancyLogs = pregnancyDailyLogs!.firstWhereOrNull((pregnancyDailyLog) => pregnancyDailyLog.riwayatKehamilanId == pregnancy?.id);
+              PregnancyDailyLog? pregnancyLogs = pregnancyDailyLogs?.firstWhereOrNull((pregnancyDailyLog) => pregnancyDailyLog.riwayatKehamilanId == pregnancy?.id);
               List<DataHarianKehamilan>? pregnancyLog = pregnancyLogs?.dataHarianKehamilan;
 
               if (pregnancy == null || pregnancyLogs == null) {
                 continue;
               }
 
-              DataHarianKehamilan? logByDate = pregnancyLog!.firstWhereOrNull(
-                (log) => DateTime.parse(log.date).isAtSameMomentAs(DateTime.parse(uniqueKey)),
-              );
               var operations = operationListMap[uniqueKey]!;
+              DataHarianKehamilan? logByDate = pregnancyLog!.firstWhereOrNull(
+                (log) => DateTime.parse(log.date).isAtSameMomentAs(formatDateStr(uniqueKey)),
+              );
+              var logByDateData = logByDate?.toJson();
+              logByDateData?['first_date_last_period'] = pregnancy.hariPertamaHaidTerakhir;
 
               String finalOperation = '';
 
               for (var operation in operations) {
-                if (operation == 'create') {
-                  finalOperation = 'create';
-                } else if (operation == 'delete') {
-                  finalOperation = 'delete';
-                }
+                finalOperation = operation;
               }
 
               if (finalOperation == 'create') {
-                var pregnancyLog = {
-                  'date': logByDate?.date,
-                  'pregnancy_symptoms': logByDate?.pregnancySymptoms?.toJson(),
-                  'temperature': logByDate?.temperature,
-                  'notes': logByDate?.notes,
-                  'first_date_last_period': pregnancy.hariPertamaHaidTerakhir,
-                };
-
-                syncData['data'][table]['create'].add(pregnancyLog);
+                if (logByDateData != null) {
+                  syncData['data'][table]['create'].add(logByDateData);
+                }
               } else if (finalOperation == 'delete') {
                 syncData['data'][table]['delete'].add({'first_date_last_period': pregnancy.hariPertamaHaidTerakhir, 'date': uniqueKey});
               }
@@ -983,8 +999,10 @@ class SyncDataService {
                 continue;
               }
 
-              ContractionTimer? contraction = contractionTimer?.firstWhereOrNull((contraction) => contraction.id == uniqueKey);
               var operations = operationListMap[uniqueKey]!;
+              ContractionTimer? contraction = contractionTimer?.firstWhereOrNull((contraction) => contraction.id == uniqueKey);
+              var contractionData = contraction?.toJson();
+              contractionData?['first_date_last_period'] = pregnancy.hariPertamaHaidTerakhir;
 
               String finalOperation = '';
 
@@ -1000,14 +1018,9 @@ class SyncDataService {
               if (finalOperation == 'delete') {
                 syncData['data'][table]['delete'].add({'first_date_last_period': pregnancy.hariPertamaHaidTerakhir, 'id': uniqueKey});
               } else if (finalOperation == 'create') {
-                var contractionData = {
-                  'id': contraction?.id,
-                  'waktu_mulai': contraction?.timeStart,
-                  'durasi': contraction?.duration,
-                  'first_date_last_period': pregnancy.hariPertamaHaidTerakhir,
-                };
-
-                syncData['data'][table]['create']!.add(contractionData);
+                if (contractionData != null) {
+                  syncData['data'][table]['create']!.add(contractionData);
+                }
               }
             }
           } else if (table == 'blood_pressure') {
@@ -1022,37 +1035,50 @@ class SyncDataService {
               }
 
               BloodPressure? bloodPressure = bloodPressures?.firstWhereOrNull((tekananDarah) => tekananDarah.id == uniqueKey);
-              var bloodPressureData = {
-                'id': bloodPressure?.id,
-                'tekanan_sistolik': bloodPressure?.systolicPressure,
-                'tekanan_diastolik': bloodPressure?.diastolicPressure,
-                'detak_jantung': bloodPressure?.heartRate,
-                'datetime': bloodPressure?.datetime,
-                'first_date_last_period': pregnancy.hariPertamaHaidTerakhir,
-              };
               var operations = operationListMap[uniqueKey]!;
+              var bloodPressureData = bloodPressure?.toJson();
+              bloodPressureData?['first_date_last_period'] = pregnancy.hariPertamaHaidTerakhir;
 
               String finalOperation = '';
 
+              bool hasCreate = false;
+              bool hasDelete = false;
+              bool hasUpdate = false;
+
               for (var operation in operations) {
-                if (finalOperation == 'create' && operation == 'delete') {
-                  finalOperation = '';
-                  break;
-                } else if (finalOperation == 'update' && operation == 'delete') {
-                  finalOperation = 'delete';
-                } else if (finalOperation == 'create' && operation == 'update') {
-                  continue;
-                } else {
-                  finalOperation = operation;
+                if (operation == 'create') {
+                  hasCreate = true;
+                  finalOperation = 'create';
+                } else if (operation == 'update') {
+                  hasUpdate = true;
+                  if (!hasCreate) {
+                    finalOperation = 'update';
+                  }
+                } else if (operation == 'delete') {
+                  hasDelete = true;
+                  if (hasCreate) {
+                    finalOperation = '';
+                    break;
+                  } else {
+                    finalOperation = 'delete';
+                  }
                 }
+              }
+
+              if (hasCreate && hasUpdate && !hasDelete) {
+                finalOperation = 'create';
               }
 
               if (finalOperation == 'delete') {
                 syncData['data'][table]['delete'].add({'first_date_last_period': pregnancy.hariPertamaHaidTerakhir, 'id': uniqueKey});
               } else if (finalOperation == 'create') {
-                syncData['data'][table]['create'].add(bloodPressureData);
+                if (bloodPressureData != null) {
+                  syncData['data'][table]['create'].add(bloodPressureData);
+                }
               } else if (finalOperation == 'update') {
-                syncData['data'][table]['update'].add(bloodPressureData);
+                if (bloodPressureData != null) {
+                  syncData['data'][table]['update'].add(bloodPressureData);
+                }
               }
             }
           } else if (table == 'baby_kicks') {
@@ -1068,6 +1094,8 @@ class SyncDataService {
 
               BabyKicks? babyKick = babyKicks?.firstWhereOrNull((kick) => kick.id == uniqueKey);
               var operations = operationListMap[uniqueKey]!;
+              var babyKickData = babyKick?.toJson();
+              babyKickData?['first_date_last_period'] = pregnancy.hariPertamaHaidTerakhir;
 
               String finalOperation = '';
 
@@ -1083,42 +1111,39 @@ class SyncDataService {
               if (finalOperation == 'delete') {
                 syncData['data'][table]['delete'].add({'first_date_last_period': pregnancy.hariPertamaHaidTerakhir, 'id': uniqueKey});
               } else if (finalOperation == 'create') {
-                var babyKickData = {
-                  'id': babyKick?.id,
-                  'waktu_mulai': babyKick?.datetimeStart,
-                  'waktu_selesai': babyKick?.datetimeEnd,
-                  'jumlah_gerakan': babyKick?.totalKicks,
-                  'first_date_last_period': pregnancy.hariPertamaHaidTerakhir,
-                };
-
-                syncData['data'][table]['create'].add(babyKickData);
+                if (babyKickData != null) {
+                  syncData['data'][table]['create'].add(babyKickData);
+                }
               }
             }
           }
         }
-        DataCategoryByTable? pendingDataChangesResponse = await profileRepository.resyncPendingData(syncData);
-        List<PeriodHistory>? updatedPeriodHistory = pendingDataChangesResponse?.periodHistory;
-        List<PregnancyHistory>? updatedPregnancyHistory = pendingDataChangesResponse?.pregnancyHistory;
+        _logger.i(syncData);
+        // DataCategoryByTable? pendingDataChangesResponse = await profileRepository.resyncPendingData(syncData);
+        await profileRepository.resyncPendingData(syncData);
 
-        if ((updatedPeriodHistory?.length ?? 0) > 0 && updatedPeriodHistory != null) {
-          for (var period in updatedPeriodHistory) {
-            PeriodHistory? matchingPeriodHistory = periodHistories.firstWhereOrNull((localPeriodData) => localPeriodData.haidAwal == period.haidAwal && localPeriodData.haidAkhir == period.haidAkhir);
-            if (matchingPeriodHistory != null) {
-              PeriodHistory editPeriodId = matchingPeriodHistory.copyWith(remoteId: period.id);
-              await _periodHistoryRepository.editPeriodHistory(editPeriodId);
-            }
-          }
-        }
+        // List<PeriodHistory>? updatedPeriodHistory = pendingDataChangesResponse?.periodHistory;
+        // List<PregnancyHistory>? updatedPregnancyHistory = pendingDataChangesResponse?.pregnancyHistory;
 
-        if ((updatedPregnancyHistory?.length ?? 0) > 0 && updatedPregnancyHistory != null) {
-          for (var pregnancy in updatedPregnancyHistory) {
-            PregnancyHistory? matchingPregnancyHistory = pregnancyHistories.firstWhereOrNull((localPregnancyData) => localPregnancyData.hariPertamaHaidTerakhir == pregnancy.hariPertamaHaidTerakhir);
-            if (matchingPregnancyHistory != null) {
-              PregnancyHistory editPregnancyId = matchingPregnancyHistory.copyWith(remoteId: pregnancy.id);
-              await _pregnancyHistoryRepository.editPregnancy(editPregnancyId);
-            }
-          }
-        }
+        // if ((updatedPeriodHistory?.length ?? 0) > 0 && updatedPeriodHistory != null) {
+        //   for (var period in updatedPeriodHistory) {
+        //     PeriodHistory? matchingPeriodHistory = periodHistories.firstWhereOrNull((localPeriodData) => localPeriodData.haidAwal == period.haidAwal && localPeriodData.haidAkhir == period.haidAkhir);
+        //     if (matchingPeriodHistory != null) {
+        //       PeriodHistory editPeriodId = matchingPeriodHistory.copyWith(remoteId: period.id);
+        //       await _periodHistoryRepository.editPeriodHistory(editPeriodId);
+        //     }
+        //   }
+        // }
+
+        // if ((updatedPregnancyHistory?.length ?? 0) > 0 && updatedPregnancyHistory != null) {
+        //   for (var pregnancy in updatedPregnancyHistory) {
+        //     PregnancyHistory? matchingPregnancyHistory = pregnancyHistories.firstWhereOrNull((localPregnancyData) => localPregnancyData.hariPertamaHaidTerakhir == pregnancy.hariPertamaHaidTerakhir);
+        //     if (matchingPregnancyHistory != null) {
+        //       PregnancyHistory editPregnancyId = matchingPregnancyHistory.copyWith(remoteId: pregnancy.id);
+        //       await _pregnancyHistoryRepository.editPregnancy(editPregnancyId);
+        //     }
+        //   }
+        // }
       } else {
         print("No pending sync data.");
       }
@@ -1129,7 +1154,7 @@ class SyncDataService {
   }
 
   String getUniqueKey(String table, String? dataId, String? optionalId) {
-    const specialTypes = {'weight_gain', 'pregnancy_log', 'contraction_timer', 'blood_pressure', 'baby_kicks'};
+    const specialTypes = {'reminder', 'daily_log', 'weight_gain', 'pregnancy_log', 'contraction_timer', 'blood_pressure', 'baby_kicks'};
 
     if (specialTypes.contains(table) && optionalId != null && optionalId.isNotEmpty) {
       return optionalId;
@@ -1141,7 +1166,6 @@ class SyncDataService {
   Future<void> rebackupData() async {
     try {
       int userId = storageService.getAccountLocalId();
-      User? profile = await _localProfileRepository.getProfile();
       DailyLog? dailyLog = await _localLogRepository.getDailyLog(userId);
       List<PregnancyDailyLog>? pregnancyDailyLog = await pregnancyLogRepository.getAllPregnancyDailyLog(userId);
       List<PeriodHistory>? periodHistory = await _periodHistoryRepository.getPeriodHistory(userId);
@@ -1150,13 +1174,19 @@ class SyncDataService {
       List<WeightHistory>? weightHistory = await _weightHistoryRepository.getWeightHistory(userId);
 
       Map<String, dynamic> userData = {
-        "profile": profile,
-        "dailyLog": dailyLog,
-        "periodHistory": isActualPeriodHistory,
-        "pregnancyHistory": pregnancyHistory,
-        "weightHistory": weightHistory,
-        "pregnancyDailyLog": pregnancyDailyLog,
+        "dailyLog": dailyLog?.toJson(),
+        "periodHistory": isActualPeriodHistory.map((e) => e.toJson()).toList(),
+        "pregnancyHistory": pregnancyHistory.map((e) => e.toJson()).toList(),
+        "weightHistory": weightHistory.map((e) => e.toJson()).toList(),
+        "pregnancyDailyLog": pregnancyDailyLog?.map((e) => e.toJson()).toList(),
       };
+
+      // _logger.i(profile?.toJson());
+      // _logger.i(dailyLog?.toJson());
+      // _logger.i(isActualPeriodHistory.map((e) => e.toJson()).toList());
+      // _logger.i(pregnancyHistory.map((e) => e.toJson()).toList());
+      // _logger.i(weightHistory.map((e) => e.toJson()).toList());
+      // _logger.i(pregnancyDailyLog?.map((e) => e.toJson()).toList());
 
       DataCategoryByTable? resyncDataResponse = await profileRepository.resyncData(userData);
       List<PeriodHistory>? updatedPeriodHistory = resyncDataResponse?.periodHistory;

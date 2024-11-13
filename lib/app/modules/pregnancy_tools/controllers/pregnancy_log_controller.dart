@@ -195,18 +195,18 @@ class PregnancyLogController extends GetxController {
       try {
         await pregnancyLogAPIRepository.storePregnancyLog(selectedDate, getUpdatedSymptoms(), getTemperature(), getNotes());
       } catch (e) {
-        saveSyncPregnancyLog(formattedDate, pregnancyDailyLog?.id ?? 0);
+        saveSyncPregnancyLog(formattedDate, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
       }
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      saveSyncPregnancyLog(formattedDate, pregnancyDailyLog?.id ?? 0);
+      saveSyncPregnancyLog(formattedDate, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
   }
 
-  Future<void> saveSyncPregnancyLog(String formattedDate, int pregnancylog_id) async {
+  Future<void> saveSyncPregnancyLog(String formattedDate, int pregnancyId) async {
     SyncLog syncLog = SyncLog(
       tableName: 'pregnancy_log',
       operation: 'create',
-      dataId: pregnancylog_id,
+      dataId: pregnancyId,
       optionalId: formattedDate,
       createdAt: DateTime.now().toString(),
     );
@@ -236,18 +236,18 @@ class PregnancyLogController extends GetxController {
       try {
         await pregnancyLogAPIRepository.deletePregnancyLog(date);
       } catch (e) {
-        syncDeletePregnancyLog(formattedDate, pregnancyDailyLog?.id ?? 0);
+        syncDeletePregnancyLog(formattedDate, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
       }
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      syncDeletePregnancyLog(formattedDate, pregnancyDailyLog?.id ?? 0);
+      syncDeletePregnancyLog(formattedDate, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
   }
 
-  Future<void> syncDeletePregnancyLog(String formattedDate, int pregnancylog_id) async {
+  Future<void> syncDeletePregnancyLog(String formattedDate, int pregnancyId) async {
     SyncLog syncLog = SyncLog(
       tableName: 'pregnancy_log',
       operation: 'delete',
-      dataId: pregnancylog_id,
+      dataId: pregnancyId,
       optionalId: formattedDate,
       createdAt: DateTime.now().toString(),
     );

@@ -64,18 +64,18 @@ class BabykicksController extends GetxController {
       try {
         await pregnancyLogAPIRepository.addKickCounter(id, DateTime.now());
       } catch (e) {
-        await syncAddKickCounter(id, pregnancyDailyLog?.id ?? 0);
+        await syncAddKickCounter(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
       }
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      await syncAddKickCounter(id, pregnancyDailyLog?.id ?? 0);
+      await syncAddKickCounter(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
   }
 
-  Future<void> syncAddKickCounter(String id, int pregnancylog_id) async {
+  Future<void> syncAddKickCounter(String id, int pregnancyId) async {
     SyncLog syncLog = SyncLog(
       tableName: 'baby_kicks',
       operation: 'create',
-      dataId: pregnancylog_id,
+      dataId: pregnancyId,
       optionalId: id,
       createdAt: DateTime.now().toString(),
     );
@@ -102,18 +102,18 @@ class BabykicksController extends GetxController {
       try {
         await pregnancyLogAPIRepository.deleteKickCounter(id);
       } catch (e) {
-        await syncDeleteKickCounter(id, pregnancyDailyLog?.id ?? 0);
+        await syncDeleteKickCounter(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
       }
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      await syncDeleteKickCounter(id, pregnancyDailyLog?.id ?? 0);
+      await syncDeleteKickCounter(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
   }
 
-  Future<void> syncDeleteKickCounter(String id, int pregnancylog_id) async {
+  Future<void> syncDeleteKickCounter(String id, int pregnancyId) async {
     SyncLog syncLog = SyncLog(
       tableName: 'baby_kicks',
       operation: 'delete',
-      dataId: pregnancylog_id,
+      dataId: pregnancyId,
       optionalId: id,
       createdAt: DateTime.now().toString(),
     );

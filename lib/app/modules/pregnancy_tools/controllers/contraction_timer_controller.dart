@@ -116,18 +116,18 @@ class ContractionTimerController extends GetxController {
       try {
         await pregnancyLogAPIRepository.addContractionTimer(id, selectedDate, duration);
       } catch (e) {
-        await syncAddContraction(id, pregnancyDailyLog?.id ?? 0);
+        await syncAddContraction(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
       }
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      await syncAddContraction(id, pregnancyDailyLog?.id ?? 0);
+      await syncAddContraction(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
   }
 
-  Future<void> syncAddContraction(String id, int pregnancylog_id) async {
+  Future<void> syncAddContraction(String id, int pregnancyId) async {
     SyncLog syncLog = SyncLog(
       tableName: 'contraction_timer',
       operation: 'create',
-      dataId: pregnancylog_id,
+      dataId: pregnancyId,
       optionalId: id,
       createdAt: DateTime.now().toString(),
     );
@@ -154,18 +154,18 @@ class ContractionTimerController extends GetxController {
       try {
         await pregnancyLogAPIRepository.deleteContractionTimer(id);
       } catch (e) {
-        await syncDeleteContraction(id, pregnancyDailyLog?.id ?? 0);
+        await syncDeleteContraction(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
       }
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      await syncDeleteContraction(id, pregnancyDailyLog?.id ?? 0);
+      await syncDeleteContraction(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
   }
 
-  Future<void> syncDeleteContraction(String id, int pregnancylog_id) async {
+  Future<void> syncDeleteContraction(String id, int pregnancyId) async {
     SyncLog syncLog = SyncLog(
       tableName: 'contraction_timer',
       operation: 'delete',
-      dataId: pregnancylog_id,
+      dataId: pregnancyId,
       optionalId: id,
       createdAt: DateTime.now().toString(),
     );

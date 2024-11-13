@@ -193,10 +193,10 @@ class BloodPressureController extends GetxController {
           combinedDateTime,
         );
       } catch (e) {
-        await syncAddBloodPressure(id, pregnancyDailyLog?.id ?? 0);
+        await syncAddBloodPressure(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
       }
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      await syncAddBloodPressure(id, pregnancyDailyLog?.id ?? 0);
+      await syncAddBloodPressure(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
 
     await fetchAllBloodPressure();
@@ -209,11 +209,11 @@ class BloodPressureController extends GetxController {
     );
   }
 
-  Future<void> syncAddBloodPressure(String id, int pregnancylog_id) async {
+  Future<void> syncAddBloodPressure(String id, int pregnancyId) async {
     SyncLog syncLog = SyncLog(
       tableName: 'blood_pressure',
       operation: 'create',
-      dataId: pregnancylog_id,
+      dataId: pregnancyId,
       optionalId: id,
       createdAt: DateTime.now().toString(),
     );
@@ -253,10 +253,10 @@ class BloodPressureController extends GetxController {
           combinedDateTime,
         );
       } catch (e) {
-        await syncEditBloodPressure(id, pregnancyDailyLog?.id ?? 0);
+        await syncEditBloodPressure(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
       }
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      await syncEditBloodPressure(id, pregnancyDailyLog?.id ?? 0);
+      await syncEditBloodPressure(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
 
     await fetchAllBloodPressure();
@@ -269,11 +269,11 @@ class BloodPressureController extends GetxController {
     );
   }
 
-  Future<void> syncEditBloodPressure(String id, int pregnancylog_id) async {
+  Future<void> syncEditBloodPressure(String id, int pregnancyId) async {
     SyncLog syncLog = SyncLog(
       tableName: 'blood_pressure',
       operation: 'edit',
-      dataId: pregnancylog_id,
+      dataId: pregnancyId,
       optionalId: id,
       createdAt: DateTime.now().toString(),
     );
@@ -306,18 +306,18 @@ class BloodPressureController extends GetxController {
       try {
         await pregnancyLogAPIRepository.deleteBloodPressure(id);
       } catch (e) {
-        await syncDeleteBloodPressure(id, pregnancyDailyLog?.id ?? 0);
+        await syncDeleteBloodPressure(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
       }
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
-      await syncDeleteBloodPressure(id, pregnancyDailyLog?.id ?? 0);
+      await syncDeleteBloodPressure(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
   }
 
-  Future<void> syncDeleteBloodPressure(String id, int pregnancylog_id) async {
+  Future<void> syncDeleteBloodPressure(String id, int pregnancyId) async {
     SyncLog syncLog = SyncLog(
       tableName: 'blood_pressure',
       operation: 'delete',
-      dataId: pregnancylog_id,
+      dataId: pregnancyId,
       optionalId: id,
       createdAt: DateTime.now().toString(),
     );

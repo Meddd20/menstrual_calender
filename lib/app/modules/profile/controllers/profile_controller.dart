@@ -135,15 +135,12 @@ class ProfileController extends GetxController {
     isDataBackedup.value = backup;
 
     if (backup) {
-      syncDataService.rebackupData();
+      await syncDataService.rebackupData();
     } else {
-      authRepository.deleteData();
+      await authRepository.deleteData();
     }
 
     storageService.storeIsBackup(backup);
-    update();
-
-    await Future.delayed(Duration(milliseconds: 350));
     Get.offAllNamed(Routes.NAVIGATION_MENU);
   }
 

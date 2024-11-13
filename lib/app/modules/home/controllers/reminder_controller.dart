@@ -255,7 +255,7 @@ class ReminderController extends GetxController {
   Future<void> saveEditSyncReminder(String id) async {
     SyncLog syncLog = SyncLog(
       tableName: 'reminder',
-      operation: 'edit',
+      operation: 'update',
       optionalId: id,
       createdAt: DateTime.now().toString(),
     );
