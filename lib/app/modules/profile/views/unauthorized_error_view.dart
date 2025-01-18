@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/controllers/profile_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class UnauthorizedErrorView extends GetView<ProfileController> {
   const UnauthorizedErrorView({super.key});

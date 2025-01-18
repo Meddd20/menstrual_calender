@@ -1,6 +1,7 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class CustomCalendarDatePicker extends StatelessWidget {
   final List<DateTime?> value;

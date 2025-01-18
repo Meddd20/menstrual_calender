@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart' as Pregnancy;
-import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
-import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_tracker_view.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
-import 'package:periodnpregnancycalender/app/services/weight_history_service.dart';
-import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class WeightTrackerController extends GetxController {
   final ApiService apiService = ApiService();
@@ -32,8 +26,25 @@ class WeightTrackerController extends GetxController {
   PregnancyWeightGainData? get getPregnancyWeightGainData => pregnancyWeightGainData.value;
   List<WeightHistory>? get getweightGainHistory => weightGainHistory;
 
-  Rx<Pregnancy.CurrentlyPregnant> currentlyPregnantData = Rx<Pregnancy.CurrentlyPregnant>(Pregnancy.CurrentlyPregnant());
-  RxList<Pregnancy.WeeklyData> weeklyData = <Pregnancy.WeeklyData>[].obs;
+  Rx<CurrentlyPregnant> currentlyPregnantData = Rx<CurrentlyPregnant>(CurrentlyPregnant());
+  RxList<WeeklyData> weeklyData = <WeeklyData>[].obs;
+
+  final Rx<DateTime> _focusedDate = Rx<DateTime>(DateTime.now());
+  DateTime get getFocusedDate => _focusedDate.value;
+
+  void setFocusedDate(DateTime selectedDate) {
+    _focusedDate.value = selectedDate;
+    update();
+  }
+
+  final Rx<DateTime?> _selectedDate = Rx<DateTime?>(DateTime.now());
+
+  DateTime? get selectedDate => _selectedDate.value;
+
+  void setSelectedDate(DateTime selectedDate) {
+    _selectedDate.value = selectedDate;
+    update();
+  }
 
   @override
   void onInit() {
@@ -56,23 +67,6 @@ class WeightTrackerController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-  }
-
-  final Rx<DateTime> _focusedDate = Rx<DateTime>(DateTime.now());
-  DateTime get getFocusedDate => _focusedDate.value;
-
-  void setFocusedDate(DateTime selectedDate) {
-    _focusedDate.value = selectedDate;
-    update();
-  }
-
-  final Rx<DateTime?> _selectedDate = Rx<DateTime?>(DateTime.now());
-
-  DateTime? get selectedDate => _selectedDate.value;
-
-  void setSelectedDate(DateTime selectedDate) {
-    _selectedDate.value = selectedDate;
-    update();
   }
 
   final Rx<int> _selectedWeight = Rx<int>(45);
@@ -226,7 +220,7 @@ class WeightTrackerController extends GetxController {
     WeightHistory? initializedWeightHistory;
 
     try {
-      initializedWeightHistory = await _weightHistoryService.initWeightGain(getHeight(), getWeight(), (isTwin.value == false) ? 0 : 1);
+      initializedWeightHistory = await _weightHistoryService.initWeightGain(getHeight(), getWeight() == 0.0 ? 45.0 : getWeight(), (isTwin.value == false) ? 0 : 1);
       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(context)!.weightGainInitializedSuccess));
       localSuccess = true;
     } catch (e) {
@@ -236,6 +230,7 @@ class WeightTrackerController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await pregnancyRepository.initializeWeightGain(getHeight(), getWeight(), (isTwin.value == false) ? 0 : 1);
       } catch (e) {
         await _syncInitializedWeightData(initializedWeightHistory?.id ?? 0);
@@ -280,6 +275,7 @@ class WeightTrackerController extends GetxController {
 
       if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
         try {
+          await SyncDataService().pendingDataChange();
           await pregnancyRepository.weeklyWeightGain(getWeight(), selectedWeek, formatDate(selectedDate!));
         } catch (e) {
           await _syncAddWeeklyWeightData(formatDate(selectedDate!), weightHistory?.riwayatKehamilanId ?? 0);
@@ -328,6 +324,7 @@ class WeightTrackerController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await pregnancyRepository.deleteWeeklyWeightGain(deletedWeeklyWeightDate);
       } catch (e) {
         await _syncDeleteWeightData(deletedWeeklyWeightDate, weightHistory?.riwayatKehamilanId ?? 0);

@@ -1,5 +1,5 @@
-import 'package:periodnpregnancycalender/app/models/master_gender.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class MasterGenderService {
   late final MasterGenderRepository _masterGenderRepository = MasterGenderRepository();

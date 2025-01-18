@@ -113,32 +113,60 @@ class PregnancyDailyLog {
 
 class DataHarianKehamilan {
   String date;
+  int? pregnancyWeek;
   PregnancySymptoms? pregnancySymptoms;
   String? notes;
   String? temperature;
+  double? fundusUteriHeight;
+  int? fetalHeartRate;
+  String? examinationMethod;
+  String? fetalPosition;
+  String? placentaCondition;
+  int? fetalWeight;
 
   DataHarianKehamilan({
     required this.date,
+    this.pregnancyWeek,
     this.pregnancySymptoms,
     this.notes,
     this.temperature,
+    this.fundusUteriHeight,
+    this.fetalHeartRate,
+    this.examinationMethod,
+    this.fetalPosition,
+    this.placentaCondition,
+    this.fetalWeight,
   });
 
   factory DataHarianKehamilan.fromJson(Map<String, dynamic> json) {
     return DataHarianKehamilan(
       date: json['date'] as String,
+      pregnancyWeek: json['pregnancy_week'] as int?,
       pregnancySymptoms: json['pregnancy_symptoms'] != null ? PregnancySymptoms.fromJson(json['pregnancy_symptoms']) : null,
       notes: json['notes'] as String?,
       temperature: json['temperature'] as String?,
+      fundusUteriHeight: json['fundus_uteri_height'] as double?,
+      fetalHeartRate: json['fetal_heart_rate'] as int?,
+      examinationMethod: json['examination_method'] as String?,
+      fetalPosition: json['fetal_position'] as String?,
+      placentaCondition: json['placenta_condition'] as String?,
+      fetalWeight: json['fetal_weight'] as int?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'date': date,
+      'pregnancy_week': pregnancyWeek,
       'pregnancy_symptoms': pregnancySymptoms?.toJson(),
       'notes': notes,
       'temperature': temperature,
+      'fundus_uteri_height': fundusUteriHeight,
+      'fetal_heart_rate': fetalHeartRate,
+      'examination_method': examinationMethod,
+      'fetal_position': fetalPosition,
+      'placenta_condition': placentaCondition,
+      'fetal_weight': fetalWeight,
     };
   }
 }

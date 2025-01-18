@@ -4,18 +4,14 @@ import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_choice_chip.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_expanded_calendar.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_filter_chip.dart';
-import 'package:periodnpregnancycalender/app/models/daily_log_date_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/daily_log_controller.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class DailyLogView extends GetView<DailyLogController> {
   final HomeMenstruationController homeController;
@@ -55,6 +51,7 @@ class DailyLogView extends GetView<DailyLogController> {
                           padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
                           child: SingleChildScrollView(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
@@ -77,7 +74,25 @@ class DailyLogView extends GetView<DailyLogController> {
                                   AppLocalizations.of(context)!.dailyLogInfoDesc,
                                   style: CustomTextStyle.medium(16, height: 1.75),
                                 ),
+                                SizedBox(height: 30),
+                                Divider(
+                                  height: 0.5,
+                                  thickness: 1.0,
+                                ),
                                 SizedBox(height: 15),
+                                Container(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.medicalDisclaimer,
+                                    style: CustomTextStyle.medium(12),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  AppLocalizations.of(context)!.medicalDisclaimerDesc,
+                                  style: CustomTextStyle.light(12, height: 1.5),
+                                ),
+                                SizedBox(height: 20),
                               ],
                             ),
                           ),
@@ -379,16 +394,16 @@ class DailyLogView extends GetView<DailyLogController> {
                                                   alignment: WrapAlignment.start,
                                                   spacing: 8.0,
                                                   children: controller.bleedingFlow.map(
-                                                    (bleedingFlow) {
-                                                      final vaginalDischargeTranslations = controller.bleedingFlowTranslations(context);
+                                                    (bleed) {
+                                                      final bleedingFlowTranslations = controller.bleedingFlowTranslations(context);
                                                       return CustomChoiceChip(
-                                                        label: vaginalDischargeTranslations[bleedingFlow] ?? bleedingFlow,
-                                                        isSelected: controller.getSelectedBleedingFlow() == bleedingFlow,
+                                                        label: bleedingFlowTranslations[bleed] ?? bleed,
+                                                        isSelected: controller.getSelectedBleedingFlow() == bleed,
                                                         onSelected: () {
-                                                          if (controller.getSelectedBleedingFlow() == bleedingFlow) {
+                                                          if (controller.getSelectedBleedingFlow() == bleed) {
                                                             controller.setSelectedBleedingFlow("");
                                                           } else {
-                                                            controller.setSelectedBleedingFlow(bleedingFlow);
+                                                            controller.setSelectedBleedingFlow(bleed);
                                                           }
                                                         },
                                                       );

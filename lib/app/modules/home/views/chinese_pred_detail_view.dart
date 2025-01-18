@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/models/date_event_model.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class ChinesePredDetailView extends GetView {
   const ChinesePredDetailView({Key? key}) : super(key: key);
@@ -235,6 +235,24 @@ class ChinesePredDetailView extends GetView {
                         minScale: PhotoViewComputedScale.contained,
                         maxScale: PhotoViewComputedScale.covered * 2,
                       ),
+                    ),
+                    SizedBox(height: 30),
+                    Divider(
+                      height: 0.5,
+                      thickness: 1.0,
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      child: Text(
+                        AppLocalizations.of(context)!.medicalDisclaimer,
+                        style: CustomTextStyle.medium(12),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      AppLocalizations.of(context)!.medicalDisclaimerDesc,
+                      style: CustomTextStyle.light(12, height: 1.5),
                     ),
                     SizedBox(height: 20),
                   ],

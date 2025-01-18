@@ -1,18 +1,10 @@
 import 'package:logger/logger.dart';
-import 'package:periodnpregnancycalender/app/models/date_event_model.dart';
-import 'package:periodnpregnancycalender/app/models/master_gender.dart';
-import 'package:periodnpregnancycalender/app/models/master_newmoon_model.dart';
-import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
-import 'package:periodnpregnancycalender/app/models/profile_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_gender_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_newmoon_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/period_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
-import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class PeriodHistoryService {
   final Logger _logger = Logger();

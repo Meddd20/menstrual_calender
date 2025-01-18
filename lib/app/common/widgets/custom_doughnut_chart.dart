@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class CustomDougnutChart extends StatelessWidget {
   final List<MapEntry<String, dynamic>> dataSource;

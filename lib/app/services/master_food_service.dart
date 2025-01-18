@@ -1,5 +1,5 @@
-import 'package:periodnpregnancycalender/app/models/master_food_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_food_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class MasterFoodService {
   late final MasterFoodRepository _masterFoodRepository = MasterFoodRepository();

@@ -60,6 +60,15 @@ class StorageService {
     return box.read("isAuth") ?? false;
   }
 
+  void storeIsAccountCreatedUnverified(bool isBackup) {
+    box.write("isAccountCreatedUnverified", isBackup);
+  }
+
+  bool getIsAccountCreatedUnverified() {
+    bool? isAccountCreatedUnverified = box.read("isAccountCreatedUnverified") ?? false;
+    return isAccountCreatedUnverified;
+  }
+
   void storeIsBackup(bool isBackup) {
     box.write("isBackup", isBackup);
   }

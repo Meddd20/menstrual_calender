@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class CustomDateLook extends StatelessWidget {
   final MapEntry<String, dynamic> entry;
@@ -53,7 +53,7 @@ class CustomDateLook extends StatelessWidget {
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      "${entry.value.toString().replaceAll('[', '').replaceAll(']', '')} ${type == 'weight' ? 'Kg' : type == 'temperature' ? '°C' : ''}",
+                      "${entry.value.toString().replaceAll('[', '').replaceAll(']', '')} ${type == 'weight' ? 'Kg' : type == 'temperature' ? '°C' : type == 'height' ? 'cm' : ''}",
                       overflow: TextOverflow.visible,
                       style: CustomTextStyle.medium(16, height: 1.5),
                     ),

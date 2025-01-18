@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class CustomCircularCard extends StatelessWidget {
   final String iconPath;

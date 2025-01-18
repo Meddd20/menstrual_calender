@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class WeeklyInfo extends StatelessWidget {
   final String title;

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_expanded_calendar.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_filter_chip.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/logs_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/notes_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/temperature_view.dart';
+import 'package:periodnpregnancycalender/app/modules/analysis/views/weight_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/pregnancy_log_controller.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class PregnancyLogView extends GetView<PregnancyLogController> {
   const PregnancyLogView({Key? key}) : super(key: key);
@@ -47,6 +47,7 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                           child: Stack(
                             children: [
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +71,25 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                                     AppLocalizations.of(context)!.pregnancyDailyLogDesc,
                                     style: CustomTextStyle.medium(16, height: 1.75),
                                   ),
+                                  SizedBox(height: 30),
+                                  Divider(
+                                    height: 0.5,
+                                    thickness: 1.0,
+                                  ),
                                   SizedBox(height: 15),
+                                  Container(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.medicalDisclaimer,
+                                      style: CustomTextStyle.medium(12),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    AppLocalizations.of(context)!.medicalDisclaimerDesc,
+                                    style: CustomTextStyle.light(12, height: 1.5),
+                                  ),
+                                  SizedBox(height: 20),
                                 ],
                               ),
                             ],
@@ -120,6 +139,15 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                 case 'pregnancy_temperature':
                   Get.to(() => TemperatureView(), arguments: "pregnancy_temperature");
                   break;
+                case 'uteri_fundus_height':
+                  Get.to(() => WeightView(), arguments: "uteri_fundus_height");
+                  break;
+                case 'fetal_heartrate':
+                  Get.to(() => NotesView(), arguments: "fetal_heartrate");
+                  break;
+                case 'pregnancy_usg':
+                  Get.to(() => NotesView(), arguments: "pregnancy_usg");
+                  break;
               }
             },
             itemBuilder: (context) => [
@@ -150,6 +178,36 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                     Icon(Icons.thermostat, color: Colors.black),
                     SizedBox(width: 8),
                     Text(AppLocalizations.of(context)!.temperature),
+                  ],
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'uteri_fundus_height',
+                child: Row(
+                  children: [
+                    Icon(Icons.height, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text("Uteri Fundus Height"),
+                  ],
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'fetal_heartrate',
+                child: Row(
+                  children: [
+                    Icon(Icons.favorite, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text("Fetal Heart Rate"),
+                  ],
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'pregnancy_usg',
+                child: Row(
+                  children: [
+                    Icon(Icons.monitor_heart, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text("Pregnancy USG"),
                   ],
                 ),
               ),
@@ -196,6 +254,8 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                                   controller.setSelectedDate(selectedDay);
                                   controller.setFocusedDate(focusedDay);
                                   controller.fetchPregnancyLog(selectedDay);
+                                  controller.currentDatePregnancyWeek(selectedDay);
+                                  controller.isChanged.value = false;
                                 },
                                 onPageChanged: (focusedDay) {
                                   controller.setFocusedDate(focusedDay);
@@ -561,9 +621,702 @@ class PregnancyLogView extends GetView<PregnancyLogController> {
                                 ),
                               ),
                             ),
+                            SizedBox(height: 30),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                "Pemeriksaan Kesehatan Janin & Ibu Hamil",
+                                style: CustomTextStyle.extraBold(20),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            if (controller.currentWeek.value > 12) ...[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (BuildContext context) {
+                                        return PopScope(
+                                          onPopInvoked: (didPop) {
+                                            if (didPop) {
+                                              controller.resetFundusUteriHeight();
+                                            }
+                                          },
+                                          child: Wrap(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
+                                                child: Center(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.height,
+                                                          size: 35,
+                                                          color: Color(0xFFFF6868),
+                                                        ),
+                                                        SizedBox(height: 10.h),
+                                                        Text(
+                                                          "Tinggi Fundus Uteri",
+                                                          style: CustomTextStyle.bold(20, height: 1.5),
+                                                        ),
+                                                        SizedBox(height: 30.h),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              "Tanggal Pemeriksaan",
+                                                              style: CustomTextStyle.medium(15),
+                                                            ),
+                                                            Text(
+                                                              formatDate(controller.selectedDate),
+                                                              style: CustomTextStyle.extraBold(15, height: 1.5),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              "Minggu Kehamilan",
+                                                              style: CustomTextStyle.medium(15),
+                                                            ),
+                                                            Text(
+                                                              "${controller.currentWeek.value}",
+                                                              style: CustomTextStyle.extraBold(15, height: 1.5),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Container(
+                                                          width: Get.width,
+                                                          child: Text(
+                                                            "Tinggi Fundus Uteri",
+                                                            style: CustomTextStyle.medium(15),
+                                                            textAlign: TextAlign.left,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Obx(
+                                                              () => NumberPicker(
+                                                                minValue: 12,
+                                                                maxValue: 42,
+                                                                value: controller.selectedFundusUteriHeightWholeNumber,
+                                                                onChanged: controller.setFundusUteriHeightWholeNumber,
+                                                                textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                                selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
+                                                                infiniteLoop: true,
+                                                                decoration: BoxDecoration(
+                                                                  border: Border(
+                                                                    top: BorderSide(color: Colors.black),
+                                                                    bottom: BorderSide(color: Colors.black),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              ".",
+                                                              style: CustomTextStyle.extraBold(20, color: AppColors.primary),
+                                                            ),
+                                                            Obx(
+                                                              () => NumberPicker(
+                                                                minValue: 0,
+                                                                maxValue: 9,
+                                                                value: controller.selectedFundusUteriHeightDecimalNumber,
+                                                                onChanged: controller.setFundusUteriHeightDecimalNumber,
+                                                                textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                                selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
+                                                                infiniteLoop: true,
+                                                                decoration: BoxDecoration(
+                                                                  border: Border(
+                                                                    top: BorderSide(color: Colors.black),
+                                                                    bottom: BorderSide(color: Colors.black),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              " cm",
+                                                              style: CustomTextStyle.extraBold(20, color: AppColors.primary),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 8.h),
+                                                        Obx(
+                                                          () => Container(
+                                                            width: Get.width,
+                                                            child: Text(
+                                                              controller.selectedAutoGenerateTFUNote,
+                                                              style: CustomTextStyle.regular(13),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 30.h),
+                                                        CustomButton(
+                                                          text: "Simpan Tinggi Fungus",
+                                                          onPressed: () {
+                                                            controller.updateFundusUteriHeight();
+                                                            Navigator.pop(context, true);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Wrap(
+                                    children: [
+                                      Container(
+                                        width: Get.width,
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(20),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(Icons.height),
+                                              SizedBox(width: 20.w),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Obx(() {
+                                                      return controller.originalFundusUteriHeight.value != null
+                                                          ? Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  "Tinggi Fundus Uteri",
+                                                                  style: CustomTextStyle.bold(20, height: 1.75),
+                                                                ),
+                                                                Text.rich(
+                                                                  TextSpan(
+                                                                    text: "${controller.originalFundusUteriHeight}",
+                                                                    style: CustomTextStyle.extraBold(24, height: 1.5, color: Color(0xFFFD6666)),
+                                                                    children: <TextSpan>[
+                                                                      TextSpan(
+                                                                        text: ' cm',
+                                                                        style: CustomTextStyle.medium(16, height: 1.5, color: Color(0xFFFD6666)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Text(
+                                                              "Tinggi Fundus Uteri",
+                                                              style: CustomTextStyle.bold(18, height: 1.5),
+                                                            );
+                                                    }),
+                                                  ],
+                                                ),
+                                              ),
+                                              Icon(Iconsax.arrow_right_34)
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                            ],
+                            if (controller.currentWeek.value > 12) ...[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (BuildContext context) {
+                                        return PopScope(
+                                          onPopInvoked: (didPop) {
+                                            if (didPop) {
+                                              controller.resetFetalHeartRate();
+                                            }
+                                          },
+                                          child: Wrap(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
+                                                child: Center(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.favorite,
+                                                          size: 35,
+                                                          color: Color(0xFFFF6868),
+                                                        ),
+                                                        SizedBox(height: 10.h),
+                                                        Text(
+                                                          "Denyut Jantung Janin",
+                                                          style: CustomTextStyle.bold(20, height: 1.5),
+                                                        ),
+                                                        SizedBox(height: 30.h),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              "Tanggal Pemeriksaan",
+                                                              style: CustomTextStyle.medium(15),
+                                                            ),
+                                                            Text(
+                                                              formatDate(controller.selectedDate),
+                                                              style: CustomTextStyle.extraBold(15, height: 1.5),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              "Denyut Jantung Janin",
+                                                              style: CustomTextStyle.medium(15),
+                                                              textAlign: TextAlign.left,
+                                                            ),
+                                                            Obx(
+                                                              () => NumberPicker(
+                                                                minValue: 50,
+                                                                maxValue: 200,
+                                                                value: controller.selectedFetalHeartRate,
+                                                                onChanged: controller.setFetalHeartRate,
+                                                                textStyle: CustomTextStyle.light(18, color: Colors.grey),
+                                                                selectedTextStyle: CustomTextStyle.extraBold(24, color: AppColors.primary),
+                                                                infiniteLoop: true,
+                                                                decoration: BoxDecoration(
+                                                                  border: Border(
+                                                                    top: BorderSide(color: Colors.black),
+                                                                    bottom: BorderSide(color: Colors.black),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              " bpm",
+                                                              style: CustomTextStyle.extraBold(20, color: AppColors.primary),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Obx(
+                                                          () => Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                "Kondisi Kesehatan Janin",
+                                                                style: CustomTextStyle.medium(15),
+                                                              ),
+                                                              Text(
+                                                                controller.selectedHeartRateFetus,
+                                                                style: CustomTextStyle.extraBold(15, height: 1.5),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 10.h),
+                                                        Obx(
+                                                          () => Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                "Metode Pemeriksaan",
+                                                                style: CustomTextStyle.medium(15),
+                                                              ),
+                                                              DropdownButton<String>(
+                                                                value: controller.selectedHeartRateMethod.isEmpty ? 'Doppler' : controller.selectedHeartRateMethod,
+                                                                icon: Icon(Icons.arrow_drop_down),
+                                                                elevation: 16,
+                                                                style: CustomTextStyle.extraBold(15, height: 1.5),
+                                                                alignment: Alignment.centerRight,
+                                                                underline: Container(
+                                                                  height: 0,
+                                                                  color: Colors.grey[300],
+                                                                ),
+                                                                onChanged: (String? method) {
+                                                                  controller.setHeartRateMethod(method ?? "Doppler");
+                                                                },
+                                                                items: <String>['Doppler', 'USG', 'Metode Lainnya'].map<DropdownMenuItem<String>>((String value) {
+                                                                  return DropdownMenuItem<String>(
+                                                                    value: value,
+                                                                    child: Text(value),
+                                                                  );
+                                                                }).toList(),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 10.h),
+                                                        Obx(
+                                                          () => Container(
+                                                            width: Get.width,
+                                                            child: Text(
+                                                              controller.selectedAutoGenerateDJJNote,
+                                                              style: CustomTextStyle.regular(13),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 30.h),
+                                                        CustomButton(
+                                                          text: "Simpan Denyut Jantung Janin",
+                                                          onPressed: () {
+                                                            controller.updateFetalHeartRate();
+                                                            Navigator.pop(context, true);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Wrap(
+                                    children: [
+                                      Container(
+                                        width: Get.width,
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(20),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(Icons.favorite),
+                                              SizedBox(width: 20.w),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Obx(() {
+                                                      return controller.originalFetalHeartRate.value != null
+                                                          ? Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  "Denyut Jantung Janin",
+                                                                  style: CustomTextStyle.bold(20, height: 1.75),
+                                                                ),
+                                                                Text.rich(
+                                                                  TextSpan(
+                                                                    text: "${controller.originalFetalHeartRate}",
+                                                                    style: CustomTextStyle.extraBold(24, height: 1.5, color: Color(0xFFFD6666)),
+                                                                    children: <TextSpan>[
+                                                                      TextSpan(
+                                                                        text: ' bpm',
+                                                                        style: CustomTextStyle.medium(16, height: 1.5, color: Color(0xFFFD6666)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Text(
+                                                              "Denyut Jantung Janin",
+                                                              style: CustomTextStyle.bold(18, height: 1.5),
+                                                            );
+                                                    }),
+                                                  ],
+                                                ),
+                                              ),
+                                              Icon(Iconsax.arrow_right_34)
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                            ],
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return PopScope(
+                                        onPopInvoked: (didPop) {
+                                          if (didPop) {
+                                            controller.resetFetalHeartRate();
+                                          }
+                                        },
+                                        child: Wrap(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.fromLTRB(15.w, 35.h, 15.w, 20.h),
+                                              child: Center(
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.monitor_heart,
+                                                        size: 35,
+                                                        color: Color(0xFFFF6868),
+                                                      ),
+                                                      SizedBox(height: 10.h),
+                                                      Text(
+                                                        "USG Kehamilan",
+                                                        style: CustomTextStyle.bold(20, height: 1.5),
+                                                      ),
+                                                      SizedBox(height: 30.h),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            "Tanggal Pemeriksaan",
+                                                            style: CustomTextStyle.medium(15),
+                                                          ),
+                                                          Text(
+                                                            formatDate(controller.selectedDate),
+                                                            style: CustomTextStyle.extraBold(15, height: 1.5),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 10.h),
+                                                      Obx(
+                                                        () => Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              "Posisi Janin",
+                                                              style: CustomTextStyle.medium(15),
+                                                            ),
+                                                            DropdownButton<String>(
+                                                              value: controller.selectedFetalPosition,
+                                                              icon: Icon(Icons.arrow_drop_down),
+                                                              elevation: 16,
+                                                              style: CustomTextStyle.extraBold(15, height: 1.5),
+                                                              alignment: Alignment.centerRight,
+                                                              underline: Container(
+                                                                height: 0,
+                                                                color: Colors.grey[300],
+                                                              ),
+                                                              onChanged: (String? method) {
+                                                                controller.setFetalPosition(method ?? "Cephalic");
+                                                              },
+                                                              items: <Map<String, String>>[
+                                                                {'value': 'Cephalic', 'description': 'Kepala di Bawah (Cephalic)'},
+                                                                {'value': 'Breech', 'description': 'Bokong/Kaki di Bawah (Breech)'},
+                                                                {'value': 'Transverse', 'description': 'Melintang (Transverse)'},
+                                                                {'value': 'Others', 'description': 'Lainnya'},
+                                                              ].map<DropdownMenuItem<String>>((Map<String, String> item) {
+                                                                return DropdownMenuItem<String>(
+                                                                  value: item['value'],
+                                                                  child: Text(item['description']!),
+                                                                );
+                                                              }).toList(),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10.h),
+                                                      Obx(
+                                                        () => Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              "Kondisi \nPlasenta",
+                                                              style: CustomTextStyle.medium(15),
+                                                            ),
+                                                            DropdownButton<String>(
+                                                              value: controller.selectedPlacentaCondition,
+                                                              icon: Icon(Icons.arrow_drop_down),
+                                                              elevation: 16,
+                                                              style: CustomTextStyle.extraBold(15, height: 1.5),
+                                                              underline: Container(
+                                                                height: 0,
+                                                                color: Colors.grey[300],
+                                                              ),
+                                                              alignment: Alignment.centerRight,
+                                                              onChanged: (String? method) {
+                                                                controller.setPlacentaCondition(method ?? "Normal");
+                                                              },
+                                                              items: <Map<String, String>>[
+                                                                {'value': 'Normal', 'description': 'Plasenta Normal'},
+                                                                {'value': 'Previa', 'description': 'Plasenta Previa'},
+                                                                {'value': 'Acretia', 'description': 'Plasenta Acretia/Increta/Percreta'},
+                                                                {'value': 'Abruptio', 'description': 'Abruptio Plasentae'},
+                                                                {'value': 'Insufficiency', 'description': 'Insufisiensi Plasenta'},
+                                                                {'value': 'Others', 'description': 'Lainnya'},
+                                                              ].map<DropdownMenuItem<String>>((Map<String, String> item) {
+                                                                return DropdownMenuItem<String>(
+                                                                  value: item['value'],
+                                                                  child: Text(item['description']!),
+                                                                );
+                                                              }).toList(),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 4),
+                                                      Obx(
+                                                        () => Container(
+                                                          width: Get.width,
+                                                          child: Text(
+                                                            controller.placentaConditionDesc.value,
+                                                            style: CustomTextStyle.regular(13),
+                                                            textAlign: TextAlign.right,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10.h),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            "Berat Janin",
+                                                            style: CustomTextStyle.medium(15),
+                                                            textAlign: TextAlign.left,
+                                                          ),
+                                                          SizedBox(width: 100.w),
+                                                          Expanded(
+                                                            child: Row(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                Expanded(
+                                                                  child: TextField(
+                                                                    controller: controller.fetalWeight,
+                                                                    keyboardType: TextInputType.number,
+                                                                    style: CustomTextStyle.extraBold(18, height: 1.5),
+                                                                    textAlign: TextAlign.center,
+                                                                    inputFormatters: <TextInputFormatter>[
+                                                                      FilteringTextInputFormatter.digitsOnly,
+                                                                    ],
+                                                                    onChanged: (value) {
+                                                                      int? newValue = int.tryParse(value);
+                                                                      if (newValue != null && newValue > 5000) {
+                                                                        controller.setFetalWeight("5000");
+                                                                      }
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  " g",
+                                                                  style: CustomTextStyle.extraBold(20, color: AppColors.primary),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 30.h),
+                                                      CustomButton(
+                                                        text: "Simpan Riwayat USG",
+                                                        onPressed: () {
+                                                          controller.updateUSG();
+                                                          Navigator.pop(context, true);
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Wrap(
+                                  children: [
+                                    Container(
+                                      width: Get.width,
+                                      decoration: ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        color: Colors.white,
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(20),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Icon(Icons.monitor_heart),
+                                            SizedBox(width: 20.w),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Obx(() {
+                                                    return controller.originalFetalWeight.value != null && controller.originalFetalWeight.value != 0.0
+                                                        ? Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                "USG Kehamilan",
+                                                                style: CustomTextStyle.bold(20, height: 1.75),
+                                                              ),
+                                                              Text.rich(
+                                                                TextSpan(
+                                                                  text: "${controller.originalFetalWeight}",
+                                                                  style: CustomTextStyle.extraBold(24, height: 1.5, color: Color(0xFFFD6666)),
+                                                                  children: <TextSpan>[
+                                                                    TextSpan(
+                                                                      text: ' g',
+                                                                      style: CustomTextStyle.medium(16, height: 1.5, color: Color(0xFFFD6666)),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : Text(
+                                                            "USG Kehamilan",
+                                                            style: CustomTextStyle.bold(18, height: 1.5),
+                                                          );
+                                                  }),
+                                                ],
+                                              ),
+                                            ),
+                                            Icon(Iconsax.arrow_right_34)
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                             Obx(
                               () => Container(
-                                height: controller.isChanged.value ? 90.h : 8.h,
+                                height: controller.isChanged.value ? 90.h : 30.h,
                               ),
                             ),
                           ],

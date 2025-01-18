@@ -5,22 +5,17 @@ import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_add_period_bottom_sheet.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_card_predictions.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_expanded_calendar.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/chinese_pred_detail_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/daily_log_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/shettles_pred_detail_view.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import '../controllers/home_menstruation_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class HomeMenstruationView extends GetView<HomeMenstruationController> {
   const HomeMenstruationView({Key? key}) : super(key: key);
@@ -911,6 +906,7 @@ class HomeMenstruationView extends GetView<HomeMenstruationController> {
               shape: CircleBorder(side: BorderSide(color: Colors.white)),
               onTap: () {
                 Get.off(() => PeriodCycleView());
+                // SyncDataService().pendingDataChange();
               },
             ),
             SpeedDialChild(

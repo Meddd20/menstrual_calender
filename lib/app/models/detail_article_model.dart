@@ -19,7 +19,7 @@ class ArticleData {
 }
 
 class ArticleDetails {
-  final Article article;
+  final DetailArticle article;
   final List<Comment>? comments;
 
   ArticleDetails({
@@ -29,7 +29,7 @@ class ArticleDetails {
 
   factory ArticleDetails.fromJson(Map<String, dynamic> json) {
     return ArticleDetails(
-      article: Article.fromJson(json['article']),
+      article: DetailArticle.fromJson(json['article']),
       comments: (json['comments'] as List)
           .map((commentJson) => Comment.fromJson(commentJson))
           .toList(),
@@ -37,7 +37,7 @@ class ArticleDetails {
   }
 }
 
-class Article {
+class DetailArticle {
   final int? id;
   final int? userId;
   final String? writter;
@@ -54,7 +54,7 @@ class Article {
   final String? createdAt;
   final String? updatedAt;
 
-  Article({
+  DetailArticle({
     this.id,
     this.userId,
     this.writter,
@@ -72,8 +72,8 @@ class Article {
     this.updatedAt,
   });
 
-  factory Article.fromJson(Map<String, dynamic> json) {
-    return Article(
+  factory DetailArticle.fromJson(Map<String, dynamic> json) {
+    return DetailArticle(
       id: json['id'],
       userId: json['user_id'],
       writter: json['writter'],

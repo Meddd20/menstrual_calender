@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
-import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
 
 class ApiService {
   final box = GetStorage();

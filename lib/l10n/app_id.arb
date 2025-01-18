@@ -207,6 +207,7 @@
     "height": "Tinggi",
     "twinBaby": "Hamil anak kembar?",
     "send": "Kirim",
+    "change": "Ubah",
 
     "addNewWeightGain": "Tambah data peningkatan berat badan baru",
     "addNewWeight": "Tambah Berat Baru",
@@ -707,5 +708,8 @@
     "periodRangeLimit": "Silakan pilih hanya 3 rentang periode.",
     "lastPeriodFirstDaySelection": "Silakan pilih hari pertama dari periode terakhir Anda.",
     "emptyVerificationCode": "Kode verifikasi kosong, silakan isi kode verifikasi.",
-    "genericError": "Terjadi kesalahan. Silakan coba lagi nanti."
+    "genericError": "Terjadi kesalahan. Silakan coba lagi nanti.",
+
+    "medicalDisclaimer": "Penafian Medis",
+    "medicalDisclaimerDesc": "Informasi yang diberikan didasarkan pada jurnal, penelitian, dan situs web kesehatan terpercaya. Meskipun kami berupaya menyediakan informasi yang akurat dan terkini, konten ini tidak dimaksudkan sebagai pengganti nasihat, diagnosis, atau perawatan medis profesional. Selalu konsultasikan dengan dokter atau tenaga medis yang kompeten untuk pertanyaan atau kondisi kesehatan Anda."
 }

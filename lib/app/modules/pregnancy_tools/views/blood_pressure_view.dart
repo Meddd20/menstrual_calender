@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_expanded_calendar.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/blood_pressure_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class BloodPressureView extends GetView<BloodPressureController> {
   const BloodPressureView({Key? key}) : super(key: key);
@@ -42,6 +40,7 @@ class BloodPressureView extends GetView<BloodPressureController> {
                           padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
                           child: SingleChildScrollView(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,6 +64,25 @@ class BloodPressureView extends GetView<BloodPressureController> {
                                   AppLocalizations.of(context)!.bloodPressureInfoDesc,
                                   style: CustomTextStyle.medium(16, height: 1.75),
                                 ),
+                                SizedBox(height: 30),
+                                Divider(
+                                  height: 0.5,
+                                  thickness: 1.0,
+                                ),
+                                SizedBox(height: 15),
+                                Container(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.medicalDisclaimer,
+                                    style: CustomTextStyle.medium(12),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  AppLocalizations.of(context)!.medicalDisclaimerDesc,
+                                  style: CustomTextStyle.light(12, height: 1.5),
+                                ),
+                                SizedBox(height: 20),
                               ],
                             ),
                           ),

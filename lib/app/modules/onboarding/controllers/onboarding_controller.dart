@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding2_view.dart';
 import 'package:periodnpregnancycalender/app/modules/register/views/register_view.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class OnboardingController extends GetxController {
   final StorageService storageService = StorageService();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class Ui {
   static GetSnackBar SuccessSnackBar({String title = 'Success', String message = ''}) {

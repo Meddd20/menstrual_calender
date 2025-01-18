@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/profile_model.dart';
-import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/services/profile_service.dart';
-import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class DetailprofileController extends GetxController {
   late User? userProfile;
@@ -87,6 +83,7 @@ class DetailprofileController extends GetxController {
 
       if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
         try {
+          await SyncDataService().pendingDataChange();
           await profileRepository.editProfile(namaC.text, birthdayC.text);
         } catch (e) {
           await _syncEditProfile(storageService.getAccountLocalId());

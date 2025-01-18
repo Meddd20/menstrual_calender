@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/models/master_vaccines_model.dart';
 import 'package:periodnpregnancycalender/app/services/master_vaccines_service.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class VaccineListController extends GetxController {
   late final MasterVaccinesService _masterVaccinesService;

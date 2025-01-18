@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/reminder_model.dart';
-import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
-import 'package:periodnpregnancycalender/app/services/log_service.dart';
-import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class ReminderController extends GetxController {
   final ApiService apiService = ApiService();
@@ -174,6 +169,7 @@ class ReminderController extends GetxController {
 
       if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
         try {
+          await SyncDataService().pendingDataChange();
           await logRepository.storeReminder(id, getReminderTitle(), getReminderDescription(), '$selectedDate $formattedSelectedTime');
         } catch (e) {
           await saveAddSyncReminder(id);
@@ -234,6 +230,7 @@ class ReminderController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await logRepository.editReminder(id, editedTitle, editedDescription, editedDateTime ?? "${DateTime.now()}");
       } catch (e) {
         await saveEditSyncReminder(id);
@@ -278,6 +275,7 @@ class ReminderController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await logRepository.deleteReminder(id);
       } catch (e) {
         await deleteSyncReminder(id);

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/log_repository.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/services/log_service.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class WeightController extends GetxController {
   final ApiService apiService = ApiService();
@@ -14,14 +14,17 @@ class WeightController extends GetxController {
   RxString selectedDataType = 'percentage30Days'.obs;
   RxMap<String, dynamic> specificWeightData = RxMap<String, dynamic>();
   Rx<DateTime> selectedDate = DateTime.now().obs;
+  late RxString selectedDataTags;
   late TabController tabController;
   late final LogService _logService;
+  late final PregnancyLogService _pregnancyLogService;
 
   @override
   void onInit() {
-    _logService = LogService();
-
     tabController = TabController(length: 4, vsync: MyTickerProvider());
+
+    _logService = LogService();
+    _pregnancyLogService = PregnancyLogService();
     data = DailyLogTagsData(
       tags: '',
       logs: {},
@@ -30,11 +33,15 @@ class WeightController extends GetxController {
       percentage6Months: null,
       percentage1Year: null,
     );
+    weight = RxMap<String, dynamic>();
     selectedDataType = 'percentage30Days'.obs;
-    _updateSelectedDate();
+    selectedDataTags = (Get.arguments != null ? RxString(Get.arguments as String) : RxString(""));
+    if (selectedDataTags == "uteri_fundus_height") {
+      selectedDataType.value = "";
+    }
     fetchWeight(Get.context);
     specifiedDataByDate();
-    weight = RxMap<String, dynamic>();
+    _updateSelectedDate();
     super.onInit();
   }
 
@@ -110,7 +117,7 @@ class WeightController extends GetxController {
         case 'percentage1Year':
           return entryDate.isAfter(now.subtract(Duration(days: 366))) && entryDate.isBefore(now);
         default:
-          return false;
+          return true;
       }
     }).toList();
 
@@ -118,14 +125,20 @@ class WeightController extends GetxController {
       specificWeightData[entry.key] = entry.value;
     }
 
+    print(specificWeightData);
+
     return specificWeightData;
   }
 
   Future<void> fetchWeight(context) async {
     try {
-      DailyLogTagsData? result = await _logService.getLogsByTags(context, "weight");
+      if (selectedDataTags.value == "uteri_fundus_height") {
+        data = await _pregnancyLogService.getPregnancyLogByTags(context, "fundusUteriHeight");
+      } else {
+        data = await _logService.getLogsByTags(context, "weight");
+      }
 
-      Map<String, dynamic> logsMap = result.logs;
+      Map<String, dynamic> logsMap = data.logs;
 
       logsMap.forEach((date, value) {
         if (value is String) {

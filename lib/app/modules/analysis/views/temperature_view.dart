@@ -3,14 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/temperature_controller.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class TemperatureView extends GetView<TemperatureController> {
   const TemperatureView({Key? key}) : super(key: key);
@@ -76,7 +74,7 @@ class TemperatureView extends GetView<TemperatureController> {
                           enable: true,
                           builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
                             final MapEntry<String, dynamic> entry = controller.temperatures.entries.elementAt(pointIndex);
-          
+
                             return Container(
                               padding: EdgeInsets.all(10),
                               child: Column(

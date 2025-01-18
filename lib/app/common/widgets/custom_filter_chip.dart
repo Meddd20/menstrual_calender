@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class CustomFilterChip extends StatelessWidget {
   final String label;

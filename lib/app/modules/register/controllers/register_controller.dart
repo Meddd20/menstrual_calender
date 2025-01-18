@@ -1,17 +1,13 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/models/profile_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
 import 'package:periodnpregnancycalender/app/modules/register/views/register_verification_view.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/controllers/onboarding_controller.dart';
-import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
-import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
-import 'package:periodnpregnancycalender/app/services/profile_service.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class RegisterController extends GetxController {
   late final ProfileService _profileService;
@@ -103,7 +99,8 @@ class RegisterController extends GetxController {
     await _localProfileRepository.deleteProfile();
 
     if (birthdayValue != null) {
-      await _profileService.createProfile(formatDate(birthdayValue), purpose);
+      // await _profileService.createProfile(formatDate(birthdayValue), purpose);
+      await _profileService.updateProfileToGuest(formatDate(birthdayValue), purpose);
       User? user = await _profileService.getProfile();
 
       if (user != null && user.id != null) {
@@ -121,7 +118,9 @@ class RegisterController extends GetxController {
           String formattedDate = formatDate(onboardingController.lastPeriodDate.value!);
           await _pregnancyHistoryService.beginPregnancy(DateTime.parse(formattedDate), null);
         }
+
         storageService.storeIsAuth(true);
+        storageService.storeIsAccountCreatedUnverified(true);
         await Future.delayed(Duration(seconds: 2));
         Get.offAllNamed(Routes.NAVIGATION_MENU);
       }

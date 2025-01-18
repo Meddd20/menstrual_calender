@@ -1,14 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_calendar_datepicker.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
 import '../controllers/onboarding_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class Onboarding1View extends GetView<OnboardingController> {
   const Onboarding1View({Key? key}) : super(key: key);
@@ -63,7 +60,7 @@ class Onboarding1View extends GetView<OnboardingController> {
                           controller.birthday.value = dates.isNotEmpty ? dates[0] ?? DateTime.now() : DateTime.now();
                           controller.update();
                         },
-                        lastDate: DateTime.now().subtract(Duration(days: 365 * 13)),
+                        lastDate: DateTime.now().subtract(Duration(days: 365 * 10)),
                         calendarType: CalendarDatePicker2Type.single,
                       ),
                     ),

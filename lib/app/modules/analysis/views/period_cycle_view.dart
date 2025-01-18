@@ -1,15 +1,14 @@
 import 'package:get/get.dart';
 import 'package:d_chart/d_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_add_period_bottom_sheet.dart';
-import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/period_cycle_controller.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class PeriodCycleView extends GetView<PeriodCycleController> {
   final int initialIndex;

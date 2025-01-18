@@ -1,20 +1,14 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
-import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/blood_pressure_view.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
-import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
-import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class BloodPressureController extends GetxController {
   final StorageService storageService = StorageService();
@@ -185,6 +179,7 @@ class BloodPressureController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await pregnancyLogAPIRepository.addBloodPressure(
           id,
           getSystolicPressure ?? 80,
@@ -245,6 +240,7 @@ class BloodPressureController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await pregnancyLogAPIRepository.editBloodPressure(
           id,
           getSystolicPressure ?? 80,
@@ -295,15 +291,9 @@ class BloodPressureController extends GetxController {
       return;
     }
 
-    await fetchAllBloodPressure();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => BloodPressureView()),
-      (Route<dynamic> route) => route.isFirst,
-    );
-
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await pregnancyLogAPIRepository.deleteBloodPressure(id);
       } catch (e) {
         await syncDeleteBloodPressure(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
@@ -311,6 +301,13 @@ class BloodPressureController extends GetxController {
     } else if (localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       await syncDeleteBloodPressure(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
     }
+
+    await fetchAllBloodPressure();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => BloodPressureView()),
+      (Route<dynamic> route) => route.isFirst,
+    );
   }
 
   Future<void> syncDeleteBloodPressure(String id, int pregnancyId) async {

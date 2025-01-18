@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/views/unauthorized_error_view.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
 
 class PregnancyRepository {
   final ApiService apiService;

@@ -1,20 +1,18 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_card.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/logs_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/notes_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/temperature_view.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/weight_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
-import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/pregnancy_tools_view.dart';
 import '../controllers/analysis_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class AnalysisView extends GetView {
   const AnalysisView({super.key});
@@ -253,11 +251,6 @@ class AnalysisPeriodView extends GetView<AnalysisController> {
                             iconPath: 'assets/icon/weighing-machine.png',
                             text: AppLocalizations.of(context)!.weight,
                             onTap: () => Get.to(() => WeightView()),
-                          ),
-                          CustomCircularCard(
-                            iconPath: 'assets/icon/alarm.png',
-                            text: AppLocalizations.of(context)!.reminder,
-                            onTap: () => Get.to(() => ReminderView()),
                           ),
                           CustomCircularCard(
                             iconPath: 'assets/icon/notes.png',

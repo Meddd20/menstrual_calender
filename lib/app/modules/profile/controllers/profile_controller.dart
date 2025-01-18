@@ -1,27 +1,14 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
-import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_menstruation_controller.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/models/profile_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
-import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
-import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
-import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
-import 'package:periodnpregnancycalender/app/services/profile_service.dart';
-import 'package:periodnpregnancycalender/app/services/sync_data_service.dart';
-import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class ProfileController extends GetxController {
   final ApiService apiService = ApiService();
@@ -169,7 +156,7 @@ class ProfileController extends GetxController {
     }
 
     try {
-      if (remoteSuccess) {
+      if (remoteSuccess && pregnancy["data"]["id"] != null) {
         await _pregnancyHistoryService.beginPregnancy(selectedDate!, pregnancy["data"]["id"]);
       } else {
         PregnancyHistory? addedPregnancy = await _pregnancyHistoryService.beginPregnancy(selectedDate!, null);
@@ -198,6 +185,9 @@ class ProfileController extends GetxController {
 
   Future<void> performLogout() async {
     try {
+      if (!storageService.getIsBackup()) {
+        await syncDataService.rebackupData();
+      }
       await Center(child: CircularProgressIndicator());
       await Future.delayed(Duration(milliseconds: 400));
       storageService.storeIsAuth(false);
@@ -207,7 +197,7 @@ class ProfileController extends GetxController {
       storageService.setPin(false);
       LocalNotificationService().cancelAllNotifications();
       storageService.deleteAccountLocalId();
-      // await profileService.deleteProfile();
+      storageService.storeIsAccountCreatedUnverified(false);
       await profileService.deletePendingDataChanges();
       await authRepository.logout();
       Get.offAllNamed(Routes.ONBOARDING);

@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_expanded_calendar.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
+import 'package:periodnpregnancycalender/app/modules/navigation_menu/views/navigation_menu_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/weight_tracker_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/init_weight_gain_tracker_view.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class WeightTrackerView extends GetView<WeightTrackerController> {
   const WeightTrackerView({Key? key}) : super(key: key);
@@ -62,6 +61,7 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                           padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
                           child: SingleChildScrollView(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +105,25 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                                   AppLocalizations.of(context)!.whyWeightGainImportant,
                                   style: CustomTextStyle.medium(16, height: 1.75),
                                 ),
+                                SizedBox(height: 30),
+                                Divider(
+                                  height: 0.5,
+                                  thickness: 1.0,
+                                ),
                                 SizedBox(height: 15),
+                                Container(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.medicalDisclaimer,
+                                    style: CustomTextStyle.medium(12),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  AppLocalizations.of(context)!.medicalDisclaimerDesc,
+                                  style: CustomTextStyle.light(12, height: 1.5),
+                                ),
+                                SizedBox(height: 20),
                               ],
                             ),
                           ),
@@ -130,7 +148,11 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.popUntil(context, ModalRoute.withName('/navigation-menu'));
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => NavigationMenuView()),
+              (Route<dynamic> route) => route.isFirst,
+            );
           },
         ),
       ),
@@ -150,13 +172,13 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
               isScrollControlled: true,
               builder: (BuildContext context) {
                 return SafeArea(
-                  child: Obx(
-                    () => Container(
-                      padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
-                      width: Get.width,
-                      child: Stack(
-                        children: [
-                          Column(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
+                    width: Get.width,
+                    child: Stack(
+                      children: [
+                        Obx(
+                          () => Column(
                             children: [
                               Row(
                                 children: [
@@ -302,17 +324,17 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                               ),
                             ],
                           ),
-                          Positioned(
-                            bottom: 15,
-                            left: 0,
-                            right: 0,
-                            child: CustomButton(
-                              text: AppLocalizations.of(context)!.save,
-                              onPressed: () => controller.weeklyWeightGain(context),
-                            ),
-                          )
-                        ],
-                      ),
+                        ),
+                        Positioned(
+                          bottom: 15,
+                          left: 0,
+                          right: 0,
+                          child: CustomButton(
+                            text: AppLocalizations.of(context)!.save,
+                            onPressed: () => controller.weeklyWeightGain(context),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 );
@@ -341,10 +363,18 @@ class WeightGainTrackerView extends GetView<WeightTrackerController> {
                           height: Get.height * 0.37,
                           child: SfCartesianChart(
                             onTrackballPositionChanging: (trackballArgs) {
+                              int dataPointIndex = (trackballArgs.chartPointInfo.dataPointIndex)!.toInt();
+
                               if (trackballArgs.chartPointInfo.seriesIndex == 0) {
-                                trackballArgs.chartPointInfo.label = '${AppLocalizations.of(context)!.recommendWeek} \n ${AppLocalizations.of(context)!.week} ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].week} \n  ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightLower} - ${controller.reccomendWeightGain[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].recommendWeightUpper} kg';
-                              } else {
-                                trackballArgs.chartPointInfo.label = '${AppLocalizations.of(context)!.week} ${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].mingguKehamilan} \n ${controller.weightGainHistory[(trackballArgs.chartPointInfo.dataPointIndex)!.toInt()].beratBadan} kg';
+                                int? week = controller.reccomendWeightGain[dataPointIndex].week;
+                                trackballArgs.chartPointInfo.label = '${AppLocalizations.of(context)!.recommendWeek} \n ${AppLocalizations.of(context)!.week} $week \n ${controller.reccomendWeightGain[dataPointIndex].recommendWeightLower} - ${controller.reccomendWeightGain[dataPointIndex].recommendWeightUpper} kg';
+                                print("Series 0 - Week: $week, Lower: ${controller.reccomendWeightGain[dataPointIndex].recommendWeightLower}, Upper: ${controller.reccomendWeightGain[dataPointIndex].recommendWeightUpper}");
+                              } else if (trackballArgs.chartPointInfo.seriesIndex == 1) {
+                                int? actualWeek = controller.weightGainHistory[dataPointIndex].mingguKehamilan;
+                                double? actualWeight = controller.weightGainHistory[dataPointIndex].beratBadan;
+
+                                trackballArgs.chartPointInfo.label = '${AppLocalizations.of(context)!.week} $actualWeek \n ${actualWeight ?? 'No data'} kg';
+                                print("Series 1 - Week: $actualWeek, Weight: $actualWeight");
                               }
                             },
                             trackballBehavior: TrackballBehavior(

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/vaccine_list_controller.dart';
 import 'package:readmore/readmore.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class VaccineListView extends GetView<VaccineListController> {
   const VaccineListView({Key? key}) : super(key: key);
@@ -111,6 +111,35 @@ class VaccineListView extends GetView<VaccineListController> {
                   );
                 }
               },
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    Divider(
+                      height: 0.5,
+                      thickness: 1.0,
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      child: Text(
+                        AppLocalizations.of(context)!.medicalDisclaimer,
+                        style: CustomTextStyle.medium(12),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      AppLocalizations.of(context)!.medicalDisclaimerDesc,
+                      style: CustomTextStyle.light(12, height: 1.5),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

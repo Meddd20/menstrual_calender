@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class CustomTabBar extends StatelessWidget {
   final Function(int) onTap;

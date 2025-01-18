@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
-import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_log_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/services/pregnancy_log_service.dart';
-import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class ContractionTimerController extends GetxController {
   final StorageService storageService = StorageService();
@@ -114,6 +111,7 @@ class ContractionTimerController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await pregnancyLogAPIRepository.addContractionTimer(id, selectedDate, duration);
       } catch (e) {
         await syncAddContraction(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);
@@ -152,6 +150,7 @@ class ContractionTimerController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await pregnancyLogAPIRepository.deleteContractionTimer(id);
       } catch (e) {
         await syncDeleteContraction(id, pregnancyDailyLog?.riwayatKehamilanId ?? 0);

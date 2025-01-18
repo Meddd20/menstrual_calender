@@ -1,14 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_cupertino_picker.dart';
 import '../controllers/onboarding_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:periodnpregnancycalender/app/modules/onboarding/views/onboarding4_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class Onboarding3View extends GetView<OnboardingController> {
   const Onboarding3View({Key? key}) : super(key: key);

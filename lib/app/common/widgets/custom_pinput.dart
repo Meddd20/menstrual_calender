@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:pinput/pinput.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class CustomPinInput extends StatelessWidget {
   final TextEditingController controller;

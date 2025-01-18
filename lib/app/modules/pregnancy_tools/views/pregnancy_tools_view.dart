@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/reminder_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/baby_weight_heigth_tracker_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/babykicks_view.dart';
@@ -14,10 +12,12 @@ import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/pregn
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/vaccine_list_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/vitamin_list_view.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/views/weight_tracker_view.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 
 import '../controllers/pregnancy_tools_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class PregnancyToolsView extends GetView<PregnancyToolsController> {
   const PregnancyToolsView({Key? key}) : super(key: key);
@@ -50,6 +50,7 @@ class PregnancyToolsView extends GetView<PregnancyToolsController> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(

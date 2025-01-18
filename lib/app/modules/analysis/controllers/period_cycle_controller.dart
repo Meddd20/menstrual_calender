@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/period_cycle_model.dart';
-import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/views/period_cycle_view.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/period_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/services/period_history_service.dart';
-import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class PeriodCycleController extends GetxController {
   final ApiService apiService = ApiService();
@@ -81,6 +77,7 @@ class PeriodCycleController extends GetxController {
       ];
 
       if (isConnected && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
+        await SyncDataService().pendingDataChange();
         periodStoredRemote = await periodRepository.storePeriod(periods, avgPeriodCycle, null);
         remoteSuccess = true;
       }
@@ -156,6 +153,7 @@ class PeriodCycleController extends GetxController {
 
       if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
         try {
+          await SyncDataService().pendingDataChange();
           await periodRepository.updatePeriod(remoteId, formattedStartDate, formattedEndDate, periodCycle);
         } catch (e) {
           await syncEditPeriod(periodId, remoteId);

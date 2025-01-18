@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:html/parser.dart' as html_parser;
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class DetailPregnancyView extends GetView {
   final String appbarTitle;
@@ -38,11 +38,12 @@ class DetailPregnancyView extends GetView {
               stretchTriggerOffset: 50,
             ),
             SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0.h),
-                    child: HtmlWidget(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    HtmlWidget(
                       filteredHtml,
                       textStyle: CustomTextStyle.medium(16, height: 1.75),
                       customWidgetBuilder: (element) {
@@ -55,11 +56,29 @@ class DetailPregnancyView extends GetView {
                         return null;
                       },
                     ),
-                  ),
-                  SizedBox(height: 15),
-                ],
+                    SizedBox(height: 30),
+                    Divider(
+                      height: 0.5,
+                      thickness: 1.0,
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      child: Text(
+                        AppLocalizations.of(context)!.medicalDisclaimer,
+                        style: CustomTextStyle.medium(12),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      AppLocalizations.of(context)!.medicalDisclaimerDesc,
+                      style: CustomTextStyle.light(12, height: 1.5),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),

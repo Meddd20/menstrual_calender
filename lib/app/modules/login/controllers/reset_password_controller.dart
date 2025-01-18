@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
+
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
 
 class ResetPasswordController extends GetxController {
   final ApiService apiService = ApiService();
@@ -34,10 +35,7 @@ class ResetPasswordController extends GetxController {
   }
 
   Future<void> resetPassword() async {
-    Map<String, dynamic> data = await authRepository.resetPassword(
-        userEmail.value,
-        newPasswordC.text.trim(),
-        newPasswordConfirmationC.text.trim());
+    Map<String, dynamic> data = await authRepository.resetPassword(userEmail.value, newPasswordC.text.trim(), newPasswordConfirmationC.text.trim());
 
     final verifResponse = data["message"];
     print(verifResponse);

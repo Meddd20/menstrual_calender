@@ -99,7 +99,7 @@
         }
     },
 
-    "periodAnalysis": "Perod Analysis",
+    "periodAnalysis": "Period Analysis",
     "myCycle": "My Cycle",
     "seeMore": "See more",
     "periodCycleLogged": "{totalPeriodCycle} cycle history logged",
@@ -322,6 +322,7 @@
     "height": "Height",
     "twinBaby": "Pregnant with twin baby?",
     "send": "Send",
+    "change": "Change",
 
     "addNewWeightGain": "Add new weight gain data",
     "addNewWeight": "Add New Weight",
@@ -357,9 +358,9 @@
     "wateryDischarge": "Watery",
     "unusualDischarge": "Unusual",
     
-    "lightBleedingFlow": "Ringan",
-    "mediumBleedingFlow": "Sedang",
-    "heavyBleedingFlow": "Berat",
+    "lightBleedingFlow": "Light",
+    "mediumBleedingFlow": "Medium",
+    "heavyBleedingFlow": "Heavy",
 
     "abdominalCramps": "Abdominal cramps",
     "acne": "Acne",
@@ -844,5 +845,8 @@
     "periodRangeLimit": "Please select only 3 period range.",
     "lastPeriodFirstDaySelection": "Please select the first day of your last period.",
     "emptyVerificationCode": "Verification code are empty, please fill the verification code.",
-    "genericError": "An error occurred. Please try again later."
+    "genericError": "An error occurred. Please try again later.",
+
+    "medicalDisclaimer": "Medical Disclaimer",
+    "medicalDisclaimerDesc": "The information provided is based on trusted journals, research, and reputable health websites. While we strive to ensure the accuracy and timeliness of the content, it is not intended to replace professional medical advice, diagnosis, or treatment. Always consult with a qualified doctor or healthcare professional for any questions or concerns about your health."
 }

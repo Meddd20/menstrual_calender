@@ -3,14 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/weight_controller.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class WeightView extends GetView<WeightController> {
   const WeightView({Key? key}) : super(key: key);
@@ -26,7 +24,7 @@ class WeightView extends GetView<WeightController> {
           title: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              AppLocalizations.of(context)!.weight,
+              controller.selectedDataTags != "uteri_fundus_height" ? AppLocalizations.of(context)!.weight : "Tinggi Uteri Fundus",
               style: CustomTextStyle.extraBold(22),
             ),
           ),
@@ -53,13 +51,13 @@ class WeightView extends GetView<WeightController> {
                 ),
                 Obx(
                   () => Text(
-                    AppLocalizations.of(context)!.totalEntriesData("${controller.specificWeightData.entries.length}"),
+                    AppLocalizations.of(context)!.totalEntriesData("${controller.weight.entries.length}"),
                     style: CustomTextStyle.extraBold(26, height: 1.75),
                   ),
                 ),
                 Obx(
                   () => Text(
-                    AppLocalizations.of(context)!.entriesFromDate("${formatDateWithMonthName(controller.selectedDate.value)}"),
+                    controller.selectedDataTags != "uteri_fundus_height" ? AppLocalizations.of(context)!.entriesFromDate("${formatDateWithMonthName(controller.selectedDate.value)}") : AppLocalizations.of(context)!.fromTheFirstDayOfPregnancy,
                     style: CustomTextStyle.semiBold(16, color: Colors.black.withOpacity(0.6), height: 1.5),
                   ),
                 ),
@@ -76,7 +74,7 @@ class WeightView extends GetView<WeightController> {
                           enable: true,
                           builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
                             final MapEntry<String, dynamic> entry = controller.weight.entries.elementAt(pointIndex);
-          
+
                             return Container(
                               padding: EdgeInsets.all(10),
                               child: Column(
@@ -89,7 +87,7 @@ class WeightView extends GetView<WeightController> {
                                   ),
                                   SizedBox(height: 5),
                                   Text(
-                                    AppLocalizations.of(context)!.weightKilogram("${entry.value}"),
+                                    controller.selectedDataTags != "uteri_fundus_height" ? AppLocalizations.of(context)!.weightKilogram("${entry.value}") : "Tinggi Janin: ${entry.value} cm",
                                     style: CustomTextStyle.bold(12, color: Colors.white),
                                   ),
                                 ],
@@ -127,7 +125,7 @@ class WeightView extends GetView<WeightController> {
                               height: 15,
                               width: 15,
                             ),
-                            name: "Weight",
+                            name: controller.selectedDataTags != "uteri_fundus_height" ? "Weight" : "Height",
                           ),
                         ],
                         enableAxisAnimation: true,
@@ -138,32 +136,38 @@ class WeightView extends GetView<WeightController> {
                     },
                   ),
                 ),
-                CustomTabBar(
-                  controller: controller.tabController,
-                  onTap: (index) {
-                    _pageController.animateToPage(
-                      index,
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.ease,
-                    );
-                    controller.updateTabBar(index);
-                  },
-                ),
-                Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (index) {
-                      controller.tabController.animateTo(index);
+                if (controller.selectedDataTags != "uteri_fundus_height") ...[
+                  CustomTabBar(
+                    controller: controller.tabController,
+                    onTap: (index) {
+                      _pageController.animateToPage(
+                        index,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
                       controller.updateTabBar(index);
                     },
-                    children: [
-                      _buildChart(context),
-                      _buildChart(context),
-                      _buildChart(context),
-                      _buildChart(context),
-                    ],
                   ),
-                ),
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (index) {
+                        controller.tabController.animateTo(index);
+                        controller.updateTabBar(index);
+                      },
+                      children: [
+                        _buildChart(context),
+                        _buildChart(context),
+                        _buildChart(context),
+                        _buildChart(context),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  Expanded(
+                    child: _buildChart(context),
+                  ),
+                ]
               ],
             ),
           ),
@@ -196,7 +200,7 @@ class WeightView extends GetView<WeightController> {
                       itemBuilder: (context, index) {
                         final MapEntry<String, dynamic> entry = controller.specificWeightData.entries.elementAt(index);
 
-                        return CustomDateLook(entry: entry, type: "weight");
+                        return CustomDateLook(entry: entry, type: controller.selectedDataTags != "uteri_fundus_height" ? "weight" : "height");
                       },
                     ),
                   ),

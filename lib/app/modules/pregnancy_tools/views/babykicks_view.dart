@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/pregnancy_tools/controllers/babykicks_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class BabykicksView extends GetView<BabykicksController> {
   const BabykicksView({Key? key}) : super(key: key);
@@ -35,6 +35,7 @@ class BabykicksView extends GetView<BabykicksController> {
                         padding: EdgeInsets.fromLTRB(15.w, 50.h, 15.w, 0.h),
                         child: SingleChildScrollView(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +59,25 @@ class BabykicksView extends GetView<BabykicksController> {
                                 AppLocalizations.of(context)!.babyKicksInfoDesc,
                                 style: CustomTextStyle.medium(16, height: 1.75),
                               ),
+                              SizedBox(height: 30),
+                              Divider(
+                                height: 0.5,
+                                thickness: 1.0,
+                              ),
                               SizedBox(height: 15),
+                              Container(
+                                child: Text(
+                                  AppLocalizations.of(context)!.medicalDisclaimer,
+                                  style: CustomTextStyle.medium(12),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                AppLocalizations.of(context)!.medicalDisclaimerDesc,
+                                style: CustomTextStyle.light(12, height: 1.5),
+                              ),
+                              SizedBox(height: 20),
                             ],
                           ),
                         ),

@@ -1,5 +1,5 @@
-import 'package:periodnpregnancycalender/app/models/master_pregnancy_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_kehamilan_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class MasterKehamilanService {
   late final MasterDataKehamilanRepository _masterKehamilanRepository = MasterDataKehamilanRepository();

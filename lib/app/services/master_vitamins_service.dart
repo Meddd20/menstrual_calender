@@ -1,5 +1,5 @@
-import 'package:periodnpregnancycalender/app/models/master_vitamins_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_vitamins_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class MasterVitaminsService {
   late final MasterVitaminsRepository _masterVitaminsRepository = MasterVitaminsRepository();

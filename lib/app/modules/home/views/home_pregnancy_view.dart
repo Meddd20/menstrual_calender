@@ -3,21 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_expanded_calendar.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_weekly_info.dart';
 import 'package:periodnpregnancycalender/app/modules/home/controllers/home_pregnancy_controller.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/detail_pregnancy_view.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/end_pregnancy_view.dart';
 import 'package:periodnpregnancycalender/app/modules/profile/views/change_purpose_view.dart';
-import 'package:periodnpregnancycalender/app/services/sync_data_service.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class HomePregnancyView extends GetView<HomePregnancyController> {
   const HomePregnancyView({Key? key}) : super(key: key);
@@ -30,478 +25,477 @@ class HomePregnancyView extends GetView<HomePregnancyController> {
   Widget homePregnancy(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          floatingActionButton: FloatingActionButton(onPressed: () {
-            SyncDataService().pendingDataChange();
-          }),
+          // floatingActionButton: FloatingActionButton(onPressed: () {
+          //   SyncDataService().rebackupData();
+          // }),
           body: NestedScrollView(
-            floatHeaderSlivers: true,
-            headerSliverBuilder: ((context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  floating: true,
-                  title: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      AppLocalizations.of(context)!.pregnancyMode,
-                      style: CustomTextStyle.extraBold(22),
-                    ),
-                  ),
-                  centerTitle: true,
-                  snap: false,
-                  actions: [
-                    IconButton(
-                      onPressed: () => Get.to(() => EndPregnancyView()),
-                      icon: Icon(Icons.event_busy),
-                      tooltip: AppLocalizations.of(context)!.endPregnancy,
-                    ),
-                    SizedBox(width: 10),
-                  ],
-                )
-              ];
-            }),
-            body: FutureBuilder(
-              future: controller.pregnancyData,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Text("Error: ${snapshot.error}");
-                } else {
-                  return Obx(
-                    () => Padding(
-                      padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0.h),
-                      child: Align(
-                        child: SingleChildScrollView(
-                          child: Column(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: ((context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              floating: true,
+              title: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  AppLocalizations.of(context)!.pregnancyMode,
+                  style: CustomTextStyle.extraBold(22),
+                ),
+              ),
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              snap: false,
+              actions: [
+                IconButton(
+                  onPressed: () => Get.to(() => EndPregnancyView()),
+                  icon: Icon(Icons.event_busy),
+                  tooltip: AppLocalizations.of(context)!.endPregnancy,
+                ),
+                SizedBox(width: 10),
+              ],
+            )
+          ];
+        }),
+        body: FutureBuilder(
+          future: controller.pregnancyData,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Text("Error: ${snapshot.error}");
+            } else {
+              return Obx(
+                () => Padding(
+                  padding: EdgeInsets.fromLTRB(15.w, 0.h, 15.w, 0.h),
+                  child: Align(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+                          CircularStepProgressIndicator(
+                            totalSteps: 40,
+                            currentStep: (controller.getPregnancyIndex ?? 0) + 1,
+                            stepSize: 10,
+                            selectedColor: Colors.greenAccent,
+                            unselectedColor: Colors.grey[200],
+                            padding: 0,
+                            width: 320,
+                            height: 320,
+                            selectedStepSize: 15,
+                            startingAngle: math.pi,
+                            roundedCap: (_, __) => true,
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/image/${controller.weeklyData[(controller.getPregnancyIndex ?? 0)].bayiImgPath}',
+                                fit: BoxFit.contain,
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              SizedBox(height: 10),
-                              CircularStepProgressIndicator(
-                                totalSteps: 40,
-                                currentStep: (controller.getPregnancyIndex ?? 0) + 1,
-                                stepSize: 10,
-                                selectedColor: Colors.greenAccent,
-                                unselectedColor: Colors.grey[200],
-                                padding: 0,
-                                width: 320,
-                                height: 320,
-                                selectedStepSize: 15,
-                                startingAngle: math.pi,
-                                roundedCap: (_, __) => true,
-                                child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/image/${controller.weeklyData[(controller.getPregnancyIndex ?? 0)].bayiImgPath}',
-                                    fit: BoxFit.contain,
+                              GestureDetector(
+                                child: Visibility(
+                                  visible: (controller.getPregnancyIndex! > 0),
+                                  replacement: SizedBox(
+                                    width: 30.dg,
+                                    height: 30.dg,
                                   ),
-                                  clipBehavior: Clip.antiAlias,
+                                  child: CustomCircularIcon(
+                                    iconData: Icons.arrow_back_ios_new,
+                                    iconSize: 20,
+                                    iconColor: Color(0xFF878686),
+                                    containerColor: Color(0xFFECECEC),
+                                    containerSize: 15.dg,
+                                  ),
                                 ),
+                                onTap: () {
+                                  controller.pregnancyIndexBackward();
+                                },
                               ),
-                              SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              Text(
+                                AppLocalizations.of(context)!.weeksPregnant("${(controller.getPregnancyIndex ?? 0) + 1}"),
+                                style: CustomTextStyle.extraBold(24, height: 1.5),
+                              ),
+                              GestureDetector(
+                                child: Visibility(
+                                  visible: (controller.getPregnancyIndex! < 39),
+                                  replacement: SizedBox(
+                                    width: 30.dg,
+                                    height: 30.dg,
+                                  ),
+                                  child: CustomCircularIcon(
+                                    iconData: Icons.arrow_forward_ios_outlined,
+                                    iconSize: 20,
+                                    iconColor: Color(0xFF878686),
+                                    containerColor: Color(0xFFECECEC),
+                                    containerSize: 15.dg,
+                                  ),
+                                ),
+                                onTap: () {
+                                  controller.pregnancyIndexForward();
+                                },
+                              ),
+                            ],
+                          ),
+                          Text(
+                            "${formatDateToMonthDay(controller.weeklyData[controller.currentPregnancyWeekIndex.value].tanggalAwalMinggu ?? "")} - ${formatDateToMonthDay(controller.weeklyData[controller.currentPregnancyWeekIndex.value].tanggalAkhirMinggu ?? "")}",
+                            style: CustomTextStyle.semiBold(18, height: 1.5),
+                          ),
+                          Text(
+                            "(${controller.weeklyData[controller.currentPregnancyWeekIndex.value].mingguLabel})",
+                            style: CustomTextStyle.regular(14, height: 1.5),
+                          ),
+                          const SizedBox(height: 10),
+                          Container(
+                            width: Get.width,
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                              child: Row(
                                 children: [
-                                  GestureDetector(
-                                    child: Visibility(
-                                      visible: (controller.getPregnancyIndex! > 0),
-                                      replacement: SizedBox(
-                                        width: 30.dg,
-                                        height: 30.dg,
-                                      ),
-                                      child: CustomCircularIcon(
-                                        iconData: Icons.arrow_back_ios_new,
-                                        iconSize: 20,
-                                        iconColor: Color(0xFF878686),
-                                        containerColor: Color(0xFFECECEC),
-                                        containerSize: 15.dg,
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      controller.pregnancyIndexBackward();
-                                    },
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.weeksPregnant("${(controller.getPregnancyIndex ?? 0) + 1}"),
-                                    style: CustomTextStyle.extraBold(24, height: 1.5),
-                                  ),
-                                  GestureDetector(
-                                    child: Visibility(
-                                      visible: (controller.getPregnancyIndex! < 39),
-                                      replacement: SizedBox(
-                                        width: 30.dg,
-                                        height: 30.dg,
-                                      ),
-                                      child: CustomCircularIcon(
-                                        iconData: Icons.arrow_forward_ios_outlined,
-                                        iconSize: 20,
-                                        iconColor: Color(0xFF878686),
-                                        containerColor: Color(0xFFECECEC),
-                                        containerSize: 15.dg,
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      controller.pregnancyIndexForward();
-                                    },
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                "${formatDateToMonthDay(controller.weeklyData[controller.currentPregnancyWeekIndex.value].tanggalAwalMinggu ?? "")} - ${formatDateToMonthDay(controller.weeklyData[controller.currentPregnancyWeekIndex.value].tanggalAkhirMinggu ?? "")}",
-                                style: CustomTextStyle.semiBold(18, height: 1.5),
-                              ),
-                              Text(
-                                "(${controller.weeklyData[controller.currentPregnancyWeekIndex.value].mingguLabel})",
-                                style: CustomTextStyle.regular(14, height: 1.5),
-                              ),
-                              const SizedBox(height: 10),
-                              Container(
-                                width: Get.width,
-                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            StepProgressIndicator(
-                                              totalSteps: 12,
-                                              currentStep: ((controller.getPregnancyIndex ?? 0) + 1).clamp(0, 12),
-                                              size: 5,
-                                              padding: 0,
-                                              selectedColor: Colors.yellow,
-                                              unselectedColor: Colors.cyan,
-                                              roundedEdges: Radius.circular(10),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    AppLocalizations.of(context)!.dueDate,
-                                                    textAlign: TextAlign.center,
-                                                    style: CustomTextStyle.medium(11, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                                                    maxLines: 2,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 5),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        context: context,
-                                                        isScrollControlled: true,
-                                                        builder: (BuildContext context) {
-                                                          return Padding(
-                                                            padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 20.h),
-                                                            child: Wrap(
-                                                              children: [
-                                                                Obx(
-                                                                  () => Column(
-                                                                    children: [
-                                                                      Container(
-                                                                        decoration: BoxDecoration(
-                                                                          color: Colors.transparent,
-                                                                          borderRadius: BorderRadius.circular(10),
-                                                                        ),
-                                                                        child: CustomExpandedCalendar(
-                                                                          firstDay: DateTime.now().subtract(Duration(days: 280)),
-                                                                          lastDay: DateTime.now(),
-                                                                          focusedDay: controller.getFocusedDate,
-                                                                          onDaySelected: (selectedDay, focusedDay) {
-                                                                            controller.setSelectedDate(selectedDay);
-                                                                            controller.setFocusedDate(focusedDay);
-                                                                          },
-                                                                          onPageChanged: (focusedDay) {
-                                                                            controller.setFocusedDate(focusedDay);
-                                                                          },
-                                                                          selectedDayPredicate: (day) => isSameDay(
-                                                                            controller.selectedDate,
-                                                                            day,
-                                                                          ),
-                                                                          calendarFormat: CalendarFormat.month,
-                                                                          markerBuilder: (context, day, events) {
-                                                                            if (day.isAtSameMomentAs(DateTime.parse(controller.currentlyPregnantData.value.hariPertamaHaidTerakhir ?? "${DateTime.now()}"))) {
-                                                                              return Container(
-                                                                                width: 10.0,
-                                                                                height: 10.0,
-                                                                                alignment: Alignment.center,
-                                                                                decoration: BoxDecoration(
-                                                                                  color: Colors.deepPurpleAccent[100],
-                                                                                  shape: BoxShape.circle,
-                                                                                ),
-                                                                              );
-                                                                            }
-                                                                            return SizedBox();
-                                                                          },
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height: 20,
-                                                                      ),
-                                                                      CustomButton(
-                                                                        text: AppLocalizations.of(context)!.send,
-                                                                        onPressed: () {
-                                                                          controller.editPregnancyStartDate(context);
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          );
-                                                        });
-                                                  },
-                                                  child: Icon(
-                                                    Icons.edit,
-                                                    size: 16,
-                                                    color: Colors.black.withOpacity(0.6),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Text(
-                                              "${formatDate(DateTime.parse(controller.currentlyPregnantData.value.tanggalPerkiraanLahir!))}",
-                                              textAlign: TextAlign.center,
-                                              style: CustomTextStyle.bold(12, height: 1.5),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            StepProgressIndicator(
-                                              totalSteps: 16,
-                                              currentStep: (((controller.getPregnancyIndex ?? 0) + 1) - 12).clamp(0, 16),
-                                              size: 5,
-                                              padding: 0,
-                                              selectedColor: Colors.yellow,
-                                              unselectedColor: Colors.cyan,
-                                              roundedEdges: Radius.circular(10),
-                                            ),
-                                            SizedBox(height: 10),
-                                            Text(
-                                              AppLocalizations.of(context)!.trimester,
-                                              textAlign: TextAlign.center,
-                                              style: CustomTextStyle.medium(11, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                                              maxLines: 2,
-                                            ),
-                                            Text(
-                                              "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].trimester ?? ""}",
-                                              textAlign: TextAlign.center,
-                                              style: CustomTextStyle.bold(12, height: 1.5),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            StepProgressIndicator(
-                                              totalSteps: 12,
-                                              currentStep: (((controller.getPregnancyIndex ?? 0) + 1) - 28).clamp(0, 12),
-                                              size: 5,
-                                              padding: 0,
-                                              selectedColor: Colors.yellow,
-                                              unselectedColor: Colors.cyan,
-                                              roundedEdges: Radius.circular(10),
-                                            ),
-                                            SizedBox(height: 10),
-                                            Text(
-                                              AppLocalizations.of(context)!.weekDue,
-                                              textAlign: TextAlign.center,
-                                              style: CustomTextStyle.medium(11, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                                              maxLines: 2,
-                                            ),
-                                            Text(
-                                              "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].mingguSisa ?? ""}W",
-                                              textAlign: TextAlign.center,
-                                              style: CustomTextStyle.bold(12, height: 1.5),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Visibility(
-                                visible: controller.weeklyData[controller.currentPregnancyWeekIndex.value].ukuranBayi != null,
-                                child: Container(
-                                  width: Get.width,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
+                                  Expanded(
                                     child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
+                                        StepProgressIndicator(
+                                          totalSteps: 12,
+                                          currentStep: ((controller.getPregnancyIndex ?? 0) + 1).clamp(0, 12),
+                                          size: 5,
+                                          padding: 0,
+                                          selectedColor: Colors.yellow,
+                                          unselectedColor: Colors.cyan,
+                                          roundedEdges: Radius.circular(10),
+                                        ),
+                                        const SizedBox(height: 10),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    AppLocalizations.of(context)!.babySize,
-                                                    textAlign: TextAlign.center,
-                                                    style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                                                  ),
-                                                  Container(
-                                                    child: Text(
-                                                      "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].ukuranBayi ?? ""}",
-                                                      style: CustomTextStyle.extraBold(20, height: 1.5),
-                                                      textAlign: TextAlign.left,
-                                                    ),
-                                                  )
-                                                ],
+                                              child: Text(
+                                                AppLocalizations.of(context)!.dueDate,
+                                                textAlign: TextAlign.center,
+                                                style: CustomTextStyle.medium(11, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                                maxLines: 2,
                                               ),
                                             ),
-                                            SvgPicture.asset(
-                                              'assets/image/${controller.weeklyData[(controller.getPregnancyIndex ?? 0)].ukuranBayiImgPath}',
-                                              width: 80,
-                                              fit: BoxFit.cover,
-                                              // height: 100,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 15),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                RichText(
-                                                  textAlign: TextAlign.center,
-                                                  text: TextSpan(
-                                                    children: [
-                                                      WidgetSpan(
-                                                        child: Icon(
-                                                          Icons.monitor_weight,
-                                                          size: 14,
-                                                          color: Colors.black.withOpacity(0.6),
+                                            const SizedBox(width: 5),
+                                            GestureDetector(
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                    context: context,
+                                                    isScrollControlled: true,
+                                                    builder: (BuildContext context) {
+                                                      return Padding(
+                                                        padding: EdgeInsets.fromLTRB(15.w, 25.h, 15.w, 20.h),
+                                                        child: Wrap(
+                                                          children: [
+                                                            Obx(
+                                                              () => Column(
+                                                                children: [
+                                                                  Container(
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.transparent,
+                                                                      borderRadius: BorderRadius.circular(10),
+                                                                    ),
+                                                                    child: CustomExpandedCalendar(
+                                                                      firstDay: DateTime.now().subtract(Duration(days: 280)),
+                                                                      lastDay: DateTime.now(),
+                                                                      focusedDay: controller.getFocusedDate,
+                                                                      onDaySelected: (selectedDay, focusedDay) {
+                                                                        controller.setSelectedDate(selectedDay);
+                                                                        controller.setFocusedDate(focusedDay);
+                                                                      },
+                                                                      onPageChanged: (focusedDay) {
+                                                                        controller.setFocusedDate(focusedDay);
+                                                                      },
+                                                                      selectedDayPredicate: (day) => isSameDay(
+                                                                        controller.selectedDate,
+                                                                        day,
+                                                                      ),
+                                                                      calendarFormat: CalendarFormat.month,
+                                                                      markerBuilder: (context, day, events) {
+                                                                        if (day.isAtSameMomentAs(DateTime.parse(controller.currentlyPregnantData.value.hariPertamaHaidTerakhir ?? "${DateTime.now()}"))) {
+                                                                          return Container(
+                                                                            width: 10.0,
+                                                                            height: 10.0,
+                                                                            alignment: Alignment.center,
+                                                                            decoration: BoxDecoration(
+                                                                              color: Colors.deepPurpleAccent[100],
+                                                                              shape: BoxShape.circle,
+                                                                            ),
+                                                                          );
+                                                                        }
+                                                                        return SizedBox();
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(height: 20),
+                                                                  CustomButton(
+                                                                    text: AppLocalizations.of(context)!.change,
+                                                                    onPressed: () {
+                                                                      controller.editPregnancyStartDate(context);
+                                                                    },
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ),
-                                                      TextSpan(
-                                                        text: AppLocalizations.of(context)!.idealWeight,
-                                                        style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].beratJanin ?? "-"} g",
-                                                  textAlign: TextAlign.center,
-                                                  style: CustomTextStyle.extraBold(18, height: 1.5),
-                                                ),
-                                              ],
-                                            ),
-                                            Container(
-                                              height: 40,
-                                              child: VerticalDivider(
-                                                thickness: 1,
+                                                      );
+                                                    });
+                                              },
+                                              child: Icon(
+                                                Icons.edit,
+                                                size: 16,
                                                 color: Colors.black.withOpacity(0.6),
                                               ),
                                             ),
-                                            Column(
-                                              children: [
-                                                RichText(
-                                                  textAlign: TextAlign.center,
-                                                  text: TextSpan(
-                                                    children: [
-                                                      WidgetSpan(
-                                                        child: Icon(
-                                                          Icons.height,
-                                                          size: 14,
-                                                          color: Colors.black.withOpacity(0.6),
-                                                        ),
-                                                      ),
-                                                      TextSpan(
-                                                        text: AppLocalizations.of(context)!.idealHeight,
-                                                        style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].tinggiBadanJanin ?? "-"} mm",
-                                                  textAlign: TextAlign.center,
-                                                  style: CustomTextStyle.extraBold(20, height: 1.5),
-                                                ),
-                                              ],
-                                            ),
                                           ],
-                                        )
+                                        ),
+                                        Text(
+                                          "${formatDate(DateTime.parse(controller.currentlyPregnantData.value.tanggalPerkiraanLahir!))}",
+                                          textAlign: TextAlign.center,
+                                          style: CustomTextStyle.bold(12, height: 1.5),
+                                        ),
                                       ],
                                     ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(height: 15),
-                              Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      WeeklyInfo(
-                                        title: AppLocalizations.of(context)!.thisWeeksHighlight,
-                                        imagePath: 'assets/icon/sticky-note.png',
-                                        onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.highlight), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].poinUtama),
-                                      ),
-                                      SizedBox(width: 10),
-                                      WeeklyInfo(
-                                        title: AppLocalizations.of(context)!.bodyChangesThisWeek,
-                                        imagePath: 'assets/icon/pregnant.png',
-                                        onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.bodyChanges), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].perubahanTubuh),
-                                      ),
-                                    ],
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        StepProgressIndicator(
+                                          totalSteps: 16,
+                                          currentStep: (((controller.getPregnancyIndex ?? 0) + 1) - 12).clamp(0, 16),
+                                          size: 5,
+                                          padding: 0,
+                                          selectedColor: Colors.yellow,
+                                          unselectedColor: Colors.cyan,
+                                          roundedEdges: Radius.circular(10),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          AppLocalizations.of(context)!.trimester,
+                                          textAlign: TextAlign.center,
+                                          style: CustomTextStyle.medium(11, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                          maxLines: 2,
+                                        ),
+                                        Text(
+                                          "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].trimester ?? ""}",
+                                          textAlign: TextAlign.center,
+                                          style: CustomTextStyle.bold(12, height: 1.5),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 12),
-                                  Row(
-                                    children: [
-                                      WeeklyInfo(
-                                        title: AppLocalizations.of(context)!.yourBabyThisWeek,
-                                        imagePath: 'assets/icon/pregnancy.png',
-                                        onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.yourBabyDevelopment), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].perkembanganBayi),
-                                      ),
-                                      SizedBox(width: 10),
-                                      WeeklyInfo(
-                                        title: AppLocalizations.of(context)!.symptomsYouMightFeel,
-                                        imagePath: 'assets/icon/morning-sickness.png',
-                                        onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.symptoms), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].gejalaUmum),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 12),
-                                  Row(
-                                    children: [
-                                      WeeklyInfo(
-                                        title: AppLocalizations.of(context)!.thingsToConsider,
-                                        imagePath: 'assets/icon/list.png',
-                                        onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.thingsToConsider), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].tipsMingguan),
-                                      ),
-                                      SizedBox(width: 10),
-                                      Spacer()
-                                    ],
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        StepProgressIndicator(
+                                          totalSteps: 12,
+                                          currentStep: (((controller.getPregnancyIndex ?? 0) + 1) - 28).clamp(0, 12),
+                                          size: 5,
+                                          padding: 0,
+                                          selectedColor: Colors.yellow,
+                                          unselectedColor: Colors.cyan,
+                                          roundedEdges: Radius.circular(10),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          AppLocalizations.of(context)!.weekDue,
+                                          textAlign: TextAlign.center,
+                                          style: CustomTextStyle.medium(11, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                          maxLines: 2,
+                                        ),
+                                        Text(
+                                          "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].mingguSisa ?? ""}W",
+                                          textAlign: TextAlign.center,
+                                          style: CustomTextStyle.bold(12, height: 1.5),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Visibility(
+                            visible: controller.weeklyData[controller.currentPregnancyWeekIndex.value].ukuranBayi != null,
+                            child: Container(
+                              width: Get.width,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                AppLocalizations.of(context)!.babySize,
+                                                textAlign: TextAlign.center,
+                                                style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                              ),
+                                              Container(
+                                                child: Text(
+                                                  "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].ukuranBayi ?? ""}",
+                                                  style: CustomTextStyle.extraBold(20, height: 1.5),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        SvgPicture.asset(
+                                          'assets/image/${controller.weeklyData[(controller.getPregnancyIndex ?? 0)].ukuranBayiImgPath}',
+                                          width: 80,
+                                          fit: BoxFit.cover,
+                                          // height: 100,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 15),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            RichText(
+                                              textAlign: TextAlign.center,
+                                              text: TextSpan(
+                                                children: [
+                                                  WidgetSpan(
+                                                    child: Icon(
+                                                      Icons.monitor_weight,
+                                                      size: 14,
+                                                      color: Colors.black.withOpacity(0.6),
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: AppLocalizations.of(context)!.idealWeight,
+                                                    style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(
+                                              "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].beratJanin ?? "-"} g",
+                                              textAlign: TextAlign.center,
+                                              style: CustomTextStyle.extraBold(18, height: 1.5),
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                          height: 40,
+                                          child: VerticalDivider(
+                                            thickness: 1,
+                                            color: Colors.black.withOpacity(0.6),
+                                          ),
+                                        ),
+                                        Column(
+                                          children: [
+                                            RichText(
+                                              textAlign: TextAlign.center,
+                                              text: TextSpan(
+                                                children: [
+                                                  WidgetSpan(
+                                                    child: Icon(
+                                                      Icons.height,
+                                                      size: 14,
+                                                      color: Colors.black.withOpacity(0.6),
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: AppLocalizations.of(context)!.idealHeight,
+                                                    style: CustomTextStyle.medium(14, height: 1.5, color: Colors.black.withOpacity(0.6)),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(
+                                              "${controller.weeklyData[controller.currentPregnancyWeekIndex.value].tinggiBadanJanin ?? "-"} mm",
+                                              textAlign: TextAlign.center,
+                                              style: CustomTextStyle.extraBold(20, height: 1.5),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  WeeklyInfo(
+                                    title: AppLocalizations.of(context)!.thisWeeksHighlight,
+                                    imagePath: 'assets/icon/sticky-note.png',
+                                    onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.highlight), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].poinUtama),
+                                  ),
+                                  SizedBox(width: 10),
+                                  WeeklyInfo(
+                                    title: AppLocalizations.of(context)!.bodyChangesThisWeek,
+                                    imagePath: 'assets/icon/pregnant.png',
+                                    onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.bodyChanges), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].perubahanTubuh),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  WeeklyInfo(
+                                    title: AppLocalizations.of(context)!.yourBabyThisWeek,
+                                    imagePath: 'assets/icon/pregnancy.png',
+                                    onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.yourBabyDevelopment), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].perkembanganBayi),
+                                  ),
+                                  SizedBox(width: 10),
+                                  WeeklyInfo(
+                                    title: AppLocalizations.of(context)!.symptomsYouMightFeel,
+                                    imagePath: 'assets/icon/morning-sickness.png',
+                                    onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.symptoms), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].gejalaUmum),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  WeeklyInfo(
+                                    title: AppLocalizations.of(context)!.thingsToConsider,
+                                    imagePath: 'assets/icon/list.png',
+                                    onTap: () => Get.to(() => DetailPregnancyView(appbarTitle: AppLocalizations.of(context)!.thingsToConsider), arguments: controller.weeklyData[(controller.getPregnancyIndex ?? 0) < 2 ? 2 : controller.getPregnancyIndex ?? 0].tipsMingguan),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Spacer()
+                                ],
+                              ),
                             ],
                           ),
-                        ),
+                          const SizedBox(height: 10),
+                        ],
                       ),
                     ),
-                  );
-                }
-              },
-            ),
-          )),
+                  ),
+                ),
+              );
+            }
+          },
+        ),
+      )),
     );
   }
 

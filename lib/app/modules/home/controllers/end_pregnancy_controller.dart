@@ -1,19 +1,12 @@
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
-import 'package:periodnpregnancycalender/app/models/sync_log_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/pregnancy_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/sync_data_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/services/local_notification_service.dart';
-import 'package:periodnpregnancycalender/app/services/pregnancy_history_service.dart';
-import 'package:periodnpregnancycalender/app/services/profile_service.dart';
-import 'package:periodnpregnancycalender/app/services/sync_data_service.dart';
-import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class EndPregnancyController extends GetxController {
   final ApiService apiService = ApiService();
@@ -22,7 +15,6 @@ class EndPregnancyController extends GetxController {
   late final PregnancyHistoryService _pregnancyHistoryService;
   late final ProfileService profileService;
   late final SyncDataRepository syncDataRepository;
-  late final SyncDataService syncDataService;
   var gender = "".obs;
   Rx<CurrentlyPregnant> currentlyPregnantData = Rx<CurrentlyPregnant>(CurrentlyPregnant());
   RxList<WeeklyData> weeklyData = <WeeklyData>[].obs;
@@ -108,6 +100,7 @@ class EndPregnancyController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await pregnancyRepository.pregnancyEnded(selectedDate.toString(), gender.value);
       } catch (e) {
         await _syncPregnancyEnded(updatedPregnancy?.id ?? 0, updatedPregnancy?.remoteId ?? 0);
@@ -150,6 +143,7 @@ class EndPregnancyController extends GetxController {
 
     if (isConnected && localSuccess && storageService.getCredentialToken() != null && storageService.getIsBackup()) {
       try {
+        await SyncDataService().pendingDataChange();
         await pregnancyRepository.deletePregnancy();
       } catch (e) {
         await _syncPregnancyDelete(deletedPregnancy?.id ?? 0, deletedPregnancy?.remoteId ?? 0);

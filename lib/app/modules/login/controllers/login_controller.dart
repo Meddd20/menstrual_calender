@@ -2,17 +2,14 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/profile_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/profile_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/profile_repository.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/auth_repository.dart';
-import 'package:periodnpregnancycalender/app/services/firebase_notification_service.dart';
-import 'package:periodnpregnancycalender/app/services/profile_service.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class LoginController extends GetxController {
   late final ProfileService _profileService;
@@ -87,21 +84,20 @@ class LoginController extends GetxController {
       if (localProfile != null) {
         storageService.storeCredentialToken(user.token!);
 
-        if (storageService.getAccountLocalId() != 0) {
-          if (overrideExistingData.value == false) {
-            await _profileService.deletePendingDataChanges();
-          }
-        } else {
-          storageService.storeAccountLocalId(localProfile.id!);
+        // if (storageService.getAccountLocalId() != 0) {
+        if (overrideExistingData.value == true) {
+          storageService.storeIsAccountCreatedUnverified(true);
         }
+        // } else {
+        //   storageService.storeAccountLocalId(localProfile.id ?? 0);
+        // }
 
+        Get.offAllNamed(Routes.NAVIGATION_MENU, arguments: overrideExistingData.value);
         FirebaseNotificationService().storeFcmToken(user.id!);
         storageService.storeIsAuth(true);
         storageService.storeAccountId(user.id!);
         overrideExistingData.value == false ? storageService.storeIsPregnant(user.isPregnant!) : null;
         storageService.storeIsBackup(true);
-
-        Get.offAllNamed(Routes.NAVIGATION_MENU, arguments: overrideExistingData.value);
       }
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: AppLocalizations.of(context)!.loginFailed));

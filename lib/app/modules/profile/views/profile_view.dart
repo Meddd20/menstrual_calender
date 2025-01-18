@@ -1,10 +1,6 @@
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_button.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_circular_icon.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
 import 'package:periodnpregnancycalender/app/models/profile_model.dart';
 import 'package:periodnpregnancycalender/app/modules/home/views/end_pregnancy_view.dart';
 import 'package:periodnpregnancycalender/app/modules/login/views/login_view.dart';
@@ -14,12 +10,13 @@ import 'package:periodnpregnancycalender/app/modules/profile/views/change_purpos
 import 'package:periodnpregnancycalender/app/modules/profile/views/detail_profile_view.dart';
 import 'package:periodnpregnancycalender/app/modules/register/views/register_view.dart';
 import 'package:periodnpregnancycalender/app/routes/app_pages.dart';
-import 'package:periodnpregnancycalender/app/utils/conectivity.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import '../controllers/profile_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({Key? key}) : super(key: key);
@@ -47,7 +44,9 @@ class ProfileView extends GetView<ProfileController> {
         child: FutureBuilder<User?>(
           future: controller.profileUser,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else {
               return Align(
                 child: SingleChildScrollView(
                   child: Column(
@@ -1292,8 +1291,6 @@ class ProfileView extends GetView<ProfileController> {
                   ),
                 ),
               );
-            } else {
-              return Center(child: CircularProgressIndicator());
             }
           },
         ),

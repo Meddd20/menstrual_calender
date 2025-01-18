@@ -4,12 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:like_button/like_button.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
 import 'package:periodnpregnancycalender/app/modules/insight/controllers/insight_detail_controller.dart';
-import 'package:periodnpregnancycalender/app/utils/api_endpoints.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class InsightDetailView extends GetView<InsightDetailController> {
   const InsightDetailView({Key? key}) : super(key: key);

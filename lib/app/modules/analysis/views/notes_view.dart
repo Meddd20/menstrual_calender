@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/common/colors.dart';
-import 'package:periodnpregnancycalender/app/common/styles.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_date_look.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_tabbar.dart';
 import 'package:periodnpregnancycalender/app/modules/analysis/controllers/notes_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/common/common.dart';
 
 class NotesView extends GetView<NotesController> {
   const NotesView({Key? key}) : super(key: key);
@@ -22,10 +20,16 @@ class NotesView extends GetView<NotesController> {
         appBar: AppBar(
           title: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Text(
-              AppLocalizations.of(context)!.notes,
-              style: CustomTextStyle.extraBold(22),
-            ),
+            child: Obx(() => Text(
+                  controller.selectedDataTags == "pregnancy_notes"
+                      ? "Pregnancy Notes"
+                      : controller.selectedDataTags == "fetal_heartrate"
+                          ? "Denyut Jantung Janin"
+                          : controller.selectedDataTags == "pregnancy_usg"
+                              ? "Pemeriksaan USG"
+                              : AppLocalizations.of(context)!.notes,
+                  style: CustomTextStyle.extraBold(22),
+                )),
           ),
           centerTitle: true,
           backgroundColor: AppColors.white,
@@ -43,7 +47,7 @@ class NotesView extends GetView<NotesController> {
             padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
             child: Column(
               children: [
-                if (controller.selectedDataTags != "pregnancy_notes") ...[
+                if (controller.selectedDataTags != "pregnancy_notes" && controller.selectedDataTags != "fetal_heartrate" && controller.selectedDataTags != "pregnancy_usg") ...[
                   CustomTabBar(
                     controller: controller.tabController,
                     onTap: (index) {

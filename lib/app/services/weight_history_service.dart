@@ -1,12 +1,10 @@
 import 'dart:math';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_weight_gain.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/weight_history_repository.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class WeightHistoryService {
   final Logger _logger = Logger();
@@ -20,13 +18,14 @@ class WeightHistoryService {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
       List<WeightHistory?> weightHistory = await _weightHistoryRepository.getWeightHistory(userId);
-      List<WeightHistory?> weightDataOnThisPregnancy = weightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData!.id).toList();
-
-      if (isTwin != 0 || isTwin != 1) {
-        Exception("Is Twin harus diisi dengan 0 atau 1");
-      }
-
+      List<WeightHistory?> weightDataOnThisPregnancy;
       if (currentPregnancyData != null) {
+        weightDataOnThisPregnancy = weightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData.id).toList();
+
+        if (isTwin != 0 && isTwin != 1) {
+          throw Exception("Is Twin harus diisi dengan 0 atau 1");
+        }
+
         double tinggiBadanByMeter = tinggiBadan / 100;
         double bmiPrakehamilan = beratPrakehamilan / pow(tinggiBadanByMeter, 2);
 
@@ -56,13 +55,14 @@ class WeightHistoryService {
           WeightHistory? initWeightHistory = weightDataOnThisPregnancy[0];
           WeightHistory? nextWeightHistory = weightDataOnThisPregnancy.length > 1 ? weightDataOnThisPregnancy[1] : null;
 
-          WeightHistory updatedinitWeightHistory = initWeightHistory!.copyWith(
-            beratBadan: beratPrakehamilan,
-            pertambahanBerat: 0,
-            updatedAt: DateTime.now().toString(),
-          );
-
-          await _weightHistoryRepository.editWeightHistory(updatedinitWeightHistory);
+          if (initWeightHistory != null) {
+            WeightHistory updatedinitWeightHistory = initWeightHistory.copyWith(
+              beratBadan: beratPrakehamilan,
+              pertambahanBerat: 0,
+              updatedAt: DateTime.now().toString(),
+            );
+            await _weightHistoryRepository.editWeightHistory(updatedinitWeightHistory);
+          }
 
           double? weightGain;
           if (nextWeightHistory != null && nextWeightHistory.beratBadan != null) {
@@ -92,7 +92,8 @@ class WeightHistoryService {
         }
 
         List<WeightHistory?> updatedWeightDataOnThisPregnancy = weightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData.id).toList();
-        return updatedWeightDataOnThisPregnancy.firstWhere((weight) => weight?.mingguKehamilan == 0);
+        WeightHistory? updatedWeight = updatedWeightDataOnThisPregnancy.firstWhereOrNull((weight) => weight?.mingguKehamilan == 0);
+        return updatedWeight != null ? updatedWeight : null;
       } else {
         throw Exception('Data tidak lengkap');
       }
@@ -108,10 +109,8 @@ class WeightHistoryService {
 
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
-      print(currentPregnancyData?.toJson());
       List<WeightHistory?> getAllWeightHistory = await _weightHistoryRepository.getWeightHistory(userId);
       List<WeightHistory?> weightDataOnThisPregnancy = getAllWeightHistory.where((weight) => weight?.riwayatKehamilanId == currentPregnancyData?.id).toList();
-      print(weightDataOnThisPregnancy.first?.toJson());
 
       if (currentPregnancyData != null) {
         DateTime hariPertamaHaidTerakhir = DateTime.parse(currentPregnancyData.hariPertamaHaidTerakhir ?? "");

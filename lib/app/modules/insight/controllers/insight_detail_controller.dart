@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:periodnpregnancycalender/app/models/detail_article_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/api_repo/article_repository.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class InsightDetailController extends GetxController {
   final ApiService apiService = ApiService();
@@ -22,7 +23,7 @@ class InsightDetailController extends GetxController {
   var commentId = 0.obs;
   var isLoading = RxBool(true);
   var isReplyingComment = RxBool(false);
-  late Article? data;
+  late DetailArticle? data;
   RxList<Comment> comment = <Comment>[].obs;
   RxMap<int, bool> showRepliesMap = RxMap<int, bool>();
   FocusNode focusNode = FocusNode();
@@ -38,7 +39,7 @@ class InsightDetailController extends GetxController {
   @override
   void onInit() {
     id = Get.arguments as int?;
-    data = Article(
+    data = DetailArticle(
       id: null,
       writter: null,
       titleInd: null,

@@ -1,14 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:periodnpregnancycalender/app/models/daily_log_tags_model.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_daily_log_model.dart';
-import 'package:periodnpregnancycalender/app/models/pregnancy_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_history_repository.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/pregnancy_log_repository.dart';
-import 'package:periodnpregnancycalender/app/utils/helpers.dart';
-import 'package:periodnpregnancycalender/app/utils/storage_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:periodnpregnancycalender/app/utils/utils.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class PregnancyLogService {
   final Logger _logger = Logger();
@@ -17,7 +14,18 @@ class PregnancyLogService {
   late final PregnancyLogRepository _pregnancyLogRepository = PregnancyLogRepository();
   late final PregnancyHistoryRepository _pregnancyHistoryRepository = PregnancyHistoryRepository();
 
-  Future<PregnancyDailyLog?> upsertPregnancyDailyLog(DateTime date, Map<String, dynamic>? pregnancySymptoms, double? temperature, String? notes) async {
+  Future<PregnancyDailyLog?> upsertPregnancyDailyLog(
+    DateTime date,
+    Map<String, dynamic>? pregnancySymptoms,
+    double? temperature,
+    String? notes,
+    double? fundusUteriHeight,
+    int? fetalHeartRate,
+    String? examinationMethod,
+    String? fetalPosition,
+    String? placentaCondiion,
+    int? fetalWeight,
+  ) async {
     try {
       int userId = storageService.getAccountLocalId();
       PregnancyHistory? currentPregnancyData = await _pregnancyHistoryRepository.getCurrentPregnancyHistory(userId);
@@ -33,6 +41,12 @@ class PregnancyLogService {
         pregnancySymptoms: PregnancySymptoms.fromJson(pregnancySymptoms ?? {}),
         temperature: temperature.toString(),
         notes: notes,
+        fundusUteriHeight: fundusUteriHeight,
+        fetalHeartRate: fetalHeartRate,
+        examinationMethod: examinationMethod,
+        fetalPosition: fetalPosition,
+        placentaCondition: placentaCondiion,
+        fetalWeight: fetalWeight,
       );
 
       PregnancyDailyLog? existingPregnancyLog = await _pregnancyLogRepository.getPregnancyDailyLog(userId, currentPregnancyData.id!);
@@ -126,19 +140,52 @@ class PregnancyLogService {
         if (dataHarianKehamilanByDate != null) {
           return dataHarianKehamilanByDate;
         } else {
-          return DataHarianKehamilan(date: date, pregnancySymptoms: _defaultPregnancySymptoms(), notes: "", temperature: "");
+          return DataHarianKehamilan(
+            date: date,
+            pregnancySymptoms: _defaultPregnancySymptoms(),
+            notes: "",
+            temperature: "",
+            fundusUteriHeight: null,
+            fetalHeartRate: null,
+            examinationMethod: "",
+            fetalPosition: "",
+            placentaCondition: "",
+            fetalWeight: null,
+          );
         }
       } else {
-        return DataHarianKehamilan(date: date, pregnancySymptoms: _defaultPregnancySymptoms(), notes: "", temperature: "");
+        return DataHarianKehamilan(
+          date: date,
+          pregnancySymptoms: _defaultPregnancySymptoms(),
+          notes: "",
+          temperature: "",
+          fundusUteriHeight: null,
+          fetalHeartRate: null,
+          examinationMethod: "",
+          fetalPosition: "",
+          placentaCondition: "",
+          fetalWeight: null,
+        );
       }
     } catch (e) {
       _logger.e('[LOCAL ERROR] $e');
-      return DataHarianKehamilan(date: date, pregnancySymptoms: _defaultPregnancySymptoms(), notes: "", temperature: "");
+      return DataHarianKehamilan(
+        date: date,
+        pregnancySymptoms: _defaultPregnancySymptoms(),
+        notes: "",
+        temperature: "",
+        fundusUteriHeight: null,
+        fetalHeartRate: null,
+        examinationMethod: "",
+        fetalPosition: "",
+        placentaCondition: "",
+        fetalWeight: null,
+      );
     }
   }
 
   Future<DailyLogTagsData> getPregnancyLogByTags(BuildContext context, String tags) async {
-    List<String> allowedTags = ["pregnancySymptoms", "notes", "temperature"];
+    List<String> allowedTags = ["pregnancySymptoms", "notes", "temperature", "fundusUteriHeight", "fetalHeartRate", "pregnancyUSG"];
 
     if (!allowedTags.contains(tags)) {
       throw Exception("Invalid tags parameter.");
@@ -176,6 +223,31 @@ class PregnancyLogService {
               if (trueTags.isNotEmpty) {
                 logs[logDate] = trueTags;
               }
+            }
+          } else if (tags == "fundusUteriHeight") {
+            double? height = pregnancyLog.fundusUteriHeight;
+            if (height != null) {
+              logs[logDate] = [height.toString()];
+            }
+          } else if (tags == "fetalHeartRate") {
+            int? heartRate = pregnancyLog.fetalHeartRate;
+            String? method = pregnancyLog.examinationMethod;
+            if (heartRate != null || method != null) {
+              logs[logDate] = [
+                if (heartRate != null) "$heartRate",
+                if (method != null) "$method",
+              ];
+            }
+          } else if (tags == "pregnancyUSG") {
+            String? fetalPosition = pregnancyLog.fetalPosition;
+            String? placentaCondition = pregnancyLog.placentaCondition;
+            int? fetalWeight = pregnancyLog.fetalWeight;
+            if (fetalPosition != null || placentaCondition != null) {
+              logs[logDate] = [
+                if (fetalPosition != null) "$fetalPosition",
+                if (placentaCondition != null) "$placentaCondition",
+                if (fetalWeight != null) "$fetalWeight",
+              ];
             }
           } else {
             if (tags == "temperature") {

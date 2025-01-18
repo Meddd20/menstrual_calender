@@ -1,5 +1,5 @@
-import 'package:periodnpregnancycalender/app/models/master_vaccines_model.dart';
-import 'package:periodnpregnancycalender/app/repositories/local/master_vaccines_repository.dart';
+import 'package:periodnpregnancycalender/app/repositories/repositories.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class MasterVaccinesService {
   late final MasterVaccinesRepository _masterVaccinesRepository = MasterVaccinesRepository();

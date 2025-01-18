@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:periodnpregnancycalender/app/common/widgets/custom_snackbar.dart';
-import 'package:periodnpregnancycalender/app/models/article_model.dart' as ArticleModel;
-import 'package:periodnpregnancycalender/app/models/detail_article_model.dart' as DetailArticleModel;
 import 'package:periodnpregnancycalender/app/modules/profile/views/unauthorized_error_view.dart';
-import 'package:periodnpregnancycalender/app/services/api_service.dart';
 
+import 'package:periodnpregnancycalender/app/services/services.dart';
+import 'package:periodnpregnancycalender/app/common/common.dart';
+import 'package:periodnpregnancycalender/app/models/models.dart';
 
 class ArticleRepository {
   final ApiService apiService;
@@ -15,14 +14,14 @@ class ArticleRepository {
 
   ArticleRepository(this.apiService);
 
-  Future<ArticleModel.Article?> getAllArticle(String? tags) async {
+  Future<Article?> getAllArticle(String? tags) async {
     http.Response response = await apiService.getAllArticle(tags);
 
     if (response.statusCode == 200) {
       final List<dynamic> articlesJson = jsonDecode(response.body)["data"];
-      final List<ArticleModel.Articles> articles = articlesJson.map<ArticleModel.Articles>((articleJson) => ArticleModel.Articles.fromJson(articleJson)).toList();
+      final List<Articles> articles = articlesJson.map<Articles>((articleJson) => Articles.fromJson(articleJson)).toList();
 
-      return ArticleModel.Article(articles: articles);
+      return Article(articles: articles);
     } else if (response.statusCode == 401) {
       Get.to(() => UnauthorizedErrorView());
       return null;
@@ -34,12 +33,12 @@ class ArticleRepository {
     }
   }
 
-  Future<DetailArticleModel.ArticleData?> getArticle(int id) async {
+  Future<ArticleData?> getArticle(int id) async {
     http.Response response = await apiService.getArticle(id);
 
     if (response.statusCode == 200) {
       var decodedJson = json.decode(response.body.toString().replaceAll("\n", ""));
-      var articleData = DetailArticleModel.ArticleData.fromJson(decodedJson);
+      var articleData = ArticleData.fromJson(decodedJson);
       return articleData;
     } else if (response.statusCode == 401) {
       Get.to(() => UnauthorizedErrorView());
