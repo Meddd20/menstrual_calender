@@ -2,6 +2,7 @@ import 'package:logger/logger.dart';
 
 import 'package:periodnpregnancycalender/app/utils/utils.dart';
 import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:sqflite/sqflite.dart';
 
 class MasterVitaminsRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
@@ -40,42 +41,22 @@ class MasterVitaminsRepository {
     }
   }
 
-  Future<void> addVitamin(MasterVitamin vitamin) async {
+  Future<void> addAllVitamins(List<MasterVitamin> vitamins) async {
     final db = await _databaseHelper.database;
-    try {
-      await db.insert("tb_master_vitamins", vitamin.toJson());
-    } catch (e) {
-      _logger.e("Error during add vitamin: $e");
-      rethrow;
-    }
-  }
-
-  Future<void> editVitamin(MasterVitamin vitamin) async {
-    final db = await _databaseHelper.database;
-    try {
-      await db.update(
-        "tb_master_vitamins",
-        vitamin.toJson(),
-        where: 'id = ?',
-        whereArgs: [vitamin.id],
-      );
-    } catch (e) {
-      _logger.e("Error during edit vitamin: $e");
-      rethrow;
-    }
-  }
-
-  Future<void> deleteVitamin(int id) async {
-    final db = await _databaseHelper.database;
-    try {
-      await db.delete(
-        "tb_master_vitamins",
-        where: 'id = ?',
-        whereArgs: [id],
-      );
-    } catch (e) {
-      _logger.e("Error during delete vitamin: $e");
-      rethrow;
-    }
+    await db.transaction((txn) async {
+      try {
+        await txn.delete('tb_master_vitamins');
+        for (var vitamin in vitamins) {
+          await txn.insert(
+            'tb_master_vitamins',
+            vitamin.toJson(),
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+      } catch (e) {
+        _logger.e("Error during add vitamins: $e");
+        rethrow;
+      }
+    });
   }
 }

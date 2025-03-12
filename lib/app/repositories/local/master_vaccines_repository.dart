@@ -2,6 +2,7 @@ import 'package:logger/logger.dart';
 
 import 'package:periodnpregnancycalender/app/utils/utils.dart';
 import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:sqflite/sqflite.dart';
 
 class MasterVaccinesRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
@@ -40,42 +41,22 @@ class MasterVaccinesRepository {
     }
   }
 
-  Future<void> addVaccines(MasterVaccine vaccine) async {
+  Future<void> addAllVaccines(List<MasterVaccine> vaccines) async {
     final db = await _databaseHelper.database;
-    try {
-      await db.insert("tb_master_vaccines", vaccine.toJson());
-    } catch (e) {
-      _logger.e("Error during add vaccine: $e");
-      rethrow;
-    }
-  }
-
-  Future<void> editVaccines(MasterVaccine vaccine) async {
-    final db = await _databaseHelper.database;
-    try {
-      await db.update(
-        "tb_master_vaccines",
-        vaccine.toJson(),
-        where: 'id = ?',
-        whereArgs: [vaccine.id],
-      );
-    } catch (e) {
-      _logger.e("Error during edit vaccines: $e");
-      rethrow;
-    }
-  }
-
-  Future<void> deleteVaccines(int id) async {
-    final db = await _databaseHelper.database;
-    try {
-      await db.delete(
-        "tb_master_vaccines",
-        where: 'id = ?',
-        whereArgs: [id],
-      );
-    } catch (e) {
-      _logger.e("Error during delete vaccines: $e");
-      rethrow;
-    }
+    await db.transaction((txn) async {
+      try {
+        await txn.delete('tb_master_vaccines');
+        for (var vaccine in vaccines) {
+          await txn.insert(
+            'tb_master_vaccines',
+            vaccine.toJson(),
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+      } catch (e) {
+        _logger.e("Error during add vaccines: $e");
+        rethrow;
+      }
+    });
   }
 }

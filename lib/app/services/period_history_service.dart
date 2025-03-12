@@ -25,18 +25,30 @@ class PeriodHistoryService {
       List<PeriodHistory> isActualPeriodHistories = getAllPeriodHistory.where((period) => period.isActual == "1").toList();
       List<PeriodHistory> isNotActualPeriodHistories = getAllPeriodHistory.where((period) => period.isActual == "0").toList();
 
+      // Check for overlapping periods
       for (var period in isActualPeriodHistories) {
+        if (period.haidAwal == null || period.haidAkhir == null) {
+          _logger.w('Period with null haidAwal or haidAkhir found: $period');
+          continue;
+        }
+
         if ((haidAwal.isBefore(period.haidAkhir!) || haidAwal.isAtSameMomentAs(period.haidAkhir!)) && (haidAkhir.isAfter(period.haidAwal!) || haidAkhir.isAtSameMomentAs(period.haidAwal!))) {
           throw Exception('Siklus menstruasi yang dimasukkan overlap dengan siklus yang sudah ada');
         }
       }
 
-      if (getAllPregnancyHistory.length > 0) {
+      // Check for overlapping pregnancy history
+      if (getAllPregnancyHistory.isNotEmpty) {
         for (var pregnancy in getAllPregnancyHistory) {
+          if (pregnancy.hariPertamaHaidTerakhir == null || pregnancy.kehamilanAkhir == null) {
+            _logger.w('Pregnancy with null hariPertamaHaidTerakhir or kehamilanAkhir found: $pregnancy');
+            continue;
+          }
+
           DateTime hariPertamaHaidTerakhir = DateTime.parse(pregnancy.hariPertamaHaidTerakhir!);
           DateTime kehamilanAkhir = DateTime.parse(pregnancy.kehamilanAkhir!);
 
-          if ((haidAwal.isAtSameMomentAs(hariPertamaHaidTerakhir) || (haidAwal.isAfter(hariPertamaHaidTerakhir)) && (haidAwal.isBefore(kehamilanAkhir)) || haidAwal.isAtSameMomentAs(kehamilanAkhir)) || (haidAkhir.isAtSameMomentAs(hariPertamaHaidTerakhir) || (haidAkhir.isAfter(hariPertamaHaidTerakhir)) && (haidAkhir.isBefore(kehamilanAkhir)) || haidAkhir.isAtSameMomentAs(kehamilanAkhir))) {
+          if ((haidAwal.isAtSameMomentAs(hariPertamaHaidTerakhir) || (haidAwal.isAfter(hariPertamaHaidTerakhir) && haidAwal.isBefore(kehamilanAkhir)) || (haidAkhir.isAtSameMomentAs(hariPertamaHaidTerakhir) || (haidAkhir.isAfter(hariPertamaHaidTerakhir) && haidAkhir.isBefore(kehamilanAkhir))))) {
             throw Exception('Tanggal awal atau akhir siklus menstruasi yang dimasukkan overlap dengan riwayat kehamilan Anda.');
           }
         }
@@ -55,7 +67,7 @@ class PeriodHistoryService {
         int countDurasi = 1;
 
         for (var period in isActualPeriodHistories) {
-          if (period.lamaSiklus != 0 && period.lamaSiklus != null) {
+          if (period.lamaSiklus != null && period.lamaSiklus != 0) {
             totalSiklus += period.lamaSiklus!;
             countSiklus++;
           }
@@ -65,8 +77,8 @@ class PeriodHistoryService {
           }
         }
 
-        avgPeriodCycle = totalSiklus ~/ countSiklus;
-        avgPeriodDuration = totalDurasiHaid ~/ countDurasi;
+        avgPeriodCycle = countSiklus > 0 ? totalSiklus ~/ countSiklus : 0;
+        avgPeriodDuration = countDurasi > 0 ? totalDurasiHaid ~/ countDurasi : durasiHaid;
       }
 
       siklusTengahHaid = avgPeriodCycle ~/ 2;
@@ -80,25 +92,25 @@ class PeriodHistoryService {
       DateTime masaSuburBerikutnyaAkhir = ovulasiBerikutnya.add(Duration(days: 2));
       DateTime hariTerakhirSiklusBerikutnya = haidBerikutnyaAwal.add(Duration(days: avgPeriodCycle));
 
-      PeriodHistory? previousPeriod = isActualPeriodHistories.where((period) => period.haidAwal != null && period.haidAwal!.isBefore(haidAwal)).toList().fold<PeriodHistory?>(null, (previous, current) {
-        if (previous == null || current.haidAwal!.isAfter(previous.haidAwal!)) {
+      PeriodHistory? previousPeriod = isActualPeriodHistories.where((period) => period.haidAwal != null && period.haidAwal!.isBefore(haidAwal)).fold<PeriodHistory?>(null, (previous, current) {
+        if (previous == null || (current.haidAwal != null && current.haidAwal!.isAfter(previous.haidAwal!))) {
           return current;
         }
         return previous;
       });
 
-      PeriodHistory? nextPeriod = isActualPeriodHistories.where((period) => period.haidAwal != null && period.haidAwal!.isAfter(haidAwal)).toList().fold<PeriodHistory?>(null, (next, current) {
-        if (next == null || current.haidAwal!.isBefore(next.haidAwal!)) {
+      PeriodHistory? nextPeriod = isActualPeriodHistories.where((period) => period.haidAwal != null && period.haidAwal!.isAfter(haidAwal)).fold<PeriodHistory?>(null, (next, current) {
+        if (next == null || (current.haidAwal != null && current.haidAwal!.isBefore(next.haidAwal!))) {
           return current;
         }
         return next;
       });
 
       if (previousPeriod != null && previousPeriod.haidAwal != null) {
-        DateTime? previousPeriodHaidAwal = previousPeriod.haidAwal;
-        int previousLamaSiklus = (haidAwal.difference(previousPeriodHaidAwal!).inDays - 1).abs();
+        DateTime previousPeriodHaidAwal = previousPeriod.haidAwal!;
+        int previousLamaSiklus = (haidAwal.difference(previousPeriodHaidAwal).inDays - 1).abs();
 
-        PeriodHistory? updatedLastPeriod = previousPeriod.copyWith(
+        PeriodHistory updatedLastPeriod = previousPeriod.copyWith(
           lamaSiklus: previousLamaSiklus,
           hariTerakhirSiklus: haidAwal.subtract(Duration(days: 1)),
           hariTerakhirSiklusBerikutnya: previousPeriod.haidBerikutnyaAwal?.add(Duration(days: avgPeriodCycle)).subtract(Duration(days: 1)),
@@ -109,8 +121,8 @@ class PeriodHistoryService {
       int? nextLamaSiklus;
       DateTime? hariTerakhirSiklus;
       if (nextPeriod != null && nextPeriod.haidAwal != null) {
-        DateTime? nextPeriodHaidAwal = nextPeriod.haidAwal;
-        nextLamaSiklus = (nextPeriodHaidAwal!.difference(haidAwal).inDays - 1).abs();
+        DateTime nextPeriodHaidAwal = nextPeriod.haidAwal!;
+        nextLamaSiklus = (nextPeriodHaidAwal.difference(haidAwal).inDays - 1).abs();
         hariTerakhirSiklus = nextPeriodHaidAwal.subtract(Duration(days: 1));
       }
 
@@ -124,7 +136,7 @@ class PeriodHistoryService {
         masaSuburAkhir: masaSuburAkhir,
         lamaSiklus: (isActualPeriodHistories.length < 1) ? avgPeriodCycle : nextLamaSiklus ?? 0,
         durasiHaid: durasiHaid,
-        hariTerakhirSiklus: hariTerakhirSiklus ?? null,
+        hariTerakhirSiklus: hariTerakhirSiklus,
         haidBerikutnyaAwal: haidBerikutnyaAwal,
         haidBerikutnyaAkhir: haidBerikutnyaAkhir,
         ovulasiBerikutnya: ovulasiBerikutnya,
@@ -150,7 +162,7 @@ class PeriodHistoryService {
 
       if (lastUpdatedPeriodHistory.haidAwal != null) {
         generatePeriodPredictions(
-          lastUpdatedPeriodHistory.haidAwal ?? DateTime.now(),
+          lastUpdatedPeriodHistory.haidAwal!,
           avgPeriodDuration,
           avgPeriodCycle,
           userId,

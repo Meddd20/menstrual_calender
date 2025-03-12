@@ -567,28 +567,9 @@ class SyncDataService {
       int minorVersionVitamin = storageService.getMinorVersionMasterVitaminData();
 
       if (masterDataFoodVersion != null && (masterDataFoodVersion.majorVersion > majorVersionFood || (masterDataFoodVersion.majorVersion == majorVersionFood && masterDataFoodVersion.minorVersion > minorVersionFood))) {
-        List<MasterFood> masterDataFood = await masterFoodService.getAllFood(null);
         List<MasterFood> masterDataFoodFromAPI = await masterDataRepository.getMasterDataFood();
 
-        masterDataFoodFromAPI.forEach((dataAPI) {
-          var getFoodDataById = masterDataFood.firstWhereOrNull((localData) => localData.id == dataAPI.id);
-
-          if (getFoodDataById != null) {
-            if (dataAPI.updatedAt!.isAfter(getFoodDataById.updatedAt ?? DateTime.now())) {
-              masterFoodService.editFood(dataAPI);
-            }
-          } else {
-            masterFoodService.addFood(dataAPI);
-          }
-        });
-
-        masterDataFood.forEach((localData) {
-          var getFoodDataById = masterDataFoodFromAPI.firstWhereOrNull((dataAPI) => dataAPI.id == localData.id);
-
-          if (getFoodDataById == null) {
-            masterFoodService.deleteFood(localData.id ?? 0);
-          }
-        });
+        masterFoodService.addAllFood(masterDataFoodFromAPI);
 
         storageService.setMajorVersionMasterFoodData(masterDataFoodVersion.majorVersion);
         storageService.setMinorVersionMasterFoodData(masterDataFoodVersion.minorVersion);
@@ -598,81 +579,43 @@ class SyncDataService {
         List<MasterPregnancy> masterDataKehamilan = await masterKehamilanService.getAllPregnancyData();
         List<MasterPregnancy> masterDataKehamilanFromAPI = await masterDataRepository.getMasterDataKehamilan();
 
-        masterDataKehamilanFromAPI.forEach((dataAPI) {
-          var getKehamilanDataById = masterDataKehamilan.firstWhereOrNull((localData) => localData.id == dataAPI.id);
+        for (var dataAPI in masterDataKehamilanFromAPI) {
+          MasterPregnancy? getKehamilanDataById = masterDataKehamilan.firstWhereOrNull((localData) => localData.id == dataAPI.id);
+          DateTime dataAPIUpdatedAt = formatDateWithoutZ(dataAPI.updatedAt ?? DateTime.now().toUtc());
 
           if (getKehamilanDataById != null) {
-            if (dataAPI.updatedAt!.isAfter(getKehamilanDataById.updatedAt ?? DateTime.now())) {
-              masterKehamilanService.editPregnancyData(dataAPI);
+            if (dataAPIUpdatedAt.isAfter(getKehamilanDataById.updatedAt ?? DateTime.now().toUtc())) {
+              await masterKehamilanService.editPregnancyData(dataAPI);
             }
           } else {
-            masterKehamilanService.addPregnancyData(dataAPI);
+            await masterKehamilanService.addPregnancyData(dataAPI);
           }
-        });
+        }
 
-        masterDataKehamilan.forEach((localData) {
-          var getKehamilanDataById = masterDataKehamilanFromAPI.firstWhereOrNull((dataAPI) => dataAPI.id == localData.id);
-
+        for (var localData in masterDataKehamilan) {
+          MasterPregnancy? getKehamilanDataById = masterDataKehamilanFromAPI.firstWhereOrNull((dataAPI) => dataAPI.id == localData.id);
           if (getKehamilanDataById == null) {
-            masterKehamilanService.deletePregnancyData(localData.id ?? 0);
+            await masterKehamilanService.deletePregnancyData(localData.id ?? 0);
           }
-        });
+        }
 
         storageService.setMajorVersionMasterKehamilanData(masterDataKehamilanVersion.majorVersion);
         storageService.setMinorVersionMasterKehamilanData(masterDataKehamilanVersion.minorVersion);
       }
 
       if (masterDataVaccineVersion != null && (masterDataVaccineVersion.majorVersion > majorVersionVaccine || (masterDataVaccineVersion.majorVersion == majorVersionVaccine && masterDataVaccineVersion.minorVersion > minorVersionVaccine))) {
-        List<MasterVaccine> masterDataVaccine = await masterVaccinesService.getAllVaccines();
         List<MasterVaccine> masterDataVaccineFromAPI = await masterDataRepository.getMasterDataVaccines();
 
-        masterDataVaccineFromAPI.forEach((dataAPI) {
-          var getVaccineDataById = masterDataVaccine.firstWhereOrNull((localData) => localData.id == dataAPI.id);
-
-          if (getVaccineDataById != null) {
-            if (dataAPI.updatedAt!.isAfter(getVaccineDataById.updatedAt ?? DateTime.now())) {
-              masterVaccinesService.editVaccine(dataAPI);
-            }
-          } else {
-            masterVaccinesService.addVaccine(dataAPI);
-          }
-        });
-
-        masterDataVaccine.forEach((localData) {
-          var getVaccineDataById = masterDataVaccineFromAPI.firstWhereOrNull((dataAPI) => dataAPI.id == localData.id);
-
-          if (getVaccineDataById == null) {
-            masterVaccinesService.deleteVaccine(localData.id ?? 0);
-          }
-        });
+        masterVaccinesService.addAllVaccines(masterDataVaccineFromAPI);
 
         storageService.setMajorVersionMasterVaccineData(masterDataVaccineVersion.majorVersion);
         storageService.setMinorVersionMasterVaccineData(masterDataVaccineVersion.minorVersion);
       }
 
       if (masterDataVitaminVersion != null && (masterDataVitaminVersion.majorVersion > majorVersionVitamin || (masterDataVitaminVersion.majorVersion == majorVersionVitamin && masterDataVitaminVersion.minorVersion > minorVersionVitamin))) {
-        List<MasterVitamin> masterDataVitamin = await masterVitaminsService.getAllVitamin();
         List<MasterVitamin> masterDataVitaminFromAPI = await masterDataRepository.getMasterDataVitamin();
 
-        masterDataVitaminFromAPI.forEach((dataAPI) {
-          var getVitaminDataById = masterDataVitamin.firstWhereOrNull((localData) => localData.id == dataAPI.id);
-
-          if (getVitaminDataById != null) {
-            if (dataAPI.updatedAt!.isAfter(getVitaminDataById.updatedAt ?? DateTime.now())) {
-              masterVitaminsService.editVitamin(dataAPI);
-            }
-          } else {
-            masterVitaminsService.addVitamin(dataAPI);
-          }
-        });
-
-        masterDataVitamin.forEach((localData) {
-          var getVitaminDataById = masterDataVitaminFromAPI.firstWhereOrNull((dataAPI) => dataAPI.id == localData.id);
-
-          if (getVitaminDataById == null) {
-            masterVitaminsService.deleteVitamin(localData.id ?? 0);
-          }
-        });
+        masterVitaminsService.addAllVitamins(masterDataVitaminFromAPI);
 
         storageService.setMajorVersionMasterVitaminData(masterDataVitaminVersion.majorVersion);
         storageService.setMinorVersionMasterVitaminData(masterDataVitaminVersion.minorVersion);
@@ -1118,7 +1061,6 @@ class SyncDataService {
         }
         _logger.i(syncData);
         DataCategoryByTable? pendingDataChangesResponse = await profileRepository.resyncPendingData(syncData);
-        // await profileRepository.resyncPendingData(syncData);
 
         List<PeriodHistory>? updatedPeriodHistory = pendingDataChangesResponse?.periodHistory;
         List<PregnancyHistory>? updatedPregnancyHistory = pendingDataChangesResponse?.pregnancyHistory;

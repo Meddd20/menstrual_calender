@@ -36,7 +36,7 @@ class MasterDataRepository {
   }
 
   Future<List<MasterPregnancy>> getMasterDataKehamilan() async {
-    http.Response response = await apiService.getMasterDataFood();
+    http.Response response = await apiService.getMasterDataPregnancy();
 
     if (response.statusCode == 200) {
       final List<dynamic> pregnancyDatasJson = jsonDecode(response.body)["data"];

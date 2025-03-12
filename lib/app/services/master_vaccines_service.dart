@@ -12,28 +12,7 @@ class MasterVaccinesService {
     return await _masterVaccinesRepository.getVaccinesById(id);
   }
 
-  Future<void> addVaccine(MasterVaccine vaccine) async {
-    await _masterVaccinesRepository.addVaccines(vaccine);
-  }
-
-  Future<void> editVaccine(MasterVaccine vaccine) async {
-    MasterVaccine? editedVaccine = await getVaccineById(vaccine.id);
-    if (editedVaccine != null) {
-      MasterVaccine updatedVaccine = editedVaccine.copyWith(
-        id: vaccine.id,
-        vaccinesId: vaccine.vaccinesId,
-        vaccinesEn: vaccine.vaccinesEn,
-        descriptionId: vaccine.descriptionId,
-        descriptionEn: vaccine.descriptionEn,
-        updatedAt: vaccine.updatedAt,
-      );
-      await _masterVaccinesRepository.editVaccines(updatedVaccine);
-    } else {
-      throw Exception('Vaccine edited not found');
-    }
-  }
-
-  Future<void> deleteVaccine(int id) async {
-    await _masterVaccinesRepository.deleteVaccines(id);
+  Future<void> addAllVaccines(List<MasterVaccine> vaccines) async {
+    await _masterVaccinesRepository.addAllVaccines(vaccines);
   }
 }

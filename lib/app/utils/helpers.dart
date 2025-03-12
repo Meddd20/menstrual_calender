@@ -134,6 +134,11 @@ String formatFullDate(DateTime dateTime) {
   return DateFormat('dd, MMMM yyyy').format(dateTime);
 }
 
+DateTime formatDateWithoutZ(DateTime date) {
+  String formatted = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(date.toLocal());
+  return DateTime.parse(formatted);
+}
+
 class MyTickerProvider implements TickerProvider {
   @override
   Ticker createTicker(TickerCallback onTick) => Ticker(onTick);

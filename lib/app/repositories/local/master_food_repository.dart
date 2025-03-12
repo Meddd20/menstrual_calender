@@ -2,6 +2,7 @@ import 'package:logger/logger.dart';
 
 import 'package:periodnpregnancycalender/app/utils/utils.dart';
 import 'package:periodnpregnancycalender/app/models/models.dart';
+import 'package:sqflite/sqflite.dart';
 
 class MasterFoodRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
@@ -50,42 +51,22 @@ class MasterFoodRepository {
     }
   }
 
-  Future<void> addFood(MasterFood food) async {
+  Future<void> addAllFood(List<MasterFood> foods) async {
     final db = await _databaseHelper.database;
-    try {
-      await db.insert("tb_master_food", food.toJson());
-    } catch (e) {
-      _logger.e("Error during add food: $e");
-      rethrow;
-    }
-  }
-
-  Future<void> editFood(MasterFood food) async {
-    final db = await _databaseHelper.database;
-    try {
-      await db.update(
-        "tb_master_food",
-        food.toJson(),
-        where: 'id = ?',
-        whereArgs: [food.id],
-      );
-    } catch (e) {
-      _logger.e("Error during edit food: $e");
-      rethrow;
-    }
-  }
-
-  Future<void> deleteFood(int id) async {
-    final db = await _databaseHelper.database;
-    try {
-      await db.delete(
-        "tb_master_food",
-        where: 'id = ?',
-        whereArgs: [id],
-      );
-    } catch (e) {
-      _logger.e("Error during delete food: $e");
-      rethrow;
-    }
+    await db.transaction((txn) async {
+      try {
+        await txn.delete('tb_master_food');
+        for (var food in foods) {
+          await txn.insert(
+            'tb_master_food',
+            food.toJson(),
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+      } catch (e) {
+        _logger.e("Error during add food: $e");
+        rethrow;
+      }
+    });
   }
 }

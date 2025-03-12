@@ -47,6 +47,8 @@ class NavigationMenuController extends GetxController {
           storageService.setHasSyncData(true);
         }
 
+        await _syncDataService.syncMasterDataVersion();
+
         await authRepository.checkToken();
       }
     }
